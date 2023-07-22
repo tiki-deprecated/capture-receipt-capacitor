@@ -11,8 +11,13 @@ export class ReceiptCaptureWeb
   extends WebPlugin
   implements ReceiptCapturePlugin
 {
-  async echo(options: { value: string }): Promise<{ value: string }> {
-    console.log('ECHO', options);
-    return options;
+  async initialize(_options: {
+    licenseKey: string;
+  }): Promise<{ isInitialized: boolean; reason?: string }> {
+    throw this.unimplemented('Mobile Only.');
+  }
+
+  async scan(): Promise<unknown> {
+    throw this.unimplemented('Mobile Only.');
   }
 }

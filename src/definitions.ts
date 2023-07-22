@@ -4,5 +4,9 @@
  */
 
 export interface ReceiptCapturePlugin {
-  echo(options: { value: string }): Promise<{ value: string }>;
+  initialize(options: {
+    licenseKey: string;
+  }): Promise<{ isInitialized: boolean; reason?: string }>;
+
+  scan(): Promise<unknown>;
 }
