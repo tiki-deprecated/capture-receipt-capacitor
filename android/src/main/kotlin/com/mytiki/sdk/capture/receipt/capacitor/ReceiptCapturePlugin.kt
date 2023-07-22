@@ -1,46 +1,60 @@
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
+
 package com.mytiki.sdk.capture.receipt.capacitor
 
+import android.Manifest
 import android.content.Intent
-import android.os.Bundle
-import androidx.core.app.ActivityCompat
-import com.getcapacitor.JSObject
+import androidx.activity.result.ActivityResult
+import com.getcapacitor.PermissionState
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
 import com.getcapacitor.PluginMethod
+import com.getcapacitor.annotation.ActivityCallback
 import com.getcapacitor.annotation.CapacitorPlugin
-import com.microblink.FrameCharacteristics
-import com.microblink.ScanOptions
-import com.microblink.camera.ui.CameraScanActivity
+import com.getcapacitor.annotation.Permission
+import com.getcapacitor.annotation.PermissionCallback
 
-@CapacitorPlugin(name = "ReceiptCapture")
+
+@CapacitorPlugin(
+    name = "ReceiptCapture",
+    permissions = [
+        Permission(
+            alias = "camera",
+            strings = [Manifest.permission.CAMERA]
+        )
+    ]
+)
 class ReceiptCapturePlugin : Plugin() {
-    private val implementation = ReceiptCapture()
+    private val receiptCapture = ReceiptCapture()
+
     @PluginMethod
-    fun echo(call: PluginCall) {
-        val value = call.getString("value")
-        val ret = JSObject()
-        ret.put("value", implementation.echo(value!!))
+    fun initialize(call: PluginCall) = receiptCapture.initialize(call, context)
 
-
-        val scanOptions = ScanOptions.newBuilder()
-            .frameCharacteristics(
-                FrameCharacteristics.newBuilder()
-                    .storeFrames(true)
-                    .compressionQuality(100)
-                    .externalStorage(false).build()
-            )
-            .logoDetection(true)
-            .build()
-
-        val bundle = Bundle()
-
-        bundle.putParcelable(CameraScanActivity.SCAN_OPTIONS_EXTRA, scanOptions)
-
-        val intent: Intent = Intent(context, CameraScanActivity::class.java)
-            .putExtra(CameraScanActivity.BUNDLE_EXTRA, bundle)
-
-        ActivityCompat.startActivityForResult(activity, intent, 1, null)
-
-        call.resolve(ret)
+    @PluginMethod
+    fun scan(call: PluginCall) {
+        if (getPermissionState("camera") != PermissionState.GRANTED) {
+            requestPermissionForAlias("camera", call, "onCameraPermission")
+        } else {
+            val intent: Intent = receiptCapture.scan(call, context)
+            startActivityForResult(call, intent, "onScanResult")
+        }
     }
+
+    @ActivityCallback
+    private fun onScanResult(call: PluginCall, result: ActivityResult) =
+        receiptCapture.onScanResult(call, result)
+
+    @PermissionCallback
+    private fun onCameraPermission(call: PluginCall) {
+        if (getPermissionState("camera") == PermissionState.GRANTED) {
+            val intent: Intent = receiptCapture.scan(call, context)
+            startActivityForResult(call, intent, "onScanResult")
+        } else {
+            call.reject("Permission is required to scan a receipt")
+        }
+    }
+
 }

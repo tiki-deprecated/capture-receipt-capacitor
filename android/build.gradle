@@ -1,13 +1,14 @@
 buildscript {
     ext {
-        microblinkVersion = "1.6.7"
-        kotlinVersion = "1.8.22"
+        microblinkVersion = project.hasProperty('microblinkVersion') ? rootProject.ext.microblinkVersion : "1.6.7"
+        kotlinVersion = project.hasProperty('kotlinVersion') ? rootProject.ext.kotlinVersion : "1.8.22"
+        mockkVersion = project.hasProperty('mockkVersion') ? rootProject.ext.mockkVersion : "1.13.5"
         junitVersion = project.hasProperty('junitVersion') ? rootProject.ext.junitVersion : '4.13.2'
+        coroutinesVersion = project.hasProperty('coroutinesVersion') ? rootProject.ext.coroutinesVersion : '1.7.2'
         androidxAppCompatVersion = project.hasProperty('androidxAppCompatVersion') ? rootProject.ext.androidxAppCompatVersion : '1.6.1'
         androidxJunitVersion = project.hasProperty('androidxJunitVersion') ? rootProject.ext.androidxJunitVersion : '1.1.5'
         androidxEspressoCoreVersion = project.hasProperty('androidxEspressoCoreVersion') ? rootProject.ext.androidxEspressoCoreVersion : '3.5.1'
-        kotlinxVersion = project.hasProperty('kotlinxVersion') ? rootProject.ext.androidxJunitVersion : '1.7.2'
-        blinkReceiptVersion = project.hasProperty('blinkReceiptVersion') ? rootProject.ext.androidxJunitVersion : '1.6.7'
+        kotlinxVersion = project.hasProperty('kotlinxVersion') ? rootProject.ext.kotlinxVersion : '1.7.2'
     }
     repositories {
         google()
@@ -16,15 +17,11 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:7.4.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath 'com.github.kezong:fat-aar:1.3.8'
-        classpath 'org.ajoberstar.grgit:grgit-gradle:5.2.0'
     }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
-apply plugin: 'org.ajoberstar.grgit'
-apply plugin: 'com.kezong.fat-aar'
 
 android {
     namespace "com.mytiki.sdk.capture.receipt.capacitor"
@@ -35,6 +32,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testApplicationId "com.mytiki.sdk.capture.receipt.capacitor"
     }
     buildTypes {
         release {
@@ -52,27 +50,30 @@ android {
     kotlinOptions {
         jvmTarget = 17
     }
+    packagingOptions {
+        exclude("META-INF/LICENSE-notice.md")
+        exclude("META-INF/LICENSE.md")
+    }
 }
 
 repositories {
     google()
     mavenCentral()
-}
-
-import org.ajoberstar.grgit.Grgit
-task microblink {
-    def repo = "https://github.com/BlinkReceipt/blinkreceipt-android.git"
-    def dir = "$projectDir/libs/blinkreceipt-android/$microblinkVersion"
-    try {
-        Grgit.open(dir: dir)
-    }catch(ignored){
-        Grgit.clone(dir: dir, uri: repo, refToCheckout: microblinkVersion)
+    maven {
+        url = uri("https://maven.pkg.github.com/tiki-bar/tiki-capture-receipt-capacitor")
+        credentials {
+            username = providers
+                    .gradleProperty("gpr.user")
+                    .getOrElse(System.getenv("GITHUB_USER"))
+            password = providers
+                    .gradleProperty("gpr.key")
+                    .getOrElse(System.getenv("GITHUB_KEY"))
+        }
     }
 }
-preBuild.dependsOn(microblink)
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':capacitor-android')
 
     implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
@@ -81,6 +82,7 @@ dependencies {
     implementation "androidx.webkit:webkit:1.7.0"
     implementation "androidx.work:work-runtime:2.8.1"
     implementation "androidx.work:work-runtime-ktx:2.8.1"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxVersion"
@@ -95,22 +97,29 @@ dependencies {
 
     implementation "com.google.android.gms:play-services-tasks:18.0.2"
     implementation "com.google.android.gms:play-services-auth:20.6.0"
+    implementation 'com.google.android.material:material:1.9.0'
 
     implementation 'com.jakewharton.timber:timber:5.0.1'
 
     //TODO - unclear which of these we actually need so far.
-    embed files("libs/blinkreceipt-android/$microblinkVersion/blinkreceipt-account-linking/LibBlinkReceiptAccountLinking.aar")
-    embed files("libs/blinkreceipt-android/$microblinkVersion/blinkreceipt-barcode/LibBlinkReceiptBarcode.aar")
-    embed files("libs/blinkreceipt-android/$microblinkVersion/blinkreceipt-camera/LibBlinkReceiptCamera.aar")
-    embed files("libs/blinkreceipt-android/$microblinkVersion/blinkreceipt-camera-ui/LibBlinkReceiptCameraUi.aar")
-    embed files("libs/blinkreceipt-android/$microblinkVersion/blinkreceipt-core/LibBlinkReceiptCore.aar")
-    embed files("libs/blinkreceipt-android/$microblinkVersion/blinkreceipt-digital/LibBlinkReceiptDigital.aar")
-    embed files("libs/blinkreceipt-android/$microblinkVersion/blinkreceipt-earnings/LibBlinkReceiptEarnings.aar")
-    embed files("libs/blinkreceipt-android/$microblinkVersion/blinkreceipt-recognizer/LibBlinkReceiptRecognizer.aar")
-    embed files("libs/blinkreceipt-android/$microblinkVersion/blinkreceipt-surveys/LibBlinkReceiptSurveys.aar")
+    implementation "com.microblink:linking:$microblinkVersion"
+    implementation "com.microblink:barcode:$microblinkVersion"
+    implementation "com.microblink:camera:$microblinkVersion"
+    implementation "com.microblink:camera.ui:$microblinkVersion"
+    implementation "com.microblink:core:$microblinkVersion"
+    implementation "com.microblink:digital:$microblinkVersion"
+    implementation "com.microblink:earnings:$microblinkVersion"
+    implementation "com.microblink:recognizer:$microblinkVersion"
+    implementation "com.microblink:surveys:$microblinkVersion"
 
+    testImplementation 'org.json:json:20230227'
     testImplementation "junit:junit:$junitVersion"
+    testImplementation "io.mockk:mockk:$mockkVersion"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
 
+    androidTestImplementation "io.mockk:mockk-android:$mockkVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
+    androidTestImplementation 'androidx.test:rules:1.5.0'
 }

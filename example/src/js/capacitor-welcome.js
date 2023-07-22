@@ -101,10 +101,12 @@ window.customElements.define(
       self.shadowRoot
         .querySelector('#take-photo')
         .addEventListener('click', async function (e) {
-          const rsp = await ReceiptCapture.echo({
-            value: 'hello world',
+          let rsp = await ReceiptCapture.initialize({
+            licenseKey: '',
           });
-          console.log(rsp.value);
+          console.log(rsp);
+          rsp = await ReceiptCapture.scan();
+          console.log(rsp);
 
           try {
             const photo = await Camera.getPhoto({
