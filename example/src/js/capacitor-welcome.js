@@ -99,13 +99,15 @@ window.customElements.define(
     connectedCallback() {
       const self = this;
 
+      ReceiptCapture.initialize({
+        licenseKey: '',
+        productKey: '',
+      });
+
       self.shadowRoot
         .querySelector('#login')
         .addEventListener('click', async function (e) {
-          let rsp = await ReceiptCapture.initialize({
-            licenseKey: '',
-          });
-          rsp = await ReceiptCapture.loginWithEmail({
+          let rsp = await ReceiptCapture.loginWithEmail({
             username: '',
             password: '',
             provider: 'GMAIL',

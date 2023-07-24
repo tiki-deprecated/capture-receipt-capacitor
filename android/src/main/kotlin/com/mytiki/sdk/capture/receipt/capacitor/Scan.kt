@@ -29,6 +29,7 @@ class Scan {
         onError: (msg: String?, data: JSObject) -> Unit,
     ): CompletableDeferred<Unit> {
         val isInitialized = CompletableDeferred<Unit>()
+        BlinkReceiptSdk.productIntelligenceKey(req.productKey!!)
         BlinkReceiptSdk.initialize(
             context,
             req.licenseKey!!,

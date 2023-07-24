@@ -20,6 +20,6 @@ class RspEmail(credential: PasswordCredentials, results: List<ScanResults>) : Rs
 
     override fun toJson(): JSONObject =
         JSONObject()
-            .put("login", login)
-            .put("scans", scans)
+            .put("login", login.toJson())
+            .put("scans", scans.map { scan -> scan.toJson() })
 }

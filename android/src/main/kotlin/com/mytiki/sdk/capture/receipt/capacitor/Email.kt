@@ -35,6 +35,7 @@ class Email {
         onError: (msg: String?, data: JSObject) -> Unit,
     ): CompletableDeferred<Unit> {
         val isDigitalInitialized = CompletableDeferred<Unit>()
+        BlinkReceiptDigitalSdk.productIntelligenceKey(req.productKey!!)
         BlinkReceiptDigitalSdk.initialize(
             context,
             req.licenseKey!!,
@@ -42,7 +43,8 @@ class Email {
         )
         isDigitalInitialized.await()
         val isImapInitialized = CompletableDeferred<Unit>()
-        client = ImapClient(context, OnInitialize(isImapInitialized, onError))
+        client =
+            ImapClient(context, OnInitialize(isImapInitialized, onError)).apply { dayCutoff(30) }
         return isImapInitialized
     }
 
