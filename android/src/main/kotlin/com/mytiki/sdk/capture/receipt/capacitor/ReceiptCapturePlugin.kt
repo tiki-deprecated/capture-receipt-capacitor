@@ -35,26 +35,29 @@ class ReceiptCapturePlugin : Plugin() {
 
     @PluginMethod
     fun scan(call: PluginCall) {
-        if (getPermissionState("camera") != PermissionState.GRANTED) {
+        if (getPermissionState("camera") != PermissionState.GRANTED)
             requestPermissionForAlias("camera", call, "onCameraPermission")
-        } else {
-            val intent: Intent = receiptCapture.scan(call, context)
-            startActivityForResult(call, intent, "onScanResult")
-        }
+        else startScan(call)
     }
+
+    @PluginMethod
+    fun loginWithEmail(call: PluginCall) = receiptCapture.email.login(call, activity)
+
+    @PluginMethod
+    fun scrapeEmail(call: PluginCall) = receiptCapture.email.scape(call)
 
     @ActivityCallback
     private fun onScanResult(call: PluginCall, result: ActivityResult) =
-        receiptCapture.onScanResult(call, result)
+        receiptCapture.scan.onResult(call, result)
 
     @PermissionCallback
     private fun onCameraPermission(call: PluginCall) {
-        if (getPermissionState("camera") == PermissionState.GRANTED) {
-            val intent: Intent = receiptCapture.scan(call, context)
-            startActivityForResult(call, intent, "onScanResult")
-        } else {
-            call.reject("Permission is required to scan a receipt")
-        }
+        if (getPermissionState("camera") == PermissionState.GRANTED) startScan(call)
+        else call.reject("Permission is required to scan a receipt")
     }
 
+    private fun startScan(call: PluginCall) {
+        val intent: Intent = receiptCapture.scan.open(call, context)
+        startActivityForResult(call, intent, "onScanResult")
+    }
 }

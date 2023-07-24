@@ -9,8 +9,11 @@ import com.getcapacitor.JSObject
 
 class ReqInitialize(data: JSObject) {
     val licenseKey: String?
+    val productKey: String?
+
 
     init {
         licenseKey = data.getString("licenseKey")
+        productKey = data.getString("productKey")
     }
 }
