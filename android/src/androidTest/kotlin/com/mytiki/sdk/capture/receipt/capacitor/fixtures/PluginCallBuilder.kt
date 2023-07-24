@@ -23,8 +23,11 @@ class PluginCallBuilder(val req: JSONObject? = null) {
         val handler = mockk<MessageHandler>(relaxed = true)
         every { handler.sendResponseMessage(any(), any(), any()) }
             .answers { call ->
-                val res = call.invocation.args[1] as PluginResult
-                complete.complete(JSONObject(res.toString()))
+                val res: PluginResult? = call.invocation.args[1] as PluginResult?
+                val err: PluginResult? = call.invocation.args[2] as PluginResult?
+                if (res != null) complete.complete(JSONObject(res.toString()))
+                else if (err != null) complete.complete(JSONObject(err.toString()))
+                else complete.complete(JSONObject())
             }
         return PluginCall(
             handler,

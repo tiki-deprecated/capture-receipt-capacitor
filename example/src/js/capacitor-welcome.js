@@ -85,7 +85,8 @@ window.customElements.define(
           This demo shows how to call Capacitor plugins. Say cheese!
         </p>
         <p>
-          <button class="button" id="take-photo">Take Photo</button>
+          <button class="button" id="login">Login</button>
+          <button class="button" id="scrape">Scrape</button>
         </p>
         <p>
           <img id="image" style="max-width: 100%">
@@ -99,29 +100,24 @@ window.customElements.define(
       const self = this;
 
       self.shadowRoot
-        .querySelector('#take-photo')
+        .querySelector('#login')
         .addEventListener('click', async function (e) {
           let rsp = await ReceiptCapture.initialize({
             licenseKey: '',
           });
+          rsp = await ReceiptCapture.loginWithEmail({
+            username: '',
+            password: '',
+            provider: 'GMAIL',
+          });
           console.log(rsp);
-          rsp = await ReceiptCapture.scan();
+        });
+
+      self.shadowRoot
+        .querySelector('#scrape')
+        .addEventListener('click', async function (e) {
+          let rsp = await ReceiptCapture.scrapeEmail();
           console.log(rsp);
-
-          try {
-            const photo = await Camera.getPhoto({
-              resultType: 'uri',
-            });
-
-            const image = self.shadowRoot.querySelector('#image');
-            if (!image) {
-              return;
-            }
-
-            image.src = photo.webPath;
-          } catch (e) {
-            console.warn('User cancelled', e);
-          }
         });
     }
   },

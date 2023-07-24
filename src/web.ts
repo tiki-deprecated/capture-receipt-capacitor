@@ -20,4 +20,8 @@ export class ReceiptCaptureWeb
   async scan(): Promise<unknown> {
     throw this.unimplemented('Mobile Only.');
   }
+
+  async testCreds(): Promise<unknown> {
+    throw this.unimplemented('Mobile Only.');
+  }
 }
