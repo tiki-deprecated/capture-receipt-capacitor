@@ -21,9 +21,12 @@ import com.microblink.digital.ProviderSetupOptions
 import com.microblink.digital.ProviderSetupResults
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqLogin
+import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspAccount
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspEmail
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspLogin
 import kotlinx.coroutines.CompletableDeferred
+import org.json.JSONArray
+import org.json.JSONObject
 
 class Email {
     private val tag = "ProviderSetupDialogFragment"
@@ -96,5 +99,21 @@ class Email {
 
             override fun onException(throwable: Throwable) = call.reject(throwable.message)
         })
+    }
+
+    fun accounts(call: PluginCall) {
+        client?.accounts()?.addOnSuccessListener { accounts ->
+            val rsp: MutableList<RspAccount> = mutableListOf()
+            accounts.forEach { account ->
+                client?.verify(account)?.addOnSuccessListener {
+                    rsp.add(RspAccount(account.username(), account.provider().type(), true))
+                }?.addOnFailureListener {
+                    rsp.add(RspAccount(account.username(), account.provider().type(), false))
+                }
+            }
+            call.resolve(JSObject.fromJSONObject(JSONObject().put("accounts", JSONArray(rsp))))
+        }?.addOnFailureListener {
+            call.reject(it.message)
+        }
     }
 }
