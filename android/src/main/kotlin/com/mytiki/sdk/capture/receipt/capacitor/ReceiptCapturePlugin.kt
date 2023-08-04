@@ -49,6 +49,9 @@ class ReceiptCapturePlugin : Plugin() {
     @PluginMethod
     fun verifyEmail(call: PluginCall) = receiptCapture.email.accounts(call)
 
+    @PluginMethod
+    fun removeEmail(call: PluginCall) = receiptCapture.email.remove(call)
+
     @ActivityCallback
     private fun onScanResult(call: PluginCall, result: ActivityResult) =
         receiptCapture.scan.onResult(call, result)

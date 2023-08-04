@@ -6,6 +6,7 @@
 import { registerPlugin } from '@capacitor/core';
 
 import { AccountProvider } from './account';
+import type { Account } from './account';
 import type { AdditionalLine } from './additional-line';
 import type { Coupon } from './coupon';
 import type { FloatType } from './float-type';
@@ -47,4 +48,5 @@ export type {
   Receipt,
   Retailer,
   ReceiptCapture,
+  Account,
 };

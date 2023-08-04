@@ -5,7 +5,6 @@
 
 import { WebPlugin } from '@capacitor/core';
 
-import type { Account } from './account';
 import type { Receipt } from './receipt';
 import type { ReceiptCapturePlugin } from './receipt-capture-plugin';
 
@@ -39,8 +38,16 @@ export class ReceiptCaptureWeb
   }
 
   verifyEmail(): Promise<{
-    accounts: Account[];
+    accounts: { username: string; provider: string; verified: boolean }[];
   }> {
+    throw this.unimplemented('Mobile Only.');
+  }
+
+  removeEmail(_options: {
+    username: string;
+    password: string;
+    provider: string;
+  }): Promise<{ success: boolean }> {
     throw this.unimplemented('Mobile Only.');
   }
 }

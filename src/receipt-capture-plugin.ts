@@ -3,7 +3,6 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import type { Account } from './account';
 import type { Receipt } from './receipt';
 
 export interface ReceiptCapturePlugin {
@@ -26,6 +25,12 @@ export interface ReceiptCapturePlugin {
   }>;
 
   verifyEmail(): Promise<{
-    accounts: Account[];
+    accounts: { username: string; provider: string; verified: boolean }[];
   }>;
+
+  removeEmail(options: {
+    username: string;
+    password: string;
+    provider: string;
+  }): Promise<{ success: boolean }>;
 }

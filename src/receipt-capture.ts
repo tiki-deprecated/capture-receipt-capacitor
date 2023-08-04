@@ -46,20 +46,39 @@ export class ReceiptCapture {
     };
   };
 
-  scrapeEmail = async (): Promise<{
-    account: Account;
-    receipts: Receipt[];
-  }> => {
-    const rsp = await this.plugin.scrapeEmail();
-    return {
-      account: {
-        username: rsp.login.username,
-        provider: providers.get(rsp.login.provider),
-      },
-      receipts: rsp.scans,
-    };
+  scrapeEmail = (callback: (account: Account, receipts: Receipt[]) => void): Promise<void> =>
+    this.plugin.scrapeEmail()
+        .then((rsp) => {
+          callback(
+              {
+                username: rsp.login.username,
+                provider: providers.get(rsp.login.provider),
+              },
+              rsp.scans)
+        });
+
+  removeEmail = async (
+    username: string,
+    password: string,
+    provider: AccountProvider,
+  ): Promise<void> => {
+    const rsp = await this.plugin.removeEmail({
+      username: username,
+      password: password,
+      provider: provider.valueOf(),
+    });
+    if (!rsp.success)
+      throw Error(`Failed to remove: ${provider} | ${username}`);
   };
 
-  verifyEmail = async (): Promise<Account[]> =>
-    (await this.plugin.verifyEmail()).accounts;
+  verifyEmail = async (): Promise<Account[]> => {
+    const rsp = await this.plugin.verifyEmail();
+    return rsp.accounts.map(acc => {
+      return {
+        username: acc.username,
+        verified: acc.verified,
+        provider: providers.get(acc.provider),
+      };
+    });
+  };
 }

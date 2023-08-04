@@ -25,6 +25,9 @@ import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspAccount
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspEmail
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspLogin
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.tasks.await
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -102,16 +105,33 @@ class Email {
     }
 
     fun accounts(call: PluginCall) {
-        client?.accounts()?.addOnSuccessListener { accounts ->
-            val rsp: MutableList<RspAccount> = mutableListOf()
-            accounts.forEach { account ->
-                client?.verify(account)?.addOnSuccessListener {
-                    rsp.add(RspAccount(account.username(), account.provider().type(), true))
-                }?.addOnFailureListener {
-                    rsp.add(RspAccount(account.username(), account.provider().type(), false))
-                }
+        val deferred = MainScope().async {
+            val rsp: MutableList<JSONObject> = mutableListOf()
+            val credentials = client?.accounts()?.await()
+            credentials?.forEach { credential ->
+                val verified = client?.verify(credential)?.await()
+                rsp.add(
+                    RspAccount(
+                        credential.username(),
+                        credential.provider().name,
+                        verified ?: false
+                    ).toJson()
+                )
             }
             call.resolve(JSObject.fromJSONObject(JSONObject().put("accounts", JSONArray(rsp))))
+        }
+    }
+
+    fun remove(call: PluginCall) {
+        val req = ReqLogin(call.data)
+        client?.logout(
+            PasswordCredentials.newBuilder(
+                Provider.valueOf(req.provider!!),
+                req.username!!,
+                req.password!!
+            ).build()
+        )?.addOnSuccessListener {
+            call.resolve(JSObject().put("success", it))
         }?.addOnFailureListener {
             call.reject(it.message)
         }
