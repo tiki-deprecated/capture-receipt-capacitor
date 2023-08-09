@@ -1,6 +1,6 @@
 {
   "name": "@mytiki/tiki-capture-receipt-capacitor",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Capture receipts w/ TIKI!",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -8,10 +8,10 @@
   "types": "dist/esm/index.d.ts",
   "unpkg": "dist/plugin.js",
   "files": [
-    "../android/src/main/",
+    "android/src/main/",
     "android/build.gradle",
     "dist/",
-    "../ios/Plugin/",
+    "ios/Plugin/",
     "MytikiTikiCaptureReceiptCapacitor.podspec"
   ],
   "author": "Tiki inc.",
