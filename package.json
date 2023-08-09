@@ -17,7 +17,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tiki-bar/tiki-capture-receipt-capacitor.git"
+    "url": "https://github.com/tiki-bar/tiki-capture-receipt-capacitor.git"
   },
   "bugs": {
     "url": "https://github.com/tiki-bar/tiki-capture-receipt-capacitor/issues"
@@ -25,7 +25,8 @@
   "keywords": [
     "capacitor",
     "plugin",
-    "native"
+    "tiki",
+    "microblink"
   ],
   "scripts": {
     "verify": "npm run verify:ios && npm run verify:android && npm run verify:web",
