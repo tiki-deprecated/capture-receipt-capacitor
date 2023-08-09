@@ -55,7 +55,7 @@ jobs:
         run: npm run verify
         env:
           GITHUB_USER: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_KEY: ${{ github.token }}
 
       - name: Get version
         id: version
