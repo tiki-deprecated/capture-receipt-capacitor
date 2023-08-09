@@ -96,6 +96,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidxLifecycleVersion"
     implementation "androidx.fragment:fragment-ktx:1.6.0"
     implementation 'androidx.databinding:viewbinding:8.0.2'
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxVersion"
@@ -136,6 +137,13 @@ dependencies {
     implementation "com.microblink:earnings:$microblinkVersion"
     implementation "com.microblink:recognizer:$microblinkVersion"
     implementation "com.microblink:surveys:$microblinkVersion"
+
+//    microblink Receipt Account Linking SDK
+    implementation fileTree("./libs")
+    implementation files("./libs/LibBlinkReceiptCore.aar")
+    implementation files("./libs/LibBlinkReceiptAccountLinking.aar")
+
+
 
     testImplementation 'org.json:json:20230227'
     testImplementation "junit:junit:$junitVersion"
