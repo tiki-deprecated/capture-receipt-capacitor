@@ -5,6 +5,7 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor
 
+import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.mytiki.sdk.capture.receipt.capacitor.fixtures.PluginCallBuilder
@@ -16,9 +17,11 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class InitializeLinkTest {
-
+    private val retail= Retail()
     @Test
     fun initialize() = runTest {
+        val appContext: Context =
+            InstrumentationRegistry.getInstrumentation().targetContext;
         val licenseKey: String =
             InstrumentationRegistry.getArguments().getString("licenseKey")!!
         val productKey: String =
@@ -28,6 +31,7 @@ class InitializeLinkTest {
                 .put("licenseKey", licenseKey)
                 .put("productKey", productKey)
         )
+        retail.initialize(call.build(), appContext)
         val res: JSONObject = call.complete.await()
         TestCase.assertEquals(true, res.get("isInitialized"))
     }
