@@ -3,9 +3,8 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import { Camera } from '@capacitor/camera';
 import { SplashScreen } from '@capacitor/splash-screen';
-import { ReceiptCapture } from '@mytiki/tiki-capture-receipt-capacitor';
+import { instance } from '@mytiki/tiki-capture-receipt-capacitor';
 
 window.customElements.define(
   'capacitor-welcome',
@@ -99,7 +98,7 @@ window.customElements.define(
     connectedCallback() {
       const self = this;
 
-      ReceiptCapture.initialize({
+      instance.initialize({
         licenseKey: '',
         productKey: '',
       });
@@ -107,7 +106,7 @@ window.customElements.define(
       self.shadowRoot
         .querySelector('#login')
         .addEventListener('click', async function (e) {
-          let rsp = await ReceiptCapture.loginWithEmail({
+          let rsp = await instance.loginWithEmail({
             username: '',
             password: '',
             provider: 'GMAIL',
@@ -118,7 +117,7 @@ window.customElements.define(
       self.shadowRoot
         .querySelector('#scrape')
         .addEventListener('click', async function (e) {
-          let rsp = await ReceiptCapture.scrapeEmail();
+          let rsp = await instance.scrapeEmail();
           console.log(rsp);
         });
     }

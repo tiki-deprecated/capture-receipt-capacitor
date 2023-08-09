@@ -44,7 +44,7 @@ class ReceiptCapturePlugin : Plugin() {
     fun loginWithEmail(call: PluginCall) = receiptCapture.email.login(call, activity)
 
     @PluginMethod
-    fun scrapeEmail(call: PluginCall) = receiptCapture.email.scape(call)
+    fun scrapeEmail(call: PluginCall) = receiptCapture.email.scrape(call)
 
     @PluginMethod
     fun verifyEmail(call: PluginCall) = receiptCapture.email.accounts(call)

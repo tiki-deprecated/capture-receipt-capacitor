@@ -87,7 +87,7 @@ class Email {
         }.show(activity.supportFragmentManager, tag)
     }
 
-    fun scape(call: PluginCall) {
+    fun scrape(call: PluginCall) {
         if (client == null) call.reject("Not initialized")
 
         call.setKeepAlive(true)
