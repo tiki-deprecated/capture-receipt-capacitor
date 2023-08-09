@@ -17,8 +17,8 @@
     "@capacitor/camera": "latest",
     "@capacitor/splash-screen": "latest",
     "@mytiki/tiki-capture-receipt-capacitor": "file:..",
-    "@capacitor/ios": "^5.0.0",
-    "@capacitor/android": "^5.0.0"
+    "@capacitor/ios": "^5.2.2",
+    "@capacitor/android": "^5.2.2"
   },
   "devDependencies": {
     "@capacitor/cli": "latest",
