@@ -138,13 +138,6 @@ dependencies {
     implementation "com.microblink:recognizer:$microblinkVersion"
     implementation "com.microblink:surveys:$microblinkVersion"
 
-//    microblink Receipt Account Linking SDK
-//    implementation fileTree("./libs")
-//    implementation files("./libs/LibBlinkReceiptCore.aar")
-//    implementation files("./libs/LibBlinkReceiptAccountLinking.aar")
-
-
-
     testImplementation 'org.json:json:20230227'
     testImplementation "junit:junit:$junitVersion"
     testImplementation "io.mockk:mockk:$mockkVersion"
