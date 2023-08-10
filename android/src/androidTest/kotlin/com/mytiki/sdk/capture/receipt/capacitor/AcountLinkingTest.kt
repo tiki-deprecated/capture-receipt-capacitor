@@ -25,6 +25,10 @@ class AccountLinkingTest {
             InstrumentationRegistry.getArguments().getString("licenseKey")!!
         val productKey: String =
             InstrumentationRegistry.getArguments().getString("productKey")!!
+        val amazonEmail: String =
+            InstrumentationRegistry.getArguments().getString("amazonEmail")!!
+        val amazonPass: String =
+            InstrumentationRegistry.getArguments().getString("amazonPass")!!
         val call = PluginCallBuilder(
             JSONObject()
                 .put("licenseKey", licenseKey)
@@ -33,7 +37,7 @@ class AccountLinkingTest {
         retailer.initialize(ReqInitialize(call.build().data), appContext) { msg, data -> call.build().reject(msg, data) }.await()
         val client = retailer.client(appContext)
 
-        val accountLinking = retailer.account(client, AMAZON_BETA, "gabrielschuler3@gmail.com", "G06r26a19").await()
+        val accountLinking = retailer.account(client, AMAZON_BETA, amazonEmail, amazonPass).await()
         TestCase.assertEquals(true, accountLinking)
     }
 }
