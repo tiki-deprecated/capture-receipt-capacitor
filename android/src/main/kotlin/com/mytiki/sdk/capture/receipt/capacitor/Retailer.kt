@@ -5,26 +5,18 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
-import android.os.Bundle
-import androidx.activity.result.ActivityResult
 import com.getcapacitor.JSObject
-import com.getcapacitor.PluginCall
-import com.microblink.BlinkReceiptSdk
-import com.microblink.FrameCharacteristics
-import com.microblink.Media
-import com.microblink.ScanOptions
-import com.microblink.camera.ui.CameraScanActivity
-import com.microblink.core.InitializeCallback
+import com.google.android.gms.tasks.OnSuccessListener
 import com.microblink.core.ScanResults
-import com.microblink.linking.BlinkReceiptLinkingSdk
+import com.microblink.linking.*
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspScan
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import okhttp3.internal.toImmutableList
 
 class Retailer {
+
     fun initialize(
         req: ReqInitialize,
         context: Context,
@@ -36,4 +28,44 @@ class Retailer {
         BlinkReceiptLinkingSdk.initialize(context, OnInitialize(isLinkInitialized, onError))
         return isLinkInitialized
     }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun client(
+        context: Context,
+        dayCutoff: Int = 15,
+        latestOrdersOnly: Boolean = false,
+        countryCode: String = "US",
+    ): AccountLinkingClient{
+        val client = AccountLinkingClient(context)
+        client.dayCutoff = dayCutoff
+        client.latestOrdersOnly = latestOrdersOnly
+        client.countryCode = countryCode
+
+        return client
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun account(
+        client: AccountLinkingClient,
+        retailerId: Int,
+        email: String,
+        password: String,
+    ): CompletableDeferred<Boolean> {
+        val account = Account(
+            retailerId,
+            PasswordCredentials(email, password)
+        )
+        val isAccountLinked = CompletableDeferred<Boolean>()
+        client.link(account)
+            .addOnSuccessListener {
+                isAccountLinked.complete(it)
+            }
+            .addOnFailureListener {
+                isAccountLinked.completeExceptionally(it)
+            }
+        return isAccountLinked
+    }
+
+
+
 }
