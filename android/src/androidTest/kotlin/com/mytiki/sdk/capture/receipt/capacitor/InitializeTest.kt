@@ -25,9 +25,12 @@ class InitializeTest {
             InstrumentationRegistry.getInstrumentation().targetContext;
         val licenseKey: String =
             InstrumentationRegistry.getArguments().getString("licenseKey")!!
+        val productKey: String =
+            InstrumentationRegistry.getArguments().getString("productKey")!!
         val call = PluginCallBuilder(
             JSONObject()
                 .put("licenseKey", licenseKey)
+                .put("productKey", productKey)
         )
         receiptCapture.initialize(call.build(), appContext)
         val res: JSONObject = call.complete.await()

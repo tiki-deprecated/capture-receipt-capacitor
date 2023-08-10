@@ -16,12 +16,14 @@ import kotlinx.coroutines.async
 class ReceiptCapture {
     val scan = Scan()
     val email = Email()
+    val retailer = Retailer()
 
     fun initialize(call: PluginCall, context: Context) {
         val req = ReqInitialize(call.data)
         val deferred = MainScope().async {
             scan.initialize(req, context) { msg, data -> call.reject(msg, data) }.await()
             email.initialize(req, context) { msg, data -> call.reject(msg, data) }.await()
+            retailer.initialize(req, context) { msg, data -> call.reject(msg, data) }.await()
             val rsp = RspInitialized(true)
             call.resolve(JSObject.fromJSONObject(rsp.toJson()))
         }
