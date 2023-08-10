@@ -7,11 +7,13 @@ package com.mytiki.sdk.capture.receipt.capacitor
 
 import android.content.Context
 import com.getcapacitor.JSObject
-import com.microblink.linking.AccountLinkingClient
-import com.microblink.linking.BlinkReceiptLinkingSdk
+import com.google.android.gms.tasks.OnSuccessListener
+import com.microblink.core.ScanResults
+import com.microblink.linking.*
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import okhttp3.internal.toImmutableList
 
 class Retailer {
 
@@ -41,5 +43,29 @@ class Retailer {
 
         return client
     }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun account(
+        client: AccountLinkingClient,
+        retailerId: Int,
+        email: String,
+        password: String,
+    ): CompletableDeferred<Boolean> {
+        val account = Account(
+            retailerId,
+            PasswordCredentials(email, password)
+        )
+        val isAccountLinked = CompletableDeferred<Boolean>()
+        client.link(account)
+            .addOnSuccessListener {
+                isAccountLinked.complete(it)
+            }
+            .addOnFailureListener {
+                isAccountLinked.completeExceptionally(it)
+            }
+        return isAccountLinked
+    }
+
+
 
 }
