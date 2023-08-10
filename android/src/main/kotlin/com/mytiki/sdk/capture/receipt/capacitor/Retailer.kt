@@ -5,26 +5,16 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
-import android.os.Bundle
-import androidx.activity.result.ActivityResult
 import com.getcapacitor.JSObject
-import com.getcapacitor.PluginCall
-import com.microblink.BlinkReceiptSdk
-import com.microblink.FrameCharacteristics
-import com.microblink.Media
-import com.microblink.ScanOptions
-import com.microblink.camera.ui.CameraScanActivity
-import com.microblink.core.InitializeCallback
-import com.microblink.core.ScanResults
+import com.microblink.linking.AccountLinkingClient
 import com.microblink.linking.BlinkReceiptLinkingSdk
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspScan
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class Retailer {
+
     fun initialize(
         req: ReqInitialize,
         context: Context,
@@ -36,4 +26,20 @@ class Retailer {
         BlinkReceiptLinkingSdk.initialize(context, OnInitialize(isLinkInitialized, onError))
         return isLinkInitialized
     }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun client(
+        context: Context,
+        dayCutoff: Int = 15,
+        latestOrdersOnly: Boolean = false,
+        countryCode: String = "US",
+    ): AccountLinkingClient{
+        val client = AccountLinkingClient(context)
+        client.dayCutoff = dayCutoff
+        client.latestOrdersOnly = latestOrdersOnly
+        client.countryCode = countryCode
+
+        return client
+    }
+
 }
