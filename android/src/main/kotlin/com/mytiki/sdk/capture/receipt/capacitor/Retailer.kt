@@ -44,23 +44,21 @@ class Retailer {
         return client
     }
 
-
     @OptIn(ExperimentalCoroutinesApi::class)
     fun account(
         client: AccountLinkingClient,
         retailerId: Int,
         email: String,
         password: String,
-        onError: (msg: String?, data: JSObject) -> Unit,
-    ): CompletableDeferred<Unit> {
+    ): CompletableDeferred<Boolean> {
         val account = Account(
             retailerId,
             PasswordCredentials(email, password)
         )
-        val isAccountLinked = CompletableDeferred<Unit>()
+        val isAccountLinked = CompletableDeferred<Boolean>()
         client.link(account)
             .addOnSuccessListener {
-                isAccountLinked.complete(Unit)
+                isAccountLinked.complete(it)
             }
             .addOnFailureListener {
                 isAccountLinked.completeExceptionally(it)
