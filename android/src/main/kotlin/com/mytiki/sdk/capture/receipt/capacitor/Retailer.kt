@@ -24,7 +24,7 @@ import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspScan
 import kotlinx.coroutines.CompletableDeferred
 
-class Link {
+class Retailer {
     fun initialize(
         req: ReqInitialize,
         context: Context,
@@ -33,7 +33,7 @@ class Link {
         val isLinkInitialized = CompletableDeferred<Unit>()
         BlinkReceiptLinkingSdk.licenseKey = req.licenseKey!!
         BlinkReceiptLinkingSdk.productIntelligenceKey = req.productKey!!
-        BlinkReceiptLinkingSdk.initialize(context,  OnInitialize(isLinkInitialized, onError))
+        BlinkReceiptLinkingSdk.initialize(context, OnInitialize(isLinkInitialized, onError))
         return isLinkInitialized
     }
 }
