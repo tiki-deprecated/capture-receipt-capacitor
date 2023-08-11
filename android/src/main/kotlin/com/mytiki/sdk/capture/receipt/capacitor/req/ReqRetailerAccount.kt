@@ -6,15 +6,16 @@
 package com.mytiki.sdk.capture.receipt.capacitor.req
 
 import com.getcapacitor.JSObject
+import com.mytiki.sdk.capture.receipt.capacitor.RetailerEnum
 
-class ReqLogin(data: JSObject) {
+class ReqRetailerAccount(data: JSObject) {
     val username: String
     val password: String
-    val provider: String
+    val retailerId: RetailerEnum
 
     init {
         username = data.getString("username")
         password = data.getString("password")
-        provider = data.getString("provider")
+        retailerId = RetailerEnum.fromInt(data.getInt("retailerId"))
     }
 }

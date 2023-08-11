@@ -3,7 +3,6 @@ package com.mytiki.sdk.capture.receipt.capacitor
 import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.microblink.linking.AMAZON_BETA
 import com.mytiki.sdk.capture.receipt.capacitor.fixtures.PluginCallBuilder
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
 import junit.framework.TestCase
@@ -25,19 +24,27 @@ class AccountLinkingTest {
             InstrumentationRegistry.getArguments().getString("licenseKey")!!
         val productKey: String =
             InstrumentationRegistry.getArguments().getString("productKey")!!
-        val amazonEmail: String =
-            InstrumentationRegistry.getArguments().getString("amazonEmail")!!
-        val amazonPass: String =
-            InstrumentationRegistry.getArguments().getString("amazonPass")!!
+        val username: String =
+            InstrumentationRegistry.getArguments().getString("username")!!
+        val password: String =
+            InstrumentationRegistry.getArguments().getString("password")!!
+        val retailerId: Int = RetailerEnum.amazon_beta.value
         val call = PluginCallBuilder(
             JSONObject()
                 .put("licenseKey", licenseKey)
                 .put("productKey", productKey)
+                .put("username", username)
+                .put("password", password)
+                .put("retailerId", retailerId)
         )
-        retailer.initialize(ReqInitialize(call.build().data), appContext) { msg, data -> call.build().reject(msg, data) }.await()
-        val client = retailer.client(appContext)
+        retailer.initialize(
+            ReqInitialize(call.build().data),
+            appContext
+        ) { msg, data ->
+            call.build().reject(msg, data)
+        }.await()
 
-        val accountLinking = retailer.account(client, RetailerEnum.amazon_beta, amazonEmail, amazonPass).await()
+        val accountLinking = retailer.account(call).await()
         TestCase.assertEquals(true, accountLinking)
     }
 }
