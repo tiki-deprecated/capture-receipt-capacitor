@@ -7,13 +7,11 @@ package com.mytiki.sdk.capture.receipt.capacitor
 
 import android.content.Context
 import com.getcapacitor.JSObject
-import com.google.android.gms.tasks.OnSuccessListener
 import com.microblink.core.ScanResults
 import com.microblink.linking.*
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import okhttp3.internal.toImmutableList
 
 class Retailer {
 
@@ -47,12 +45,12 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun account(
         client: AccountLinkingClient,
-        retailerId: Int,
+        retailerId: RetailerEnum,
         email: String,
         password: String,
     ): CompletableDeferred<Boolean> {
         val account = Account(
-            retailerId,
+            retailerId.value,
             PasswordCredentials(email, password)
         )
         val isAccountLinked = CompletableDeferred<Boolean>()
@@ -66,6 +64,33 @@ class Retailer {
         return isAccountLinked
     }
 
-
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun orders(
+        client: AccountLinkingClient,
+        retailerId: Int,
+    ): CompletableDeferred<MutableList<ScanResults>> {
+        val orders = CompletableDeferred<MutableList<ScanResults>>()
+        val allOrders = mutableListOf<ScanResults>()
+        client.orders(
+            retailerId,
+            success = {retailerId: Int, results: ScanResults?, remaining: Int, uuid: String ->
+                if (results != null) {
+                    allOrders.add(results)
+                }
+                if (remaining == 0) {
+                    orders.complete(allOrders)
+                }
+            },
+            { retailerId: Int, exception: AccountLinkingException ->
+                if (exception.code == VERIFICATION_NEEDED) {
+                    orders.completeExceptionally(exception)
+                    if (exception.view != null) {
+                        binding.webViewContainer.addView(exception.view)
+                    }
+                }
+            }
+        )
+        return orders
+    }
 
 }

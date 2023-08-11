@@ -37,7 +37,7 @@ class AccountLinkingTest {
         retailer.initialize(ReqInitialize(call.build().data), appContext) { msg, data -> call.build().reject(msg, data) }.await()
         val client = retailer.client(appContext)
 
-        val accountLinking = retailer.account(client, AMAZON_BETA, amazonEmail, amazonPass).await()
+        val accountLinking = retailer.account(client, RetailerEnum.amazon_beta, amazonEmail, amazonPass).await()
         TestCase.assertEquals(true, accountLinking)
     }
 }
