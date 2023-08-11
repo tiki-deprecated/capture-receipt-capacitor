@@ -14,7 +14,9 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 class Retailer {
+    private lateinit var client: AccountLinkingClient
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun initialize(
         req: ReqInitialize,
         context: Context,
@@ -24,6 +26,7 @@ class Retailer {
         BlinkReceiptLinkingSdk.licenseKey = req.licenseKey!!
         BlinkReceiptLinkingSdk.productIntelligenceKey = req.productKey!!
         BlinkReceiptLinkingSdk.initialize(context, OnInitialize(isLinkInitialized, onError))
+        client = client(context)
         return isLinkInitialized
     }
 
@@ -44,7 +47,6 @@ class Retailer {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun account(
-        client: AccountLinkingClient,
         retailerId: RetailerEnum,
         email: String,
         password: String,
@@ -66,7 +68,6 @@ class Retailer {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun orders(
-        client: AccountLinkingClient,
         retailerId: Int,
     ): CompletableDeferred<MutableList<ScanResults>> {
         val orders = CompletableDeferred<MutableList<ScanResults>>()

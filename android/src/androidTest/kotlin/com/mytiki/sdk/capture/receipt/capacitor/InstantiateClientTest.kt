@@ -30,14 +30,9 @@ class InstantiateClientTest {
                 .put("productKey", productKey)
         )
         retailer.initialize(ReqInitialize(call.build().data), appContext) { msg, data -> call.build().reject(msg, data) }.await()
-        val defaultClient = retailer.client(appContext)
-        TestCase.assertEquals(15, defaultClient.dayCutoff)
+        TestCase.assertEquals(15, retailer.client.dayCutoff)
         TestCase.assertEquals(false, defaultClient.latestOrdersOnly)
         TestCase.assertEquals("US", defaultClient.countryCode)
 
-        val customClient = retailer.client(appContext, 30, true, "CA")
-        TestCase.assertEquals(30, customClient.dayCutoff)
-        TestCase.assertEquals(true, customClient.latestOrdersOnly)
-        TestCase.assertEquals("CA", customClient.countryCode)
     }
 }
