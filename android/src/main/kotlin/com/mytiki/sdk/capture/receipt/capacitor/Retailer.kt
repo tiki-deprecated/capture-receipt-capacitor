@@ -52,66 +52,41 @@ class Retailer {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun account(call: PluginCall): CompletableDeferred<Boolean> {
+    fun account(call: PluginCall){
         val req = ReqRetailerAccount(call.data)
         val account = Account(
             req.retailerId.value,
             PasswordCredentials(req.username, req.password)
         )
-        val isAccountLinked = CompletableDeferred<Boolean>()
         client.link(account)
             .addOnSuccessListener {
-                clientVerification(call){
-                    val rsp = RspRetailerAccount(req.username, req.retailerId)
-                    call.resolve(JSObject.fromJSONObject(rsp.toJson()))
-                    isAccountLinked.complete(it)
-                }
+                clientVerification(
+                    req.retailerId,
+                    {
+                        val rsp = RspRetailerAccount(req.username, req.retailerId)
+                        call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                    },{
+                        call.reject("Verification Failed")
+                    }
+                )
             }
             .addOnFailureListener {
-                isAccountLinked.completeExceptionally(it)
+                call.reject(it.message)
             }
-        return isAccountLinked
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun clientVerification(
-        call: PluginCall,
-        onSuccess: () -> Unit
+        retailerId: RetailerEnum,
+        onSuccess: () -> Unit,
+        onError: (exception: AccountLinkingException) -> Unit
     ) {
-        val req = ReqRetailerAccount(call.data)
-        val account = Account(
-            req.retailerId.value,
-            PasswordCredentials(req.username, req.password)
-        )
-        client.verify(account.retailerId,
+        client.verify(retailerId.value,
             success = { success: Boolean, uuid: String ->
-                if (success){
-                    onSuccess()
-                } else {
-                    call.reject("Client Verification Failed")
-                }
+                onSuccess()
             },
             failure = { exception ->
-//                TODO: Handle exceptions
-//                when (exception.code){
-//                    INTERNAL_ERROR -> call.reject("Internal Error")
-//                    INVALID_CREDENTIALS -> call.reject("Invalid Credentials")
-//                    PARSING_FAILURE -> Timberland.d("Parsing Failure")
-//                    USER_INPUT_COMPLETED -> call.reject("User Input Completed")
-//                    JS_CORE_LOAD_FAILURE -> call.reject("JS Core Load Failure")
-//                    JS_INVALID_DATA -> call.reject("JS Invalid Data")
-//                    VERIFICATION_NEEDED -> call.reject("Verification Needed")
-//                    MISSING_CREDENTIALS -> call.reject("Missing Credentials")
-//                    else -> call.reject("Unknown Error")
-//                }
-//                 TODO: Show WebView of verification needed
-//                if (exception.code == VERIFICATION_NEEDED) {
-//                    //in this case, the exception.view will be != null, so you can show it in your app
-//                    //and the user can resolve the needed verification, i.e.:
-//                    if (exception.view != null) {
-//                        binding.webViewContainer.addView(exception.view)
-//                    }
-//                }
+                onError(exception)
             }
         )
     }
@@ -152,7 +127,29 @@ class Retailer {
         }
         return orders
     }
-
-
+    fun errorHandler(
+        exeption: AccountLinkingException
+    ){
+    //                TODO: Handle exceptions
+    //                when (exception.code){
+    //                    INTERNAL_ERROR -> call.reject("Internal Error")
+    //                    INVALID_CREDENTIALS -> call.reject("Invalid Credentials")
+    //                    PARSING_FAILURE -> Timberland.d("Parsing Failure")
+    //                    USER_INPUT_COMPLETED -> call.reject("User Input Completed")
+    //                    JS_CORE_LOAD_FAILURE -> call.reject("JS Core Load Failure")
+    //                    JS_INVALID_DATA -> call.reject("JS Invalid Data")
+    //                    VERIFICATION_NEEDED -> call.reject("Verification Needed")
+    //                    MISSING_CREDENTIALS -> call.reject("Missing Credentials")
+    //                    else -> call.reject("Unknown Error")
+    //                }
+    //                 TODO: Show WebView of verification needed
+    //                if (exception.code == VERIFICATION_NEEDED) {
+    //                    //in this case, the exception.view will be != null, so you can show it in your app
+    //                    //and the user can resolve the needed verification, i.e.:
+    //                    if (exception.view != null) {
+    //                        binding.webViewContainer.addView(exception.view)
+    //                    }
+    //                }
+    }
 
 }
