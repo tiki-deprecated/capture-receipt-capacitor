@@ -16,6 +16,7 @@ import com.mytiki.sdk.capture.receipt.capacitor.req.ReqRetailerAccount
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspLogin
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspRetailerAccount
+import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspRetailerOrders
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -94,15 +95,13 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun orders(
         call: PluginCall
-    ): CompletableDeferred<MutableList<ScanResults>> {
+    ): CompletableDeferred<Unit> {
         val req = ReqRetailerAccount(call.data)
         val account = Account(
             req.retailerId.value,
             PasswordCredentials(req.username, req.password)
         )
-
-        val orders = CompletableDeferred<MutableList<ScanResults>>()
-        val allOrders = mutableListOf<ScanResults>()
+        val orders = CompletableDeferred<Unit>()
         clientVerification(
             req.retailerId,
             {
@@ -110,19 +109,21 @@ class Retailer {
                     req.retailerId.value,
                     { retailerId: Int, results: ScanResults?, remaining: Int, uuid: String ->
                         if (results != null) {
-                            allOrders.add(results)
+                            val rsp = RspRetailerOrders(account, results)
+                            call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                            orders.complete(Unit)
                         }
-                        if (remaining == 0) {
-                            orders.complete(allOrders)
-                        }
+
                     },
                     { retailerId: Int, exception: AccountLinkingException ->
+
                         errorHandler(exception)
                     },
                 )
             },{ exception: AccountLinkingException ->
                 errorHandler(exception)
                 call.reject("Verification Failed")
+                orders.completeExceptionally(exception)
             }
         )
         return orders
@@ -131,6 +132,7 @@ class Retailer {
     fun errorHandler(
         exeption: AccountLinkingException
     ){
+        print(exeption.message)
     //                TODO: Handle exceptions
     //                when (exception.code){
     //                    INTERNAL_ERROR -> call.reject("Internal Error")
