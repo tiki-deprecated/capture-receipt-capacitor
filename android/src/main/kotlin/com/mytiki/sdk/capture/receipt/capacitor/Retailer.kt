@@ -81,11 +81,11 @@ class Retailer {
         onSuccess: () -> Unit,
         onError: (exception: AccountLinkingException) -> Unit
     ) {
-        client.verify(retailerId.value,
-            success = { success: Boolean, uuid: String ->
+        client.verify(
+            retailerId.value,
+            { success: Boolean, uuid: String ->
                 onSuccess()
-            },
-            failure = { exception ->
+            },{ exception ->
                 onError(exception)
             }
         )
@@ -103,30 +103,31 @@ class Retailer {
 
         val orders = CompletableDeferred<MutableList<ScanResults>>()
         val allOrders = mutableListOf<ScanResults>()
-        clientVerification(call){
-            client.orders(
-                req.retailerId.value,
-                success = { retailerId: Int, results: ScanResults?, remaining: Int, uuid: String ->
-                    if (results != null) {
-                        allOrders.add(results)
-                    }
-                    if (remaining == 0) {
-                        orders.complete(allOrders)
-                    }
-                },
-                failure = { retailerId: Int, exception: AccountLinkingException ->
-//                    TODO: Show WebView of verification needed
-//                    if (exception.code == VERIFICATION_NEEDED) {
-//                        orders.completeExceptionally(exception)
-//                        if (exception.view != null) {
-//                            binding.webViewContainer.addView(exception.view)
-//                        }
-//                    }
-                },
-            )
-        }
+        clientVerification(
+            req.retailerId,
+            {
+                client.orders(
+                    req.retailerId.value,
+                    { retailerId: Int, results: ScanResults?, remaining: Int, uuid: String ->
+                        if (results != null) {
+                            allOrders.add(results)
+                        }
+                        if (remaining == 0) {
+                            orders.complete(allOrders)
+                        }
+                    },
+                    { retailerId: Int, exception: AccountLinkingException ->
+                        errorHandler(exception)
+                    },
+                )
+            },{ exception: AccountLinkingException ->
+                errorHandler(exception)
+                call.reject("Verification Failed")
+            }
+        )
         return orders
     }
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun errorHandler(
         exeption: AccountLinkingException
     ){
@@ -147,7 +148,7 @@ class Retailer {
     //                    //in this case, the exception.view will be != null, so you can show it in your app
     //                    //and the user can resolve the needed verification, i.e.:
     //                    if (exception.view != null) {
-    //                        binding.webViewContainer.addView(exception.view)
+    //
     //                    }
     //                }
     }
