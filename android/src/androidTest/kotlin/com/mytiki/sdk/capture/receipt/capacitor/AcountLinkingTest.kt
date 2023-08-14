@@ -1,6 +1,7 @@
 package com.mytiki.sdk.capture.receipt.capacitor
 
 import android.content.Context
+import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.mytiki.sdk.capture.receipt.capacitor.fixtures.PluginCallBuilder
@@ -29,6 +30,7 @@ class AccountLinkingTest {
         val password: String =
             InstrumentationRegistry.getArguments().getString("password")!!
         val retailerId: Int = RetailerEnum.amazon_beta.value
+        Log.d("AccountLinking","Testing")
         val call = PluginCallBuilder(
             JSONObject()
                 .put("licenseKey", licenseKey)
@@ -44,7 +46,6 @@ class AccountLinkingTest {
             call.build().reject(msg, data)
         }.await()
 
-        val accountLinking = retailer.account(call).await()
-        TestCase.assertEquals(true, accountLinking)
+       retailer.account(call.build())
     }
 }

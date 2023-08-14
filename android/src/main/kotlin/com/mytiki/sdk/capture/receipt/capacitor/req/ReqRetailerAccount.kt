@@ -9,8 +9,8 @@ import com.getcapacitor.JSObject
 import com.mytiki.sdk.capture.receipt.capacitor.RetailerEnum
 
 class ReqRetailerAccount(data: JSObject) {
-    val username: String
-    val password: String
+    val username: String?
+    val password: String?
     val retailerId: RetailerEnum
 
     init {

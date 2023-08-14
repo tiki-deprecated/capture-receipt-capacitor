@@ -9,16 +9,14 @@ import android.content.Context
 import com.getcapacitor.JSObject
 import com.getcapacitor.PluginCall
 import com.microblink.core.ScanResults
-import com.microblink.core.Timberland
-import com.microblink.digital.ProviderSetupResults
 import com.microblink.linking.*
-import com.mytiki.sdk.capture.receipt.capacitor.req.ReqRetailerAccount
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspLogin
+import com.mytiki.sdk.capture.receipt.capacitor.req.ReqRetailerAccount
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspRetailerAccount
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspRetailerOrders
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import timber.log.Timber
 
 class Retailer {
     private lateinit var client: AccountLinkingClient
@@ -57,7 +55,7 @@ class Retailer {
         val req = ReqRetailerAccount(call.data)
         val account = Account(
             req.retailerId.value,
-            PasswordCredentials(req.username, req.password)
+            PasswordCredentials(req.username!!, req.password!!)
         )
         client.link(account)
             .addOnSuccessListener {
@@ -99,7 +97,7 @@ class Retailer {
         val req = ReqRetailerAccount(call.data)
         val account = Account(
             req.retailerId.value,
-            PasswordCredentials(req.username, req.password)
+            PasswordCredentials(req.username!!, req.password!!)
         )
         val orders = CompletableDeferred<Unit>()
         clientVerification(
@@ -130,21 +128,21 @@ class Retailer {
     }
     @OptIn(ExperimentalCoroutinesApi::class)
     fun errorHandler(
-        exeption: AccountLinkingException
+        exception: AccountLinkingException
     ){
-        print(exeption.message)
     //                TODO: Handle exceptions
-    //                when (exception.code){
-    //                    INTERNAL_ERROR -> call.reject("Internal Error")
-    //                    INVALID_CREDENTIALS -> call.reject("Invalid Credentials")
-    //                    PARSING_FAILURE -> Timberland.d("Parsing Failure")
-    //                    USER_INPUT_COMPLETED -> call.reject("User Input Completed")
-    //                    JS_CORE_LOAD_FAILURE -> call.reject("JS Core Load Failure")
-    //                    JS_INVALID_DATA -> call.reject("JS Invalid Data")
-    //                    VERIFICATION_NEEDED -> call.reject("Verification Needed")
-    //                    MISSING_CREDENTIALS -> call.reject("Missing Credentials")
-    //                    else -> call.reject("Unknown Error")
-    //                }
+//
+//                   when (exception.code){
+//                        INTERNAL_ERROR -> call.reject("Internal Error")
+//                        INVALID_CREDENTIALS -> call.reject("Invalid Credentials")
+//                        PARSING_FAILURE -> Timberland.d("Parsing Failure")
+//                        USER_INPUT_COMPLETED -> call.reject("User Input Completed")
+//                        JS_CORE_LOAD_FAILURE -> call.reject("JS Core Load Failure")
+//                        JS_INVALID_DATA -> call.reject("JS Invalid Data")
+//                        VERIFICATION_NEEDED -> call.reject("Verification Needed")
+//                        MISSING_CREDENTIALS -> call.reject("Missing Credentials")
+//                        else -> call.reject("Unknown Error")
+//                    }
     //                 TODO: Show WebView of verification needed
     //                if (exception.code == VERIFICATION_NEEDED) {
     //                    //in this case, the exception.view will be != null, so you can show it in your app
