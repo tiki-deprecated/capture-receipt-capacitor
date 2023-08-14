@@ -22,6 +22,8 @@
 		88A312A22A85975400EEDC00 /* Pods-PluginTests.release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = F65BB2953ECE002E1EF3E424 /* Pods-PluginTests.release.xcconfig */; };
 		88A312AA2A86AC6C00EEDC00 /* Scan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A312A92A86AC6C00EEDC00 /* Scan.swift */; };
 		88A312AD2A86B1FF00EEDC00 /* ReqInitialize‎.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A312AC2A86B1FF00EEDC00 /* ReqInitialize‎.swift */; };
+		88F555132A8A437D00DAF8F3 /* Retailer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F555122A8A437D00DAF8F3 /* Retailer.swift */; };
+		88F555152A8A9E9C00DAF8F3 /* RetailerCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F555142A8A9E9B00DAF8F3 /* RetailerCommon.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +51,8 @@
 		5E23F77F099397094342571A /* Pods-Plugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plugin.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Plugin/Pods-Plugin.debug.xcconfig"; sourceTree = "<group>"; };
 		88A312A92A86AC6C00EEDC00 /* Scan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scan.swift; sourceTree = "<group>"; };
 		88A312AC2A86B1FF00EEDC00 /* ReqInitialize‎.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReqInitialize‎.swift"; sourceTree = "<group>"; };
+		88F555122A8A437D00DAF8F3 /* Retailer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Retailer.swift; sourceTree = "<group>"; };
+		88F555142A8A9E9B00DAF8F3 /* RetailerCommon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetailerCommon.swift; sourceTree = "<group>"; };
 		91781294A431A2A7CC6EB714 /* Pods-Plugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plugin.release.xcconfig"; path = "Pods/Target Support Files/Pods-Plugin/Pods-Plugin.release.xcconfig"; sourceTree = "<group>"; };
 		96ED1B6440D6672E406C8D19 /* Pods-PluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PluginTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PluginTests/Pods-PluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F65BB2953ECE002E1EF3E424 /* Pods-PluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PluginTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PluginTests/Pods-PluginTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -148,6 +152,8 @@
 			children = (
 				88A312AB2A86B1CC00EEDC00 /* Req */,
 				88A312A92A86AC6C00EEDC00 /* Scan.swift */,
+				88F555122A8A437D00DAF8F3 /* Retailer.swift */,
+				88F555142A8A9E9B00DAF8F3 /* RetailerCommon.swift */,
 			);
 			path = Capacitor;
 			sourceTree = "<group>";
@@ -405,7 +411,9 @@
 				88A312AD2A86B1FF00EEDC00 /* ReqInitialize‎.swift in Sources */,
 				50E1A94820377CB70090CE1A /* ReceiptCapturePlugin.swift in Sources */,
 				2F98D68224C9AAE500613A4C /* ReceiptCapture.swift in Sources */,
+				88F555132A8A437D00DAF8F3 /* Retailer.swift in Sources */,
 				88A312AA2A86AC6C00EEDC00 /* Scan.swift in Sources */,
+				88F555152A8A9E9C00DAF8F3 /* RetailerCommon.swift in Sources */,
 				50ADFFA82020EE4F00D50D53 /* ReceiptCapturePlugin.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
