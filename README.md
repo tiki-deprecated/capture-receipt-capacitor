@@ -37,7 +37,7 @@ _NOTE: Only iOS and Android are supported._
 
 # Contributing
 
-- Use [GitHub Issues](https://github.com/tiki-bar/tiki-sdk-capacitor/issues) to report any bugs you find or to request enhancements.
+- Use [GitHub Issues](https://github.com/tiki-bar/tiki-capture-receipt-capacitor/issues) to report any bugs you find or to request enhancements.
 - If you'd like to get in touch with our team or other active contributors, pop in our 👾 [Discord](https://discord.gg/tiki).
 - Please use [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) if you intend to add code to this project.
 
