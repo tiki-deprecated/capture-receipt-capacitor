@@ -6,6 +6,7 @@
 package com.mytiki.sdk.capture.receipt.capacitor
 
 import android.content.Context
+import android.webkit.WebView
 import com.getcapacitor.JSObject
 import com.getcapacitor.PluginCall
 import com.microblink.core.ScanResults
@@ -82,7 +83,7 @@ class Retailer {
     ) {
         client.verify(
             retailerId.value,
-            { success: Boolean, uuid: String ->
+            { _: Boolean, _: String ->
                 onSuccess()
             },{ exception ->
                 onError(exception)
@@ -92,6 +93,7 @@ class Retailer {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun orders(
+        context: Context,
         call: PluginCall
     ): CompletableDeferred<Unit> {
         val req = ReqRetailerAccount(call.data)
@@ -105,7 +107,7 @@ class Retailer {
             {
                 client.orders(
                     req.retailerId.value,
-                    { retailerId: Int, results: ScanResults?, remaining: Int, uuid: String ->
+                    { _: Int, results: ScanResults?, _: Int, _: String ->
                         if (results != null) {
                             val rsp = RspRetailerOrders(account, results)
                             call.resolve(JSObject.fromJSONObject(rsp.toJson()))
@@ -113,44 +115,46 @@ class Retailer {
                         }
 
                     },
-                    { retailerId: Int, exception: AccountLinkingException ->
+                    { _: Int, exception: AccountLinkingException ->
 
-                        errorHandler(exception)
+                        errorHandler(context, exception, call::reject)
                     },
                 )
             },{ exception: AccountLinkingException ->
-                errorHandler(exception)
+                errorHandler(context, exception, call::reject)
                 call.reject("Verification Failed")
                 orders.completeExceptionally(exception)
             }
         )
         return orders
     }
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun errorHandler(
-        exception: AccountLinkingException
+    private fun errorHandler(
+        context: Context,
+        exception: AccountLinkingException,
+        reject: (msg: String) -> Unit,
     ){
-    //                TODO: Handle exceptions
-//
-//                   when (exception.code){
-//                        INTERNAL_ERROR -> call.reject("Internal Error")
-//                        INVALID_CREDENTIALS -> call.reject("Invalid Credentials")
-//                        PARSING_FAILURE -> Timberland.d("Parsing Failure")
-//                        USER_INPUT_COMPLETED -> call.reject("User Input Completed")
-//                        JS_CORE_LOAD_FAILURE -> call.reject("JS Core Load Failure")
-//                        JS_INVALID_DATA -> call.reject("JS Invalid Data")
-//                        VERIFICATION_NEEDED -> call.reject("Verification Needed")
-//                        MISSING_CREDENTIALS -> call.reject("Missing Credentials")
-//                        else -> call.reject("Unknown Error")
-//                    }
-    //                 TODO: Show WebView of verification needed
-    //                if (exception.code == VERIFICATION_NEEDED) {
-    //                    //in this case, the exception.view will be != null, so you can show it in your app
-    //                    //and the user can resolve the needed verification, i.e.:
-    //                    if (exception.view != null) {
-    //
-    //                    }
-    //                }
+
+        if (exception.code == VERIFICATION_NEEDED) {
+            //in this case, the exception.view will be != null, so you can show it in your app
+            //and the user can resolve the needed verification, i.e.:
+            if (exception.view != null) {
+                val webView = WebView(context)
+                exception.view!!.url?.let { webView.loadUrl(it) }
+            } else {
+                reject("Verification Needed")
+            }
+        }
+
+        when (exception.code){
+            INTERNAL_ERROR -> reject("Internal Error")
+            INVALID_CREDENTIALS -> reject("Invalid Credentials")
+            PARSING_FAILURE -> reject("Parsing Failure")
+            USER_INPUT_COMPLETED -> reject("User Input Completed")
+            JS_CORE_LOAD_FAILURE -> reject("JS Core Load Failure")
+            JS_INVALID_DATA -> reject("JS Invalid Data")
+            MISSING_CREDENTIALS -> reject("Missing Credentials")
+            else -> reject("Unknown Error")
+        }
     }
 
 }
