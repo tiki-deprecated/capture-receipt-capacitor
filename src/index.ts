@@ -3,6 +3,12 @@
  * MIT license. See LICENSE file in root directory.
  */
 
+/**
+ * @file Entry point module for the Plugin.
+ *
+ * @module tiki-capture-receipt-capacitor
+ * @license MIT
+ */
 import { registerPlugin } from '@capacitor/core';
 
 import { AccountProvider } from './account';
@@ -23,13 +29,16 @@ import type { Survey } from './survey';
 import type { SurveyAnswer } from './survey-answer';
 import type { SurveyQuestion } from './survey-question';
 
-const plugin: ReceiptCapturePlugin = registerPlugin<ReceiptCapturePlugin>(
-  'ReceiptCapture',
-  {
-    web: () =>
-      import('./receipt-capture-web').then(m => new m.ReceiptCaptureWeb()),
-  },
-);
+/**
+ * Registers the {@link ReceiptCapturePlugin} with Capacitor.
+ */
+const plugin: ReceiptCapturePlugin = registerPlugin<ReceiptCapturePlugin>('ReceiptCapture', {
+  web: () => import('./receipt-capture-web').then((m) => new m.ReceiptCaptureWeb()),
+});
+/**
+ * Creates a singleton instance of the {@link ReceiptCapture} using the registered
+ * plugin.
+ */
 const instance: ReceiptCapture = new ReceiptCapture(plugin);
 
 export { instance, AccountProvider };
