@@ -66,6 +66,9 @@ enum class RetailerEnum (val value: Int){
 
     companion object {
         fun fromInt(value: Int) = values().first { it.value == value }
+        fun toInt(value: RetailerEnum) = value.value
+        fun toString(value: RetailerEnum) = value.value.toString()
+        fun fromString(value: String) = values().first { it.value.toString() == value }
 
     }
 }
