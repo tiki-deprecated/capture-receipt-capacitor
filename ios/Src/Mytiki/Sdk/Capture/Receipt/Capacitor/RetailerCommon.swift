@@ -133,7 +133,6 @@ enum RetailerCommon: String {
             case .walmart : return .walmart
             case .walmart_ca : return .walmartCA
             case .wegmans : return .wegmans
-        default : return nil
         }
     }
 }

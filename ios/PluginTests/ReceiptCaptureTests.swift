@@ -2,6 +2,10 @@ import XCTest
 @testable import Plugin
 
 class ReceiptCaptureTests: XCTestCase {
+    
+    let licenseKey = ""
+    let productKey = ""
+    
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -21,5 +25,10 @@ class ReceiptCaptureTests: XCTestCase {
         let result = implementation.echo(value)
 
         XCTAssertEqual(value, result)
+    }
+    
+    func testInitialize() {
+        let req = ReqInitialize(licenseKey: licenseKey, productKey: productKey)
+        let retailer = Retailer().initialize(req: req)
     }
 }
