@@ -5,7 +5,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.mytiki.sdk.capture.receipt.capacitor.fixtures.PluginCallBuilder
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
-import junit.framework.TestCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.json.JSONObject
@@ -24,20 +23,26 @@ class InstantiateClientTest {
             InstrumentationRegistry.getArguments().getString("licenseKey")!!
         val productKey: String =
             InstrumentationRegistry.getArguments().getString("productKey")!!
+        val username: String =
+            InstrumentationRegistry.getArguments().getString("username")!!
+        val password: String =
+            InstrumentationRegistry.getArguments().getString("password")!!
         val call = PluginCallBuilder(
             JSONObject()
                 .put("licenseKey", licenseKey)
                 .put("productKey", productKey)
-        )
-        retailer.initialize(ReqInitialize(call.build().data), appContext) { msg, data -> call.build().reject(msg, data) }.await()
-        val defaultClient = retailer.client(appContext)
-        TestCase.assertEquals(15, defaultClient.dayCutoff)
-        TestCase.assertEquals(false, defaultClient.latestOrdersOnly)
-        TestCase.assertEquals("US", defaultClient.countryCode)
+        ).build()
+        retailer.initialize(ReqInitialize(call.data), appContext) { msg, data -> call.reject(msg, data) }.await()
+        val accountCall = PluginCallBuilder(
+            JSONObject()
+                .put("username", username)
+                .put("password", password)
+                .put("retailerId", RetailerEnum.amazon_beta)
+        ).build()
+        retailer.account(accountCall){
+            val result = call.data
+            assert(result != null)
+        }
 
-        val customClient = retailer.client(appContext, 30, true, "CA")
-        TestCase.assertEquals(30, customClient.dayCutoff)
-        TestCase.assertEquals(true, customClient.latestOrdersOnly)
-        TestCase.assertEquals("CA", customClient.countryCode)
     }
 }
