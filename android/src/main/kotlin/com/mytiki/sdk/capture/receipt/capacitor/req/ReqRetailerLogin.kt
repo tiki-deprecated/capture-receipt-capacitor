@@ -7,14 +7,14 @@ package com.mytiki.sdk.capture.receipt.capacitor.req
 
 import com.getcapacitor.JSObject
 
-class ReqLogin(data: JSObject) {
+class ReqRetailerLogin(data: JSObject) {
     val username: String
     val password: String
-    val provider: String
+    val retailer: String
 
     init {
         username = data.getString("username") ?: ""
         password = data.getString("password") ?: ""
-        provider = data.getString("provider") ?: ""
+        retailer = data.getString("retailer") ?: ""
     }
 }

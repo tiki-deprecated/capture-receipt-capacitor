@@ -52,6 +52,18 @@ class ReceiptCapturePlugin : Plugin() {
     @PluginMethod
     fun removeEmail(call: PluginCall) = receiptCapture.email.remove(call)
 
+    @PluginMethod
+    fun loginWithRetailer(call: PluginCall) = receiptCapture.retailer.login(call, context)
+
+    @PluginMethod
+    fun retailers(call: PluginCall) = receiptCapture.retailer.accounts(call)
+
+    @PluginMethod
+    fun removeRetailer(call: PluginCall) = receiptCapture.retailer.remove(call)
+
+    @PluginMethod
+    fun orders(call: PluginCall) = receiptCapture.retailer.orders(call)
+
     @ActivityCallback
     private fun onScanResult(call: PluginCall, result: ActivityResult) =
         receiptCapture.scan.onResult(call, result)

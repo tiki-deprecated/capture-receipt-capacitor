@@ -10,6 +10,7 @@ import kotlinx.coroutines.test.runTest
 import org.json.JSONObject
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.time.Duration.Companion.minutes
 
 @RunWith(AndroidJUnit4::class)
 class RetailerTest {
@@ -18,7 +19,7 @@ class RetailerTest {
     @Test
     fun accountLinking() = runTest {
         val appContext: Context =
-            InstrumentationRegistry.getInstrumentation().targetContext;
+            InstrumentationRegistry.getInstrumentation().targetContext
         val licenseKey: String =
             InstrumentationRegistry.getArguments().getString("licenseKey")!!
         val productKey: String =
@@ -44,17 +45,17 @@ class RetailerTest {
                 .put("password", password)
                 .put("retailerId", retailerId)
         )
-        retailer.account(callAccount.build())
+        retailer.login(callAccount.build())
         val resAccount = callAccount.complete.await()
         TestCase.assertEquals(true, resAccount.get("isAccountLinked"))
         TestCase.assertEquals(username, resAccount.get("username"))
         TestCase.assertEquals(retailerId, resAccount.get("retailerId"))
     }
 
-    @Test(timeout = 20000)
-    fun grabOrders() = runTest {
+    @Test()
+    fun grabOrders() = runTest(timeout = 1.minutes){
         val appContext: Context =
-            InstrumentationRegistry.getInstrumentation().targetContext;
+            InstrumentationRegistry.getInstrumentation().targetContext
         val licenseKey: String =
             InstrumentationRegistry.getArguments().getString("licenseKey")!!
         val productKey: String =
@@ -78,13 +79,12 @@ class RetailerTest {
                 .put("password", password)
                 .put("retailerId", retailerId)
         )
-        retailer.account(callAccount.build())
-
+        retailer.login(callAccount.build())
+        val account = callAccount.complete.await()
 //        Retailer Orders Test
         val callOrders = PluginCallBuilder(
             JSONObject()
-                .put("username", username)
-                .put("password", password)
+                .put("username", account)
                 .put("retailerId", retailerId)
         )
         retailer.orders(appContext, callOrders.build())
