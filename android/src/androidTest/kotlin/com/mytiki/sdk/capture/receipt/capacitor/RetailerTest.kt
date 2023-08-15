@@ -62,6 +62,18 @@ class RetailerTest {
         val resRemove = callRemove.complete.await()
         TestCase.assertEquals(true, resRemove.get("isAccountRemoved"))
 
+//        Retailer Accounts Flush
+        val callAccountFlushed = PluginCallBuilder(
+            JSONObject()
+                .put("username", username)
+                .put("password", password)
+                .put("retailerId", retailerId)
+        )
+        retailer.account(callAccountFlushed.build())
+        val callFlush = PluginCallBuilder()
+        retailer.flush(callFlush.build())
+        val resFlush = callFlush.complete.await()
+        TestCase.assertEquals(true, resFlush.get("isAccountsFlushed"))
     }
 
     @Test

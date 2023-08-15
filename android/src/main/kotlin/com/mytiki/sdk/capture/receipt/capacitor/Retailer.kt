@@ -107,6 +107,14 @@ class Retailer {
             }
         }
     }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun flush(call: PluginCall){
+        client.resetHistory().addOnSuccessListener {
+            call.resolve(JSObject.fromJSONObject(JSONObject().put("isAccountsFlushed", it)))
+        }.addOnFailureListener {
+            call.reject(it.message)
+        }
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun clientVerification(
