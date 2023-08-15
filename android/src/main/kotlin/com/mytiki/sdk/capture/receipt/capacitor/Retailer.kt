@@ -62,48 +62,38 @@ class Retailer {
             PasswordCredentials(req.username, req.password)
         )
         client.link(account).addOnSuccessListener {
-
             val rsp = RspRetailerAccount(account)
             call.resolve(JSObject.fromJSONObject(rsp.toJson().put("isAccountLinked", it)))
-
-//            clientVerification(
-//                req.retailerId,
-//                {
-//                    val rsp = RspRetailerAccount(account)
-//                    call.resolve(JSObject.fromJSONObject(rsp.toJson().put("isAccountLinked", it)))
-//                }
-//            ) {
-//                errorHandler(context, it) { message -> call.reject(message) }
-//            }
-
         }.addOnFailureListener {
             call.reject(it.message)
         }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun accountList(call: PluginCall){
-        val allAccounts = client.accounts().result
-        if (allAccounts != null){
-            val rsp = RspRetailerAccountList(allAccounts)
-            call.resolve(JSObject.fromJSONObject(rsp.toJson()))
-        } else{
-            call.reject("Failed to retrieve account list")
+    fun accounts(call: PluginCall){
+        client.accounts().addOnSuccessListener {allAccounts ->
+            if(allAccounts != null) {
+                val rsp = RspRetailerAccountList(allAccounts)
+                call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+            }
+        }.addOnFailureListener {
+            call.reject(it.message)
         }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun accountRemove(call: PluginCall){
+    fun remove(call: PluginCall){
         val req = ReqRetailerAccount(call.data)
-        val account = Account(
-            req.retailerId.value,
-            PasswordCredentials(req.username, req.password)
-        )
-        client.unlink(account).addOnSuccessListener {
-            val rsp = RspRetailerAccount(account)
-            call.resolve(JSObject.fromJSONObject(rsp.toJson().put("isAccountRemoved", it)))
-        }.addOnFailureListener {
-            call.reject(it.message)
+        client.accounts().addOnSuccessListener { accounts ->
+            val reqAccount = accounts?.firstOrNull { it.retailerId == req.retailerId.value }
+            if (reqAccount != null) {
+                client.unlink(reqAccount).addOnSuccessListener {
+                    val rsp = RspRetailerAccount(reqAccount)
+                    call.resolve(JSObject.fromJSONObject(rsp.toJson().put("isAccountRemoved", it)))
+                }.addOnFailureListener {
+                    call.reject(it.message)
+                }
+            }
         }
     }
 
@@ -131,18 +121,14 @@ class Retailer {
         call: PluginCall
     ) {
         val req = ReqRetailerAccount(call.data)
-        val account = Account(
-            req.retailerId.value,
-            PasswordCredentials(req.username, req.password)
-        )
-        clientVerification(context, call, req.retailerId){
+        //clientVerification(context, call, req.retailerId){
             client.orders(
                 req.retailerId.value,
                 { _: Int, results: ScanResults?, _: Int, _: String ->
                     if (results != null) {
-                        val rsp = RspRetailerOrders(account, results)
+                        val rsp = RspRetailerOrders(req.retailerId, req.username, results)
                         call.resolve(JSObject.fromJSONObject(rsp.toJson()
-                            .put("isVerified", it)
+                            //.put("isVerified", it)
                             .put("isOrders", true)))
                     }
                 },
@@ -150,7 +136,7 @@ class Retailer {
                     errorHandler(context, exception, call::reject)
                 },
             )
-        }
+        //}
     }
 
     private fun errorHandler(

@@ -17,7 +17,7 @@ class RspRetailerAccountList(results: List<Account>) : Rsp {
     private val accounts: List<RspRetailerAccount>
 
     init {
-        accounts = results.map { account -> RspRetailerAccount(account) }
+            accounts = results.map { account -> RspRetailerAccount(account) }
     }
 
     override fun toJson(): JSONObject =
