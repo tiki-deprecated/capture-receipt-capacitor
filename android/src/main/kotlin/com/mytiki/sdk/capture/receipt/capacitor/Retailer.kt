@@ -66,7 +66,7 @@ class Retailer {
                 clientVerification(
                     req.retailerId,
                     {
-                        val rsp = RspRetailerAccount(req.username, req.retailerId)
+                        val rsp = RspRetailerAccount(account)
                         call.resolve(JSObject.fromJSONObject(rsp.toJson()))
                         onFinish()
                     },{
