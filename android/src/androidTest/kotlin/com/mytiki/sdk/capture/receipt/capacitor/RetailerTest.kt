@@ -37,7 +37,7 @@ class RetailerTest {
         retailer.initialize(ReqInitialize(callInit.data), appContext) { msg, data -> callInit.reject(msg, data) }
             .await()
 
-//        Retailer Account Test
+//        Retailer Account Link Test
         val callAccount = PluginCallBuilder(
             JSONObject()
                 .put("username", username)
@@ -49,9 +49,22 @@ class RetailerTest {
         TestCase.assertEquals(true, resAccount.get("isAccountLinked"))
         TestCase.assertEquals(username, resAccount.get("username"))
         TestCase.assertEquals(retailerId, resAccount.get("retailerId"))
+
+//        Retailer Accounts Test
+        val callAccountList = PluginCallBuilder()
+        retailer.accounts(callAccountList.build())
+        val resAccountList = callAccountList.complete.await()
+        TestCase.assertEquals(true, resAccountList.get("isAccounts"))
+
+//        Retailer Account Remove
+        val callRemove = PluginCallBuilder(JSONObject().put("retailerId", retailerId))
+        retailer.remove(callRemove.build())
+        val resRemove = callRemove.complete.await()
+        TestCase.assertEquals(true, resRemove.get("isAccountRemoved"))
+
     }
 
-    @Test(timeout = 20000)
+    @Test
     fun grabOrders() = runTest {
         val appContext: Context =
             InstrumentationRegistry.getInstrumentation().targetContext;

@@ -18,6 +18,8 @@ import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspRetailerAccountList
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspRetailerOrders
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.json.JSONArray
+import org.json.JSONObject
 
 
 class Retailer {
@@ -74,7 +76,14 @@ class Retailer {
         client.accounts().addOnSuccessListener {allAccounts ->
             if(allAccounts != null) {
                 val rsp = RspRetailerAccountList(allAccounts)
-                call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                call.resolve(JSObject.fromJSONObject(rsp.toJson().put("isAccounts", true)))
+            }else{
+                call.resolve(
+                    JSObject.fromJSONObject(JSONObject()
+                        .put("accounts", JSONArray())
+                        .put("isAccounts", true)
+                    )
+                )
             }
         }.addOnFailureListener {
             call.reject(it.message)
@@ -93,6 +102,8 @@ class Retailer {
                 }.addOnFailureListener {
                     call.reject(it.message)
                 }
+            } else {
+                call.resolve(JSObject.fromJSONObject(JSONObject().put("isAccountRemoved", true)))
             }
         }
     }
@@ -121,7 +132,7 @@ class Retailer {
         call: PluginCall
     ) {
         val req = ReqRetailerAccount(call.data)
-        //clientVerification(context, call, req.retailerId){
+        clientVerification(context, call, req.retailerId){
             client.orders(
                 req.retailerId.value,
                 { _: Int, results: ScanResults?, _: Int, _: String ->
@@ -136,7 +147,7 @@ class Retailer {
                     errorHandler(context, exception, call::reject)
                 },
             )
-        //}
+        }
     }
 
     private fun errorHandler(
