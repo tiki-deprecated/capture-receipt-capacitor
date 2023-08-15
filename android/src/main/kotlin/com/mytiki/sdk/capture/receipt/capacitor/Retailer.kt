@@ -5,8 +5,9 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor
 
+import android.R
+import android.app.Dialog
 import android.content.Context
-import android.webkit.WebView
 import com.getcapacitor.JSObject
 import com.getcapacitor.PluginCall
 import com.microblink.core.ScanResults
@@ -19,6 +20,7 @@ import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspRetailerOrders
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.json.JSONObject
+
 
 class Retailer {
     private lateinit var client: AccountLinkingClient
@@ -53,12 +55,30 @@ class Retailer {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun account(call: PluginCall){
+    fun account(call: PluginCall, onFinish: () -> Unit = {}){
         val req = ReqRetailerAccount(call.data)
         val account = Account(
             req.retailerId.value,
             PasswordCredentials(req.username!!, req.password!!)
         )
+        client.link(account)
+            .addOnSuccessListener {
+                clientVerification(
+                    req.retailerId,
+                    {
+                        val rsp = RspRetailerAccount(req.username, req.retailerId)
+                        call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                        onFinish()
+                    },{
+                        call.reject("Verification Failed")
+                        onFinish()
+                    }
+                )
+            }
+            .addOnFailureListener {
+                call.reject(it.message)
+                onFinish()
+            }
         client.link(account).addOnSuccessListener {
             clientVerification(
                 req.retailerId,
@@ -153,6 +173,7 @@ class Retailer {
         )
         return orders
     }
+
     private fun errorHandler(
         context: Context,
         exception: AccountLinkingException,
@@ -160,8 +181,9 @@ class Retailer {
     ){
         if (exception.code == VERIFICATION_NEEDED) {
             if (exception.view != null) {
-                val webView = WebView(context)
-                exception.view!!.url?.let { webView.loadUrl(it) }
+                val dialog = Dialog(context)
+                dialog.setContentView(exception.view!!)
+                dialog.show()
             } else {
                 reject("Verification Needed")
             }
@@ -177,4 +199,5 @@ class Retailer {
             else -> reject("Unknown Error")
         }
     }
+
 }
