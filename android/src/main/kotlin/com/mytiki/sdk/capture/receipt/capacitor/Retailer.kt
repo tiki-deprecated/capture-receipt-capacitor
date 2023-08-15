@@ -113,7 +113,6 @@ class Retailer {
                             call.resolve(JSObject.fromJSONObject(rsp.toJson()))
                             orders.complete(Unit)
                         }
-
                     },
                     { _: Int, exception: AccountLinkingException ->
 
@@ -133,10 +132,7 @@ class Retailer {
         exception: AccountLinkingException,
         reject: (msg: String) -> Unit,
     ){
-
         if (exception.code == VERIFICATION_NEEDED) {
-            //in this case, the exception.view will be != null, so you can show it in your app
-            //and the user can resolve the needed verification, i.e.:
             if (exception.view != null) {
                 val webView = WebView(context)
                 exception.view!!.url?.let { webView.loadUrl(it) }
@@ -144,7 +140,6 @@ class Retailer {
                 reject("Verification Needed")
             }
         }
-
         when (exception.code){
             INTERNAL_ERROR -> reject("Internal Error")
             INVALID_CREDENTIALS -> reject("Invalid Credentials")
@@ -156,5 +151,4 @@ class Retailer {
             else -> reject("Unknown Error")
         }
     }
-
 }
