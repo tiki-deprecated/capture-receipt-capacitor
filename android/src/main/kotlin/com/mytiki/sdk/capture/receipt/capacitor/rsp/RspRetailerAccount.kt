@@ -5,16 +5,16 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
+import com.microblink.linking.Account
 import com.mytiki.sdk.capture.receipt.capacitor.RetailerEnum
 import org.json.JSONObject
 
 class RspRetailerAccount(
-    private val username: String,
-    private val retailerId: RetailerEnum
+    private val account: Account,
 ) : Rsp {
     override fun toJson(): JSONObject =
         JSONObject()
-            .put("username", username)
-            .put("retailerId", retailerId.value)
+            .put("username", account.credentials.username())
+            .put("retailerId", account.retailerId)
 
 }

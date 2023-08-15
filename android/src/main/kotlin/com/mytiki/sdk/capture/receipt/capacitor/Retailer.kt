@@ -14,10 +14,11 @@ import com.microblink.linking.*
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqRetailerAccount
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspRetailerAccount
+import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspRetailerAccountList
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspRetailerOrders
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import timber.log.Timber
+import org.json.JSONObject
 
 class Retailer {
     private lateinit var client: AccountLinkingClient
@@ -58,21 +59,46 @@ class Retailer {
             req.retailerId.value,
             PasswordCredentials(req.username!!, req.password!!)
         )
-        client.link(account)
-            .addOnSuccessListener {
-                clientVerification(
-                    req.retailerId,
-                    {
-                        val rsp = RspRetailerAccount(req.username, req.retailerId)
-                        call.resolve(JSObject.fromJSONObject(rsp.toJson()))
-                    },{
-                        call.reject("Verification Failed")
-                    }
-                )
-            }
-            .addOnFailureListener {
-                call.reject(it.message)
-            }
+        client.link(account).addOnSuccessListener {
+            clientVerification(
+                req.retailerId,
+                {
+                    val rsp = RspRetailerAccount(account)
+                    call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                },{
+                    call.reject("Verification Failed")
+                }
+            )
+        }
+        .addOnFailureListener {
+            call.reject(it.message)
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun accountList(call: PluginCall){
+        val allAccounts = client.accounts().result
+        if (allAccounts != null){
+            val rsp = RspRetailerAccountList(allAccounts)
+            call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+        } else{
+            call.reject("Failed to retrieve account list")
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun accountRemove(call: PluginCall){
+        val req = ReqRetailerAccount(call.data)
+        val account = Account(
+            req.retailerId.value,
+            PasswordCredentials(req.username!!, req.password!!)
+        )
+        client.unlink(account).addOnSuccessListener {
+            val rsp = RspRetailerAccount(account)
+            call.resolve(JSObject.fromJSONObject(rsp.toJson().put("isAccountRemoved", it)))
+        }.addOnFailureListener {
+            call.reject(it.message)
+        }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
