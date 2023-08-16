@@ -84,7 +84,17 @@ class Retailer {
                 }.addOnFailureListener {
                     call.reject(it.message)
                 }
+            } else {
+                call.reject("Account not found")
             }
+        }
+    }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun flush(call: PluginCall){
+        client.resetHistory().addOnSuccessListener {
+            call.resolve()
+        }.addOnFailureListener {
+            call.reject(it.message)
         }
     }
 

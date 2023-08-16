@@ -38,7 +38,6 @@ class RetailerTest {
         retailer.initialize(ReqInitialize(callInit.data), appContext) { msg, data -> callInit.reject(msg, data) }
             .await()
 
-//        Retailer Account Test
         val callAccount = PluginCallBuilder(
             JSONObject()
                 .put("username", username)
