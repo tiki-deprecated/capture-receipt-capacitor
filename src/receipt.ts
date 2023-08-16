@@ -11,7 +11,7 @@ import type { Promotion } from './promotion';
 import type { Retailer } from './retailer';
 import type { Shipment } from './shipment';
 import type { StringType } from './string-type';
-import type { SurveyQuestion } from './survey-question';
+import type { Survey } from './survey';
 
 /**
  * Represents a receipt with various attributes and details.
@@ -318,9 +318,9 @@ export interface Receipt {
   eReceiptSubMerchant?: string;
 
   /**
-   * An array of qualified survey questions associated with the receipt.
+   * An array of qualified surveys associated with the receipt.
    */
-  qualifiedSurveys?: SurveyQuestion[];
+  qualifiedSurveys?: Survey[];
 
   /**
    * The barcode associated with the receipt.

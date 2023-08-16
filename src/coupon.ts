@@ -23,7 +23,7 @@ export interface Coupon {
   /**
    * The SKU (Stock Keeping Unit) associated with the coupon. This includes the value and confidence level.
    */
-  sku?: FloatType;
+  sku?: StringType;
 
   /**
    * A description or additional information about the coupon.

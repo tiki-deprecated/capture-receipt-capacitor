@@ -22,5 +22,5 @@ export interface AdditionalLine {
   /**
    * The unique identifier or line number associated with the additional line.
    */
-  lineNumber: string;
+  lineNumber: number;
 }
