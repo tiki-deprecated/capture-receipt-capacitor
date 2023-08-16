@@ -5,6 +5,7 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
+import com.getcapacitor.JSArray
 import com.microblink.core.ScanResults
 import org.json.JSONObject
 
@@ -176,8 +177,8 @@ class RspScan(scanResults: ScanResults) : Rsp {
             .put("receiptDate", receiptDate?.toJson())
             .put("receiptTime", receiptTime?.toJson())
             .put("retailerId", retailerId.toJson())
-            .put("products", products?.map { prd -> prd.toJson() })
-            .put("coupons", coupons?.map { coupon -> coupon.toJson() })
+            .put("products", JSArray.from(products?.map { prd -> prd.toJson() }))
+            .put("coupons", JSArray.from(coupons?.map { coupon -> coupon.toJson() }))
             .put("total", total?.toJson())
             .put("tip", tip?.toJson())
             .put("subtotal", subtotal?.toJson())
@@ -194,7 +195,7 @@ class RspScan(scanResults: ScanResults) : Rsp {
             .put("cashierId", cashierId?.toJson())
             .put("transactionId", transactionId?.toJson())
             .put("registerId", registerId?.toJson())
-            .put("paymentMethods", paymentMethods?.map { method -> method.toJson() })
+            .put("paymentMethods", JSArray.from(paymentMethods?.map { method -> method.toJson() }))
             .put("taxId", taxId?.toJson())
             .put("mallName", mallName?.toJson())
             .put("last4cc", last4cc?.toJson())
@@ -206,7 +207,7 @@ class RspScan(scanResults: ScanResults) : Rsp {
             .put("eReceiptOrderStatus", eReceiptOrderStatus)
             .put("eReceiptRawHtml", eReceiptRawHtml)
             .put("eReceiptShippingAddress", eReceiptShippingAddress)
-            .put("shipments", shipments?.map { shipment -> shipment.toJson() })
+            .put("shipments", JSArray.from(shipments?.map { shipment -> shipment.toJson() }))
             .put("longTransactionId", longTransactionId?.toJson())
             .put("subtotalMatches", subtotalMatches)
             .put("eReceiptEmailProvider", eReceiptEmailProvider)
@@ -216,15 +217,22 @@ class RspScan(scanResults: ScanResults) : Rsp {
             .put("eReceipt", eReceipt)
             .put(
                 "eReceiptComponentEmails",
-                eReceiptComponentEmails?.map { email -> email.toJson() })
+                JSArray.from(eReceiptComponentEmails?.map { email -> email.toJson() })
+            )
             .put("duplicate", duplicate)
             .put("fraudulent", fraudulent)
             .put("receiptDateTime", receiptDateTime)
             .put("duplicateBlinkReceiptIds", duplicateBlinkReceiptIds)
             .put("merchantMatchGuess", merchantMatchGuess?.toJson())
             .put("productsPendingLookup", productsPendingLookup)
-            .put("qualifiedPromotions", qualifiedPromotions?.map { promo -> promo.toJson() })
-            .put("unqualifiedPromotions", unqualifiedPromotions?.map { promo -> promo.toJson() })
+            .put(
+                "qualifiedPromotions",
+                JSArray.from(qualifiedPromotions?.map { promo -> promo.toJson() })
+            )
+            .put(
+                "unqualifiedPromotions",
+                JSArray.from(unqualifiedPromotions?.map { promo -> promo.toJson() })
+            )
             .put("extendedFields", extendedFields)
             .put("eReceiptAdditionalFees", eReceiptAdditionalFees)
             .put("purchaseType", purchaseType?.toJson())
@@ -235,7 +243,10 @@ class RspScan(scanResults: ScanResults) : Rsp {
             .put("eReceiptShippingStatus", eReceiptShippingStatus)
             .put("eReceiptPOSSystem", eReceiptPOSSystem)
             .put("eReceiptSubMerchant", eReceiptSubMerchant)
-            .put("qualifiedSurveys", qualifiedSurveys?.map { survey -> survey.toJson() })
+            .put(
+                "qualifiedSurveys",
+                JSArray.from(qualifiedSurveys?.map { survey -> survey.toJson() })
+            )
             .put("barcode", barcode)
             .put("eReceiptMerchantEmail", eReceiptMerchantEmail)
             .put("eReceiptEmailSubject", eReceiptEmailSubject)
