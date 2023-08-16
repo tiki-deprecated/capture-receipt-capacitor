@@ -5,6 +5,7 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
+import com.getcapacitor.JSArray
 import com.microblink.core.SurveyQuestion
 import org.json.JSONObject
 
@@ -39,7 +40,7 @@ class RspSurveyQuestion(surveyQuestion: SurveyQuestion) : Rsp {
             .put("serverId", serverId)
             .put("text", text)
             .put("type", type)
-            .put("answers", answers?.map { answer -> answer.toJson() })
+            .put("answers", JSArray.from(answers?.map { answer -> answer.toJson() }))
             .put("multipleAnswers", multipleAnswers)
             .put("totalNumberOfQuestions", totalNumberOfQuestions)
 

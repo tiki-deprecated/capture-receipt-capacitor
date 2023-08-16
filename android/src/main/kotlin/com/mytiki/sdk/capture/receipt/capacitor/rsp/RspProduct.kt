@@ -5,6 +5,7 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
+import com.getcapacitor.JSArray
 import com.microblink.core.Product
 import org.json.JSONObject
 
@@ -122,13 +123,13 @@ class RspProduct(product: Product) : Rsp {
             .put("upc", upc)
             .put("imageUrl", imageUrl)
             .put("shippingStatus", shippingStatus)
-            .put("additionalLines", additionalLines?.map { line -> line.toJson() })
+            .put("additionalLines", JSArray.from(additionalLines?.map { line -> line.toJson() }))
             .put("priceAfterCoupons", priceAfterCoupons?.toJson())
             .put("voided", voided)
             .put("probability", probability)
             .put("sensitive", sensitive)
-            .put("possibleProducts", possibleProducts?.map { prd -> prd.toJson() })
-            .put("subProducts", subProducts?.map { prd -> prd.toJson() })
+            .put("possibleProducts", JSArray.from(possibleProducts?.map { prd -> prd.toJson() }))
+            .put("subProducts", JSArray.from(subProducts?.map { prd -> prd.toJson() }))
             .put("added", added)
             .put("blinkReceiptBrand", blinkReceiptBrand)
             .put("blinkReceiptCategory", blinkReceiptCategory)
