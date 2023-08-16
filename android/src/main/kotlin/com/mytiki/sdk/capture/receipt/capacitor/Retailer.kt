@@ -43,21 +43,23 @@ class Retailer {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun login( call: PluginCall, context: Context ){
+    fun login( call: PluginCall, context: Context ) {
         val req = ReqRetailerLogin(call.data)
         val account = Account(
             RetailerEnum.fromString(req.retailer).toInt(),
             PasswordCredentials(req.username, req.password)
         )
-        client.link(account).addOnSuccessListener {
-            MainScope().async {
-                val isVerified = verify(account.retailerId, true, context).await()
-                val rsp = RspRetailerAccount(account, isVerified)
-                call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+        client.link(account)
+            .addOnSuccessListener {
+                if (it) {
+                    verify(account, true, context, call)
+                } else {
+                    call.reject("login failed")
+                }
             }
-        }.addOnFailureListener {
-            call.reject(it.message)
-        }
+            .addOnFailureListener {
+                call.reject(it.message)
+            }
     }
 
     fun accounts(call: PluginCall){
@@ -143,7 +145,7 @@ class Retailer {
                         val accountList = accounts.map{ account ->
                             RspRetailerAccount(
                                 account,
-                                verify(account.retailerId).await()
+                               true
                             )
                         }
                         getAccounts.complete(accountList)
@@ -159,17 +161,21 @@ class Retailer {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun verify( retailerId: Int, showDialog: Boolean = false, context: Context? = null ): CompletableDeferred<Boolean>{
+    private fun verify( account: Account, showDialog: Boolean = false, context: Context? = null, call: PluginCall ): CompletableDeferred<Boolean>{
         val verifyCompletable = CompletableDeferred<Boolean>()
         client.verify(
-            retailerId,
-            { isVerified: Boolean, _: String ->
-                verifyCompletable.complete(isVerified)
-            },{ exception ->
-                if( showDialog &&
-                    exception.code == VERIFICATION_NEEDED &&
-                    exception.view != null && context != null)
-                {
+            account.retailerId,
+            success = { isVerified: Boolean, _: String ->
+                if(isVerified){
+                    val rsp = RspRetailerAccount(account, true)
+                    call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                }else {
+                    client.unlink(account)
+                    call.reject("login failed")
+                }
+            },
+            failure = { exception ->
+                if (exception.code == VERIFICATION_NEEDED && exception.view != null && context != null) {
                     exception.view!!.isFocusableInTouchMode = true
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         exception.view!!.focusable = View.FOCUSABLE
@@ -179,8 +185,19 @@ class Retailer {
                     builder.setView(exception.view)
                     val dialog: AlertDialog = builder.create()
                     dialog.show()
-                } else {
-                    verifyCompletable.complete(false)
+                    // TODO refazer a verificação dps da webview dismiss
+                }else{
+                    when (exception.code){
+                        INTERNAL_ERROR -> call.reject("Login failed: Internal Error")
+                        INVALID_CREDENTIALS -> call.reject("Login failed: Invalid Credentials")
+                        PARSING_FAILURE -> call.reject("Login failed: Parsing Failure")
+                        USER_INPUT_COMPLETED -> call.reject("Login failed: User Input Completed")
+                        JS_CORE_LOAD_FAILURE -> call.reject("Login failed: JS Core Load Failure")
+                        JS_INVALID_DATA -> call.reject("Login failed: JS Invalid Data")
+                        MISSING_CREDENTIALS -> call.reject("Login failed: Missing Credentials")
+                        else -> call.reject("Login failed: Unknown Error")
+                    }
+                    client.unlink(account)
                 }
             }
         )
