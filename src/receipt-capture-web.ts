@@ -12,6 +12,18 @@ export class ReceiptCaptureWeb
   extends WebPlugin
   implements ReceiptCapturePlugin
 {
+  loginWithRetailer(_options: { username: string; password: string; retailer: string; }): Promise<{ username: string; retailer: string; }> {
+    throw this.unimplemented('Mobile Only.');
+  }
+  retailers(): Promise<{ accounts: [{ username: string; retailer: string; }]; }> {
+    throw this.unimplemented('Mobile Only.');
+  }
+  removeRetailer(_options: { username: string; retailer: string; }): Promise<{ username: string; retailer: string; isRemoved: boolean; }> {
+    throw this.unimplemented('Mobile Only.');
+  }
+  orders(): Promise<{ retailer: string; username: string; scan: Receipt; }> {
+    throw this.unimplemented('Mobile Only.');
+  }
   async initialize(_options: {
     licenseKey: string;
   }): Promise<{ isInitialized: boolean; reason?: string }> {

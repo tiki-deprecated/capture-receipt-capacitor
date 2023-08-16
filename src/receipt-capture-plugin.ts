@@ -38,9 +38,9 @@ export interface ReceiptCapturePlugin {
     username: string;
     password: string;
     retailer: string;
-  }): Promise<{ username: string; retailer: string }>;
+  }): Promise<{ username: string; retailer: string; isVerified: boolean }>;
 
-  retailers(): Promise<{ accounts : [{username: string; retailer: string}]}>;
+  retailers(): Promise<{ accounts : [{username: string; retailer: string, isVerified: boolean}]}>;
 
   removeRetailer(options: {
     username: string,
@@ -48,7 +48,7 @@ export interface ReceiptCapturePlugin {
   }): Promise<{
     username: string,
     retailer: string,
-    isRemoved: boolean
+    isVerified: boolean
   }>;
 
   orders(): Promise<{
