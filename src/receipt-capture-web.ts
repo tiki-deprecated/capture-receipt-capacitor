@@ -12,14 +12,14 @@ export class ReceiptCaptureWeb
   extends WebPlugin
   implements ReceiptCapturePlugin
 {
-  loginWithRetailer(_options: { username: string; password: string; retailer: string; }): Promise<{ username: string; retailer: string; }> {
-    throw this.unimplemented('Mobile Only.');
+  loginWithRetailer(_options: { username: string; password: string; retailer: string; }): Promise<{ username: string; retailer: string; isVerified: boolean; }> {
+      throw new Error('Method not implemented.');
   }
-  retailers(): Promise<{ accounts: [{ username: string; retailer: string; }]; }> {
-    throw this.unimplemented('Mobile Only.');
+  retailers(): Promise<{ accounts: [{ username: string; retailer: string; isVerified: boolean; }]; }> {
+      throw new Error('Method not implemented.');
   }
-  removeRetailer(_options: { username: string; retailer: string; }): Promise<{ username: string; retailer: string; isRemoved: boolean; }> {
-    throw this.unimplemented('Mobile Only.');
+  removeRetailer(_options: { username: string; retailer: string; }): Promise<{ username: string; retailer: string; isVerified: boolean; }> {
+      throw new Error('Method not implemented.');
   }
   orders(): Promise<{ retailer: string; username: string; scan: Receipt; }> {
     throw this.unimplemented('Mobile Only.');
