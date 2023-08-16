@@ -5,24 +5,27 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor
 
-import android.R
-import android.app.Dialog
 import android.content.Context
+import android.os.Build
+import android.view.View
+import androidx.appcompat.app.AlertDialog
 import com.getcapacitor.JSObject
 import com.getcapacitor.PluginCall
 import com.microblink.core.ScanResults
 import com.microblink.linking.*
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
-import com.mytiki.sdk.capture.receipt.capacitor.req.ReqRetailerAccount
+import com.mytiki.sdk.capture.receipt.capacitor.req.ReqRetailerLogin
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspRetailerAccount
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspRetailerAccountList
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspRetailerOrders
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.json.JSONObject
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
 
 
 class Retailer {
+    @OptIn(ExperimentalCoroutinesApi::class)
     private lateinit var client: AccountLinkingClient
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -32,15 +35,177 @@ class Retailer {
         onError: (msg: String?, data: JSObject) -> Unit,
     ): CompletableDeferred<Unit> {
         val isLinkInitialized = CompletableDeferred<Unit>()
-        BlinkReceiptLinkingSdk.licenseKey = req.licenseKey!!
-        BlinkReceiptLinkingSdk.productIntelligenceKey = req.productKey!!
+        BlinkReceiptLinkingSdk.licenseKey = req.licenseKey
+        BlinkReceiptLinkingSdk.productIntelligenceKey = req.productKey
         BlinkReceiptLinkingSdk.initialize(context, OnInitialize(isLinkInitialized, onError))
         client = client(context)
         return isLinkInitialized
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun client(
+    fun login( call: PluginCall, context: Context ) {
+        val req = ReqRetailerLogin(call.data)
+        val account = Account(
+            RetailerEnum.fromString(req.retailer).toInt(),
+            PasswordCredentials(req.username, req.password)
+        )
+        client.link(account)
+            .addOnSuccessListener {
+                if (it) {
+                    verify(account, true, context, call)
+                } else {
+                    call.reject("login failed")
+                }
+            }
+            .addOnFailureListener {
+                call.reject(it.message)
+            }
+    }
+
+    fun accounts(call: PluginCall){
+        MainScope().async{
+            try {
+                val allAccounts = getAccounts().await()
+                val rsp = RspRetailerAccountList(allAccounts.toMutableList())
+                call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+            }catch(e: Exception){
+                call.reject(e.message)
+            }
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun remove(call: PluginCall){
+        val req = ReqRetailerLogin(call.data)
+        client.accounts().addOnSuccessListener { accounts ->
+            val reqAccount = accounts?.firstOrNull {
+                it.retailerId == RetailerEnum.fromString(req.retailer).toInt()
+            }
+            if (reqAccount != null) {
+                client.unlink(reqAccount).addOnSuccessListener {
+                    val rsp = RspRetailerAccount(reqAccount, false)
+                    call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                }.addOnFailureListener {
+                    call.reject(it.message)
+                }
+            } else {
+                call.reject("Account not found")
+            }
+        }
+    }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun flush(call: PluginCall){
+        client.resetHistory().addOnSuccessListener {
+            call.resolve()
+        }.addOnFailureListener {
+            call.reject(it.message)
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun orders( call: PluginCall ) {
+        MainScope().async {
+            val accounts = getAccounts().await()
+            accounts.forEach {
+                if(it.isVerified) {
+                    val retailer = it.account.retailerId
+                    val username = it.account.credentials.username()
+                    val ordersSuccessCallback =
+                        { _: Int, results: ScanResults?, _: Int, _: String ->
+                            if (results != null) {
+                                val rsp = RspRetailerOrders(
+                                    RetailerEnum.fromInt(retailer).toString(),
+                                    username, results
+                                )
+                                call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                            } else {
+                                call.reject("no orders")
+                            }
+                        }
+                    val ordersFailureCallback = { _: Int, exception: AccountLinkingException ->
+                        call.reject(exception.message)
+                    }
+                    client.orders(
+                        it.account.retailerId,
+                        ordersSuccessCallback,
+                        ordersFailureCallback,
+                    )
+                }
+            }
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun getAccounts(): CompletableDeferred<List<RspRetailerAccount>> {
+        val getAccounts = CompletableDeferred<List<RspRetailerAccount>>()
+        client.accounts()
+            .addOnSuccessListener { accounts ->
+                MainScope().async {
+                    if (accounts != null) {
+                        val accountList = accounts.map{ account ->
+                            RspRetailerAccount(
+                                account,
+                               true
+                            )
+                        }
+                        getAccounts.complete(accountList)
+                    } else {
+                        getAccounts.complete(mutableListOf())
+                    }
+                }
+            }
+            .addOnFailureListener {
+                getAccounts.completeExceptionally(it)
+            }
+        return getAccounts
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun verify( account: Account, showDialog: Boolean = false, context: Context? = null, call: PluginCall ): CompletableDeferred<Boolean>{
+        val verifyCompletable = CompletableDeferred<Boolean>()
+        client.verify(
+            account.retailerId,
+            success = { isVerified: Boolean, _: String ->
+                if(isVerified){
+                    val rsp = RspRetailerAccount(account, true)
+                    call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                }else {
+                    client.unlink(account)
+                    call.reject("login failed")
+                }
+            },
+            failure = { exception ->
+                if (exception.code == VERIFICATION_NEEDED && exception.view != null && context != null) {
+                    exception.view!!.isFocusableInTouchMode = true
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        exception.view!!.focusable = View.FOCUSABLE
+                    }
+                    val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+                    builder.setTitle("Verify your account")
+                    builder.setView(exception.view)
+                    val dialog: AlertDialog = builder.create()
+                    dialog.show()
+                    // TODO refazer a verificação dps da webview dismiss
+                }else{
+                    when (exception.code){
+                        INTERNAL_ERROR -> call.reject("Login failed: Internal Error")
+                        INVALID_CREDENTIALS -> call.reject("Login failed: Invalid Credentials")
+                        PARSING_FAILURE -> call.reject("Login failed: Parsing Failure")
+                        USER_INPUT_COMPLETED -> call.reject("Login failed: User Input Completed")
+                        JS_CORE_LOAD_FAILURE -> call.reject("Login failed: JS Core Load Failure")
+                        JS_INVALID_DATA -> call.reject("Login failed: JS Invalid Data")
+                        MISSING_CREDENTIALS -> call.reject("Login failed: Missing Credentials")
+                        else -> call.reject("Login failed: Unknown Error")
+                    }
+                    client.unlink(account)
+                }
+            }
+        )
+        return verifyCompletable
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun client(
         context: Context,
         dayCutoff: Int = 15,
         latestOrdersOnly: Boolean = false,
@@ -53,151 +218,4 @@ class Retailer {
 
         return client
     }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun account(call: PluginCall, onFinish: () -> Unit = {}){
-        val req = ReqRetailerAccount(call.data)
-        val account = Account(
-            req.retailerId.value,
-            PasswordCredentials(req.username!!, req.password!!)
-        )
-        client.link(account)
-            .addOnSuccessListener {
-                clientVerification(
-                    req.retailerId,
-                    {
-                        val rsp = RspRetailerAccount(account)
-                        call.resolve(JSObject.fromJSONObject(rsp.toJson()))
-                        onFinish()
-                    },{
-                        call.reject("Verification Failed")
-                        onFinish()
-                    }
-                )
-            }
-            .addOnFailureListener {
-                call.reject(it.message)
-                onFinish()
-            }
-        client.link(account).addOnSuccessListener {
-            clientVerification(
-                req.retailerId,
-                {
-                    val rsp = RspRetailerAccount(account)
-                    call.resolve(JSObject.fromJSONObject(rsp.toJson()))
-                },{
-                    call.reject("Verification Failed")
-                }
-            )
-        }
-        .addOnFailureListener {
-            call.reject(it.message)
-        }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun accountList(call: PluginCall){
-        val allAccounts = client.accounts().result
-        if (allAccounts != null){
-            val rsp = RspRetailerAccountList(allAccounts)
-            call.resolve(JSObject.fromJSONObject(rsp.toJson()))
-        } else{
-            call.reject("Failed to retrieve account list")
-        }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun accountRemove(call: PluginCall){
-        val req = ReqRetailerAccount(call.data)
-        val account = Account(
-            req.retailerId.value,
-            PasswordCredentials(req.username!!, req.password!!)
-        )
-        client.unlink(account).addOnSuccessListener {
-            val rsp = RspRetailerAccount(account)
-            call.resolve(JSObject.fromJSONObject(rsp.toJson().put("isAccountRemoved", it)))
-        }.addOnFailureListener {
-            call.reject(it.message)
-        }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun clientVerification(
-        retailerId: RetailerEnum,
-        onSuccess: () -> Unit,
-        onError: (exception: AccountLinkingException) -> Unit
-    ) {
-        client.verify(
-            retailerId.value,
-            { _: Boolean, _: String ->
-                onSuccess()
-            },{ exception ->
-                onError(exception)
-            }
-        )
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun orders(
-        context: Context,
-        call: PluginCall
-    ): CompletableDeferred<Unit> {
-        val req = ReqRetailerAccount(call.data)
-        val account = Account(
-            req.retailerId.value,
-            PasswordCredentials(req.username!!, req.password!!)
-        )
-        val orders = CompletableDeferred<Unit>()
-        clientVerification(
-            req.retailerId,
-            {
-                client.orders(
-                    req.retailerId.value,
-                    { _: Int, results: ScanResults?, _: Int, _: String ->
-                        if (results != null) {
-                            val rsp = RspRetailerOrders(account, results)
-                            call.resolve(JSObject.fromJSONObject(rsp.toJson()))
-                            orders.complete(Unit)
-                        }
-                    },
-                    { _: Int, exception: AccountLinkingException ->
-
-                        errorHandler(context, exception, call::reject)
-                    },
-                )
-            },{ exception: AccountLinkingException ->
-                errorHandler(context, exception, call::reject)
-                call.reject("Verification Failed")
-                orders.completeExceptionally(exception)
-            }
-        )
-        return orders
-    }
-
-    private fun errorHandler(
-        context: Context,
-        exception: AccountLinkingException,
-        reject: (msg: String) -> Unit,
-    ){
-        if (exception.code == VERIFICATION_NEEDED) {
-            if (exception.view != null) {
-                val dialog = Dialog(context)
-                dialog.setContentView(exception.view!!)
-                dialog.show()
-            } else {
-                reject("Verification Needed")
-            }
-        }
-        when (exception.code){
-            INTERNAL_ERROR -> reject("Internal Error")
-            INVALID_CREDENTIALS -> reject("Invalid Credentials")
-            PARSING_FAILURE -> reject("Parsing Failure")
-            USER_INPUT_COMPLETED -> reject("User Input Completed")
-            JS_CORE_LOAD_FAILURE -> reject("JS Core Load Failure")
-            JS_INVALID_DATA -> reject("JS Invalid Data")
-            MISSING_CREDENTIALS -> reject("Missing Credentials")
-            else -> reject("Unknown Error")
-        }
-    }
-
 }

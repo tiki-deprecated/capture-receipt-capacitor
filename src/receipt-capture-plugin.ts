@@ -33,4 +33,27 @@ export interface ReceiptCapturePlugin {
     password: string;
     provider: string;
   }): Promise<{ success: boolean }>;
+
+  loginWithRetailer(options: {
+    username: string;
+    password: string;
+    retailer: string;
+  }): Promise<{ username: string; retailer: string; isVerified: boolean }>;
+
+  retailers(): Promise<{ accounts : [{username: string; retailer: string, isVerified: boolean}]}>;
+
+  removeRetailer(options: {
+    username: string,
+    retailer: string,
+  }): Promise<{
+    username: string,
+    retailer: string,
+    isVerified: boolean
+  }>;
+
+  orders(): Promise<{
+    retailer: string,
+    username: string,
+    scan: Receipt;
+  }>
 }

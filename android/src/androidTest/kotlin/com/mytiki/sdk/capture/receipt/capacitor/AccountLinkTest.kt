@@ -6,7 +6,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.mytiki.sdk.capture.receipt.capacitor.fixtures.PluginCallBuilder
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
-import junit.framework.TestCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.json.JSONObject
@@ -14,13 +13,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class AccountLinkingTest {
+class AccountLinkTest {
     private val retailer = Retailer()
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun initialize() = runTest {
         val appContext: Context =
-            InstrumentationRegistry.getInstrumentation().targetContext;
+            InstrumentationRegistry.getInstrumentation().targetContext
         val licenseKey: String =
             InstrumentationRegistry.getArguments().getString("licenseKey")!!
         val productKey: String =
@@ -46,6 +45,6 @@ class AccountLinkingTest {
             call.build().reject(msg, data)
         }.await()
 
-       retailer.account(call.build())
+        retailer.login(call.build())
     }
 }

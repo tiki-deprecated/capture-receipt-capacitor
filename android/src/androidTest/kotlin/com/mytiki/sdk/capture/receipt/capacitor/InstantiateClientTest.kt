@@ -18,7 +18,7 @@ class InstantiateClientTest {
     @Test
     fun initialize() = runTest {
         val appContext: Context =
-            InstrumentationRegistry.getInstrumentation().targetContext;
+            InstrumentationRegistry.getInstrumentation().targetContext
         val licenseKey: String =
             InstrumentationRegistry.getArguments().getString("licenseKey")!!
         val productKey: String =
@@ -39,10 +39,7 @@ class InstantiateClientTest {
                 .put("password", password)
                 .put("retailerId", RetailerEnum.amazon_beta)
         ).build()
-        retailer.account(accountCall){
-            val result = call.data
-            assert(result != null)
-        }
+        retailer.login(accountCall)
 
-    }
-}
+
+}}
