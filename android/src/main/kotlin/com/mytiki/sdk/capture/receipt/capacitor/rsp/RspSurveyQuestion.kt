@@ -16,7 +16,7 @@ class RspSurveyQuestion(surveyQuestion: SurveyQuestion) : Rsp {
     private val serverId: Int
     private val text: String?
     private val type: String?
-    private val answers: List<RspSurveyAnswer>?
+    private val answers: List<RspSurveyAnswer>
     private val multipleAnswers: Boolean
     private val totalNumberOfQuestions: Int
 
@@ -27,7 +27,7 @@ class RspSurveyQuestion(surveyQuestion: SurveyQuestion) : Rsp {
         serverId = surveyQuestion.serverId()
         text = surveyQuestion.text()
         type = surveyQuestion.type()?.a
-        answers = surveyQuestion.answers()?.map { answer -> RspSurveyAnswer(answer) }
+        answers = surveyQuestion.answers()?.map { answer -> RspSurveyAnswer(answer) } ?: emptyList()
         multipleAnswers = surveyQuestion.multipleAnswers()
         totalNumberOfQuestions = surveyQuestion.totalNumberOfQuestions()
     }
@@ -40,7 +40,7 @@ class RspSurveyQuestion(surveyQuestion: SurveyQuestion) : Rsp {
             .put("serverId", serverId)
             .put("text", text)
             .put("type", type)
-            .put("answers", JSArray.from(answers?.map { answer -> answer.toJson() }))
+            .put("answers", JSArray.from(answers.map { answer -> answer.toJson() }))
             .put("multipleAnswers", multipleAnswers)
             .put("totalNumberOfQuestions", totalNumberOfQuestions)
 
