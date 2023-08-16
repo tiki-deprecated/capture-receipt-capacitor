@@ -16,7 +16,7 @@ class RspSurvey(survey: Survey) : Rsp {
     private val rewardValue: String?
     private val startDate: String?
     private val endDate: String?
-    private val questions: List<RspSurveyQuestion>?
+    private val questions: List<RspSurveyQuestion>
 
     init {
         clientUserId = survey.clientUserId()
@@ -25,7 +25,8 @@ class RspSurvey(survey: Survey) : Rsp {
         rewardValue = survey.rewardValue()
         startDate = survey.startDate()
         endDate = survey.endDate()
-        questions = survey.questions()?.map { question -> RspSurveyQuestion(question) }
+        questions =
+            survey.questions()?.map { question -> RspSurveyQuestion(question) } ?: emptyList()
     }
 
     override fun toJson(): JSONObject =
@@ -36,7 +37,7 @@ class RspSurvey(survey: Survey) : Rsp {
             .put("rewardValue", rewardValue)
             .put("startDate", startDate)
             .put("endDate", endDate)
-            .put("questions", JSArray.from(questions?.map { question -> question.toJson() }))
+            .put("questions", JSArray.from(questions.map { question -> question.toJson() }))
 
     companion object {
         fun opt(survey: Survey?): RspSurvey? =
