@@ -5,8 +5,10 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor
 
-import android.app.Dialog
 import android.content.Context
+import android.os.Build
+import android.view.View
+import androidx.appcompat.app.AlertDialog
 import com.getcapacitor.JSObject
 import com.getcapacitor.PluginCall
 import com.microblink.core.ScanResults
@@ -168,13 +170,15 @@ class Retailer {
                     exception.code == VERIFICATION_NEEDED &&
                     exception.view != null && context != null)
                 {
-                    val dialog = Dialog(context)
-                    dialog.setContentView(exception.view!!)
-                    dialog.setOnDismissListener {
-                        MainScope().async {
-                            verifyCompletable.complete(verify(retailerId, false).await())
-                        }
+                    exception.view!!.isFocusableInTouchMode = true
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        exception.view!!.focusable = View.FOCUSABLE
                     }
+                    val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+                    builder.setTitle("Verify your account")
+                    builder.setView(exception.view)
+                    val dialog: AlertDialog = builder.create()
+                    dialog.show()
                 } else {
                     verifyCompletable.complete(false)
                 }

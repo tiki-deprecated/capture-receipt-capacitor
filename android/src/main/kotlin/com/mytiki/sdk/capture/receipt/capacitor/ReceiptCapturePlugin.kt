@@ -6,8 +6,10 @@
 package com.mytiki.sdk.capture.receipt.capacitor
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import androidx.activity.result.ActivityResult
+import androidx.appcompat.app.AlertDialog
 import com.getcapacitor.PermissionState
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
