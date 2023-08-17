@@ -5,8 +5,8 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
-import com.getcapacitor.JSArray
 import com.microblink.core.Promotion
+import org.json.JSONArray
 import org.json.JSONObject
 
 class RspPromotion(promotion: Promotion) : Rsp {
@@ -38,8 +38,8 @@ class RspPromotion(promotion: Promotion) : Rsp {
             .put("rewardCurrency", rewardCurrency)
             .put("errorCode", errorCode)
             .put("errorMessage", errorMessage)
-            .put("relatedProductIndexes", JSArray.from(relatedProductIndexes))
-            .put("qualifications", JSArray.from(qualifications.map { q -> JSArray.from(q) }))
+            .put("relatedProductIndexes", JSONArray(relatedProductIndexes))
+            .put("qualifications", JSONArray(qualifications.map { q -> JSONArray(q) }))
 
     companion object {
         fun opt(promotion: Promotion?): RspPromotion? =

@@ -5,8 +5,8 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
-import com.getcapacitor.JSArray
 import com.microblink.core.Survey
+import org.json.JSONArray
 import org.json.JSONObject
 
 class RspSurvey(survey: Survey) : Rsp {
@@ -37,7 +37,7 @@ class RspSurvey(survey: Survey) : Rsp {
             .put("rewardValue", rewardValue)
             .put("startDate", startDate)
             .put("endDate", endDate)
-            .put("questions", JSArray.from(questions.map { question -> question.toJson() }))
+            .put("questions", JSONArray(questions.map { question -> question.toJson() }))
 
     companion object {
         fun opt(survey: Survey?): RspSurvey? =

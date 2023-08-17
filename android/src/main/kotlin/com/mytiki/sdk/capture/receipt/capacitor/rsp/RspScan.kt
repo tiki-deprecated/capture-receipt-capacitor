@@ -7,6 +7,7 @@ package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
 import com.getcapacitor.JSArray
 import com.microblink.core.ScanResults
+import org.json.JSONArray
 import org.json.JSONObject
 
 class RspScan(scanResults: ScanResults) : Rsp {
@@ -181,8 +182,8 @@ class RspScan(scanResults: ScanResults) : Rsp {
             .put("receiptDate", receiptDate?.toJson())
             .put("receiptTime", receiptTime?.toJson())
             .put("retailerId", retailerId.toJson())
-            .put("products", JSArray.from(products?.map { prd -> prd.toJson() }))
-            .put("coupons", JSArray.from(coupons?.map { coupon -> coupon.toJson() }))
+            .put("products", JSArray.from(products.map { prd -> prd.toJson() }))
+            .put("coupons", JSArray.from(coupons.map { coupon -> coupon.toJson() }))
             .put("total", total?.toJson())
             .put("tip", tip?.toJson())
             .put("subtotal", subtotal?.toJson())
@@ -199,7 +200,7 @@ class RspScan(scanResults: ScanResults) : Rsp {
             .put("cashierId", cashierId?.toJson())
             .put("transactionId", transactionId?.toJson())
             .put("registerId", registerId?.toJson())
-            .put("paymentMethods", JSArray.from(paymentMethods.map { method -> method.toJson() }))
+            .put("paymentMethods", JSONArray(paymentMethods.map { method -> method.toJson() }))
             .put("taxId", taxId?.toJson())
             .put("mallName", mallName?.toJson())
             .put("last4cc", last4cc?.toJson())
@@ -211,7 +212,7 @@ class RspScan(scanResults: ScanResults) : Rsp {
             .put("eReceiptOrderStatus", eReceiptOrderStatus)
             .put("eReceiptRawHtml", eReceiptRawHtml)
             .put("eReceiptShippingAddress", eReceiptShippingAddress)
-            .put("shipments", JSArray.from(shipments.map { shipment -> shipment.toJson() }))
+            .put("shipments", JSONArray(shipments.map { shipment -> shipment.toJson() }))
             .put("longTransactionId", longTransactionId?.toJson())
             .put("subtotalMatches", subtotalMatches)
             .put("eReceiptEmailProvider", eReceiptEmailProvider)
@@ -221,7 +222,7 @@ class RspScan(scanResults: ScanResults) : Rsp {
             .put("eReceipt", eReceipt)
             .put(
                 "eReceiptComponentEmails",
-                JSArray.from(eReceiptComponentEmails.map { email -> email.toJson() })
+                JSONArray(eReceiptComponentEmails.map { email -> email.toJson() })
             )
             .put("duplicate", duplicate)
             .put("fraudulent", fraudulent)
@@ -231,11 +232,11 @@ class RspScan(scanResults: ScanResults) : Rsp {
             .put("productsPendingLookup", productsPendingLookup)
             .put(
                 "qualifiedPromotions",
-                JSArray.from(qualifiedPromotions.map { promo -> promo.toJson() })
+                JSONArray(qualifiedPromotions.map { promo -> promo.toJson() })
             )
             .put(
                 "unqualifiedPromotions",
-                JSArray.from(unqualifiedPromotions.map { promo -> promo.toJson() })
+                JSONArray(unqualifiedPromotions.map { promo -> promo.toJson() })
             )
             .put("extendedFields", extendedFields)
             .put("eReceiptAdditionalFees", eReceiptAdditionalFees)
@@ -249,7 +250,7 @@ class RspScan(scanResults: ScanResults) : Rsp {
             .put("eReceiptSubMerchant", eReceiptSubMerchant)
             .put(
                 "qualifiedSurveys",
-                JSArray.from(qualifiedSurveys.map { survey -> survey.toJson() })
+                JSONArray(qualifiedSurveys.map { survey -> survey.toJson() })
             )
             .put("barcode", barcode)
             .put("eReceiptMerchantEmail", eReceiptMerchantEmail)
@@ -258,7 +259,7 @@ class RspScan(scanResults: ScanResults) : Rsp {
             .put("currencyCode", currencyCode)
             .put("clientMerchantName", clientMerchantName)
             .put("loyaltyProgram", loyaltyProgram)
-            .put("merchantSources", JSArray.from(merchantSources))
+            .put("merchantSources", JSONArray(merchantSources))
             .put("paymentTerminalId", paymentTerminalId?.toJson())
             .put("paymentTransactionId", paymentTransactionId?.toJson())
             .put("combinedRawText", combinedRawText?.toJson())

@@ -28,11 +28,7 @@ export interface ReceiptCapturePlugin {
     accounts: { username: string; provider: string; verified: boolean }[];
   }>;
 
-  removeEmail(options: {
-    username: string;
-    password: string;
-    provider: string;
-  }): Promise<{ success: boolean }>;
+  removeEmail(options: { username: string; password: string; provider: string }): Promise<{ success: boolean }>;
 
   loginWithRetailer(options: {
     username: string;
@@ -40,20 +36,17 @@ export interface ReceiptCapturePlugin {
     retailer: string;
   }): Promise<{ username: string; retailer: string; isVerified: boolean }>;
 
-  retailers(): Promise<{ accounts : [{username: string; retailer: string, isVerified: boolean}]}>;
+  retailers(): Promise<{ accounts: [{ username: string; retailer: string; isVerified: boolean }] }>;
 
-  removeRetailer(options: {
-    username: string,
-    retailer: string,
-  }): Promise<{
-    username: string,
-    retailer: string,
-    isVerified: boolean
+  removeRetailer(options: { username: string; retailer: string }): Promise<{
+    username: string;
+    retailer: string;
+    isVerified: boolean;
   }>;
 
   orders(): Promise<{
-    retailer: string,
-    username: string,
+    retailer: string;
+    username: string;
     scan: Receipt;
-  }>
+  }>;
 }
