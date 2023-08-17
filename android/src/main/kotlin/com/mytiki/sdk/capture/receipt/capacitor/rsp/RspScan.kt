@@ -226,7 +226,7 @@ class RspScan(scanResults: ScanResults) : Rsp {
             .put("duplicate", duplicate)
             .put("fraudulent", fraudulent)
             .put("receiptDateTime", receiptDateTime)
-            .put("duplicateBlinkReceiptIds", duplicateBlinkReceiptIds)
+            .put("duplicateBlinkReceiptIds", JSONArray(duplicateBlinkReceiptIds))
             .put("merchantMatchGuess", merchantMatchGuess?.toJson())
             .put("productsPendingLookup", productsPendingLookup)
             .put(
