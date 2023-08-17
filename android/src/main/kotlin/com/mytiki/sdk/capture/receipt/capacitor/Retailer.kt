@@ -7,6 +7,7 @@ package com.mytiki.sdk.capture.receipt.capacitor
 
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.getcapacitor.JSObject
@@ -22,6 +23,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
+import timber.log.Timber
 
 
 class Retailer {
@@ -111,18 +113,21 @@ class Retailer {
                     val retailer = it.account.retailerId
                     val username = it.account.credentials.username()
                     val ordersSuccessCallback =
-                        { _: Int, results: ScanResults?, _: Int, _: String ->
+                        { a: Int, results: ScanResults?, b: Int, c: String ->
                             if (results != null) {
                                 val rsp = RspRetailerOrders(
                                     RetailerEnum.fromInt(retailer).toString(),
                                     username, results
                                 )
-                                call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                                Log.e("TIKI", rsp.toJson().toString())
+                                call.resolve(JSObject(rsp.toJson().toString()))
                             } else {
-                                call.reject("no orders")
+                                Log.e("TIKI", "NO RESULT")
+                                call.reject("no result")
                             }
                         }
                     val ordersFailureCallback = { _: Int, exception: AccountLinkingException ->
+                        Log.e("TIKI", exception.message ?: "exception wihtout message")
                         call.reject(exception.message)
                     }
                     client.orders(
@@ -145,7 +150,7 @@ class Retailer {
                         val accountList = accounts.map{ account ->
                             RspRetailerAccount(
                                 account,
-                               true
+                               verify(account).await()
                             )
                         }
                         getAccounts.complete(accountList)
@@ -161,21 +166,25 @@ class Retailer {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun verify( account: Account, showDialog: Boolean = false, context: Context? = null, call: PluginCall ): CompletableDeferred<Boolean>{
+    private fun verify( account: Account, showDialog: Boolean = false, context: Context? = null, call: PluginCall? = null ): CompletableDeferred<Boolean>{
         val verifyCompletable = CompletableDeferred<Boolean>()
         client.verify(
             account.retailerId,
             success = { isVerified: Boolean, _: String ->
                 if(isVerified){
                     val rsp = RspRetailerAccount(account, true)
-                    call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                    call?.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                    verifyCompletable.complete(true)
                 }else {
                     client.unlink(account)
-                    call.reject("login failed")
+                    call?.reject("login failed")
+                    verifyCompletable.complete(false)
                 }
             },
             failure = { exception ->
-                if (exception.code == VERIFICATION_NEEDED && exception.view != null && context != null) {
+                if(call == null){
+                    verifyCompletable.complete(false)
+                }else if (exception.code == VERIFICATION_NEEDED && exception.view != null && context != null) {
                     exception.view!!.isFocusableInTouchMode = true
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         exception.view!!.focusable = View.FOCUSABLE
@@ -207,7 +216,7 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun client(
         context: Context,
-        dayCutoff: Int = 15,
+        dayCutoff: Int = 500,
         latestOrdersOnly: Boolean = false,
         countryCode: String = "US",
     ): AccountLinkingClient{

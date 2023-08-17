@@ -6,54 +6,54 @@
 import type { Receipt } from './receipt';
 
 export interface ReceiptCapturePlugin {
-  initialize(options: {
-    licenseKey: string;
-    productKey?: string;
-  }): Promise<{ isInitialized: boolean; reason?: string }>;
+    initialize(options: {
+        licenseKey: string;
+        productKey?: string;
+    }): Promise<{ isInitialized: boolean; reason?: string }>;
 
-  scan(): Promise<Receipt>;
+    scan(): Promise<Receipt>;
 
-  loginWithEmail(options: {
-    username: string;
-    password: string;
-    provider: string;
-  }): Promise<{ username: string; provider: string }>;
+    loginWithEmail(options: {
+        username: string;
+        password: string;
+        provider: string;
+    }): Promise<{ username: string; provider: string }>;
 
-  scrapeEmail(): Promise<{
-    login: { username: string; provider: string };
-    scans: Receipt[];
-  }>;
+    scrapeEmail(): Promise<{
+        login: { username: string; provider: string };
+        scans: Receipt[];
+    }>;
 
-  verifyEmail(): Promise<{
-    accounts: { username: string; provider: string; verified: boolean }[];
-  }>;
+    verifyEmail(): Promise<{
+        accounts: { username: string; provider: string; verified: boolean }[];
+    }>;
 
-  removeEmail(options: {
-    username: string;
-    password: string;
-    provider: string;
-  }): Promise<{ success: boolean }>;
+    removeEmail(options: {
+        username: string;
+        password: string;
+        provider: string;
+    }): Promise<{ success: boolean }>;
 
-  loginWithRetailer(options: {
-    username: string;
-    password: string;
-    retailer: string;
-  }): Promise<{ username: string; retailer: string; isVerified: boolean }>;
+    loginWithRetailer(options: {
+        username: string;
+        password: string;
+        provider: string;
+    }): Promise<{ username: string; provider: string; isVerified: boolean }>;
 
-  retailers(): Promise<{ accounts : [{username: string; retailer: string, isVerified: boolean}]}>;
+    retailers(): Promise<{ accounts: [{ username: string; provider: string, isVerified: boolean }] }>;
 
-  removeRetailer(options: {
-    username: string,
-    retailer: string,
-  }): Promise<{
-    username: string,
-    retailer: string,
-    isVerified: boolean
-  }>;
+    removeRetailer(options: {
+        username: string,
+        provider: string,
+    }): Promise<{
+        username: string,
+        provider: string,
+        isVerified: boolean
+    }>;
 
-  orders(): Promise<{
-    retailer: string,
-    username: string,
-    scan: Receipt;
-  }>
+    orders(): Promise<{
+        provider: string,
+        username: string,
+        scan: Receipt;
+    }>
 }
