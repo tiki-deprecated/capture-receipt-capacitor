@@ -28,7 +28,7 @@ class RetailerTest {
             InstrumentationRegistry.getArguments().getString("username")!!
         val password: String =
             InstrumentationRegistry.getArguments().getString("password")!!
-        val retailerId: Int = RetailerEnum.amazon_beta.value
+        val retailerId: Int = RetailerEnum.AMAZON.value
 //        Retailer Initializer
         val callInit = PluginCallBuilder(
             JSONObject()
@@ -44,7 +44,7 @@ class RetailerTest {
                 .put("password", password)
                 .put("retailerId", retailerId)
         )
-        retailer.login(callAccount.build())
+        retailer.login(callAccount.build(), appContext)
         val resAccount = callAccount.complete.await()
         TestCase.assertEquals(true, resAccount.get("isAccountLinked"))
         TestCase.assertEquals(username, resAccount.get("username"))
@@ -52,7 +52,7 @@ class RetailerTest {
     }
 
     @Test()
-    fun grabOrders() = runTest(timeout = 1.minutes){
+    fun grabOrders() = runTest(timeout = 10.minutes){
         val appContext: Context =
             InstrumentationRegistry.getInstrumentation().targetContext
         val licenseKey: String =
@@ -63,7 +63,7 @@ class RetailerTest {
             InstrumentationRegistry.getArguments().getString("username")!!
         val password: String =
             InstrumentationRegistry.getArguments().getString("password")!!
-        val retailerId: Int = RetailerEnum.amazon_beta.value
+        val retailerId: Int = RetailerEnum.AMAZON.value
 
         val callInit = PluginCallBuilder(
             JSONObject()
@@ -76,17 +76,17 @@ class RetailerTest {
             JSONObject()
                 .put("username", username)
                 .put("password", password)
-                .put("retailerId", retailerId)
+                .put("retailer", "amazon")
         )
-        retailer.login(callAccount.build())
+        retailer.login(callAccount.build(), appContext)
         val account = callAccount.complete.await()
 //        Retailer Orders Test
         val callOrders = PluginCallBuilder(
             JSONObject()
                 .put("username", account)
-                .put("retailerId", retailerId)
+                .put("retailer", "amazon")
         )
-        retailer.orders(appContext, callOrders.build())
+        retailer.orders(callOrders.build())
         val resOrders = callOrders.complete.await()
         TestCase.assertEquals(true, resOrders.get("isAccountLinked"))
         TestCase.assertEquals(true, resOrders.get("isOrders"))

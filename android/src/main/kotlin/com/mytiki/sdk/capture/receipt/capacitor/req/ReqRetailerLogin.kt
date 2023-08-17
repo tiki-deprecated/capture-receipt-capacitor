@@ -15,6 +15,6 @@ class ReqRetailerLogin(data: JSObject) {
     init {
         username = data.getString("username") ?: ""
         password = data.getString("password") ?: ""
-        retailer = data.getString("retailer") ?: ""
+        retailer = data.getString("provider") ?: ""
     }
 }
