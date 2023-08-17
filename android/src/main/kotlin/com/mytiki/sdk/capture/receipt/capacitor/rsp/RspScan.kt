@@ -5,7 +5,6 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
-import com.getcapacitor.JSArray
 import com.microblink.core.ScanResults
 import org.json.JSONArray
 import org.json.JSONObject
@@ -182,8 +181,8 @@ class RspScan(scanResults: ScanResults) : Rsp {
             .put("receiptDate", receiptDate?.toJson())
             .put("receiptTime", receiptTime?.toJson())
             .put("retailerId", retailerId.toJson())
-            .put("products", JSArray.from(products.map { prd -> prd.toJson() }))
-            .put("coupons", JSArray.from(coupons.map { coupon -> coupon.toJson() }))
+            .put("products", JSONArray(products.map { prd -> prd.toJson() }))
+            .put("coupons", JSONArray(coupons.map { coupon -> coupon.toJson() }))
             .put("total", total?.toJson())
             .put("tip", tip?.toJson())
             .put("subtotal", subtotal?.toJson())
