@@ -96,9 +96,7 @@ class Email {
                 credential: PasswordCredentials,
                 result: List<ScanResults>
             ) {
-                print("Num scans: ${result.size}")
                 val rsp = RspEmail(credential, result)
-                print("As JSON: ${rsp.toJson()}")
                 call.resolve(JSObject.fromJSONObject(rsp.toJson()))
             }
 
