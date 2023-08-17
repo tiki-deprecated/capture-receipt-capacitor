@@ -5,9 +5,9 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
-import com.getcapacitor.JSArray
 import com.microblink.core.ScanResults
 import com.microblink.digital.PasswordCredentials
+import org.json.JSONArray
 import org.json.JSONObject
 
 class RspEmail(credential: PasswordCredentials, results: List<ScanResults>) : Rsp {
@@ -22,5 +22,5 @@ class RspEmail(credential: PasswordCredentials, results: List<ScanResults>) : Rs
     override fun toJson(): JSONObject =
         JSONObject()
             .put("login", login.toJson())
-            .put("scans", JSArray.from(scans.map { scan -> scan.toJson() }))
+            .put("scans", JSONArray(scans.map { scan -> scan.toJson() }))
 }

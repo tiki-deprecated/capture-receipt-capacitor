@@ -113,36 +113,33 @@ export class ReceiptCapture {
     });
   };
 
-  loginWithRetailer = async (
-    username: string,
-    password: string,
-    retailer: string,
-  ): Promise<RetailerAccount> => {
+  loginWithRetailer = async (username: string, password: string, retailer: string): Promise<RetailerAccount> => {
     return this.plugin.loginWithRetailer({
-        username,
-        password,
-        retailer,
-    })
-  }
+      username,
+      password,
+      retailer,
+    });
+  };
 
   retailers = async (): Promise<RetailerAccount[]> => {
-    return (await this.plugin.retailers()).accounts
-  }
+    return (await this.plugin.retailers()).accounts;
+  };
 
-  removeRetailer = async (
-    username: string,
-    retailer: string,
-  ): Promise<RetailerAccount> => {
-    return await this.plugin.removeRetailer({username, retailer})
-  }
+  removeRetailer = async (username: string, retailer: string): Promise<RetailerAccount> => {
+    return await this.plugin.removeRetailer({ username, retailer });
+  };
 
-  orders = async(): Promise<{
-    retailer: string,
-    username: string,
+  orders = async (): Promise<{
+    retailer: string;
+    username: string;
     scan: Receipt;
   }> => {
-    return await this.plugin.orders()
-  }
+    return await this.plugin.orders();
+  };
 }
 
-interface RetailerAccount{ username: string; retailer: string, isVerified: boolean }
+interface RetailerAccount {
+  username: string;
+  retailer: string;
+  isVerified: boolean;
+}

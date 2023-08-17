@@ -17,5 +17,5 @@ class RspRetailerOrders(
         JSONObject()
             .put("username", username)
             .put("retailer", retailer)
-            .put("scan",  RspScan(scan))
+            .put("scan",  RspScan(scan).toJson())
 }
