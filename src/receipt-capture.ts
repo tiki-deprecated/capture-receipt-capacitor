@@ -146,3 +146,4 @@ export class ReceiptCapture {
 }
 
 interface RetailerAccount { username: string; provider: string, isVerified: boolean }
+

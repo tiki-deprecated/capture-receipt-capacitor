@@ -6,6 +6,7 @@
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
 import com.microblink.core.SurveyQuestion
+import org.json.JSONArray
 import org.json.JSONObject
 
 class RspSurveyQuestion(surveyQuestion: SurveyQuestion) : Rsp {
@@ -15,7 +16,7 @@ class RspSurveyQuestion(surveyQuestion: SurveyQuestion) : Rsp {
     private val serverId: Int
     private val text: String?
     private val type: String?
-    private val answers: List<RspSurveyAnswer>?
+    private val answers: List<RspSurveyAnswer>
     private val multipleAnswers: Boolean
     private val totalNumberOfQuestions: Int
 
@@ -26,7 +27,7 @@ class RspSurveyQuestion(surveyQuestion: SurveyQuestion) : Rsp {
         serverId = surveyQuestion.serverId()
         text = surveyQuestion.text()
         type = surveyQuestion.type()?.a
-        answers = surveyQuestion.answers()?.map { answer -> RspSurveyAnswer(answer) }
+        answers = surveyQuestion.answers()?.map { answer -> RspSurveyAnswer(answer) } ?: emptyList()
         multipleAnswers = surveyQuestion.multipleAnswers()
         totalNumberOfQuestions = surveyQuestion.totalNumberOfQuestions()
     }
@@ -39,7 +40,7 @@ class RspSurveyQuestion(surveyQuestion: SurveyQuestion) : Rsp {
             .put("serverId", serverId)
             .put("text", text)
             .put("type", type)
-            .put("answers", answers?.map { answer -> answer.toJson() })
+            .put("answers", JSONArray(answers.map { answer -> answer.toJson() }))
             .put("multipleAnswers", multipleAnswers)
             .put("totalNumberOfQuestions", totalNumberOfQuestions)
 

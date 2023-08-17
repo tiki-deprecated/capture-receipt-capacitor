@@ -6,14 +6,15 @@
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
 import com.microblink.core.ScanResults
+import org.json.JSONArray
 import org.json.JSONObject
 
 class RspScan(scanResults: ScanResults) : Rsp {
     private val receiptDate: RspStringType?
     private val receiptTime: RspStringType?
     private val retailerId: RspRetailer
-    private val products: List<RspProduct>?
-    private val coupons: List<RspCoupon>?
+    private val products: List<RspProduct>
+    private val coupons: List<RspCoupon>
     private val total: RspFloatType?
     private val tip: RspFloatType?
     private val subtotal: RspFloatType?
@@ -30,7 +31,7 @@ class RspScan(scanResults: ScanResults) : Rsp {
     private val cashierId: RspStringType?
     private val transactionId: RspStringType?
     private val registerId: RspStringType?
-    private val paymentMethods: List<RspPaymentMethod>?
+    private val paymentMethods: List<RspPaymentMethod>
     private val taxId: RspStringType?
     private val mallName: RspStringType?
     private val last4cc: RspStringType?
@@ -42,7 +43,7 @@ class RspScan(scanResults: ScanResults) : Rsp {
     private val eReceiptOrderStatus: String?
     private val eReceiptRawHtml: String?
     private val eReceiptShippingAddress: String?
-    private val shipments: List<RspShipment>?
+    private val shipments: List<RspShipment>
     private val longTransactionId: RspStringType?
     private val subtotalMatches: Boolean
     private val eReceiptEmailProvider: String?
@@ -50,15 +51,15 @@ class RspScan(scanResults: ScanResults) : Rsp {
     private val eReceiptAuthenticated: Boolean
     private val instacartShopper: Boolean
     private val eReceipt: Boolean
-    private val eReceiptComponentEmails: List<RspScan>?
+    private val eReceiptComponentEmails: List<RspScan>
     private val duplicate: Boolean
     private val fraudulent: Boolean
     private val receiptDateTime: Long?
-    private val duplicateBlinkReceiptIds: List<String>?
+    private val duplicateBlinkReceiptIds: List<String>
     private val merchantMatchGuess: RspStringType?
     private val productsPendingLookup: Int
-    private val qualifiedPromotions: List<RspPromotion>?
-    private val unqualifiedPromotions: List<RspPromotion>?
+    private val qualifiedPromotions: List<RspPromotion>
+    private val unqualifiedPromotions: List<RspPromotion>
     private val extendedFields: JSONObject?
     private val eReceiptAdditionalFees: JSONObject?
     private val purchaseType: RspStringType?
@@ -69,7 +70,7 @@ class RspScan(scanResults: ScanResults) : Rsp {
     private val eReceiptShippingStatus: String?
     private val eReceiptPOSSystem: String?
     private val eReceiptSubMerchant: String?
-    private val qualifiedSurveys: List<RspSurvey>?
+    private val qualifiedSurveys: List<RspSurvey>
     private val barcode: String?
     private val eReceiptMerchantEmail: String?
     private val eReceiptEmailSubject: String?
@@ -77,7 +78,7 @@ class RspScan(scanResults: ScanResults) : Rsp {
     private val currencyCode: String?
     private val clientMerchantName: String?
     private val loyaltyProgram: Boolean
-    private val merchantSources: List<Int>?
+    private val merchantSources: List<Int>
     private val paymentTerminalId: RspStringType?
     private val paymentTransactionId: RspStringType?
     private val combinedRawText: RspStringType?
@@ -87,8 +88,8 @@ class RspScan(scanResults: ScanResults) : Rsp {
         receiptDate = RspStringType.opt(scanResults.receiptDate())
         receiptTime = RspStringType.opt(scanResults.receiptTime())
         retailerId = RspRetailer(scanResults.retailerId())
-        products = scanResults.products()?.map { product -> RspProduct(product) }
-        coupons = scanResults.coupons()?.map { coupon -> RspCoupon(coupon) }
+        products = scanResults.products()?.map { product -> RspProduct(product) } ?: emptyList()
+        coupons = scanResults.coupons()?.map { coupon -> RspCoupon(coupon) } ?: emptyList()
         total = RspFloatType.opt(scanResults.total())
         tip = RspFloatType.opt(scanResults.tip())
         subtotal = RspFloatType.opt(scanResults.subtotal())
@@ -107,6 +108,7 @@ class RspScan(scanResults: ScanResults) : Rsp {
         registerId = RspStringType.opt(scanResults.registerId())
         paymentMethods =
             scanResults.paymentMethods()?.map { paymentMethod -> RspPaymentMethod(paymentMethod) }
+                ?: emptyList()
         taxId = RspStringType.opt(scanResults.taxId())
         mallName = RspStringType.opt(scanResults.mallName())
         last4cc = RspStringType.opt(scanResults.last4cc())
@@ -118,7 +120,8 @@ class RspScan(scanResults: ScanResults) : Rsp {
         eReceiptOrderStatus = scanResults.eReceiptOrderStatus()
         eReceiptRawHtml = scanResults.eReceiptRawHtml()
         eReceiptShippingAddress = scanResults.eReceiptShippingAddress()
-        shipments = scanResults.shipments()?.map { shipment -> RspShipment(shipment) }
+        shipments =
+            scanResults.shipments()?.map { shipment -> RspShipment(shipment) } ?: emptyList()
         longTransactionId = RspStringType.opt(scanResults.longTransactionId())
         subtotalMatches = scanResults.subtotalMatches()
         eReceiptEmailProvider = scanResults.eReceiptEmailProvider()
@@ -127,16 +130,17 @@ class RspScan(scanResults: ScanResults) : Rsp {
         instacartShopper = scanResults.isInstacartShopper
         eReceipt = scanResults.eReceipt()
         eReceiptComponentEmails =
-            scanResults.eReceiptComponentEmails()?.map { res -> RspScan(res) }
+            scanResults.eReceiptComponentEmails()?.map { res -> RspScan(res) } ?: emptyList()
         duplicate = scanResults.duplicate()
         fraudulent = scanResults.fraudulent()
         receiptDateTime = scanResults.receiptDateTime()?.time
-        duplicateBlinkReceiptIds = scanResults.duplicateBlinkReceiptIds()
+        duplicateBlinkReceiptIds = scanResults.duplicateBlinkReceiptIds() ?: emptyList()
         merchantMatchGuess = RspStringType.opt(scanResults.merchantMatchGuess())
         productsPendingLookup = scanResults.productsPendingLookup()
-        qualifiedPromotions = scanResults.qualified()?.map { promotion -> RspPromotion(promotion) }
+        qualifiedPromotions =
+            scanResults.qualified()?.map { promotion -> RspPromotion(promotion) } ?: emptyList()
         unqualifiedPromotions =
-            scanResults.unqualified()?.map { promotion -> RspPromotion(promotion) }
+            scanResults.unqualified()?.map { promotion -> RspPromotion(promotion) } ?: emptyList()
         extendedFields = if (scanResults.extendedFields() != null) {
             val extendedFields = JSONObject()
             scanResults.extendedFields()
@@ -157,7 +161,8 @@ class RspScan(scanResults: ScanResults) : Rsp {
         eReceiptShippingStatus = scanResults.eReceiptShippingStatus()
         eReceiptPOSSystem = scanResults.eReceiptPOSSystem()
         eReceiptSubMerchant = scanResults.eReceiptSubMerchant()
-        qualifiedSurveys = scanResults.qualifiedSurveys()?.map { survey -> RspSurvey(survey) }
+        qualifiedSurveys =
+            scanResults.qualifiedSurveys()?.map { survey -> RspSurvey(survey) } ?: emptyList()
         barcode = scanResults.barcode()
         eReceiptMerchantEmail = scanResults.eReceiptMerchantEmail()
         eReceiptEmailSubject = scanResults.eReceiptEmailSubject()
@@ -165,7 +170,7 @@ class RspScan(scanResults: ScanResults) : Rsp {
         currencyCode = scanResults.currencyCode()
         clientMerchantName = scanResults.clientMerchantName()
         loyaltyProgram = scanResults.loyaltyProgram()
-        merchantSources = scanResults.merchantSources()
+        merchantSources = scanResults.merchantSources() ?: emptyList()
         paymentTerminalId = RspStringType.opt(scanResults.paymentTerminalId())
         paymentTransactionId = RspStringType.opt(scanResults.paymentTransactionId())
         combinedRawText = RspStringType.opt(scanResults.combinedRawText())
@@ -176,8 +181,8 @@ class RspScan(scanResults: ScanResults) : Rsp {
             .put("receiptDate", receiptDate?.toJson())
             .put("receiptTime", receiptTime?.toJson())
             .put("retailerId", retailerId.toJson())
-            .put("products", products?.map { prd -> prd.toJson() })
-            .put("coupons", coupons?.map { coupon -> coupon.toJson() })
+            .put("products", JSONArray(products.map { prd -> prd.toJson() }))
+            .put("coupons", JSONArray(coupons.map { coupon -> coupon.toJson() }))
             .put("total", total?.toJson())
             .put("tip", tip?.toJson())
             .put("subtotal", subtotal?.toJson())
@@ -194,7 +199,7 @@ class RspScan(scanResults: ScanResults) : Rsp {
             .put("cashierId", cashierId?.toJson())
             .put("transactionId", transactionId?.toJson())
             .put("registerId", registerId?.toJson())
-            .put("paymentMethods", paymentMethods?.map { method -> method.toJson() })
+            .put("paymentMethods", JSONArray(paymentMethods.map { method -> method.toJson() }))
             .put("taxId", taxId?.toJson())
             .put("mallName", mallName?.toJson())
             .put("last4cc", last4cc?.toJson())
@@ -206,7 +211,7 @@ class RspScan(scanResults: ScanResults) : Rsp {
             .put("eReceiptOrderStatus", eReceiptOrderStatus)
             .put("eReceiptRawHtml", eReceiptRawHtml)
             .put("eReceiptShippingAddress", eReceiptShippingAddress)
-            .put("shipments", shipments?.map { shipment -> shipment.toJson() })
+            .put("shipments", JSONArray(shipments.map { shipment -> shipment.toJson() }))
             .put("longTransactionId", longTransactionId?.toJson())
             .put("subtotalMatches", subtotalMatches)
             .put("eReceiptEmailProvider", eReceiptEmailProvider)
@@ -216,15 +221,22 @@ class RspScan(scanResults: ScanResults) : Rsp {
             .put("eReceipt", eReceipt)
             .put(
                 "eReceiptComponentEmails",
-                eReceiptComponentEmails?.map { email -> email.toJson() })
+                JSONArray(eReceiptComponentEmails.map { email -> email.toJson() })
+            )
             .put("duplicate", duplicate)
             .put("fraudulent", fraudulent)
             .put("receiptDateTime", receiptDateTime)
             .put("duplicateBlinkReceiptIds", duplicateBlinkReceiptIds)
             .put("merchantMatchGuess", merchantMatchGuess?.toJson())
             .put("productsPendingLookup", productsPendingLookup)
-            .put("qualifiedPromotions", qualifiedPromotions?.map { promo -> promo.toJson() })
-            .put("unqualifiedPromotions", unqualifiedPromotions?.map { promo -> promo.toJson() })
+            .put(
+                "qualifiedPromotions",
+                JSONArray(qualifiedPromotions.map { promo -> promo.toJson() })
+            )
+            .put(
+                "unqualifiedPromotions",
+                JSONArray(unqualifiedPromotions.map { promo -> promo.toJson() })
+            )
             .put("extendedFields", extendedFields)
             .put("eReceiptAdditionalFees", eReceiptAdditionalFees)
             .put("purchaseType", purchaseType?.toJson())
@@ -235,7 +247,10 @@ class RspScan(scanResults: ScanResults) : Rsp {
             .put("eReceiptShippingStatus", eReceiptShippingStatus)
             .put("eReceiptPOSSystem", eReceiptPOSSystem)
             .put("eReceiptSubMerchant", eReceiptSubMerchant)
-            .put("qualifiedSurveys", qualifiedSurveys?.map { survey -> survey.toJson() })
+            .put(
+                "qualifiedSurveys",
+                JSONArray(qualifiedSurveys.map { survey -> survey.toJson() })
+            )
             .put("barcode", barcode)
             .put("eReceiptMerchantEmail", eReceiptMerchantEmail)
             .put("eReceiptEmailSubject", eReceiptEmailSubject)
@@ -243,7 +258,7 @@ class RspScan(scanResults: ScanResults) : Rsp {
             .put("currencyCode", currencyCode)
             .put("clientMerchantName", clientMerchantName)
             .put("loyaltyProgram", loyaltyProgram)
-            .put("merchantSources", merchantSources)
+            .put("merchantSources", JSONArray(merchantSources))
             .put("paymentTerminalId", paymentTerminalId?.toJson())
             .put("paymentTransactionId", paymentTransactionId?.toJson())
             .put("combinedRawText", combinedRawText?.toJson())

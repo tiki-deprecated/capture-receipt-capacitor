@@ -53,7 +53,7 @@ export class ReceiptCaptureWeb
     }> {
         throw this.unimplemented('Mobile Only.');
     }
-
+    
     removeEmail(_options: {
         username: string;
         password: string;
