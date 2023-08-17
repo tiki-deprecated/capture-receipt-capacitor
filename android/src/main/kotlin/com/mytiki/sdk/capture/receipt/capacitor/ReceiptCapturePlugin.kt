@@ -6,10 +6,8 @@
 package com.mytiki.sdk.capture.receipt.capacitor
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import androidx.activity.result.ActivityResult
-import androidx.appcompat.app.AlertDialog
 import com.getcapacitor.PermissionState
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
@@ -65,6 +63,12 @@ class ReceiptCapturePlugin : Plugin() {
 
     @PluginMethod
     fun orders(call: PluginCall) = receiptCapture.retailer.orders(call)
+
+    @PluginMethod
+    fun flushRetailer(call: PluginCall) = receiptCapture.retailer.flush(call)
+
+    @PluginMethod
+    fun flushEmail(call: PluginCall) = receiptCapture.email.flush(call)
 
     @ActivityCallback
     private fun onScanResult(call: PluginCall, result: ActivityResult) =

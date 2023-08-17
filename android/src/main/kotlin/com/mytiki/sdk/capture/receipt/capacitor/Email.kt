@@ -136,4 +136,12 @@ class Email {
             call.reject(it.message)
         }
     }
+
+    fun flush(call: PluginCall) {
+        client?.logout()?.addOnSuccessListener {
+            call.resolve()
+        }?.addOnFailureListener {
+            call.reject(it.message)
+        }
+    }
 }
