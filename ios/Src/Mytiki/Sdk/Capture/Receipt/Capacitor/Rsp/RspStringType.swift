@@ -8,18 +8,18 @@ import BlinkReceipt
 import BlinkEReceipt
 import Capacitor
 
-struct RspFloatType : Rsp{
+struct RspStringType : Rsp {
     private let confidence: Float
-    private let value: Float
-    
-    
-    init(floatType: BRFloatValue) {
-        confidence = floatType.confidence
-        value = floatType.value
+    private let value: String?
+
+    init (stringType: StringType) {
+        confidence = stringType.confidence()
+        value = stringType.value()
     }
     
     func toJson() -> JSObject {
         JSObject.updateValue("confidence", confidence)
         JSObject.updateValue("value", value)
     }
+
 }

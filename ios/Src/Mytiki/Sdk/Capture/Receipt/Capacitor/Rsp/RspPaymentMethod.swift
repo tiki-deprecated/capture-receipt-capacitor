@@ -1,11 +1,7 @@
-//
-//  RspPaymentMethod.swift
-//  Plugin
-//
-//  Created by Jesse Monteiro Ferreira on 18/08/23.
-//  Copyright © 2023 Max Lynch. All rights reserved.
-//
-
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
 import Foundation
 import Capacitor
 
@@ -15,5 +11,17 @@ struct RspPaymentMethod : Rsp {
     private let cardIssuer: RspStringType?
     private let amount: RspFloatType?
     
-    init (paymentMethod: PaymentMethod)
+    init (paymentMethod: PaymentMethod) {
+        self.paymentMethod = RspStringType.opt(paymentMethod.paymentMethod())
+        cardType = RspStringType.opt(paymentMethod.cardType())
+        cardIssuer = RspStringType.opt(paymentMethod.cardIssuer())
+        amount = RspFloatType.opt(paymentMethod.amount())
+    }
+    
+    func toJson() -> JSObject {
+        JSObject.updateValue("paymentMethod", paymentMethod?.toJson())
+        JSObject.updateValue("cardType", cardType?.toJson())
+        JSObject.updateValue("cardIssuer", cardIssuer?.toJson())
+        JSObject.updateValue("amount", amount?.toJson())
+    }
 }

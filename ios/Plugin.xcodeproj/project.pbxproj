@@ -20,6 +20,19 @@
 		883708CD2A8FE8C9007D8F0A /* RspInitialized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708CC2A8FE8C9007D8F0A /* RspInitialized.swift */; };
 		883708CF2A8FEA5C007D8F0A /* RspLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708CE2A8FEA5C007D8F0A /* RspLogin.swift */; };
 		883708D12A8FECBD007D8F0A /* RspPaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708D02A8FECBD007D8F0A /* RspPaymentMethod.swift */; };
+		883708D42A8FFFB7007D8F0A /* RspProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708D32A8FFFB7007D8F0A /* RspProduct.swift */; };
+		883708D92A900180007D8F0A /* RspPromotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708D82A900180007D8F0A /* RspPromotion.swift */; };
+		883708DB2A900463007D8F0A /* RspRetailer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708DA2A900463007D8F0A /* RspRetailer.swift */; };
+		883708DD2A900519007D8F0A /* RspRetailerAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708DC2A900519007D8F0A /* RspRetailerAccount.swift */; };
+		883708DF2A9005D5007D8F0A /* RspRetailerAccountList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708DE2A9005D5007D8F0A /* RspRetailerAccountList.swift */; };
+		883708E12A90073D007D8F0A /* RspRetailerOrders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708E02A90073D007D8F0A /* RspRetailerOrders.swift */; };
+		883708E32A900812007D8F0A /* RspRetailerRmAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708E22A900812007D8F0A /* RspRetailerRmAccount.swift */; };
+		883708E52A9008C3007D8F0A /* RspScan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708E42A9008C3007D8F0A /* RspScan.swift */; };
+		883708E72A900C99007D8F0A /* RspShipment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708E62A900C99007D8F0A /* RspShipment.swift */; };
+		883708E92A900DA2007D8F0A /* RspStringType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708E82A900DA2007D8F0A /* RspStringType.swift */; };
+		883708EB2A900E73007D8F0A /* RspSurvey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708EA2A900E73007D8F0A /* RspSurvey.swift */; };
+		883708ED2A900F2C007D8F0A /* RspSurveyAnswer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708EC2A900F2C007D8F0A /* RspSurveyAnswer.swift */; };
+		883708EF2A900F99007D8F0A /* RspSurveyQuestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708EE2A900F99007D8F0A /* RspSurveyQuestion.swift */; };
 		886B8D5E2A8D1B2C00354BC6 /* MytikiTikiCaptureReceiptCapacitor.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 886B8D342A8D1B2C00354BC6 /* MytikiTikiCaptureReceiptCapacitor.podspec */; };
 		886B8D5F2A8D1B2C00354BC6 /* ExampleUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 886B8D362A8D1B2C00354BC6 /* ExampleUITestsLaunchTests.swift */; };
 		886B8D602A8D1B2C00354BC6 /* ExampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 886B8D372A8D1B2C00354BC6 /* ExampleUITests.swift */; };
@@ -99,6 +112,19 @@
 		883708CC2A8FE8C9007D8F0A /* RspInitialized.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspInitialized.swift; sourceTree = "<group>"; };
 		883708CE2A8FEA5C007D8F0A /* RspLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspLogin.swift; sourceTree = "<group>"; };
 		883708D02A8FECBD007D8F0A /* RspPaymentMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspPaymentMethod.swift; sourceTree = "<group>"; };
+		883708D32A8FFFB7007D8F0A /* RspProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspProduct.swift; sourceTree = "<group>"; };
+		883708D82A900180007D8F0A /* RspPromotion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspPromotion.swift; sourceTree = "<group>"; };
+		883708DA2A900463007D8F0A /* RspRetailer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspRetailer.swift; sourceTree = "<group>"; };
+		883708DC2A900519007D8F0A /* RspRetailerAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspRetailerAccount.swift; sourceTree = "<group>"; };
+		883708DE2A9005D5007D8F0A /* RspRetailerAccountList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspRetailerAccountList.swift; sourceTree = "<group>"; };
+		883708E02A90073D007D8F0A /* RspRetailerOrders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspRetailerOrders.swift; sourceTree = "<group>"; };
+		883708E22A900812007D8F0A /* RspRetailerRmAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspRetailerRmAccount.swift; sourceTree = "<group>"; };
+		883708E42A9008C3007D8F0A /* RspScan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspScan.swift; sourceTree = "<group>"; };
+		883708E62A900C99007D8F0A /* RspShipment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspShipment.swift; sourceTree = "<group>"; };
+		883708E82A900DA2007D8F0A /* RspStringType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspStringType.swift; sourceTree = "<group>"; };
+		883708EA2A900E73007D8F0A /* RspSurvey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspSurvey.swift; sourceTree = "<group>"; };
+		883708EC2A900F2C007D8F0A /* RspSurveyAnswer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspSurveyAnswer.swift; sourceTree = "<group>"; };
+		883708EE2A900F99007D8F0A /* RspSurveyQuestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspSurveyQuestion.swift; sourceTree = "<group>"; };
 		886B8D312A8D1B2C00354BC6 /* Example.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Example.xcodeproj; sourceTree = "<group>"; };
 		886B8D342A8D1B2C00354BC6 /* MytikiTikiCaptureReceiptCapacitor.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MytikiTikiCaptureReceiptCapacitor.podspec; sourceTree = "<group>"; };
 		886B8D362A8D1B2C00354BC6 /* ExampleUITestsLaunchTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleUITestsLaunchTests.swift; sourceTree = "<group>"; };
@@ -400,6 +426,19 @@
 				883708CC2A8FE8C9007D8F0A /* RspInitialized.swift */,
 				883708CE2A8FEA5C007D8F0A /* RspLogin.swift */,
 				883708D02A8FECBD007D8F0A /* RspPaymentMethod.swift */,
+				883708D32A8FFFB7007D8F0A /* RspProduct.swift */,
+				883708D82A900180007D8F0A /* RspPromotion.swift */,
+				883708DA2A900463007D8F0A /* RspRetailer.swift */,
+				883708DC2A900519007D8F0A /* RspRetailerAccount.swift */,
+				883708DE2A9005D5007D8F0A /* RspRetailerAccountList.swift */,
+				883708E02A90073D007D8F0A /* RspRetailerOrders.swift */,
+				883708E22A900812007D8F0A /* RspRetailerRmAccount.swift */,
+				883708E42A9008C3007D8F0A /* RspScan.swift */,
+				883708E62A900C99007D8F0A /* RspShipment.swift */,
+				883708E82A900DA2007D8F0A /* RspStringType.swift */,
+				883708EA2A900E73007D8F0A /* RspSurvey.swift */,
+				883708EC2A900F2C007D8F0A /* RspSurveyAnswer.swift */,
+				883708EE2A900F99007D8F0A /* RspSurveyQuestion.swift */,
 			);
 			path = Rsp;
 			sourceTree = "<group>";
@@ -731,25 +770,38 @@
 				886B8D632A8D1B2C00354BC6 /* Retailer.swift in Sources */,
 				88A312AD2A86B1FF00EEDC00 /* ReqInitialize‎.swift in Sources */,
 				889C39D62A8F9D22003B30CD /* ReqLogin.swift in Sources */,
+				883708DD2A900519007D8F0A /* RspRetailerAccount.swift in Sources */,
 				889C39DB2A8F9F41003B30CD /* ReqRetailerLogin.swift in Sources */,
 				50E1A94820377CB70090CE1A /* ReceiptCapturePlugin.swift in Sources */,
 				886B8D642A8D1B2C00354BC6 /* RetailerCommon.swift in Sources */,
+				883708EB2A900E73007D8F0A /* RspSurvey.swift in Sources */,
+				883708D92A900180007D8F0A /* RspPromotion.swift in Sources */,
 				2F98D68224C9AAE500613A4C /* ReceiptCapture.swift in Sources */,
 				889C39E22A8FA466003B30CD /* RspAdditionalLine.swift in Sources */,
+				883708EF2A900F99007D8F0A /* RspSurveyQuestion.swift in Sources */,
 				889C39E42A8FA926003B30CD /* RspCoupon.swift in Sources */,
+				883708DF2A9005D5007D8F0A /* RspRetailerAccountList.swift in Sources */,
+				883708E32A900812007D8F0A /* RspRetailerRmAccount.swift in Sources */,
 				883708C82A8FE6D7007D8F0A /* RspFloatType.swift in Sources */,
 				88F555132A8A437D00DAF8F3 /* Retailer.swift in Sources */,
+				883708E72A900C99007D8F0A /* RspShipment.swift in Sources */,
+				883708D42A8FFFB7007D8F0A /* RspProduct.swift in Sources */,
+				883708E12A90073D007D8F0A /* RspRetailerOrders.swift in Sources */,
 				889C39E02A8FA08F003B30CD /* RspAccount.swift in Sources */,
 				88A312AA2A86AC6C00EEDC00 /* Scan.swift in Sources */,
 				889C39E72A8FE427003B30CD /* RspEmail.swift in Sources */,
 				886B8D5F2A8D1B2C00354BC6 /* ExampleUITestsLaunchTests.swift in Sources */,
 				886B8D652A8D1B2C00354BC6 /* ReqInitialize‎.swift in Sources */,
 				88F555152A8A9E9C00DAF8F3 /* RetailerCommon.swift in Sources */,
+				883708ED2A900F2C007D8F0A /* RspSurveyAnswer.swift in Sources */,
+				883708DB2A900463007D8F0A /* RspRetailer.swift in Sources */,
 				886B8D672A8D1B2C00354BC6 /* ContentView.swift in Sources */,
 				886B8D6A2A8D1B2C00354BC6 /* ExampleTests.swift in Sources */,
+				883708E92A900DA2007D8F0A /* RspStringType.swift in Sources */,
 				886B8D602A8D1B2C00354BC6 /* ExampleUITests.swift in Sources */,
 				886B8D662A8D1B2C00354BC6 /* Scan.swift in Sources */,
 				883708CD2A8FE8C9007D8F0A /* RspInitialized.swift in Sources */,
+				883708E52A9008C3007D8F0A /* RspScan.swift in Sources */,
 				889C39DE2A8F9FFD003B30CD /* Rsp.swift in Sources */,
 				883708D12A8FECBD007D8F0A /* RspPaymentMethod.swift in Sources */,
 				50ADFFA82020EE4F00D50D53 /* ReceiptCapturePlugin.m in Sources */,
