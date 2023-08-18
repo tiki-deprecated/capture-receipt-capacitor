@@ -6,7 +6,6 @@
 import Foundation
 import BlinkReceipt
 import BlinkEReceipt
-import Capacitor
 
 public class Retailer {
     
@@ -15,67 +14,73 @@ public class Retailer {
         BRScanManager.shared().prodIntelKey = req.productKey
         BRAccountLinkingManager.shared()
     }
-    public func account (retailer: RetailerCommon, username: String, password: String, dayCutoff: Int) {
+    public func account (retailer: RetailerCommon, username: String, password: String, dayCutoff: Int) -> BRAccountLinkingError {
         let connection = BRAccountLinkingConnection(retailer: retailer.toBRAccountLinkingRetailer()!, username: username, password: password)
         connection.configuration.dayCutoff = dayCutoff
         connection.configuration.returnLatestOrdersOnly = false
-//        connection.configuration.countryCode = "US"
-        let error = BRAccountLinkingManager.shared().linkRetailer(with: connection)
-        if (error == .none) {
-            print("xyz passou do primeiro if sem erros")
-            verifyConnection(retailer: retailer, username: username, password: password)
-        }
-
+        connection.configuration.countryCode = "US"
+        
+        print("############Account done")
+        return BRAccountLinkingManager.shared().linkRetailer(with: connection)
     }
     
-    public func verifyConnection(retailer: RetailerCommon, username: String, password: String) {
+    public func verifyConnection(retailer: RetailerCommon, username: String, password: String, completion: @escaping (_ success: Bool, _ erro: Error?, _ sessionId: String) -> Void) {
         
         let connection = BRAccountLinkingConnection(retailer: retailer.toBRAccountLinkingRetailer()!, username: username, password: password)
-        connection.configuration.dayCutoff = 30
-        let taskId = BRAccountLinkingManager.shared().verifyRetailer(with: connection, withCompletion: { errorCode, viewController, sessionId in
+        connection.configuration.dayCutoff = 500
+        let taskId = BRAccountLinkingManager.shared().verifyRetailer(with: connection, withCompletion: { error, viewController, sessionId in
+            if (error == .verificationNeeded) {
+              // Display UIViewController for 2FA verification, CAPTCHA or other user input
+                self.VerificationNeededPresent(viewController: viewController!)
 
-          if (errorCode == .verificationNeeded) {
-              print("xyz Caiu no verification needed")
-            // Display UIViewController for 2FA verification, CAPTCHA or other user input
-//              viewController.shared.window.first?.rootViewController
+            } else if (error == .verificationCompleted) {
+              // Dismiss the previously presented UIViewController
+                self.VerificationNeededDismiss()
+            } else {
 
-          } else if (errorCode == .verificationCompleted) {
-            // Dismiss the previously presented UIViewController
-//              viewController!.dismiss(animated: true)
-
-          } else {
-
-            if (errorCode == .noCredentials) {
-              // Error: Credentials have not been provided
-            } else if (errorCode == .internal) {
-              // Error: Unexpected error
-            } else if (errorCode == .parsingFail) {
-              // Error: General Error
-            } else if (errorCode == .invalidCredentials) {
-              // Error: Probable cause of the failure is invalid credentials
-            } else if (errorCode == .cancelled) {
-              // Operation has been cancelled.
-              // Dismiss any previously presented user input UIViewController
-            }
-            // Verification Completed Successfully
-            // Account can be linked
-            BRAccountLinkingManager.shared().linkRetailer(with: connection)
-              
-          }
-        })
-    }
+                if (error == .noCredentials) {
+                    completion(false, error as! Error, sessionId)
+                  // Error: Credentials have not been provided
+                } else if (error == .internal) {
+                    completion(false, error as! Error, sessionId)
+                  // Error: Unexpected error
+                } else if (error == .parsingFail) {
+                    completion(false, error as! Error, sessionId)
+                  // Error: General Error
+                } else if (error == .invalidCredentials) {
+                    completion(false, error as! Error, sessionId)
+                  // Error: Probable cause of the failure is invalid credentials
+                } else if (error == .cancelled) {
+                    completion(false, error as! Error, sessionId)
+                  // Operation has been cancelled.
+                  // Dismiss any previously presented user input UIViewController
+                }
+                // Verification Completed Successfully
+                // Account can be linked
+                print("######VerificationCompleted")
+                let linkRetailer = BRAccountLinkingManager.shared().linkRetailer(with: connection)
+                completion(true, nil, sessionId)
+              }
+            })
+        }
     
-    public func orders(){
-        let taskId = BRAccountLinkingManager.shared().grabNewOrders(for: .amazon) { retailer, order, remaining, viewController, errorCode, sessionID in
+    
+    public func orders(retailer :BRAccountLinkingRetailer, completion: @escaping (_ success: Bool, _ retailer: BRAccountLinkingRetailer, _ remaining: Int, _ sessionId: String, _ erroCode: Error?) -> Void){
 
+        let taskId = BRAccountLinkingManager.shared().grabNewOrders(for: retailer) { retailer, order, remaining, viewController, errorCode, sessionId in
           if (errorCode == .verificationNeeded) {
             // Display UIViewController for 2FA verification, CAPTCHA or other user input
+              print("###GrabOrders verification needed")
+              self.VerificationNeededPresent(viewController: viewController!)
           } else if errorCode == .invalidKey {
-              print("ALGO ERRADO NÃO ESTÁ CERTO")
+              print("####InvalidKey")
           }else if errorCode == .verificationCompleted {
             // Dismiss the previously presented UIViewController
+              self.VerificationNeededDismiss()
           } else if errorCode == .none {
+              print("###Everiting Works Fine")
             // Order may be returned here
+              print(order?.description)
             if (remaining <= 0) {
               // Grab Orders Completed Successfully
               // No more orders to fetch
@@ -83,10 +88,19 @@ public class Retailer {
           } else {
             // Grab Orders Failed. Check error for more info
           }
+            
         }
     }
-    
-    
+    public func VerificationNeededPresent(viewController: UIViewController){
+        print("###verification needed")
+        let rootVc = UIApplication.shared.windows.first?.rootViewController
+        rootVc!.present(viewController, animated: true, completion: nil)
+    }
+    public func VerificationNeededDismiss(){
+        print("###verification needed Dismiss")
+        let rootVc = UIApplication.shared.windows.first?.rootViewController
+        rootVc!.dismiss(animated: true)
+    }
+
 }
-//            how use the RetailerCommon
-//            RetailerCommon(rawValue: "amazon").toBRAccountLinkingRetailer()
+
