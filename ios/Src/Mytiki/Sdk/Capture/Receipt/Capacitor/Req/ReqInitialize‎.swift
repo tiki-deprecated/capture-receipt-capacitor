@@ -4,8 +4,14 @@
  */
 
 import Foundation
+import Capacitor
 
-public struct ReqInitialize: Encodable {
+public class ReqInitialize {
     var licenseKey: String
     var productKey: String
+    init(data: JSObject) {
+        licenseKey = data.getString("licenseKey") ?? ""
+        productKey = data.getString("productKey") ?? ""
+    }
 }
+
