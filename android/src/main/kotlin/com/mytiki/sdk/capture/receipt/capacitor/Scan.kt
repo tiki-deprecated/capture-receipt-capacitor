@@ -40,6 +40,7 @@ class Scan {
 
     fun open(call: PluginCall, context: Context): Intent {
         val scanOptions = ScanOptions.newBuilder()
+            .detectDuplicates(true)
             .frameCharacteristics(
                 FrameCharacteristics.newBuilder()
                     .storeFrames(true)

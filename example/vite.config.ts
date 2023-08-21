@@ -3,13 +3,16 @@
  * MIT license. See LICENSE file in root directory.
  */
 
+import vue from '@vitejs/plugin-vue';
+import path from 'path';
 import { defineConfig } from 'vite';
 
+// https://vitejs.dev/config/
 export default defineConfig({
-  root: './src',
-  build: {
-    outDir: '../dist',
-    minify: false,
-    emptyOutDir: true,
+  plugins: [vue()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+    },
   },
 });
