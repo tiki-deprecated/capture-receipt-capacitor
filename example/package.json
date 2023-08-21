@@ -1,29 +1,42 @@
 {
-  "name": "capacitor-app",
-  "version": "1.0.0",
-  "description": "An Amazing Capacitor App",
+  "name": "@mytiki/tiki-capture-receipt-example",
+  "version": "0.0.1",
+  "description": "Example app for @mytiki/tiki-capture-receipt",
   "main": "index.js",
-  "keywords": [
-    "capacitor",
-    "mobile"
-  ],
   "scripts": {
-    "start": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "vite",
+    "build": "run-p type-check build-only; npx cap sync",
+    "preview": "vite preview",
+    "build-only": "vite build",
+    "type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false",
+    "lint": "eslint .. --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "format": "prettier --write ../src"
   },
   "dependencies": {
-    "@capacitor/core": "latest",
-    "@capacitor/camera": "latest",
-    "@capacitor/splash-screen": "latest",
     "@mytiki/tiki-capture-receipt-capacitor": "file:..",
     "@capacitor/ios": "^5.2.2",
-    "@capacitor/android": "^5.2.2"
+    "@capacitor/android": "^5.2.2",
+    "@capacitor/core": "^5.2.3",
+    "vue": "^3.3.4"
   },
   "devDependencies": {
-    "@capacitor/cli": "latest",
-    "vite": "^4.4.9"
+    "@capacitor/cli": "5.2.3",
+    "@rushstack/eslint-patch": "^1.3.3",
+    "@tsconfig/node18": "^18.2.0",
+    "@types/node": "^20.5.0",
+    "@types/uuid": "^9.0.2",
+    "@vitejs/plugin-vue": "^4.2.3",
+    "@vue/eslint-config-prettier": "^8.0.0",
+    "@vue/eslint-config-typescript": "^11.0.3",
+    "@vue/tsconfig": "^0.4.0",
+    "eslint": "^8.47.0",
+    "eslint-plugin-vue": "^9.17.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.0.1",
+    "typescript": "~5.1.6",
+    "vite": "^4.4.9",
+    "vue-tsc": "^1.8.8"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Tiki inc.",
+  "license": "MIT"
 }

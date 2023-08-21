@@ -6,6 +6,7 @@
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
 import com.microblink.core.Promotion
+import org.json.JSONArray
 import org.json.JSONObject
 
 class RspPromotion(promotion: Promotion) : Rsp {
@@ -15,8 +16,8 @@ class RspPromotion(promotion: Promotion) : Rsp {
     private val rewardCurrency: String?
     private val errorCode: Int
     private val errorMessage: String?
-    private val relatedProductIndexes: List<Int>?
-    private val qualifications: List<List<Int>>?
+    private val relatedProductIndexes: List<Int>
+    private val qualifications: List<List<Int>>
 
     init {
         id = promotion.id()
@@ -25,8 +26,8 @@ class RspPromotion(promotion: Promotion) : Rsp {
         rewardCurrency = promotion.rewardCurrency()
         errorCode = promotion.errorCode()
         errorMessage = promotion.errorMessage()
-        relatedProductIndexes = promotion.relatedProductIndexes()
-        qualifications = promotion.qualifications()
+        relatedProductIndexes = promotion.relatedProductIndexes() ?: emptyList()
+        qualifications = promotion.qualifications() ?: emptyList()
     }
 
     override fun toJson(): JSONObject =
@@ -37,8 +38,8 @@ class RspPromotion(promotion: Promotion) : Rsp {
             .put("rewardCurrency", rewardCurrency)
             .put("errorCode", errorCode)
             .put("errorMessage", errorMessage)
-            .put("relatedProductIndexes", relatedProductIndexes)
-            .put("qualifications", qualifications)
+            .put("relatedProductIndexes", JSONArray(relatedProductIndexes))
+            .put("qualifications", JSONArray(qualifications.map { q -> JSONArray(q) }))
 
     companion object {
         fun opt(promotion: Promotion?): RspPromotion? =

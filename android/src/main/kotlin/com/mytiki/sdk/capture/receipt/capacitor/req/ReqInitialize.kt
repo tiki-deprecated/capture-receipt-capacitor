@@ -8,11 +8,11 @@ package com.mytiki.sdk.capture.receipt.capacitor.req
 import com.getcapacitor.JSObject
 
 class ReqInitialize(data: JSObject) {
-    val licenseKey: String?
-    val productKey: String?
+    val licenseKey: String
+    val productKey: String
 
     init {
-        licenseKey = data.getString("licenseKey")
-        productKey = data.getString("productKey")
+        licenseKey = data.getString("licenseKey") ?: ""
+        productKey = data.getString("productKey") ?: ""
     }
 }

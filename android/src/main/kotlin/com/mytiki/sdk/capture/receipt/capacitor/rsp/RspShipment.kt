@@ -6,6 +6,7 @@
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
 import com.microblink.core.Shipment
+import org.json.JSONArray
 import org.json.JSONObject
 
 class RspShipment(shipment: Shipment) : Rsp {
@@ -20,7 +21,7 @@ class RspShipment(shipment: Shipment) : Rsp {
     override fun toJson(): JSONObject =
         JSONObject()
             .put("status", status)
-            .put("products", products.map { prd -> prd.toJson() })
+            .put("products", JSONArray(products.map { prd -> prd.toJson() }))
 
     companion object {
         fun opt(shipment: Shipment?): RspShipment? =

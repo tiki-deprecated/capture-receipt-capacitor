@@ -6,6 +6,7 @@
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
 import com.microblink.core.Product
+import org.json.JSONArray
 import org.json.JSONObject
 
 class RspProduct(product: Product) : Rsp {
@@ -26,13 +27,13 @@ class RspProduct(product: Product) : Rsp {
     private val upc: String?
     private val imageUrl: String?
     private val shippingStatus: String?
-    private val additionalLines: List<RspAdditionalLine>?
+    private val additionalLines: List<RspAdditionalLine>
     private val priceAfterCoupons: RspFloatType?
     private val voided: Boolean
     private val probability: Double
     private val sensitive: Boolean
-    private val possibleProducts: List<RspProduct>?
-    private val subProducts: List<RspProduct>?
+    private val possibleProducts: List<RspProduct>
+    private val subProducts: List<RspProduct>
     private val added: Boolean
     private val blinkReceiptBrand: String?
     private val blinkReceiptCategory: String?
@@ -42,7 +43,7 @@ class RspProduct(product: Product) : Rsp {
     private val descriptionPostfix: RspStringType?
     private val skuPrefix: RspStringType?
     private val skuPostfix: RspStringType?
-    private val attributes: List<JSONObject>?
+    private val attributes: List<JSONObject>
     private val sector: String?
     private val department: String?
     private val majorCategory: String?
@@ -69,12 +70,13 @@ class RspProduct(product: Product) : Rsp {
         shippingStatus = product.shippingStatus()
         additionalLines =
             product.additionalLines()?.map { additionalLine -> RspAdditionalLine(additionalLine) }
+                ?: emptyList()
         priceAfterCoupons = RspFloatType.opt(product.priceAfterCoupons())
         voided = product.voided()
         probability = product.probability()
         sensitive = product.sensitive()
-        possibleProducts = product.possibleProducts()?.map { prd -> RspProduct(prd) }
-        subProducts = product.subProducts()?.map { prd -> RspProduct(prd) }
+        possibleProducts = product.possibleProducts()?.map { prd -> RspProduct(prd) } ?: emptyList()
+        subProducts = product.subProducts()?.map { prd -> RspProduct(prd) } ?: emptyList()
         added = product.added()
         blinkReceiptBrand = product.blinkReceiptBrand()
         blinkReceiptCategory = product.blinkReceiptCategory()
@@ -95,12 +97,12 @@ class RspProduct(product: Product) : Rsp {
             extendedFields
         } else null
         attributes = if (product.attributes() != null) {
-            product.attributes()?.map { attr ->
+            product.attributes()!!.map { attr ->
                 val json = JSONObject()
                 attr.forEach { entry -> json.put(entry.key, entry.value) }
                 json
             }
-        } else null
+        } else emptyList()
     }
 
     override fun toJson(): JSONObject =
@@ -122,13 +124,13 @@ class RspProduct(product: Product) : Rsp {
             .put("upc", upc)
             .put("imageUrl", imageUrl)
             .put("shippingStatus", shippingStatus)
-            .put("additionalLines", additionalLines?.map { line -> line.toJson() })
+            .put("additionalLines", JSONArray(additionalLines.map { line -> line.toJson() }))
             .put("priceAfterCoupons", priceAfterCoupons?.toJson())
             .put("voided", voided)
             .put("probability", probability)
             .put("sensitive", sensitive)
-            .put("possibleProducts", possibleProducts?.map { prd -> prd.toJson() })
-            .put("subProducts", subProducts?.map { prd -> prd.toJson() })
+            .put("possibleProducts", JSONArray(possibleProducts.map { prd -> prd.toJson() }))
+            .put("subProducts", JSONArray(subProducts.map { prd -> prd.toJson() }))
             .put("added", added)
             .put("blinkReceiptBrand", blinkReceiptBrand)
             .put("blinkReceiptCategory", blinkReceiptCategory)
@@ -138,7 +140,7 @@ class RspProduct(product: Product) : Rsp {
             .put("descriptionPostfix", descriptionPostfix?.toJson())
             .put("skuPrefix", skuPrefix?.toJson())
             .put("skuPostfix", skuPostfix?.toJson())
-            .put("attributes", attributes)
+            .put("attributes", JSONArray(attributes))
             .put("sector", sector)
             .put("department", department)
             .put("majorCategory", majorCategory)

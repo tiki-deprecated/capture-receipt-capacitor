@@ -8,13 +8,30 @@ import { WebPlugin } from '@capacitor/core';
 import type { Receipt } from './receipt';
 import type { ReceiptCapturePlugin } from './receipt-capture-plugin';
 
-export class ReceiptCaptureWeb
-  extends WebPlugin
-  implements ReceiptCapturePlugin
-{
-  async initialize(_options: {
-    licenseKey: string;
-  }): Promise<{ isInitialized: boolean; reason?: string }> {
+export class ReceiptCaptureWeb extends WebPlugin implements ReceiptCapturePlugin {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  loginWithRetailer(_options: {
+    username: string;
+    password: string;
+    provider: string;
+  }): Promise<{ username: string; provider: string; isVerified: boolean }> {
+    throw new Error('Method not implemented.');
+  }
+  retailers(): Promise<{ accounts: [{ username: string; provider: string; isVerified: boolean }] }> {
+    throw new Error('Method not implemented.');
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  removeRetailer(_options: {
+    username: string;
+    provider: string;
+  }): Promise<{ username: string; provider: string; isVerified: boolean }> {
+    throw new Error('Method not implemented.');
+  }
+  orders(): Promise<{ provider: string; username: string; scan: Receipt }> {
+    throw this.unimplemented('Mobile Only.');
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async initialize(_options: { licenseKey: string }): Promise<{ isInitialized: boolean; reason?: string }> {
     throw this.unimplemented('Mobile Only.');
   }
 
@@ -22,6 +39,7 @@ export class ReceiptCaptureWeb
     throw this.unimplemented('Mobile Only.');
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   loginWithEmail(_options: {
     username: string;
     password: string;
@@ -43,11 +61,16 @@ export class ReceiptCaptureWeb
     throw this.unimplemented('Mobile Only.');
   }
 
-  removeEmail(_options: {
-    username: string;
-    password: string;
-    provider: string;
-  }): Promise<{ success: boolean }> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  removeEmail(_options: { username: string; password: string; provider: string }): Promise<{ success: boolean }> {
+    throw this.unimplemented('Mobile Only.');
+  }
+
+  flushRetailer(): Promise<void> {
+    throw this.unimplemented('Mobile Only.');
+  }
+
+  flushEmail(): Promise<void> {
     throw this.unimplemented('Mobile Only.');
   }
 }
