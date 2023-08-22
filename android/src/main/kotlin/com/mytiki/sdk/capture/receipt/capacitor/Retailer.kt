@@ -194,7 +194,7 @@ class Retailer {
                     builder.setView(exception.view)
                     val dialog: AlertDialog = builder.create()
                     dialog.show()
-                    // TODO refazer a verificação dps da webview dismiss
+
                 }else{
                     when (exception.code){
                         INTERNAL_ERROR -> call.reject("Login failed: Internal Error")
