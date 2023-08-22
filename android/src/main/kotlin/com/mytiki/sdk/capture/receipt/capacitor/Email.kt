@@ -21,7 +21,7 @@ import com.microblink.digital.ProviderSetupOptions
 import com.microblink.digital.ProviderSetupResults
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqLogin
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspAccount
+import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspEmailAccount
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspEmail
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspLogin
 import kotlinx.coroutines.CompletableDeferred
@@ -54,14 +54,13 @@ class Email {
         return isImapInitialized
     }
 
-    fun login(call: PluginCall, activity: AppCompatActivity) {
-        val req = ReqLogin(call.data)
+    fun login(call: PluginCall, account: Account, activity: AppCompatActivity) {
         ProviderSetupDialogFragment.newInstance(
             ProviderSetupOptions.newBuilder(
                 PasswordCredentials.newBuilder(
-                    Provider.valueOf(req.provider!!),
-                    req.username!!,
-                    req.password!!
+                    Provider.valueOf(account.accountType.source),
+                    account.username,
+                    account.password!!
                 ).build()
             ).build()
         ).callback {
@@ -80,7 +79,7 @@ class Email {
                         as ProviderSetupDialogFragment
                 if (dialog.isAdded) {
                     dialog.dismiss()
-                    val rsp = RspLogin(req.username, req.provider)
+                    val rsp = RspLogin(account.username, account.accountType.source)
                     call.resolve(JSObject.fromJSONObject(rsp.toJson()))
                 }
             }
@@ -111,7 +110,7 @@ class Email {
             credentials?.forEach { credential ->
                 val verified = client?.verify(credential)?.await()
                 rsp.add(
-                    RspAccount(
+                    RspEmailAccount(
                         credential.username(),
                         credential.provider().name,
                         verified ?: false

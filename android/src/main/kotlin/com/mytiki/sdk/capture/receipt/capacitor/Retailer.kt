@@ -14,6 +14,7 @@ import com.getcapacitor.JSObject
 import com.getcapacitor.PluginCall
 import com.microblink.core.ScanResults
 import com.microblink.linking.*
+import com.mytiki.sdk.capture.receipt.capacitor.Account
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqRetailerLogin
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspRetailerAccount
@@ -45,16 +46,15 @@ class Retailer {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun login( call: PluginCall, context: Context ) {
-        val req = ReqRetailerLogin(call.data)
-        val account = Account(
-            RetailerEnum.fromString(req.retailer).toInt(),
-            PasswordCredentials(req.username, req.password)
+    fun login( call: PluginCall, account: Account, context: Context ) {
+        val mbAccount = com.microblink.linking.Account(
+            RetailerEnum.fromString(account.accountType.source).toInt(),
+            PasswordCredentials(account.username, account.password!!)
         )
-        client.link(account)
+        client.link(mbAccount)
             .addOnSuccessListener {
                 if (it) {
-                    verify(account, true, context, call)
+                    verify(mbAccount, true, context, call)
                 } else {
                     call.reject("login failed")
                 }
@@ -144,13 +144,16 @@ class Retailer {
     private fun getAccounts(): CompletableDeferred<List<RspRetailerAccount>> {
         val getAccounts = CompletableDeferred<List<RspRetailerAccount>>()
         client.accounts()
-            .addOnSuccessListener { accounts ->
+            .addOnSuccessListener { mbAccounts ->
                 MainScope().async {
-                    if (accounts != null) {
-                        val accountList = accounts.map{ account ->
+                    if (mbAccounts != null) {
+                        val accountList = mbAccounts.map{ mbAccount ->
+                            val account = Account.fromMb(mbAccount)
+                            account.isVerified = verify(mbAccount).await()
+
                             RspRetailerAccount(
-                                account,
-                               verify(account).await()
+                                mbAccount,
+                               verify(mbAccount).await()
                             )
                         }
                         getAccounts.complete(accountList)
@@ -166,17 +169,18 @@ class Retailer {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun verify( account: Account, showDialog: Boolean = false, context: Context? = null, call: PluginCall? = null ): CompletableDeferred<Boolean>{
+    private fun verify( mbAccount: com.microblink.linking.Account, showDialog: Boolean = false, context: Context? = null, call: PluginCall? = null ): CompletableDeferred<Boolean>{
         val verifyCompletable = CompletableDeferred<Boolean>()
+        val account = Account.fromMb(mbAccount)
         client.verify(
-            account.retailerId,
+            RetailerEnum.fromString(account.accountType.source).value,
             success = { isVerified: Boolean, _: String ->
                 if(isVerified){
-                    val rsp = RspRetailerAccount(account, true)
-                    call?.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                    account.isVerified = true
+                    call?.resolve(account.toRsp())
                     verifyCompletable.complete(true)
                 }else {
-                    client.unlink(account)
+                    client.unlink(mbAccount)
                     call?.reject("login failed")
                     verifyCompletable.complete(false)
                 }
@@ -206,7 +210,7 @@ class Retailer {
                         MISSING_CREDENTIALS -> call.reject("Login failed: Missing Credentials")
                         else -> call.reject("Login failed: Unknown Error")
                     }
-                    client.unlink(account)
+                    client.unlink(mbAccount)
                 }
             }
         )

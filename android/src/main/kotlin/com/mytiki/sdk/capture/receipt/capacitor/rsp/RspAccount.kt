@@ -5,16 +5,18 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
+import com.google.android.gms.common.internal.AccountType
+import com.mytiki.sdk.capture.receipt.capacitor.Account
+import com.mytiki.sdk.capture.receipt.capacitor.AccountTypeEnum
 import org.json.JSONObject
 
 class RspAccount(
-    private val username: String,
-    private val provider: String,
-    private val verified: Boolean
+    private val account: Account
 ) : Rsp {
     override fun toJson(): JSONObject =
         JSONObject()
-            .put("username", username)
-            .put("provider", provider)
-            .put("verified", verified)
+            .put("username", account.username)
+            .put("source", account.accountType.source)
+            .put("type", account.accountType.type.name)
+            .put("isVerified", account.isVerified)
 }

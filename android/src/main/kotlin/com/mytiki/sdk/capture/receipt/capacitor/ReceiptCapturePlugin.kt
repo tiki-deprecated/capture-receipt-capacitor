@@ -16,6 +16,7 @@ import com.getcapacitor.annotation.ActivityCallback
 import com.getcapacitor.annotation.CapacitorPlugin
 import com.getcapacitor.annotation.Permission
 import com.getcapacitor.annotation.PermissionCallback
+import com.mytiki.sdk.capture.receipt.capacitor.req.ReqAccount
 
 
 @CapacitorPlugin(
@@ -41,7 +42,15 @@ class ReceiptCapturePlugin : Plugin() {
     }
 
     @PluginMethod
-    fun loginWithEmail(call: PluginCall) = receiptCapture.email.login(call, activity)
+    fun login(call: PluginCall){
+        val account = Account.fromReq(call.data)
+        when (account.accountType.type) {
+            TypeEnum.EMAIL -> receiptCapture.email.login(call, account, activity)
+            TypeEnum.RETAILER -> receiptCapture.retailer.login(call, account, context)
+            else -> call.reject("The account type is null")
+        }
+    }
+
 
     @PluginMethod
     fun scrapeEmail(call: PluginCall) = receiptCapture.email.scrape(call)
@@ -52,8 +61,7 @@ class ReceiptCapturePlugin : Plugin() {
     @PluginMethod
     fun removeEmail(call: PluginCall) = receiptCapture.email.remove(call)
 
-    @PluginMethod
-    fun loginWithRetailer(call: PluginCall) = receiptCapture.retailer.login(call, context)
+
 
     @PluginMethod
     fun retailers(call: PluginCall) = receiptCapture.retailer.accounts(call)

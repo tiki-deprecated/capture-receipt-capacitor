@@ -62,11 +62,11 @@ enum class RetailerEnum (val value: Int){
     WEGMANS(com.microblink.linking.WEGMANS);
 
     fun toInt() : Int = this.value
-    override fun toString() = this.name.lowercase()
+    override fun toString() = this.name
 
     companion object {
         fun fromInt(intValue: Int) = values().first { it.value == intValue }
-        fun fromString(stringValue: String) = values().first { it.name.lowercase() == stringValue }
+        fun fromString(stringValue: String) = values().first { it.name == stringValue }
 
     }
 }

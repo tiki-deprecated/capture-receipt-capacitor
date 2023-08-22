@@ -62,8 +62,16 @@ enum class AccountTypeEnum(val type: TypeEnum,  val source: String) {
     WEGMANS(TypeEnum.RETAILER, RetailerEnum.WEGMANS.toString()),
 //    YAHOO(TypeEnum.EMAIL, "YAHOO",
 //    OUTLOOK(TypeEnum.EMAIL, "OUTLOOK",
+//    AOL(TypeEnum.EMAIL, "AOL",
     GMAIL(TypeEnum.EMAIL, "GMAIL");
 
 
+
+    override fun toString() = this.name.lowercase()
+
+    companion object {
+        fun fromString(stringValue: String) = AccountTypeEnum.values().first{ it.source == stringValue}
+
+    }
 
 }
