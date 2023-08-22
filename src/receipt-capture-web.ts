@@ -7,6 +7,7 @@ import { WebPlugin } from '@capacitor/core';
 
 import type { Receipt } from './receipt';
 import type { ReceiptCapturePlugin } from './receipt-capture-plugin';
+import { Account } from './account';
 
 export class ReceiptCaptureWeb extends WebPlugin implements ReceiptCapturePlugin {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -14,17 +15,17 @@ export class ReceiptCaptureWeb extends WebPlugin implements ReceiptCapturePlugin
     username: string;
     password: string;
     provider: string;
-  }): Promise<{ username: string; provider: string; isVerified: boolean }> {
+  }): Promise<Account> {
     throw new Error('Method not implemented.');
   }
-  retailers(): Promise<{ accounts: [{ username: string; provider: string; isVerified: boolean }] }> {
+  retailers(): Promise<Account[]> {
     throw new Error('Method not implemented.');
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   removeRetailer(_options: {
     username: string;
     provider: string;
-  }): Promise<{ username: string; provider: string; isVerified: boolean }> {
+  }): Promise<Account> {
     throw new Error('Method not implemented.');
   }
   orders(): Promise<{ provider: string; username: string; scan: Receipt }> {
