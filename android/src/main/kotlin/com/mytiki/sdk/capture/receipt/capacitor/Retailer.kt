@@ -77,16 +77,14 @@ class Retailer {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun remove(call: PluginCall){
-        val req = ReqRetailerLogin(call.data)
+    fun remove(call: PluginCall, account: Account){
         client.accounts().addOnSuccessListener { accounts ->
-            val reqAccount = accounts?.firstOrNull {
-                it.retailerId == RetailerEnum.fromString(req.retailer).toInt()
+            val mbAccount = accounts?.firstOrNull {
+                it.retailerId == RetailerEnum.fromString(account.accountType.source).toInt()
             }
-            if (reqAccount != null) {
-                client.unlink(reqAccount).addOnSuccessListener {
-                    val rsp = RspRetailerAccount(reqAccount, false)
-                    call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+            if (mbAccount != null) {
+                client.unlink(mbAccount).addOnSuccessListener {
+                    call.resolve()
                 }.addOnFailureListener {
                     call.reject(it.message)
                 }

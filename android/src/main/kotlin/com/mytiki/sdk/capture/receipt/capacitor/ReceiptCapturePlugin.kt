@@ -1,6 +1,6 @@
 /*
  * Copyright (c) TIKI Inc.
- * MIT license. See LICENSE file in root directory.
+ * MIT license.  See LICENSE file in root directory.
  */
 
 package com.mytiki.sdk.capture.receipt.capacitor
@@ -31,15 +31,9 @@ import com.mytiki.sdk.capture.receipt.capacitor.req.ReqAccount
 class ReceiptCapturePlugin : Plugin() {
     private val receiptCapture = ReceiptCapture()
 
+//    REFACTORED CODE
     @PluginMethod
     fun initialize(call: PluginCall) = receiptCapture.initialize(call, context)
-
-    @PluginMethod
-    fun scan(call: PluginCall) {
-        if (getPermissionState("camera") != PermissionState.GRANTED)
-            requestPermissionForAlias("camera", call, "onCameraPermission")
-        else startScan(call)
-    }
 
     @PluginMethod
     fun login(call: PluginCall){
@@ -47,36 +41,56 @@ class ReceiptCapturePlugin : Plugin() {
         when (account.accountType.type) {
             TypeEnum.EMAIL -> receiptCapture.email.login(call, account, activity)
             TypeEnum.RETAILER -> receiptCapture.retailer.login(call, account, context)
-            else -> call.reject("The account type is null")
         }
     }
 
+    @PluginMethod
+    fun logout(call: PluginCall){
 
+        if(call.data.getString("source")?.isEmpty() == true && call.data.getString("username")?.isEmpty() == true){
+            receiptCapture.retailer.flush(call)
+            receiptCapture.email.flush(call)
+        } else if(call.data.getString("source")?.isEmpty() == false && call.data.getString("username")?.isEmpty() == false){
+            val account = Account.fromReq(call.data)
+
+            when (account.accountType.type) {
+                TypeEnum.EMAIL -> {
+                    receiptCapture.email.remove(call, account)
+                }
+                TypeEnum.RETAILER -> {
+                    receiptCapture.retailer.remove(call, account)
+                }
+            }
+
+        } else if(call.data.getString("source")?.isEmpty() == false && call.data.getString("username")?.isEmpty() == true){
+            call.reject("Provide username in logout request")
+        } else if(call.data.getString("source")?.isEmpty() == true && call.data.getString("username")?.isEmpty() == false){
+            call.reject("Provide source in logout request")
+        }
+
+    }
+
+    
+//    OLD CODE
+    @PluginMethod
+    fun scan(call: PluginCall) {
+        if (getPermissionState("camera") != PermissionState.GRANTED)
+            requestPermissionForAlias("camera", call, "onCameraPermission")
+        else startScan(call)
+    }
     @PluginMethod
     fun scrapeEmail(call: PluginCall) = receiptCapture.email.scrape(call)
+
 
     @PluginMethod
     fun verifyEmail(call: PluginCall) = receiptCapture.email.accounts(call)
 
     @PluginMethod
-    fun removeEmail(call: PluginCall) = receiptCapture.email.remove(call)
-
-
-
-    @PluginMethod
     fun retailers(call: PluginCall) = receiptCapture.retailer.accounts(call)
 
-    @PluginMethod
-    fun removeRetailer(call: PluginCall) = receiptCapture.retailer.remove(call)
 
     @PluginMethod
     fun orders(call: PluginCall) = receiptCapture.retailer.orders(call)
-
-    @PluginMethod
-    fun flushRetailer(call: PluginCall) = receiptCapture.retailer.flush(call)
-
-    @PluginMethod
-    fun flushEmail(call: PluginCall) = receiptCapture.email.flush(call)
 
     @ActivityCallback
     private fun onScanResult(call: PluginCall, result: ActivityResult) =

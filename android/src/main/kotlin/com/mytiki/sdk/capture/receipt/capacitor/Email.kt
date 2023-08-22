@@ -121,13 +121,12 @@ class Email {
         }
     }
 
-    fun remove(call: PluginCall) {
-        val req = ReqLogin(call.data)
+    fun remove(call: PluginCall, account: Account) {
         client?.logout(
             PasswordCredentials.newBuilder(
-                Provider.valueOf(req.provider!!),
-                req.username!!,
-                req.password!!
+                Provider.valueOf(account.accountType.source),
+                account.username,
+                account.password!!
             ).build()
         )?.addOnSuccessListener {
             call.resolve(JSObject().put("success", it))
