@@ -3,6 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
+import { Account } from './account';
 import type { Receipt } from './receipt';
 
 export interface ReceiptCapturePlugin {
@@ -34,15 +35,11 @@ export interface ReceiptCapturePlugin {
     username: string;
     password: string;
     provider: string;
-  }): Promise<{ username: string; provider: string; isVerified: boolean }>;
+  }): Promise<Account>;
 
-  retailers(): Promise<{ accounts: [{ username: string; provider: string; isVerified: boolean }] }>;
+  retailers(): Promise<Account[]>;
 
-  removeRetailer(options: { username: string; provider: string }): Promise<{
-    username: string;
-    provider: string;
-    isVerified: boolean;
-  }>;
+  removeRetailer(options: { username: string; provider: string }): Promise<Account>;
 
   orders(): Promise<{
     provider: string;

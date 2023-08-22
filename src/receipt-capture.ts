@@ -3,8 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import type { Account, AccountProvider } from './account';
-import { providers } from './account';
+import type { Account } from './account';
 import type { Receipt } from './receipt';
 import type { ReceiptCapturePlugin } from './receipt-capture-plugin';
 
@@ -52,15 +51,21 @@ export class ReceiptCapture {
    * @param provider - The {@link AccountProvider}.
    * @returns A Promise that resolves to the logged-in Account object.
    */
-  loginWithEmail = async (username: string, password: string, provider: AccountProvider): Promise<Account> => {
+  loginWithEmail = async (username: string, password: string, provider: string): Promise<Account> => {
     const rsp = await this.plugin.loginWithEmail({
       username: username,
       password: password,
-      provider: provider.valueOf(),
+      provider: provider,
     });
     return {
       username: rsp.username,
-      provider: providers.get(rsp.provider),
+      accountType: {
+        type: 'Email',
+        name: provider,
+        icon: undefined,
+        key: provider
+      }
+      //provider: providers.get(rsp.provider),
     };
   };
 
@@ -75,7 +80,12 @@ export class ReceiptCapture {
       callback(
         {
           username: rsp.login.username,
-          provider: providers.get(rsp.login.provider),
+          accountType: {
+            type: 'Email',
+            name: rsp.login.provider,
+            icon: undefined,
+            key: rsp.login.provider
+          }
         },
         rsp.scans,
       );
@@ -89,11 +99,11 @@ export class ReceiptCapture {
    * @returns A Promise that resolves when the account is removed.
    * @throws Error if removal fails.
    */
-  removeEmail = async (username: string, password: string, provider: AccountProvider): Promise<void> => {
+  removeEmail = async (username: string, password: string, provider: string): Promise<void> => {
     const rsp = await this.plugin.removeEmail({
       username: username,
       password: password,
-      provider: provider.valueOf(),
+      provider: provider,
     });
     if (!rsp.success) throw Error(`Failed to remove: ${provider} | ${username}`);
   };
@@ -108,12 +118,17 @@ export class ReceiptCapture {
       return {
         username: acc.username,
         verified: acc.verified,
-        provider: providers.get(acc.provider),
+        accountType: {
+          type: 'Email',
+          name: acc.provider,
+          icon: undefined,
+          key: acc.provider
+        }
       };
     });
   };
 
-  loginWithRetailer = async (username: string, password: string, provider: string): Promise<RetailerAccount> => {
+  loginWithRetailer = async (username: string, password: string, provider: string): Promise<Account> => {
     return this.plugin.loginWithRetailer({
       username,
       password,
@@ -121,12 +136,12 @@ export class ReceiptCapture {
     });
   };
 
-  retailers = async (): Promise<RetailerAccount[]> => {
-    return (await this.plugin.retailers()).accounts;
+  retailers = async (): Promise<Account[]> => {
+    return (await this.plugin.retailers());
   };
 
-  removeRetailer = async (username: string, provider: string): Promise<RetailerAccount> => {
-    return await this.plugin.removeRetailer({ username, provider });
+  removeRetailer = async (username: string, provider: string): Promise<Account> => {
+    return await this.plugin.removeRetailer({username, provider});
   };
 
   orders = async (): Promise<{
@@ -141,8 +156,4 @@ export class ReceiptCapture {
   flushRetailer = async (): Promise<void> => this.plugin.flushRetailer();
 }
 
-interface RetailerAccount {
-  username: string;
-  provider: string;
-  isVerified: boolean;
-}
+

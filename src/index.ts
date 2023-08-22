@@ -11,7 +11,6 @@
  */
 import { registerPlugin } from '@capacitor/core';
 
-import { AccountProvider } from './account';
 import type { Account } from './account';
 import type { AdditionalLine } from './additional-line';
 import type { Coupon } from './coupon';
@@ -41,7 +40,7 @@ const plugin: ReceiptCapturePlugin = registerPlugin<ReceiptCapturePlugin>('Recei
  */
 const instance: ReceiptCapture = new ReceiptCapture(plugin);
 
-export { instance, AccountProvider };
+export { instance };
 export type {
   AdditionalLine,
   Coupon,
