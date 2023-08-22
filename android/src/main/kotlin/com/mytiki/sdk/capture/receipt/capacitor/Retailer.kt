@@ -5,15 +5,22 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Build
 import android.util.Log
 import android.view.View
-import androidx.appcompat.app.AlertDialog
+import android.view.ViewGroup
+import android.webkit.RenderProcessGoneDetail
+import android.webkit.WebView
+import androidx.annotation.RequiresApi
 import com.getcapacitor.JSObject
 import com.getcapacitor.PluginCall
 import com.microblink.core.ScanResults
 import com.microblink.linking.*
+import com.mytiki.sdk.capture.receipt.capacitor.components.CustomAlertDialog
+import com.mytiki.sdk.capture.receipt.capacitor.components.CustomAlertDialog.ViewDestroyedListener
+import com.mytiki.sdk.capture.receipt.capacitor.components.MyRendererTrackingWebViewClient
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqRetailerLogin
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspRetailerAccount
@@ -23,14 +30,10 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
-import timber.log.Timber
 
 
 class Retailer {
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private lateinit var client: AccountLinkingClient
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     fun initialize(
         req: ReqInitialize,
         context: Context,
@@ -40,34 +43,37 @@ class Retailer {
         BlinkReceiptLinkingSdk.licenseKey = req.licenseKey
         BlinkReceiptLinkingSdk.productIntelligenceKey = req.productKey
         BlinkReceiptLinkingSdk.initialize(context, OnInitialize(isLinkInitialized, onError))
-        client = client(context)
         return isLinkInitialized
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun login( call: PluginCall, context: Context ) {
+        val client: AccountLinkingClient = client(context)
         val req = ReqRetailerLogin(call.data)
         val account = Account(
             RetailerEnum.fromString(req.retailer).toInt(),
             PasswordCredentials(req.username, req.password)
         )
-        client.link(account)
-            .addOnSuccessListener {
+        client.link(account).addOnSuccessListener {
                 if (it) {
-                    verify(account, true, context, call)
+                    MainScope().async {
+                        verify(account, context,true,  call).await()
+                        client.close()
+                    }
                 } else {
                     call.reject("login failed")
+                    client.close()
                 }
-            }
-            .addOnFailureListener {
+            }.addOnFailureListener {
                 call.reject(it.message)
+                client.close()
             }
     }
 
-    fun accounts(call: PluginCall){
+    fun accounts(call: PluginCall, context: Context){
         MainScope().async{
             try {
-                val allAccounts = getAccounts().await()
+                val allAccounts = getAccounts(context).await()
                 val rsp = RspRetailerAccountList(allAccounts.toMutableList())
                 call.resolve(JSObject.fromJSONObject(rsp.toJson()))
             }catch(e: Exception){
@@ -77,7 +83,8 @@ class Retailer {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun remove(call: PluginCall){
+    fun remove(call: PluginCall, context: Context){
+        val client: AccountLinkingClient = client(context)
         val req = ReqRetailerLogin(call.data)
         client.accounts().addOnSuccessListener { accounts ->
             val reqAccount = accounts?.firstOrNull {
@@ -87,48 +94,60 @@ class Retailer {
                 client.unlink(reqAccount).addOnSuccessListener {
                     val rsp = RspRetailerAccount(reqAccount, false)
                     call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                    client.close()
                 }.addOnFailureListener {
                     call.reject(it.message)
+                    client.close()
                 }
             } else {
                 call.reject("Account not found")
+                client.close()
             }
+        }.addOnFailureListener{
+            call.reject(it.message)
+            client.close()
         }
     }
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun flush(call: PluginCall){
+    fun flush(call: PluginCall, context: Context){
+        val client: AccountLinkingClient = client(context)
         client.resetHistory().addOnSuccessListener {
             call.resolve()
+            client.close()
         }.addOnFailureListener {
             call.reject(it.message)
+            client.close()
         }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun orders( call: PluginCall ) {
+    fun orders( call: PluginCall, context: Context) {
+        val client: AccountLinkingClient = client(context)
+
         MainScope().async {
-            val accounts = getAccounts().await()
+            val accounts = getAccounts(context).await()
             accounts.forEach {
                 if(it.isVerified) {
                     val retailer = it.account.retailerId
                     val username = it.account.credentials.username()
                     val ordersSuccessCallback =
-                        { a: Int, results: ScanResults?, b: Int, c: String ->
+                        { _: Int, results: ScanResults?, remaining: Int, _: String ->
                             if (results != null) {
                                 val rsp = RspRetailerOrders(
                                     RetailerEnum.fromInt(retailer).toString(),
                                     username, results
                                 )
-                                Log.e("TIKI", rsp.toJson().toString())
                                 call.resolve(JSObject(rsp.toJson().toString()))
                             } else {
-                                Log.e("TIKI", "NO RESULT")
                                 call.reject("no result")
+                            }
+                            if (remaining == 0){
+                                client.close()
                             }
                         }
                     val ordersFailureCallback = { _: Int, exception: AccountLinkingException ->
-                        Log.e("TIKI", exception.message ?: "exception wihtout message")
                         call.reject(exception.message)
+                        client.close()
                     }
                     client.orders(
                         it.account.retailerId,
@@ -141,7 +160,9 @@ class Retailer {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun getAccounts(): CompletableDeferred<List<RspRetailerAccount>> {
+    private fun getAccounts(context: Context): CompletableDeferred<List<RspRetailerAccount>> {
+        val client: AccountLinkingClient = client(context)
+
         val getAccounts = CompletableDeferred<List<RspRetailerAccount>>()
         client.accounts()
             .addOnSuccessListener { accounts ->
@@ -150,23 +171,28 @@ class Retailer {
                         val accountList = accounts.map{ account ->
                             RspRetailerAccount(
                                 account,
-                               verify(account).await()
+                               verify(account, context).await()
                             )
                         }
                         getAccounts.complete(accountList)
+                        client.close()
                     } else {
                         getAccounts.complete(mutableListOf())
+                        client.close()
                     }
                 }
             }
             .addOnFailureListener {
                 getAccounts.completeExceptionally(it)
+                client.close()
             }
         return getAccounts
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun verify( account: Account, showDialog: Boolean = false, context: Context? = null, call: PluginCall? = null ): CompletableDeferred<Boolean>{
+    private fun verify( account: Account, context: Context, showDialog: Boolean = false,  call: PluginCall? = null ): CompletableDeferred<Boolean>{
+        val client: AccountLinkingClient = client(context)
+
         val verifyCompletable = CompletableDeferred<Boolean>()
         client.verify(
             account.retailerId,
@@ -175,26 +201,30 @@ class Retailer {
                     val rsp = RspRetailerAccount(account, true)
                     call?.resolve(JSObject.fromJSONObject(rsp.toJson()))
                     verifyCompletable.complete(true)
+                    client.close()
                 }else {
                     client.unlink(account)
                     call?.reject("login failed")
                     verifyCompletable.complete(false)
+                    client.close()
                 }
             },
             failure = { exception ->
                 if(call == null){
                     verifyCompletable.complete(false)
+                    client.close()
                 }else if (exception.code == VERIFICATION_NEEDED && exception.view != null && context != null) {
                     exception.view!!.isFocusableInTouchMode = true
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         exception.view!!.focusable = View.FOCUSABLE
                     }
+
                     val builder: AlertDialog.Builder = AlertDialog.Builder(context)
                     builder.setTitle("Verify your account")
                     builder.setView(exception.view)
                     val dialog: AlertDialog = builder.create()
                     dialog.show()
-                    // TODO refazer a verificação dps da webview dismiss
+
                 }else{
                     when (exception.code){
                         INTERNAL_ERROR -> call.reject("Login failed: Internal Error")
@@ -207,6 +237,7 @@ class Retailer {
                         else -> call.reject("Login failed: Unknown Error")
                     }
                     client.unlink(account)
+                    client.close()
                 }
             }
         )
