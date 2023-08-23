@@ -73,7 +73,6 @@ class ReceiptCapturePlugin : Plugin() {
         }
 
     }
-
     @RequiresApi(Build.VERSION_CODES.O_MR1)
     @PluginMethod
     fun accounts(call: PluginCall){
@@ -98,20 +97,11 @@ class ReceiptCapturePlugin : Plugin() {
     @PluginMethod
     fun scrapeEmail(call: PluginCall) = receiptCapture.email.scrape(call)
 
-
-    @PluginMethod
-    fun verifyEmail(call: PluginCall) = receiptCapture.email.accounts(call)
-
-    @PluginMethod
-    fun retailers(call: PluginCall) = receiptCapture.retailer.accounts(call)
-
-
     @PluginMethod
     fun orders(call: PluginCall) = receiptCapture.retailer.orders(call)
 
     @ActivityCallback
-    private fun onScanResult(call: PluginCall, result: ActivityResult) =
-        receiptCapture.scan.onResult(call, result)
+    private fun onScanResult(call: PluginCall, result: ActivityResult) = receiptCapture.scan.onResult(call, result)
 
     @PermissionCallback
     private fun onCameraPermission(call: PluginCall) {
