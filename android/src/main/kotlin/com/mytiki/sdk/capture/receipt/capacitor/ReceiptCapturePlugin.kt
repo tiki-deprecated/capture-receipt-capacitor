@@ -18,7 +18,7 @@ import com.getcapacitor.annotation.ActivityCallback
 import com.getcapacitor.annotation.CapacitorPlugin
 import com.getcapacitor.annotation.Permission
 import com.getcapacitor.annotation.PermissionCallback
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.mytiki.sdk.capture.receipt.capacitor.req.ReqScan
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 
@@ -43,8 +43,8 @@ class ReceiptCapturePlugin : Plugin() {
     fun login(call: PluginCall){
         val account = Account.fromReq(call.data)
         when (account.accountType.type) {
-            TypeEnum.EMAIL -> receiptCapture.email.login(call, account, activity)
-            TypeEnum.RETAILER -> receiptCapture.retailer.login(call, account, context)
+            AccountTypeEnum.EMAIL -> receiptCapture.email.login(call, account, activity)
+            AccountTypeEnum.RETAILER -> receiptCapture.retailer.login(call, account, context)
         }
     }
 
@@ -58,10 +58,10 @@ class ReceiptCapturePlugin : Plugin() {
             val account = Account.fromReq(call.data)
 
             when (account.accountType.type) {
-                TypeEnum.EMAIL -> {
+                AccountTypeEnum.EMAIL -> {
                     receiptCapture.email.remove(call, account)
                 }
-                TypeEnum.RETAILER -> {
+                AccountTypeEnum.RETAILER -> {
                     receiptCapture.retailer.remove(call, account)
                 }
             }
@@ -73,6 +73,7 @@ class ReceiptCapturePlugin : Plugin() {
         }
 
     }
+
     @RequiresApi(Build.VERSION_CODES.O_MR1)
     @PluginMethod
     fun accounts(call: PluginCall){
@@ -86,31 +87,50 @@ class ReceiptCapturePlugin : Plugin() {
         call.resolve(Account.toRspList(list))
     }
 
-    
-//    OLD CODE
-    @PluginMethod
-    fun scan(call: PluginCall) {
-        if (getPermissionState("camera") != PermissionState.GRANTED)
-            requestPermissionForAlias("camera", call, "onCameraPermission")
-        else startScan(call)
-    }
-    @PluginMethod
-    fun scrapeEmail(call: PluginCall) = receiptCapture.email.scrape(call)
+
 
     @PluginMethod
-    fun orders(call: PluginCall) = receiptCapture.retailer.orders(call)
+    fun scan(call: PluginCall) {
+        val req = ReqScan(call.data)
+        if(req.account == null) {
+            when (req.scanType) {
+                ScanTypeEnum.EMAIL -> receiptCapture.email.scrape(call)
+                ScanTypeEnum.RETAILER -> receiptCapture.retailer.orders(call)
+                ScanTypeEnum.PHYSICAL -> scanPhysical(call)
+                else -> {
+                    receiptCapture.email.scrape(call)
+                    receiptCapture.retailer.orders(call)
+                }
+            }
+        } else {
+            receiptCapture.retailer.order(call, req.account)
+        }
+    }
+
+    private fun scanPhysical(call: PluginCall) {
+        if (getPermissionState("camera") != PermissionState.GRANTED) {
+            requestPermissionForAlias("camera", call, "onCameraPermission")
+        }else{
+            val intent: Intent = receiptCapture.scan.open(call, context)
+            startActivityForResult(call, intent, "onScanResult")
+        }
+    }
 
     @ActivityCallback
     private fun onScanResult(call: PluginCall, result: ActivityResult) = receiptCapture.scan.onResult(call, result)
 
     @PermissionCallback
     private fun onCameraPermission(call: PluginCall) {
-        if (getPermissionState("camera") == PermissionState.GRANTED) startScan(call)
+        if (getPermissionState("camera") == PermissionState.GRANTED) scanPhysical(call)
         else call.reject("Permission is required to scan a receipt")
     }
 
-    private fun startScan(call: PluginCall) {
-        val intent: Intent = receiptCapture.scan.open(call, context)
-        startActivityForResult(call, intent, "onScanResult")
+    private fun scanEmail(call: PluginCall){
+        receiptCapture.email.scrape(call)
     }
+
+    private fun scanRetailer(call: PluginCall) {
+        receiptCapture.retailer.orders(call)
+    }
+
 }

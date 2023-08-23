@@ -10,6 +10,7 @@ import android.os.Build
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.webkit.internal.ApiFeature
 import com.getcapacitor.JSObject
 import com.getcapacitor.PluginCall
 import com.microblink.core.ScanResults
@@ -95,16 +96,14 @@ class Retailer {
                     val retailer = RetailerEnum.fromString(it.accountType.source).toInt()
                     val username = it.username
                     val ordersSuccessCallback =
-                        { a: Int, results: ScanResults?, b: Int, c: String ->
+                        { _: Int, results: ScanResults?, _: Int, _: String ->
                             if (results != null) {
                                 val rsp = RspRetailerOrders(
                                     RetailerEnum.fromInt(retailer).toString(),
                                     username, results
                                 )
-                                Log.e("TIKI", rsp.toJson().toString())
                                 call.resolve(JSObject(rsp.toJson().toString()))
                             } else {
-                                Log.e("TIKI", "NO RESULT")
                                 call.reject("no result")
                             }
                         }
@@ -123,27 +122,74 @@ class Retailer {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
+    fun order( call: PluginCall, account: Account ) {
+        MainScope().async {
+            val mbAccounts = mbAccounts().await()
+            val mbAccount = mbAccounts.first{
+                account.username === it.credentials.username() && account.accountType.source === RetailerEnum.fromInt(it.retailerId).name
+            }
+            account.isVerified = verify(mbAccount).await()
+                if(account.isVerified!!) {
+                    val retailer = RetailerEnum.fromString(account.accountType.source).toInt()
+                    val username = account.username
+                    val ordersSuccessCallback =
+                        { _: Int, results: ScanResults?, _: Int, _: String ->
+                            if (results != null) {
+                                val rsp = RspRetailerOrders(
+                                    RetailerEnum.fromInt(retailer).toString(),
+                                    username, results
+                                )
+                                call.resolve(JSObject(rsp.toJson().toString()))
+                            } else {
+                                call.reject("no result")
+                            }
+                        }
+                    val ordersFailureCallback = { _: Int, exception: AccountLinkingException ->
+                        Log.e("TIKI", exception.message ?: "exception wihtout message")
+                        call.reject(exception.message)
+                    }
+                    client.orders(
+                        retailer,
+                        ordersSuccessCallback,
+                        ordersFailureCallback,
+                    )
+                }
+
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun accounts(): CompletableDeferred<List<Account>> {
         val accounts = CompletableDeferred<List<Account>>()
+        val list = mutableListOf<Account>()
+        MainScope().async{
+            mbAccounts().await().map{mbAccount ->
+                val account = Account.fromMbLinking(mbAccount)
+                account.isVerified = verify(mbAccount).await()
+                list.add(account)
+            }
+            accounts.complete(list)
+        }
+        return accounts
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun mbAccounts(): CompletableDeferred<List<com.microblink.linking.Account>> {
+        val mbAccounts = CompletableDeferred<List<com.microblink.linking.Account>>()
         client.accounts()
-            .addOnSuccessListener { mbAccounts ->
+            .addOnSuccessListener { mbAccountList ->
                 MainScope().async {
-                    if (mbAccounts != null) {
-                        val accountList = mbAccounts.map{ mbAccount ->
-                            val account = Account.fromMbLinking(mbAccount)
-                            account.isVerified = verify(mbAccount).await()
-                            account
-                        }
-                        accounts.complete(accountList)
+                    if (mbAccountList != null) {
+                        mbAccounts.complete(mbAccountList)
                     } else {
-                        accounts.complete(mutableListOf())
+                        mbAccounts.complete(mutableListOf())
                     }
                 }
             }
             .addOnFailureListener {
-                accounts.completeExceptionally(it)
+                mbAccounts.completeExceptionally(it)
             }
-        return accounts
+        return mbAccounts
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

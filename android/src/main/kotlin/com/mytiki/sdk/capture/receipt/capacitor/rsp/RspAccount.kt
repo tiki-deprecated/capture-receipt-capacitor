@@ -5,9 +5,7 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
-import com.google.android.gms.common.internal.AccountType
 import com.mytiki.sdk.capture.receipt.capacitor.Account
-import com.mytiki.sdk.capture.receipt.capacitor.AccountTypeEnum
 import org.json.JSONObject
 
 class RspAccount(
