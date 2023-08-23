@@ -14,6 +14,8 @@ export interface ReceiptCapturePlugin {
 
   scan(): Promise<Receipt>;
 
+  accounts(): Promise<Account[]>;
+
   loginWithEmail(options: {
     username: string;
     password: string;
@@ -25,10 +27,6 @@ export interface ReceiptCapturePlugin {
     scans: Receipt[];
   }>;
 
-  verifyEmail(): Promise<{
-    accounts: { username: string; provider: string; verified: boolean }[];
-  }>;
-
   removeEmail(options: { username: string; password: string; provider: string }): Promise<{ success: boolean }>;
 
   loginWithRetailer(options: {
@@ -36,8 +34,6 @@ export interface ReceiptCapturePlugin {
     password: string;
     provider: string;
   }): Promise<Account>;
-
-  retailers(): Promise<Account[]>;
 
   removeRetailer(options: { username: string; provider: string }): Promise<Account>;
 
