@@ -9,11 +9,11 @@ import Capacitor
 public class ReqLogin {
     var username: String
     var password: String
-    var provider: String
+    var source: String
     
     init (data: JSObject){
         username = data.getString("username") ?? ""
         password = data.getString("password") ?? ""
-        provider = data.getString("provider") ?? ""
+        source = data.getString("account_type").getString("source") ?? ""
     }
 }

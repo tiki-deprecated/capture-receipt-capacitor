@@ -7,5 +7,5 @@ import Foundation
 import Capacitor
 
 protocol Rsp {
-    func toJson(): JSObject
+    func toJson() -> JSObject
 }

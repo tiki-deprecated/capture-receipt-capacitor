@@ -18,9 +18,9 @@ struct ContentView: View {
         }
         .padding()
         Button("TESTAR ESSE CARAI"){
+            
         }
     }
-    Retai
 }
 
 struct ContentView_Previews: PreviewProvider {

@@ -9,7 +9,7 @@ import Capacitor
 public class ReqInitialize {
     var licenseKey: String
     var productKey: String
-    init(data: JSObject) {
+    init(_ data: CAPPluginCall) {
         licenseKey = data.getString("licenseKey") ?? ""
         productKey = data.getString("productKey") ?? ""
     }

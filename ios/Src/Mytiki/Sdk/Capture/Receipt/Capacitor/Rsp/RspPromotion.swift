@@ -9,7 +9,7 @@ import BlinkEReceipt
 import Capacitor
 
 struct  RspPromotion : Rsp {
-    private let id: Long
+    private let id: Int32
     private let slug: String?
     private let reward: String?
     private let rewardCurrency: String?

@@ -1,13 +1,14 @@
 import XCTest
 @testable import Plugin
+@testable import Capacitor
 
 class ReceiptCaptureTests: XCTestCase {
     
     let licenseKey = ProcessInfo.processInfo.environment["LICENSE_KEY"]!
     let productKey = ProcessInfo.processInfo.environment["PRODUCT_KEY"]!
     
-    let jesseAccount = ProcessInfo.processInfo.environment["JESSE_LOGIN"]!
-    let jessePassword = ProcessInfo.processInfo.environment["JESSE_PASSWORD"]!
+    let jesseAccount = ProcessInfo.processInfo.environment["USERNAME"]!
+    let jessePassword = ProcessInfo.processInfo.environment["PASSWORD"]!
     
         
     override func setUp() {
@@ -31,26 +32,33 @@ class ReceiptCaptureTests: XCTestCase {
         XCTAssertEqual(value, result)
     }
     
-    func testRetailer() {
-        let req = ReqInitialize(licenseKey: licenseKey, productKey: productKey)
-        Retailer.init(req: req)
-        Retailer(req: req).account(retailer: RetailerCommon.amazon, username: jesseAccount, password: jessePassword, dayCutoff: 10)
-        //        Retailer(req: req).orders()
+    func testLogin(){
+        let reqLogin = ReqLogin.init(username: jesseAccount, password: jessePassword, source: "AMAZON")
+        let reqEncoder = JSONEncoder()
+        let data = try reqEncoder.encode(reqLogin)
+        ReceiptCapturePlugin().login(call: data)
     }
     
-    
-    func testRetailerInitialize() {
-        let req = ReqInitialize(licenseKey: licenseKey, productKey: productKey)
-        Retailer.init(req: req)
-    }
-    
-    func testRetailerAccount(){
-        let req = ReqInitialize(licenseKey: licenseKey, productKey: productKey)
-        Retailer.init(req: req)
-        Retailer.init(req: req).account(retailer: RetailerCommon.amazon, username: jesseAccount, password: jessePassword, dayCutoff: 10)
-    }
-    func testRetailerOrder() {
-        let req = ReqInitialize(licenseKey: licenseKey, productKey: productKey)
-        Retailer(req: req).orders()
-    }
+//    func testRetailer() {
+//        let req = ReqInitialize(licenseKey: licenseKey, productKey: productKey)
+//        Retailer.init(req: req)
+//        Retailer(req: req).account(retailer: RetailerCommon.amazon, username: jesseAccount, password: jessePassword, dayCutoff: 10)
+//        //        Retailer(req: req).orders()
+//    }
+//    
+//    
+//    func testRetailerInitialize() {
+//        let req = ReqInitialize(licenseKey: licenseKey, productKey: productKey)
+//        Retailer.init(req: req)
+//    }
+//    
+//    func testRetailerAccount(){
+//        let req = ReqInitialize(licenseKey: licenseKey, productKey: productKey)
+//        Retailer.init(req: req)
+//        Retailer.init(req: req).account(retailer: RetailerCommon.amazon, username: jesseAccount, password: jessePassword, dayCutoff: 10)
+//    }
+//    func testRetailerOrder() {
+//        let req = ReqInitialize(licenseKey: licenseKey, productKey: productKey)
+//        Retailer(req: req).orders()
+//    }
 }
