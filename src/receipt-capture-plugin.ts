@@ -17,7 +17,7 @@ export interface ReceiptCapturePlugin {
 
 
 
-  scan(scanType: ScanType | undefined, account: Account): Promise<Receipt[]>;
+  scan(scanType: ScanType | undefined, account?: Account): Promise<Receipt[]>;
 
   accounts(): Promise<Account[]>;
 
