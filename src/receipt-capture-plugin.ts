@@ -12,7 +12,7 @@ export interface ReceiptCapturePlugin {
     productKey?: string;
   }): Promise<{ isInitialized: boolean; reason?: string }>;
 
-  scan(): Promise<Receipt>;
+  scan(): Promise<Receipt[]>;
 
   accounts(): Promise<Account[]>;
 

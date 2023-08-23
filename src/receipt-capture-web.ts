@@ -33,7 +33,7 @@ export class ReceiptCaptureWeb extends WebPlugin implements ReceiptCapturePlugin
     throw this.unimplemented('Mobile Only.');
   }
 
-  async scan(): Promise<Receipt> {
+  async scan(): Promise<Receipt[]> {
     throw this.unimplemented('Mobile Only.');
   }
 
