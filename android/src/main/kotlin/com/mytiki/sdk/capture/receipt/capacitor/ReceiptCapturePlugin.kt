@@ -56,16 +56,16 @@ class ReceiptCapturePlugin : Plugin() {
     fun loginWithRetailer(call: PluginCall) = receiptCapture.retailer.login(call, context)
 
     @PluginMethod
-    fun retailers(call: PluginCall) = receiptCapture.retailer.accounts(call)
+    fun retailers(call: PluginCall) = receiptCapture.retailer.accounts(call, context)
 
     @PluginMethod
-    fun removeRetailer(call: PluginCall) = receiptCapture.retailer.remove(call)
+    fun removeRetailer(call: PluginCall) = receiptCapture.retailer.remove(call, context)
 
     @PluginMethod
-    fun orders(call: PluginCall) = receiptCapture.retailer.orders(call)
+    fun orders(call: PluginCall) = receiptCapture.retailer.orders(call, context)
 
     @PluginMethod
-    fun flushRetailer(call: PluginCall) = receiptCapture.retailer.flush(call)
+    fun flushRetailer(call: PluginCall) = receiptCapture.retailer.flush(call, context)
 
     @PluginMethod
     fun flushEmail(call: PluginCall) = receiptCapture.email.flush(call)
