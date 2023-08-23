@@ -108,26 +108,6 @@ export class ReceiptCapture {
     if (!rsp.success) throw Error(`Failed to remove: ${provider} | ${username}`);
   };
 
-  /**
-   * Load and verify all locally cached email accounts.
-   * @returns A Promise that resolves to an array of Accounts.
-   */
-  verifyEmail = async (): Promise<Account[]> => {
-    const rsp = await this.plugin.verifyEmail();
-    return rsp.accounts.map((acc) => {
-      return {
-        username: acc.username,
-        verified: acc.verified,
-        accountType: {
-          type: 'Email',
-          name: acc.provider,
-          icon: undefined,
-          key: acc.provider
-        }
-      };
-    });
-  };
-
   loginWithRetailer = async (username: string, password: string, provider: string): Promise<Account> => {
     return this.plugin.loginWithRetailer({
       username,
@@ -136,9 +116,9 @@ export class ReceiptCapture {
     });
   };
 
-  retailers = async (): Promise<Account[]> => {
-    return (await this.plugin.retailers());
-  };
+  accounts = async (): Promise<Account[]> =>{
+    return (await this.plugin.accounts())
+  }
 
   removeRetailer = async (username: string, provider: string): Promise<Account> => {
     return await this.plugin.removeRetailer({username, provider});

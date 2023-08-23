@@ -18,9 +18,6 @@ export class ReceiptCaptureWeb extends WebPlugin implements ReceiptCapturePlugin
   }): Promise<Account> {
     throw new Error('Method not implemented.');
   }
-  retailers(): Promise<Account[]> {
-    throw new Error('Method not implemented.');
-  }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   removeRetailer(_options: {
     username: string;
@@ -40,6 +37,10 @@ export class ReceiptCaptureWeb extends WebPlugin implements ReceiptCapturePlugin
     throw this.unimplemented('Mobile Only.');
   }
 
+  async accounts(): Promise<Account[]>{
+    throw this.unimplemented('Mobile Only.');
+  };
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   loginWithEmail(_options: {
     username: string;
@@ -52,12 +53,6 @@ export class ReceiptCaptureWeb extends WebPlugin implements ReceiptCapturePlugin
   scrapeEmail(): Promise<{
     login: { username: string; provider: string };
     scans: Receipt[];
-  }> {
-    throw this.unimplemented('Mobile Only.');
-  }
-
-  verifyEmail(): Promise<{
-    accounts: { username: string; provider: string; verified: boolean }[];
   }> {
     throw this.unimplemented('Mobile Only.');
   }
