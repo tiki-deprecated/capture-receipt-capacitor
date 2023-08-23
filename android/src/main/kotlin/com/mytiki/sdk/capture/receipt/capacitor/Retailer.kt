@@ -14,17 +14,13 @@ import com.getcapacitor.JSObject
 import com.getcapacitor.PluginCall
 import com.microblink.core.ScanResults
 import com.microblink.linking.*
-import com.mytiki.sdk.capture.receipt.capacitor.Account
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
-import com.mytiki.sdk.capture.receipt.capacitor.req.ReqRetailerLogin
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspRetailerAccount
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspRetailerAccountList
+import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspAccountList
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspRetailerOrders
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
-import timber.log.Timber
 
 
 class Retailer {
@@ -64,18 +60,6 @@ class Retailer {
             }
     }
 
-    fun accounts(call: PluginCall){
-        MainScope().async{
-            try {
-                val allAccounts = getAccounts().await()
-                val rsp = RspRetailerAccountList(allAccounts.toMutableList())
-                call.resolve(JSObject.fromJSONObject(rsp.toJson()))
-            }catch(e: Exception){
-                call.reject(e.message)
-            }
-        }
-    }
-
     @OptIn(ExperimentalCoroutinesApi::class)
     fun remove(call: PluginCall, account: Account){
         client.accounts().addOnSuccessListener { accounts ->
@@ -105,11 +89,11 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun orders( call: PluginCall ) {
         MainScope().async {
-            val accounts = getAccounts().await()
+            val accounts = accounts().await()
             accounts.forEach {
-                if(it.isVerified) {
-                    val retailer = it.account.retailerId
-                    val username = it.account.credentials.username()
+                if(it.isVerified!!) {
+                    val retailer = RetailerEnum.fromString(it.accountType.source).toInt()
+                    val username = it.username
                     val ordersSuccessCallback =
                         { a: Int, results: ScanResults?, b: Int, c: String ->
                             if (results != null) {
@@ -129,7 +113,7 @@ class Retailer {
                         call.reject(exception.message)
                     }
                     client.orders(
-                        it.account.retailerId,
+                        retailer,
                         ordersSuccessCallback,
                         ordersFailureCallback,
                     )
@@ -139,37 +123,33 @@ class Retailer {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun getAccounts(): CompletableDeferred<List<RspRetailerAccount>> {
-        val getAccounts = CompletableDeferred<List<RspRetailerAccount>>()
+    fun accounts(): CompletableDeferred<List<Account>> {
+        val accounts = CompletableDeferred<List<Account>>()
         client.accounts()
             .addOnSuccessListener { mbAccounts ->
                 MainScope().async {
                     if (mbAccounts != null) {
                         val accountList = mbAccounts.map{ mbAccount ->
-                            val account = Account.fromMb(mbAccount)
+                            val account = Account.fromMbLinking(mbAccount)
                             account.isVerified = verify(mbAccount).await()
-
-                            RspRetailerAccount(
-                                mbAccount,
-                               verify(mbAccount).await()
-                            )
+                            account
                         }
-                        getAccounts.complete(accountList)
+                        accounts.complete(accountList)
                     } else {
-                        getAccounts.complete(mutableListOf())
+                        accounts.complete(mutableListOf())
                     }
                 }
             }
             .addOnFailureListener {
-                getAccounts.completeExceptionally(it)
+                accounts.completeExceptionally(it)
             }
-        return getAccounts
+        return accounts
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun verify( mbAccount: com.microblink.linking.Account, showDialog: Boolean = false, context: Context? = null, call: PluginCall? = null ): CompletableDeferred<Boolean>{
         val verifyCompletable = CompletableDeferred<Boolean>()
-        val account = Account.fromMb(mbAccount)
+        val account = Account.fromMbLinking(mbAccount)
         client.verify(
             RetailerEnum.fromString(account.accountType.source).value,
             success = { isVerified: Boolean, _: String ->

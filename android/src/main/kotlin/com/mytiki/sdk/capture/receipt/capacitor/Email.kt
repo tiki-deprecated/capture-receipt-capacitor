@@ -103,22 +103,25 @@ class Email {
         })
     }
 
-    fun accounts(call: PluginCall) {
-        val deferred = MainScope().async {
-            val rsp: MutableList<JSONObject> = mutableListOf()
-            val credentials = client?.accounts()?.await()
-            credentials?.forEach { credential ->
-                val verified = client?.verify(credential)?.await()
-                rsp.add(
-                    RspEmailAccount(
-                        credential.username(),
-                        credential.provider().name,
-                        verified ?: false
-                    ).toJson()
-                )
+    fun accounts(): CompletableDeferred<List<Account>>{
+        val isAccounts = CompletableDeferred<List<Account>>()
+        client?.accounts()?.addOnSuccessListener {credentials ->
+            if (credentials != null) {
+                MainScope().async {
+                    val accountList = credentials?.map { credential ->
+                        val account = Account.fromMbEmail(credential)
+                        account.isVerified = client?.verify(credential)?.await()
+                        account
+                    }
+                    isAccounts.complete(accountList!!)
+                }
+            }else{
+                isAccounts.complete(mutableListOf())
             }
-            call.resolve(JSObject.fromJSONObject(JSONObject().put("accounts", JSONArray(rsp))))
+        }?.addOnFailureListener{
+            isAccounts.completeExceptionally(it)
         }
+        return isAccounts
     }
 
     fun remove(call: PluginCall, account: Account) {

@@ -7,7 +7,9 @@ package com.mytiki.sdk.capture.receipt.capacitor
 
 import android.Manifest
 import android.content.Intent
+import android.os.Build
 import androidx.activity.result.ActivityResult
+import androidx.annotation.RequiresApi
 import com.getcapacitor.PermissionState
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
@@ -16,7 +18,9 @@ import com.getcapacitor.annotation.ActivityCallback
 import com.getcapacitor.annotation.CapacitorPlugin
 import com.getcapacitor.annotation.Permission
 import com.getcapacitor.annotation.PermissionCallback
-import com.mytiki.sdk.capture.receipt.capacitor.req.ReqAccount
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
 
 
 @CapacitorPlugin(
@@ -68,6 +72,19 @@ class ReceiptCapturePlugin : Plugin() {
             call.reject("Provide source in logout request")
         }
 
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O_MR1)
+    @PluginMethod
+    fun accounts(call: PluginCall){
+        val list = mutableListOf<Account>()
+        MainScope().async {
+            val emails = receiptCapture.email.accounts().await()
+            val retailers = receiptCapture.retailer.accounts().await()
+            emails.forEach {list.add(it)}
+            retailers.forEach {list.add(it)}
+        }
+        call.resolve(Account.toRspList(list))
     }
 
     
