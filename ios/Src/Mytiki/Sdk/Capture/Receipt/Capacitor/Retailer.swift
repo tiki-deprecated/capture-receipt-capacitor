@@ -6,16 +6,40 @@
 import Foundation
 import BlinkReceipt
 import BlinkEReceipt
+import Capacitor
 
-public class Retailer {
+public class Retailer : CAPPlugin{
     
-    public init(req: ReqInitialize) {
+    public init(_ req: ReqInitialize) {
+        
         BRScanManager.shared().licenseKey = req.licenseKey
         BRScanManager.shared().prodIntelKey = req.productKey
         BRAccountLinkingManager.shared()
     }
-    public func account (retailer: RetailerCommon, username: String, password: String, dayCutoff: Int) -> BRAccountLinkingError {
-        let connection = BRAccountLinkingConnection(retailer: retailer.toBRAccountLinkingRetailer()!, username: username, password: password)
+    
+    
+    public func login (retailer: BRAccountLinkingRetailer, username: String, password: String, dayCutoff: Int){
+        
+        let accountError = account(retailer: retailer, username: username, password: password, dayCutoff: dayCutoff)
+        
+        if(accountError == .none){
+            verifyConnection(retailer: retailer, username: username, password: password) { [self] success, erro in
+                if success {
+                    print("#####Verification success")
+                }else {
+                   // Show an error message
+                   print("##########Verify account fail")
+                }
+                
+             }
+        }else {
+            // TODO verify already
+        }
+    }
+    
+    
+    public func account (retailer: BRAccountLinkingRetailer, username: String, password: String, dayCutoff: Int) -> BRAccountLinkingError {
+        let connection = BRAccountLinkingConnection(retailer: retailer, username: username, password: password)
         connection.configuration.dayCutoff = dayCutoff
         connection.configuration.returnLatestOrdersOnly = false
         connection.configuration.countryCode = "US"
@@ -24,9 +48,11 @@ public class Retailer {
         return BRAccountLinkingManager.shared().linkRetailer(with: connection)
     }
     
-    public func verifyConnection(retailer: RetailerCommon, username: String, password: String, completion: @escaping (_ success: Bool, _ erro: Error?, _ sessionId: String) -> Void) {
+    public func verifyConnection(retailer: BRAccountLinkingRetailer, username: String, password: String, completion: @escaping (_ success: Bool, _ erro: Error?) -> Void) {
         
-        let connection = BRAccountLinkingConnection(retailer: retailer.toBRAccountLinkingRetailer()!, username: username, password: password)
+
+        
+        let connection = BRAccountLinkingConnection(retailer: retailer, username: username, password: password)
         connection.configuration.dayCutoff = 500
         let taskId = BRAccountLinkingManager.shared().verifyRetailer(with: connection, withCompletion: { error, viewController, sessionId in
             if (error == .verificationNeeded) {
@@ -39,19 +65,19 @@ public class Retailer {
             } else {
 
                 if (error == .noCredentials) {
-                    completion(false, error as! Error, sessionId)
+                    completion(false, error as! Error)
                   // Error: Credentials have not been provided
                 } else if (error == .internal) {
-                    completion(false, error as! Error, sessionId)
+                    completion(false, error as! Error)
                   // Error: Unexpected error
                 } else if (error == .parsingFail) {
-                    completion(false, error as! Error, sessionId)
+                    completion(false, error as! Error)
                   // Error: General Error
                 } else if (error == .invalidCredentials) {
-                    completion(false, error as! Error, sessionId)
+                    completion(false, error as! Error)
                   // Error: Probable cause of the failure is invalid credentials
                 } else if (error == .cancelled) {
-                    completion(false, error as! Error, sessionId)
+                    completion(false, error as! Error)
                   // Operation has been cancelled.
                   // Dismiss any previously presented user input UIViewController
                 }
@@ -59,7 +85,7 @@ public class Retailer {
                 // Account can be linked
                 print("######VerificationCompleted")
                 let linkRetailer = BRAccountLinkingManager.shared().linkRetailer(with: connection)
-                completion(true, nil, sessionId)
+                completion(true, nil)
               }
             })
         }
