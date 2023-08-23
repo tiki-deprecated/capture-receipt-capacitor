@@ -6,13 +6,18 @@
 import { Account } from './account';
 import type { Receipt } from './receipt';
 
+
+export type ScanType = 'Physical' | 'Email' | 'Retailer';
+
 export interface ReceiptCapturePlugin {
   initialize(options: {
     licenseKey: string;
     productKey?: string;
   }): Promise<{ isInitialized: boolean; reason?: string }>;
 
-  scan(): Promise<Receipt[]>;
+
+
+  scan(scanType: ScanType | undefined, account: Account): Promise<Receipt[]>;
 
   accounts(): Promise<Account[]>;
 
@@ -21,11 +26,6 @@ export interface ReceiptCapturePlugin {
     password: string;
     provider: string;
   }): Promise<{ username: string; provider: string }>;
-
-  scrapeEmail(): Promise<{
-    login: { username: string; provider: string };
-    scans: Receipt[];
-  }>;
 
   removeEmail(options: { username: string; password: string; provider: string }): Promise<{ success: boolean }>;
 
@@ -36,12 +36,6 @@ export interface ReceiptCapturePlugin {
   }): Promise<Account>;
 
   removeRetailer(options: { username: string; provider: string }): Promise<Account>;
-
-  orders(): Promise<{
-    provider: string;
-    username: string;
-    scan: Receipt;
-  }>;
 
   flushRetailer(): Promise<void>;
 

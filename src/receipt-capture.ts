@@ -5,7 +5,7 @@
 
 import type { Account } from './account';
 import type { Receipt } from './receipt';
-import type { ReceiptCapturePlugin } from './receipt-capture-plugin';
+import type { ReceiptCapturePlugin, ScanType } from './receipt-capture-plugin';
 
 /**
  * The primary class for interacting with the Plugin.
@@ -42,7 +42,7 @@ export class ReceiptCapture {
    * Initiates the receipt scan UI and returns the scanned receipt.
    * @returns A Promise that resolves to the scanned Receipt object.
    */
-  scan = (): Promise<Receipt[]> => this.plugin.scan();
+  scan = (scanType: ScanType | undefined, account: Account): Promise<Receipt[]> => this.plugin.scan(scanType, account);
 
   /**
    * Logs in to an email account using IMAP.
@@ -68,28 +68,6 @@ export class ReceiptCapture {
       //provider: providers.get(rsp.provider),
     };
   };
-
-  /**
-   * Scrapes all logged-in email inboxes for receipts, calling the provided callback
-   * function when each inbox scrape completes.
-   * @param callback - A callback function to receive the scrape receipts.
-   * @returns A Promise that resolves when scraping is complete.
-   */
-  scrapeEmail = (callback: (account: Account, receipts: Receipt[]) => void): Promise<void> =>
-    this.plugin.scrapeEmail().then((rsp) => {
-      callback(
-        {
-          username: rsp.login.username,
-          accountType: {
-            type: 'Email',
-            name: rsp.login.provider,
-            icon: undefined,
-            key: rsp.login.provider
-          }
-        },
-        rsp.scans,
-      );
-    });
 
   /**
    * Logs out and removes an email account from the local cache.
@@ -122,14 +100,6 @@ export class ReceiptCapture {
 
   removeRetailer = async (username: string, provider: string): Promise<Account> => {
     return await this.plugin.removeRetailer({username, provider});
-  };
-
-  orders = async (): Promise<{
-    provider: string;
-    username: string;
-    scan: Receipt;
-  }> => {
-    return await this.plugin.orders();
   };
 
   flushEmail = async (): Promise<void> => this.plugin.flushEmail();
