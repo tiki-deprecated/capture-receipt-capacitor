@@ -36,8 +36,30 @@ public class ReceiptCapturePlugin: CAPPlugin {
     }
     
     @objc func logout (call: CAPPluginCall) {
-
-    }
+        let reqLogout = ReqLogin(data: call)
+        guard let accountType = AccountCommon.defaults[reqLogout.source] else {
+            call.reject("Invalid source: \(reqLogout.source)")
+            return
+        }
+        
+        let account = Account.init(accountType: accountType, user: reqLogout.username, password: reqLogout.password, isVerified: false)
+        switch account.accountType.type {
+            case .email :
+                call.reject("Email login not implemented")
+                break
+            case .retailer :
+                guard let retailer = receiptCapture.retailer else {
+                    call.reject("Call plugin initialize method.")
+                    return
+                }
+                retailer.logout(account, call)
+                break
+            }
+        }
+        
+        
+        
+    
     
     @objc func accounts(call: CAPPluginCall){
         

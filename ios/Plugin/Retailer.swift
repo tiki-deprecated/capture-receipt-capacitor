@@ -20,7 +20,7 @@ public class Retailer : CAPPlugin{
     public func login(_ account: Account, _ pluginCall: CAPPluginCall){
         let dayCutoff: Int = 15
         let username: String = account.user
-        guard let retailer: BRAccountLinkingRetailer = RetailerCommon(rawValue: account.accountType.source)?.toBRAccountLinkingRetailer() else {
+        guard let retailer: BRAccountLinkingRetailer = RetailerEnum(rawValue: account.accountType.source)?.toBRAccountLinkingRetailer() else {
             pluginCall.reject("Unsuported retailer \(account.accountType.source)")
             return
         }
@@ -77,6 +77,26 @@ public class Retailer : CAPPlugin{
             }
     }
     
+    
+    public func logout(_ account: Account, _ pluginCall: CAPPluginCall) {
+        
+        if (account.user == "" && account.accountType.source == "") {
+            BRAccountLinkingManager().unlinkAllAccounts {
+                pluginCall.resolve()
+            }
+        }
+        
+        guard let retailer: BRAccountLinkingRetailer = RetailerEnum(rawValue: account.accountType.source)?.toBRAccountLinkingRetailer() else {
+            pluginCall.reject("Unsuported retailer \(account.accountType.source)")
+            return
+        }
+        if (account.accountType.source != "") {
+            BRAccountLinkingManager().unlinkAccount(for: retailer) {
+                pluginCall.resolve()
+            }
+        }
+    }
+    
     public func orders(retailer :BRAccountLinkingRetailer, completion: @escaping (_ success: Bool, _ retailer: BRAccountLinkingRetailer, _ remaining: Int, _ sessionId: String, _ erroCode: Error?) -> Void){
 
         let taskId = BRAccountLinkingManager.shared().grabNewOrders(for: retailer) { retailer, order, remaining, viewController, errorCode, sessionId in
@@ -92,6 +112,7 @@ public class Retailer : CAPPlugin{
           } else if errorCode == .none {
               print("###Everiting Works Fine")
             // Order may be returned here
+            //  call.resolve(order)
               print(order?.description)
             if (remaining <= 0) {
               // Grab Orders Completed Successfully
