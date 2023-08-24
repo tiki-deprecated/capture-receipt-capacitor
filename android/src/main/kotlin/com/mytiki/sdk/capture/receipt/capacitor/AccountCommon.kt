@@ -60,10 +60,10 @@ enum class AccountCommon(val type: AccountTypeEnum, val source: String) {
     WALMART(AccountTypeEnum.RETAILER, RetailerEnum.WALMART.toString()),
     WALMART_CA(AccountTypeEnum.RETAILER, RetailerEnum.WALMART_CA.toString()),
     WEGMANS(AccountTypeEnum.RETAILER, RetailerEnum.WEGMANS.toString()),
-//    YAHOO(TypeEnum.EMAIL, "YAHOO",
-//    OUTLOOK(TypeEnum.EMAIL, "OUTLOOK",
-//    AOL(TypeEnum.EMAIL, "AOL",
-    GMAIL(AccountTypeEnum.EMAIL, "GMAIL");
+    YAHOO(AccountTypeEnum.EMAIL, EmailEnum.YAHOO.toString()),
+    OUTLOOK(AccountTypeEnum.EMAIL, EmailEnum.OUTLOOK.toString()),
+    AOL(AccountTypeEnum.EMAIL, EmailEnum.AOL.toString()),
+    GMAIL(AccountTypeEnum.EMAIL, EmailEnum.GMAIL.toString());
 
 
 

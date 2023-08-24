@@ -61,11 +61,11 @@ enum class RetailerEnum (val value: Int){
     WALMART_CA(com.microblink.linking.WALMART_CA),
     WEGMANS(com.microblink.linking.WEGMANS);
 
-    fun toInt() : Int = this.value
+    fun toValue() : Int = this.value
     override fun toString() = this.name
 
     companion object {
-        fun fromInt(intValue: Int) = values().first { it.value == intValue }
+        fun fromValue(intValue: Int) = values().first { it.value == intValue }
         fun fromString(stringValue: String) = values().first { it.name == stringValue }
 
     }

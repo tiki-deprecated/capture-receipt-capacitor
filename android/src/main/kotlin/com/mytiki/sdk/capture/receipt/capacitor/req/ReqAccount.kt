@@ -9,12 +9,12 @@ import com.getcapacitor.JSObject
 import com.mytiki.sdk.capture.receipt.capacitor.AccountCommon
 
 class ReqAccount(data: JSObject) {
-    val accountType: AccountCommon
+    val accountCommon: AccountCommon
     val username: String
     val password: String?
     val isVerified: Boolean?
     init {
-        accountType = AccountCommon.fromString(data.getString("source")?: "")
+        accountCommon = AccountCommon.fromString(data.getString("source")?: "")
         username = data.getString("username") ?: ""
         password = data.getString("password")
         isVerified = data.getBool("isVerified")

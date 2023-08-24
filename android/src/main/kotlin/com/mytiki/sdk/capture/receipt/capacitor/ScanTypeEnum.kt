@@ -3,8 +3,8 @@ package com.mytiki.sdk.capture.receipt.capacitor
 enum class ScanTypeEnum {
     EMAIL,
     RETAILER,
-    PHYSICAL;
-
+    PHYSICAL,
+    ONLINE;
 
     override fun toString() = this.name.lowercase()
     companion object {

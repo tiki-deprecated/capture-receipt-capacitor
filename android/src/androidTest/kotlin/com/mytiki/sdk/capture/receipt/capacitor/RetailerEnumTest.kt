@@ -9,13 +9,13 @@ class RetailerEnumTest {
 
     @Test
     fun testFromInt() {
-        val retailer = RetailerEnum.fromInt(WALMART_CA)
+        val retailer = RetailerEnum.fromValue(WALMART_CA)
         assertEquals(RetailerEnum.walmart_ca, retailer)
     }
 
     @Test
     fun testToInt() {
-        val intValue = RetailerEnum.toInt(RetailerEnum.staples_ca)
+        val intValue = RetailerEnum.fromValue(RetailerEnum.staples_ca)
         assertEquals(STAPLES_CA, intValue)
     }
 

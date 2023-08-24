@@ -14,7 +14,7 @@ class RspAccount(
     override fun toJson(): JSONObject =
         JSONObject()
             .put("username", account.username)
-            .put("source", account.accountType.source)
-            .put("type", account.accountType.type.name)
+            .put("source", account.accountCommon.source)
+            .put("type", account.accountCommon.type.name)
             .put("isVerified", account.isVerified)
 }

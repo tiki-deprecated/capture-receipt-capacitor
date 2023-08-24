@@ -11,20 +11,20 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 
 class Account(
-    val accountType: AccountCommon,
+    val accountCommon: AccountCommon,
     val username: String,
     val password: String? = null,
     var isVerified: Boolean? = null
 ) {
-    fun toRsp()= JSObject.fromJSONObject(RspAccount(this).toJson())
+    fun toRsp(): JSObject = JSObject.fromJSONObject(RspAccount(this).toJson())
     companion object{
         fun fromReq(data: JSObject): Account {
             val req = ReqAccount(data)
-            return Account(req.accountType, req.username, req.password, req.isVerified)
+            return Account(req.accountCommon, req.username, req.password, req.isVerified)
         }
 
         fun fromMbLinking(mbAccount: com.microblink.linking.Account): Account{
-            val accountType = AccountCommon.fromString(RetailerEnum.fromInt(mbAccount.retailerId).toString())
+            val accountType = AccountCommon.fromString(RetailerEnum.fromValue(mbAccount.retailerId).toString())
             val username = mbAccount.credentials.username()
             return Account(accountType, username)
         }
