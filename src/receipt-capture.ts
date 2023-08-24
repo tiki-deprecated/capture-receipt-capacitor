@@ -60,7 +60,7 @@ export class ReceiptCapture {
     return {
       username: rsp.username,
       accountType: {
-        type: 'Email',
+        type: 'EMAIL',
         name: provider,
         icon: undefined,
         key: provider

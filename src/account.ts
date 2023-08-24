@@ -32,7 +32,7 @@ export interface Account {
  * Enumeration of possible account providers.
  */
 export interface AccountType {
-  type: 'Email' | 'Retailer',
+  type: 'EMAIL' | 'RETAILER',
   name: string,
   icon?: string,
   key: string
