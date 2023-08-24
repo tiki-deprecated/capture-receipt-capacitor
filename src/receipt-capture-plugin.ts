@@ -7,7 +7,7 @@ import { Account } from './account';
 import type { Receipt } from './receipt';
 
 
-export type ScanType = 'PHYSICAL' | 'EMAIL' | 'RETAILER';
+export type ScanType = 'PHYSICAL' | 'EMAIL' | 'RETAILER' | 'ONLINE';
 
 export interface ReceiptCapturePlugin {
   initialize(options: {
