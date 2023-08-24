@@ -42,7 +42,7 @@ export class ReceiptCapture {
    * Initiates the receipt scan UI and returns the scanned receipt.
    * @returns A Promise that resolves to the scanned Receipt object.
    */
-  scan = (scanType: ScanType | undefined, account?: Account): Promise<Receipt[]> => this.plugin.scan({scanType, account});
+  scan = (scanType: ScanType | undefined, account?: Account): Promise<{receipt: Receipt, isRunning: boolean}> => this.plugin.scan({scanType, account});
 
   /**
    * Logs in to an email account using IMAP.

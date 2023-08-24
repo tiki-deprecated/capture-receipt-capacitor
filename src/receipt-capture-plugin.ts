@@ -7,7 +7,7 @@ import { Account } from './account';
 import type { Receipt } from './receipt';
 
 
-export type ScanType = 'Physical' | 'Email' | 'Retailer';
+export type ScanType = 'PHYSICAL' | 'EMAIL' | 'RETAILER';
 
 export interface ReceiptCapturePlugin {
   initialize(options: {
@@ -17,7 +17,7 @@ export interface ReceiptCapturePlugin {
 
 
 
-  scan(_option: {scanType: ScanType | undefined, account?: Account}): Promise<Receipt[]>;
+  scan(_option: {scanType: ScanType | undefined, account?: Account}): Promise<{receipt: Receipt, isRunning: boolean}>;
 
   accounts(): Promise<Account[]>;
 
