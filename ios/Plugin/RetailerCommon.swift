@@ -7,7 +7,7 @@ import Foundation
 import BlinkEReceipt
 import Capacitor
 
-public enum RetailerCommon: String {
+public enum RetailerEnum: String {
     
     case ACME_MARKETS
     case ALBERTSONS

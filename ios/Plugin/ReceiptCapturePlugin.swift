@@ -10,29 +10,36 @@ import Capacitor
 public class ReceiptCapturePlugin: CAPPlugin {
     private let receiptCapture = ReceiptCapture()
     
-    public func initialize (_ call: CAPPluginCall) {
+    @objc public func initialize (_ call: CAPPluginCall) {
         receiptCapture.initialize(call)
     }
 
-    public func login(call: CAPPluginCall) {
-        let ret = call.getString("retailer")!
-        let retailer = RetailerCommon(rawValue: ret)?.toBRAccountLinkingRetailer()
-        let username = call.getString("username")
-        let password = call.getString("password")
-        
-        Retailer().login(retailer: retailer!, username: username!, password: password!, dayCutoff: 500)
-    }
-    
-    func logout (call: CAPPluginCall) {
-        let username = call.getString("username")
-        let password = call.getString("source")
-
-        if (username && password != nil){
-            let logoutError = Retailer().manager
+    @objc public func login(call: CAPPluginCall) {
+        let reqLogin = ReqLogin(data: call)
+        guard let accountType = AccountCommon.defaults[reqLogin.source] else {
+            call.reject("Invalid source: \(reqLogin.source)")
+            return
+        }
+        let account = Account.init(accountType: accountType, user: reqLogin.username, password: reqLogin.password, isVerified: false)
+        switch account.accountType.type {
+            case .email :
+                call.reject("Email login not implemented")
+                break
+            case .retailer :
+                guard let retailer = receiptCapture.retailer else {
+                    call.reject("Call plugin initialize method.")
+                    return
+                }
+                retailer.login(account, call)
+                break
         }
     }
     
-    func accounts(call: CAPPluginCall){
+    @objc func logout (call: CAPPluginCall) {
+
+    }
+    
+    @objc func accounts(call: CAPPluginCall){
         
     }
     

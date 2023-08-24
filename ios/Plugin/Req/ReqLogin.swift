@@ -11,9 +11,9 @@ public class ReqLogin {
     var password: String
     var source: String
     
-    init (data: JSObject){
+    init (data: CAPPluginCall){
         username = data.getString("username") ?? ""
         password = data.getString("password") ?? ""
-        source = data.getString("account_type").getString("source") ?? ""
+        source = data.getString("account_type") ?? ""
     }
 }
