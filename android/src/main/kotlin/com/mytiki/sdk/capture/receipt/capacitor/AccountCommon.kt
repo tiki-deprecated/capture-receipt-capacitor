@@ -67,7 +67,7 @@ enum class AccountCommon(val type: AccountTypeEnum, val source: String) {
 
 
 
-    override fun toString() = this.name.lowercase()
+    override fun toString() = this.name
 
     companion object {
         fun fromString(stringValue: String) = AccountCommon.values().first{ it.source == stringValue}

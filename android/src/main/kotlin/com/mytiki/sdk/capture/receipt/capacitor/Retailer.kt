@@ -10,15 +10,12 @@ import android.os.Build
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
-import androidx.webkit.internal.ApiFeature
 import com.getcapacitor.JSObject
 import com.getcapacitor.PluginCall
 import com.microblink.core.ScanResults
 import com.microblink.linking.*
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspAccountList
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspOnlineScan
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspRetailerOrders
+import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspScan
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainScope
@@ -99,10 +96,10 @@ class Retailer {
                         { _: Int, results: ScanResults?, remaining: Int, _: String ->
                             if (results != null) {
                                 if(remaining == 0) {
-                                    val rsp = RspOnlineScan(it, results, false)
+                                    val rsp = RspScan(results, it, false)
                                     call.resolve(JSObject(rsp.toJson().toString()))
                                 }else{
-                                    val rsp = RspOnlineScan(it, results)
+                                    val rsp = RspScan(results, it)
                                     call.resolve(JSObject(rsp.toJson().toString()))
                                 }
 
@@ -137,7 +134,7 @@ class Retailer {
                 val ordersSuccessCallback =
                     { _: Int, results: ScanResults?, _: Int, _: String ->
                         if (results != null) {
-                            val rsp = RspOnlineScan(account, results, false)
+                            val rsp = RspScan(results, account,false)
                             call.resolve(JSObject(rsp.toJson().toString()))
                         } else {
                             call.reject("no result")
@@ -162,7 +159,7 @@ class Retailer {
         val list = mutableListOf<Account>()
         MainScope().async{
             mbAccounts().await().map{mbAccount ->
-                val account = Account.fromMbLinking(mbAccount)
+                val account = Account.fromRetailerAccount(mbAccount)
                 account.isVerified = verify(mbAccount).await()
                 list.add(account)
             }
@@ -193,7 +190,7 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun verify( mbAccount: com.microblink.linking.Account, showDialog: Boolean = false, context: Context? = null, call: PluginCall? = null ): CompletableDeferred<Boolean>{
         val verifyCompletable = CompletableDeferred<Boolean>()
-        val account = Account.fromMbLinking(mbAccount)
+        val account = Account.fromRetailerAccount(mbAccount)
         client.verify(
             RetailerEnum.fromString(account.accountCommon.source).value,
             success = { isVerified: Boolean, _: String ->

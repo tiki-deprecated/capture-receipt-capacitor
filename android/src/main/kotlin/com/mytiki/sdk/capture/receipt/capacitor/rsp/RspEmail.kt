@@ -12,11 +12,11 @@ import org.json.JSONObject
 
 class RspEmail(credential: PasswordCredentials, results: List<ScanResults>) : Rsp {
     private val login: RspLogin
-    private val scans: List<RspScan>
+    private val scans: List<RspReceipt>
 
     init {
         login = RspLogin(credential.username(), credential.provider().name)
-        scans = results.map { scan -> RspScan(scan) }
+        scans = results.map { scan -> RspReceipt(scan) }
     }
 
     override fun toJson(): JSONObject =

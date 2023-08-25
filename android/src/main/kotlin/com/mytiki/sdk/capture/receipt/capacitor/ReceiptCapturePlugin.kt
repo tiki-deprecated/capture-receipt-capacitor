@@ -41,11 +41,28 @@ class ReceiptCapturePlugin : Plugin() {
 
     @PluginMethod
     fun login(call: PluginCall){
-        val account = Account.fromReq(call.data)
-        when (account.accountCommon.type) {
-            AccountTypeEnum.EMAIL -> receiptCapture.email.login(call, account, activity)
-            AccountTypeEnum.RETAILER -> receiptCapture.retailer.login(call, account, context)
+        if(
+            call.data.getString("source")?.isEmpty() == false
+            && call.data.getString("username")?.isEmpty() == false
+            && call.data.getString("password")?.isEmpty() == false
+        ) {
+            val account = Account.fromReq(call.data)
+            when (account.accountCommon.type) {
+                AccountTypeEnum.EMAIL -> receiptCapture.email.login(call, account, activity)
+                AccountTypeEnum.RETAILER -> receiptCapture.retailer.login(call, account, context)
+            }
+        } else {
+            if(call.data.getString("source")?.isEmpty() == true){
+                call.reject("Provide source in login request")
+            }
+            if(call.data.getString("username")?.isEmpty() == true){
+                call.reject("Provide username in login request")
+            }
+            if(call.data.getString("password")?.isEmpty() == true){
+                call.reject("Provide password in login request")
+            }
         }
+
     }
 
     @PluginMethod

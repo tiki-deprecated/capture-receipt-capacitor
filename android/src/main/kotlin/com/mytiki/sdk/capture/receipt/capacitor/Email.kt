@@ -21,17 +21,15 @@ import com.microblink.digital.ProviderSetupOptions
 import com.microblink.digital.ProviderSetupResults
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspLogin
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspOnlineScan
+import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspScan
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.tasks.await
-import org.json.JSONArray
-import org.json.JSONObject
 
 class Email {
     private val tag = "ProviderSetupDialogFragment"
-    private var client: ImapClient? = null
+    private lateinit var client: ImapClient
 
     suspend fun initialize(
         req: ReqInitialize,
@@ -85,15 +83,15 @@ class Email {
     }
 
     fun scrape(call: PluginCall) {
-        if (client == null) call.reject("Not initialized")
+        call.reject("Not initialized")
         call.setKeepAlive(true)
-        client!!.messages(object : MessagesCallback {
+        client.messages(object : MessagesCallback {
             override fun onComplete(
                 credential: PasswordCredentials,
                 result: List<ScanResults>
             ) {
                 result.forEach {receipt ->
-                    val rsp = RspOnlineScan(Account.fromMbEmail(credential), receipt)
+                    val rsp = RspScan(receipt, Account.fromEmailAccount(credential))
                     call.resolve(JSObject.fromJSONObject(rsp.toJson()))
                 }
             }
@@ -103,16 +101,16 @@ class Email {
     }
 
     fun scrape(call: PluginCall, account: Account) {
-        if (client == null) call.reject("Not initialized")
+        call.reject("Not initialized")
         call.setKeepAlive(true)
-        client!!.messages(object : MessagesCallback {
+        client.messages(object : MessagesCallback {
             override fun onComplete(
                 credential: PasswordCredentials,
                 result: List<ScanResults>
             ) {
                 if (credential.provider() === EmailEnum.fromString(account.accountCommon.source).value) {
                     result.forEach { receipt ->
-                        val rsp = RspOnlineScan(Account.fromMbEmail(credential), receipt)
+                        val rsp = RspScan(receipt, Account.fromEmailAccount(credential))
                         call.resolve(JSObject.fromJSONObject(rsp.toJson()))
                     }
                 }
@@ -124,12 +122,12 @@ class Email {
 
     fun accounts(): CompletableDeferred<List<Account>>{
         val isAccounts = CompletableDeferred<List<Account>>()
-        client?.accounts()?.addOnSuccessListener {credentials ->
+        client.accounts()?.addOnSuccessListener {credentials ->
             if (credentials != null) {
                 MainScope().async {
                     val accountList = credentials?.map { credential ->
-                        val account = Account.fromMbEmail(credential)
-                        account.isVerified = client?.verify(credential)?.await()
+                        val account = Account.fromEmailAccount(credential)
+                        account.isVerified = client.verify(credential).await()
                         account
                     }
                     isAccounts.complete(accountList!!)
@@ -144,7 +142,7 @@ class Email {
     }
 
     fun remove(call: PluginCall, account: Account) {
-        client?.logout(
+        client.logout(
             PasswordCredentials.newBuilder(
                 Provider.valueOf(account.accountCommon.source),
                 account.username,
@@ -158,7 +156,7 @@ class Email {
     }
 
     fun flush(call: PluginCall) {
-        client?.logout()?.addOnSuccessListener {
+        client.logout()?.addOnSuccessListener {
             call.resolve()
         }?.addOnFailureListener {
             call.reject(it.message)

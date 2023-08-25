@@ -19,7 +19,7 @@ import com.microblink.ScanOptions
 import com.microblink.camera.ui.CameraScanActivity
 import com.microblink.core.ScanResults
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspScan
+import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspReceipt
 import kotlinx.coroutines.CompletableDeferred
 
 class Scan {
@@ -60,7 +60,7 @@ class Scan {
             val scanResults: ScanResults? =
                 result.data?.getParcelableExtra(CameraScanActivity.DATA_EXTRA)
             val media: Media? = result.data?.getParcelableExtra(CameraScanActivity.MEDIA_EXTRA)
-            val rsp: RspScan? = RspScan.opt(scanResults)
+            val rsp: RspReceipt? = RspReceipt.opt(scanResults)
             call.resolve(if (rsp != null) JSObject.fromJSONObject(rsp.toJson()) else JSObject())
         } else call.reject("Scan failed.")
     }

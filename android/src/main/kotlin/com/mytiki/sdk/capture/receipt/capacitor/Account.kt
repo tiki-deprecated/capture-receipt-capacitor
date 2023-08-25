@@ -7,8 +7,6 @@ import com.microblink.digital.PasswordCredentials
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqAccount
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspAccount
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspAccountList
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.async
 
 class Account(
     val accountCommon: AccountCommon,
@@ -23,13 +21,13 @@ class Account(
             return Account(req.accountCommon, req.username, req.password, req.isVerified)
         }
 
-        fun fromMbLinking(mbAccount: com.microblink.linking.Account): Account{
+        fun fromRetailerAccount(mbAccount: com.microblink.linking.Account): Account{
             val accountType = AccountCommon.fromString(RetailerEnum.fromValue(mbAccount.retailerId).toString())
             val username = mbAccount.credentials.username()
             return Account(accountType, username)
         }
 
-        fun fromMbEmail(mbAccount:  PasswordCredentials): Account{
+        fun fromEmailAccount(mbAccount:  PasswordCredentials): Account{
             val accountType = AccountCommon.fromString(mbAccount.provider().name)
             val username = mbAccount.username()
             return Account(accountType, username)
