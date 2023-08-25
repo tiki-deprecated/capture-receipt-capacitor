@@ -16,6 +16,6 @@ class RspRetailerAccount(
     override fun toJson(): JSONObject =
         JSONObject()
             .put("username", account.credentials.username())
-            .put("retailer", RetailerEnum.fromInt(account.retailerId).toString())
+            .put("retailer", RetailerEnum.fromValue(account.retailerId).toString())
             .put("isVerified", isVerified)
 }

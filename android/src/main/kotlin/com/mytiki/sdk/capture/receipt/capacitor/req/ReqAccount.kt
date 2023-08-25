@@ -6,15 +6,15 @@
 package com.mytiki.sdk.capture.receipt.capacitor.req
 
 import com.getcapacitor.JSObject
-import com.mytiki.sdk.capture.receipt.capacitor.AccountTypeEnum
+import com.mytiki.sdk.capture.receipt.capacitor.AccountCommon
 
 class ReqAccount(data: JSObject) {
-    val accountType: AccountTypeEnum
+    val accountCommon: AccountCommon
     val username: String
     val password: String?
     val isVerified: Boolean?
     init {
-        accountType = AccountTypeEnum.fromString(data.getString("source")?: "")
+        accountCommon = AccountCommon.fromString(data.getString("source")?: "")
         username = data.getString("username") ?: ""
         password = data.getString("password")
         isVerified = data.getBool("isVerified")

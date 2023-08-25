@@ -10,12 +10,14 @@ import android.os.Build
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.webkit.internal.ApiFeature
 import com.getcapacitor.JSObject
 import com.getcapacitor.PluginCall
 import com.microblink.core.ScanResults
 import com.microblink.linking.*
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspAccountList
+import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspOnlineScan
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspRetailerOrders
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -44,7 +46,7 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun login( call: PluginCall, account: Account, context: Context ) {
         val mbAccount = com.microblink.linking.Account(
-            RetailerEnum.fromString(account.accountType.source).toInt(),
+            RetailerEnum.fromString(account.accountCommon.source).toValue(),
             PasswordCredentials(account.username, account.password!!)
         )
         client.link(mbAccount)
@@ -61,10 +63,10 @@ class Retailer {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun remove(call: PluginCall, account: Account){
+    fun remove(call: PluginCall, accountCommon: AccountCommon){
         client.accounts().addOnSuccessListener { accounts ->
             val mbAccount = accounts?.firstOrNull {
-                it.retailerId == RetailerEnum.fromString(account.accountType.source).toInt()
+                it.retailerId == RetailerEnum.fromString(accountCommon.source).toValue()
             }
             if (mbAccount != null) {
                 client.unlink(mbAccount).addOnSuccessListener {
@@ -92,19 +94,20 @@ class Retailer {
             val accounts = accounts().await()
             accounts.forEach {
                 if(it.isVerified!!) {
-                    val retailer = RetailerEnum.fromString(it.accountType.source).toInt()
-                    val username = it.username
+                    val retailer = RetailerEnum.fromString(it.accountCommon.source).toValue()
                     val ordersSuccessCallback =
-                        { a: Int, results: ScanResults?, b: Int, c: String ->
+                        { _: Int, results: ScanResults?, remaining: Int, _: String ->
                             if (results != null) {
-                                val rsp = RspRetailerOrders(
-                                    RetailerEnum.fromInt(retailer).toString(),
-                                    username, results
-                                )
-                                Log.e("TIKI", rsp.toJson().toString())
-                                call.resolve(JSObject(rsp.toJson().toString()))
+                                if(remaining == 0) {
+                                    val rsp = RspOnlineScan(it, results, false)
+                                    call.resolve(JSObject(rsp.toJson().toString()))
+                                }else{
+                                    val rsp = RspOnlineScan(it, results)
+                                    call.resolve(JSObject(rsp.toJson().toString()))
+                                }
+
+
                             } else {
-                                Log.e("TIKI", "NO RESULT")
                                 call.reject("no result")
                             }
                         }
@@ -123,27 +126,68 @@ class Retailer {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
+    fun orders( call: PluginCall, account: Account ) {
+        MainScope().async {
+            val mbAccount = mbAccounts().await().first{
+                account.username === it.credentials.username() && account.accountCommon.source === RetailerEnum.fromValue(it.retailerId).name
+            }
+            account.isVerified = verify(mbAccount).await()
+            if(account.isVerified!!) {
+                val retailer = RetailerEnum.fromString(account.accountCommon.source).toValue()
+                val ordersSuccessCallback =
+                    { _: Int, results: ScanResults?, _: Int, _: String ->
+                        if (results != null) {
+                            val rsp = RspOnlineScan(account, results, false)
+                            call.resolve(JSObject(rsp.toJson().toString()))
+                        } else {
+                            call.reject("no result")
+                        }
+                    }
+                val ordersFailureCallback = { _: Int, exception: AccountLinkingException ->
+                    Log.e("TIKI", exception.message ?: "exception wihtout message")
+                    call.reject(exception.message)
+                }
+                client.orders(
+                    retailer,
+                    ordersSuccessCallback,
+                    ordersFailureCallback,
+                )
+            }
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun accounts(): CompletableDeferred<List<Account>> {
         val accounts = CompletableDeferred<List<Account>>()
+        val list = mutableListOf<Account>()
+        MainScope().async{
+            mbAccounts().await().map{mbAccount ->
+                val account = Account.fromMbLinking(mbAccount)
+                account.isVerified = verify(mbAccount).await()
+                list.add(account)
+            }
+            accounts.complete(list)
+        }
+        return accounts
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun mbAccounts(): CompletableDeferred<List<com.microblink.linking.Account>> {
+        val mbAccounts = CompletableDeferred<List<com.microblink.linking.Account>>()
         client.accounts()
-            .addOnSuccessListener { mbAccounts ->
+            .addOnSuccessListener { mbAccountList ->
                 MainScope().async {
-                    if (mbAccounts != null) {
-                        val accountList = mbAccounts.map{ mbAccount ->
-                            val account = Account.fromMbLinking(mbAccount)
-                            account.isVerified = verify(mbAccount).await()
-                            account
-                        }
-                        accounts.complete(accountList)
+                    if (mbAccountList != null) {
+                        mbAccounts.complete(mbAccountList)
                     } else {
-                        accounts.complete(mutableListOf())
+                        mbAccounts.complete(mutableListOf())
                     }
                 }
             }
             .addOnFailureListener {
-                accounts.completeExceptionally(it)
+                mbAccounts.completeExceptionally(it)
             }
-        return accounts
+        return mbAccounts
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -151,7 +195,7 @@ class Retailer {
         val verifyCompletable = CompletableDeferred<Boolean>()
         val account = Account.fromMbLinking(mbAccount)
         client.verify(
-            RetailerEnum.fromString(account.accountType.source).value,
+            RetailerEnum.fromString(account.accountCommon.source).value,
             success = { isVerified: Boolean, _: String ->
                 if(isVerified){
                     account.isVerified = true

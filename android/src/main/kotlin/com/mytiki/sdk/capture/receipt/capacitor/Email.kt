@@ -20,10 +20,8 @@ import com.microblink.digital.ProviderSetupDialogFragment
 import com.microblink.digital.ProviderSetupOptions
 import com.microblink.digital.ProviderSetupResults
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
-import com.mytiki.sdk.capture.receipt.capacitor.req.ReqLogin
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspEmailAccount
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspEmail
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspLogin
+import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspOnlineScan
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
@@ -58,7 +56,7 @@ class Email {
         ProviderSetupDialogFragment.newInstance(
             ProviderSetupOptions.newBuilder(
                 PasswordCredentials.newBuilder(
-                    Provider.valueOf(account.accountType.source),
+                    Provider.valueOf(account.accountCommon.source),
                     account.username,
                     account.password!!
                 ).build()
@@ -79,7 +77,7 @@ class Email {
                         as ProviderSetupDialogFragment
                 if (dialog.isAdded) {
                     dialog.dismiss()
-                    val rsp = RspLogin(account.username, account.accountType.source)
+                    val rsp = RspLogin(account.username, account.accountCommon.source)
                     call.resolve(JSObject.fromJSONObject(rsp.toJson()))
                 }
             }
@@ -88,19 +86,40 @@ class Email {
 
     fun scrape(call: PluginCall) {
         if (client == null) call.reject("Not initialized")
-
         call.setKeepAlive(true)
         client!!.messages(object : MessagesCallback {
             override fun onComplete(
                 credential: PasswordCredentials,
                 result: List<ScanResults>
             ) {
-                val rsp = RspEmail(credential, result)
-                call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                result.forEach {receipt ->
+                    val rsp = RspOnlineScan(Account.fromMbEmail(credential), receipt)
+                    call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                }
             }
-
             override fun onException(throwable: Throwable) = call.reject(throwable.message)
         })
+        call.setKeepAlive(false)
+    }
+
+    fun scrape(call: PluginCall, account: Account) {
+        if (client == null) call.reject("Not initialized")
+        call.setKeepAlive(true)
+        client!!.messages(object : MessagesCallback {
+            override fun onComplete(
+                credential: PasswordCredentials,
+                result: List<ScanResults>
+            ) {
+                if (credential.provider() === EmailEnum.fromString(account.accountCommon.source).value) {
+                    result.forEach { receipt ->
+                        val rsp = RspOnlineScan(Account.fromMbEmail(credential), receipt)
+                        call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                    }
+                }
+            }
+            override fun onException(throwable: Throwable) = call.reject(throwable.message)
+        })
+        call.setKeepAlive(false)
     }
 
     fun accounts(): CompletableDeferred<List<Account>>{
@@ -127,7 +146,7 @@ class Email {
     fun remove(call: PluginCall, account: Account) {
         client?.logout(
             PasswordCredentials.newBuilder(
-                Provider.valueOf(account.accountType.source),
+                Provider.valueOf(account.accountCommon.source),
                 account.username,
                 account.password!!
             ).build()
