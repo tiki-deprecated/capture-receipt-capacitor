@@ -144,13 +144,4 @@ class ReceiptCapturePlugin : Plugin() {
         if (getPermissionState("camera") == PermissionState.GRANTED) scanPhysical(call)
         else call.reject("Permission is required to scan a receipt")
     }
-
-    private fun scanEmail(call: PluginCall){
-        receiptCapture.email.scrape(call)
-    }
-
-    private fun scanRetailer(call: PluginCall) {
-        receiptCapture.retailer.orders(call)
-    }
-
 }
