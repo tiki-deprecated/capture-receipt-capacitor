@@ -1,7 +1,13 @@
 package com.mytiki.sdk.capture.receipt.capacitor
 
-enum class ScanType (val value: String) {
-    EMAIL("EMAIL"),
-    RETAILER("RETAILER"),
-    PHYSICAL("PHYSICAL");
+enum class ScanTypeEnum {
+    EMAIL,
+    RETAILER,
+    PHYSICAL,
+    ONLINE;
+
+    override fun toString() = this.name
+    companion object {
+        fun fromString(stringValue: String) = ScanTypeEnum.values().first { it.name == stringValue }
+    }
 }
