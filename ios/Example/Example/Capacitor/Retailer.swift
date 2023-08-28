@@ -6,6 +6,7 @@
 import Foundation
 import BlinkReceipt
 import BlinkEReceipt
+import Capacitor
 
 public class Retailer {
     
@@ -14,28 +15,35 @@ public class Retailer {
         BRScanManager.shared().prodIntelKey = req.productKey
         BRAccountLinkingManager.shared()
     }
-    public func account (retailer: RetailerCommon, username: String, password: String, dayCutoff: Int) -> BRAccountLinkingError {
+    public func account (retailer: RetailerCommon, username: String, password: String, dayCutoff: Int) {
         let connection = BRAccountLinkingConnection(retailer: retailer.toBRAccountLinkingRetailer()!, username: username, password: password)
         connection.configuration.dayCutoff = dayCutoff
         connection.configuration.returnLatestOrdersOnly = false
         connection.configuration.countryCode = "US"
         
-        print("############Account done")
-        return BRAccountLinkingManager.shared().linkRetailer(with: connection)
+        let error = BRAccountLinkingManager.shared().linkRetailer(with: connection)
+        if (error == .none || BRAccountLinkingError.accountLinkedAlready) {
+            verifyConnection(retailer: retailer, username: username, password: password)
+        }
+
     }
     
     public func verifyConnection(retailer: RetailerCommon, username: String, password: String, completion: @escaping (_ success: Bool, _ erro: Error?, _ sessionId: String) -> Void) {
         
         let connection = BRAccountLinkingConnection(retailer: retailer.toBRAccountLinkingRetailer()!, username: username, password: password)
-        connection.configuration.dayCutoff = 500
+        connection.configuration.dayCutoff = 30
         let taskId = BRAccountLinkingManager.shared().verifyRetailer(with: connection, withCompletion: { error, viewController, sessionId in
             if (error == .verificationNeeded) {
               // Display UIViewController for 2FA verification, CAPTCHA or other user input
-                self.VerificationNeededPresent(viewController: viewController!)
+                print("###verification needed")
+                let rootVc = UIApplication.shared.windows.first?.rootViewController
+                rootVc!.present(viewController!, animated: true, completion: nil)
 
             } else if (error == .verificationCompleted) {
               // Dismiss the previously presented UIViewController
-                self.VerificationNeededDismiss()
+                let rootVc = UIApplication.shared.windows.first?.rootViewController
+                rootVc!.dismiss(animated: true)
+                self.orders(retailer: .amazonBeta) {success,retailer,remaining,sessionId,erroCode in }
             } else {
 
                 if (error == .noCredentials) {
@@ -57,30 +65,24 @@ public class Retailer {
                 }
                 // Verification Completed Successfully
                 // Account can be linked
-                print("######VerificationCompleted")
+                print("######Verification Completed")
                 let linkRetailer = BRAccountLinkingManager.shared().linkRetailer(with: connection)
                 completion(true, nil, sessionId)
               }
             })
         }
     
-    
     public func orders(retailer :BRAccountLinkingRetailer, completion: @escaping (_ success: Bool, _ retailer: BRAccountLinkingRetailer, _ remaining: Int, _ sessionId: String, _ erroCode: Error?) -> Void){
-
         let taskId = BRAccountLinkingManager.shared().grabNewOrders(for: retailer) { retailer, order, remaining, viewController, errorCode, sessionId in
           if (errorCode == .verificationNeeded) {
+              print("GrabOrders VerificationNeeded")
             // Display UIViewController for 2FA verification, CAPTCHA or other user input
-              print("###GrabOrders verification needed")
-              self.VerificationNeededPresent(viewController: viewController!)
           } else if errorCode == .invalidKey {
-              print("####InvalidKey")
+              print("GrabOrders Invalid Key")
           }else if errorCode == .verificationCompleted {
             // Dismiss the previously presented UIViewController
-              self.VerificationNeededDismiss()
           } else if errorCode == .none {
-              print("###Everiting Works Fine")
             // Order may be returned here
-              print(order?.description)
             if (remaining <= 0) {
               // Grab Orders Completed Successfully
               // No more orders to fetch
@@ -91,16 +93,6 @@ public class Retailer {
             
         }
     }
-    public func VerificationNeededPresent(viewController: UIViewController){
-        print("###verification needed")
-        let rootVc = UIApplication.shared.windows.first?.rootViewController
-        rootVc!.present(viewController, animated: true, completion: nil)
-    }
-    public func VerificationNeededDismiss(){
-        print("###verification needed Dismiss")
-        let rootVc = UIApplication.shared.windows.first?.rootViewController
-        rootVc!.dismiss(animated: true)
-    }
-
+    
+    
 }
-
