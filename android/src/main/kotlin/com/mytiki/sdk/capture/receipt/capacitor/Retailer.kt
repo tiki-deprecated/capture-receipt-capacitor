@@ -43,7 +43,7 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun login( call: PluginCall, account: Account, context: Context ) {
         val mbAccount = com.microblink.linking.Account(
-            RetailerEnum.fromString(account.accountCommon.source).toValue(),
+            RetailerEnum.fromString(account.accountCommon.source).toMbInt(),
             PasswordCredentials(account.username, account.password!!)
         )
         client.link(mbAccount)
@@ -63,7 +63,7 @@ class Retailer {
     fun remove(call: PluginCall, accountCommon: AccountCommon){
         client.accounts().addOnSuccessListener { accounts ->
             val mbAccount = accounts?.firstOrNull {
-                it.retailerId == RetailerEnum.fromString(accountCommon.source).toValue()
+                it.retailerId == RetailerEnum.fromString(accountCommon.source).toMbInt()
             }
             if (mbAccount != null) {
                 client.unlink(mbAccount).addOnSuccessListener {
@@ -91,7 +91,7 @@ class Retailer {
             val accounts = accounts().await()
             accounts.forEach {
                 if(it.isVerified!!) {
-                    val retailer = RetailerEnum.fromString(it.accountCommon.source).toValue()
+                    val retailer = RetailerEnum.fromString(it.accountCommon.source).toMbInt()
                     val ordersSuccessCallback =
                         { _: Int, results: ScanResults?, remaining: Int, _: String ->
                             if (results != null) {
@@ -126,11 +126,11 @@ class Retailer {
     fun orders( call: PluginCall, account: Account ) {
         MainScope().async {
             val mbAccount = mbAccounts().await().first{
-                account.username === it.credentials.username() && account.accountCommon.source === RetailerEnum.fromValue(it.retailerId).name
+                account.username === it.credentials.username() && account.accountCommon.source === RetailerEnum.fromMbInt(it.retailerId).name
             }
             account.isVerified = verify(mbAccount).await()
             if(account.isVerified!!) {
-                val retailer = RetailerEnum.fromString(account.accountCommon.source).toValue()
+                val retailer = RetailerEnum.fromString(account.accountCommon.source).toMbInt()
                 val ordersSuccessCallback =
                     { _: Int, results: ScanResults?, _: Int, _: String ->
                         if (results != null) {
@@ -153,7 +153,6 @@ class Retailer {
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     fun accounts(): CompletableDeferred<List<Account>> {
         val accounts = CompletableDeferred<List<Account>>()
         val list = mutableListOf<Account>()

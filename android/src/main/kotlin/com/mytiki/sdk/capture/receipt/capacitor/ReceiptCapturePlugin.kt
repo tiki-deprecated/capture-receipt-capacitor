@@ -92,7 +92,6 @@ class ReceiptCapturePlugin : Plugin() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O_MR1)
     @PluginMethod
     fun accounts(call: PluginCall){
         val list = mutableListOf<Account>()
@@ -119,6 +118,11 @@ class ReceiptCapturePlugin : Plugin() {
                 }
             }
         } else {
+            when (req.scanType) {
+                ScanTypeEnum.EMAIL -> receiptCapture.email.scrape(call)
+                ScanTypeEnum.RETAILER -> receiptCapture.retailer.orders(call)
+               else -> call.reject("invalid scan type for account")
+            }
             if(req.account.accountCommon.source === AccountTypeEnum.RETAILER.name) {
                 receiptCapture.retailer.orders(call, req.account)
             } else {
@@ -131,17 +135,17 @@ class ReceiptCapturePlugin : Plugin() {
         if (getPermissionState("camera") != PermissionState.GRANTED) {
             requestPermissionForAlias("camera", call, "onCameraPermission")
         }else{
-            val intent: Intent = receiptCapture.scan.open(call, context)
+            val intent: Intent = receiptCapture.physical.open(call, context)
             startActivityForResult(call, intent, "onScanResult")
         }
     }
 
     @ActivityCallback
-    private fun onScanResult(call: PluginCall, result: ActivityResult) = receiptCapture.scan.onResult(call, result)
+    private fun onScanResult(call: PluginCall, result: ActivityResult) = receiptCapture.physical.onResult(call, result)
 
     @PermissionCallback
     private fun onCameraPermission(call: PluginCall) {
         if (getPermissionState("camera") == PermissionState.GRANTED) scanPhysical(call)
-        else call.reject("Permission is required to scan a receipt")
+        else call.reject("Permission is required to physical a receipt")
     }
 }

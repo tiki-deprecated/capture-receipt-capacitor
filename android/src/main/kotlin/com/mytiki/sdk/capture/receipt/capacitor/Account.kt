@@ -22,7 +22,7 @@ class Account(
         }
 
         fun fromRetailerAccount(mbAccount: com.microblink.linking.Account): Account{
-            val accountType = AccountCommon.fromString(RetailerEnum.fromValue(mbAccount.retailerId).toString())
+            val accountType = AccountCommon.fromString(RetailerEnum.fromMbInt(mbAccount.retailerId).toString())
             val username = mbAccount.credentials.username()
             return Account(accountType, username)
         }
@@ -33,8 +33,6 @@ class Account(
             return Account(accountType, username)
         }
 
-        @RequiresApi(Build.VERSION_CODES.O_MR1)
         fun toRspList(list: List<Account>, error: Exception? = null): JSObject = JSObject.fromJSONObject(RspAccountList(list.toMutableList(), error).toJson())
     }
-    
 }

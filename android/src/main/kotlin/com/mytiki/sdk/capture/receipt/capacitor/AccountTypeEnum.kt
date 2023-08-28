@@ -5,7 +5,7 @@ enum class AccountTypeEnum {
     RETAILER;
 
 
-    override fun toString() = this.name.lowercase()
+    override fun toString() = this.name
     companion object {
         fun fromString(stringValue: String) = AccountTypeEnum.values().first { it.name == stringValue }
     }

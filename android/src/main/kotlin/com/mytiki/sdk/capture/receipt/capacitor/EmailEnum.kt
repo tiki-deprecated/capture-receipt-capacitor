@@ -10,10 +10,8 @@ enum class EmailEnum(val value: Provider) {
 
 
     override fun toString() = this.name
-    fun toValue()  = this.value
 
     companion object {
         fun fromString(stringValue: String) = EmailEnum.values().first { it.name == stringValue }
-        fun fromValue(stringValue: String) = EmailEnum.values().first { it.value.name == stringValue }
     }
 }

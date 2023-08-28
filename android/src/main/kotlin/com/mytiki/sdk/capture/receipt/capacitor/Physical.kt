@@ -22,7 +22,7 @@ import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspReceipt
 import kotlinx.coroutines.CompletableDeferred
 
-class Scan {
+class Physical {
     fun initialize(
         req: ReqInitialize,
         context: Context,
@@ -62,6 +62,6 @@ class Scan {
             val media: Media? = result.data?.getParcelableExtra(CameraScanActivity.MEDIA_EXTRA)
             val rsp: RspReceipt? = RspReceipt.opt(scanResults)
             call.resolve(if (rsp != null) JSObject.fromJSONObject(rsp.toJson()) else JSObject())
-        } else call.reject("Scan failed.")
+        } else call.reject("Physical failed.")
     }
 }

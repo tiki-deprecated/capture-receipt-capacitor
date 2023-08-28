@@ -11,7 +11,7 @@ class RspScan(scan: ScanResults, account: Account? = null, isRunning: Boolean = 
     override fun toJson(): JSONObject =
         JSONObject()
             .put("account", if(_account != null) RspAccount(_account).toJson() else null )
-            .put("scan", _scan.toJson())
+            .put("physical", _scan.toJson())
             .put("isRunning", _isRunning)
 
 }

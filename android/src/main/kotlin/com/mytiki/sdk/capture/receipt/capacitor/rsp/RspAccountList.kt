@@ -16,9 +16,8 @@ class RspAccountList(
     private val accounts: MutableList<Account>,
     private val error: Exception? = null
     ) : Rsp {
-    @RequiresApi(Build.VERSION_CODES.O_MR1)
     override fun toJson(): JSONObject =
         JSONObject()
             .put("accounts", JSONArray(accounts.map { account -> account.toRsp() }))
-            .put("error", JSONException(error))
+            .put("error", error?.message ?: "")
 }
