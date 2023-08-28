@@ -11,7 +11,7 @@ public struct AccountCommon{
     let source: String
     
     static let defaults: [String: AccountCommon] = [
-        "AMAZON" : AccountCommon(type: .retailer, source: RetailerCommon.AMAZON_BETA.rawValue),
+        "AMAZON" : AccountCommon(type: .retailer, source: RetailerEnum.AMAZON_BETA.rawValue),
         "GMAIL" : AccountCommon(type: .email, source: "GMAIL")
     ]
 }

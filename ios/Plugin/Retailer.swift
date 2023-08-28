@@ -124,6 +124,34 @@ public class Retailer : CAPPlugin{
             
         }
     }
+    
+    public func accounts (_ pluginCall: CAPPluginCall) -> [Account] {
+        var retailers = [BRAccountLinkingRetailer]()
+        for ret in BRAccountLinkingManager().getLinkedRetailers() {
+            retailers.append(BRAccountLinkingRetailer(rawValue: ret.uintValue)!)
+        }
+        
+        var accountsList = [Account]()
+        for retLinked in retailers {
+            let connection = BRAccountLinkingManager().getLinkedRetailerConnection(retLinked)
+            var isVerified =  false
+            BRAccountLinkingManager.shared().verifyRetailer(with: connection!) { error, viewController, sessionId in
+                if (error == .none || error == .accountLinkedAlready) {
+                    isVerified = true
+                }
+            }
+            
+            let source = (RetailerEnum(rawValue: "")?.toString(retLinked.self)!)!
+            let accountCommon = AccountCommon(type: .retailer, source: source)
+            let account = Account(accountType: accountCommon, user: connection!.username!, password: connection!.password!, isVerified: isVerified)
+            
+            accountsList.append(account)
+        }
+                
+        return accountsList
+    }
+    
+    
     public func VerificationNeededPresent(viewController: UIViewController){
         print("###verification needed")
         

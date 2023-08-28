@@ -63,6 +63,15 @@ public class ReceiptCapturePlugin: CAPPlugin {
     
     @objc func accounts(call: CAPPluginCall){
         
+        guard let retailer = receiptCapture.retailer else {
+            call.reject("Call plugin initialize method.")
+            return
+        }
+        
+        let data = retailer.accounts(call)
+//      TODO Implement E-Mail case
+        call.resolve(data)
+        
     }
     
     func scan(call: CAPPluginCall) {
