@@ -3,7 +3,11 @@
  * MIT license. See LICENSE file in root directory.
  */
 
+import { Account } from './account';
 import type { Receipt } from './receipt';
+
+
+export type ScanType = 'PHYSICAL' | 'EMAIL' | 'RETAILER' | 'ONLINE';
 
 export interface ReceiptCapturePlugin {
   initialize(options: {
@@ -11,7 +15,11 @@ export interface ReceiptCapturePlugin {
     productKey?: string;
   }): Promise<{ isInitialized: boolean; reason?: string }>;
 
-  scan(): Promise<Receipt>;
+
+
+  scan(_option: {scanType: ScanType | undefined, account?: Account}): Promise<{receipt: Receipt, isRunning: boolean}>;
+
+  accounts(): Promise<Account[]>;
 
   loginWithEmail(options: {
     username: string;
@@ -19,36 +27,15 @@ export interface ReceiptCapturePlugin {
     provider: string;
   }): Promise<{ username: string; provider: string }>;
 
-  scrapeEmail(): Promise<{
-    login: { username: string; provider: string };
-    scans: Receipt[];
-  }>;
-
-  verifyEmail(): Promise<{
-    accounts: { username: string; provider: string; verified: boolean }[];
-  }>;
-
   removeEmail(options: { username: string; password: string; provider: string }): Promise<{ success: boolean }>;
 
   loginWithRetailer(options: {
     username: string;
     password: string;
     provider: string;
-  }): Promise<{ username: string; provider: string; isVerified: boolean }>;
+  }): Promise<Account>;
 
-  retailers(): Promise<{ accounts: [{ username: string; provider: string; isVerified: boolean }] }>;
-
-  removeRetailer(options: { username: string; provider: string }): Promise<{
-    username: string;
-    provider: string;
-    isVerified: boolean;
-  }>;
-
-  orders(): Promise<{
-    provider: string;
-    username: string;
-    scan: Receipt;
-  }>;
+  removeRetailer(options: { username: string; provider: string }): Promise<Account>;
 
   flushRetailer(): Promise<void>;
 

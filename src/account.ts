@@ -13,29 +13,34 @@ export interface Account {
   username: string;
 
   /**
+   * The password associated with the account.
+   */
+  password?: string;
+
+  /**
    * The provider of the account, if applicable.
    */
-  provider?: AccountProvider;
+  accountType: AccountType;
 
   /**
    * Indicates whether the account linkage has been verified.
    */
-  verified?: boolean;
+  isVerified?: boolean;
 }
 
 /**
  * Enumeration of possible account providers.
  */
-export enum AccountProvider {
-  /**
-   * Google Mail (Gmail) account provider.
-   */
-  GMAIL = 'GMAIL',
+export interface AccountType {
+  type: 'EMAIL' | 'RETAILER',
+  name: string,
+  icon?: string,
+  key: string
 }
 
-/**
- * A reverse lookup map to locate the {@link AccountProvider} by string value.
- */
-export const providers: Map<string, AccountProvider> = new Map(
-  Object.values(AccountProvider).map((value) => [`${value}`, value] as const),
-);
+// /**
+//  * A reverse lookup map to locate the {@link AccountProvider} by string value.
+//  */
+// export const providers: Map<string, AccountProvider> = new Map(
+//   Object.values(AccountProvider).map((value) => [`${value}`, value] as const),
+// );
