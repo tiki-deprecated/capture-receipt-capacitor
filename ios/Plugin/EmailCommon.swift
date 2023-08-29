@@ -7,9 +7,22 @@
 //
 
 import Foundation
+import BlinkReceipt
+import BlinkEReceipt
+import Capacitor
 
+public enum EmailCommon : String {
+    case GMAIL
+    case AOL
+    case YAHOO
+    case OUTLOOK
 
-case GMAIL
-case AOL
-case YAHOO
-case OUTLOOK
+    func toBREReceiptProvider() -> BREReceiptProvider? {
+        switch self{
+            case .AOL : return .AOL
+            case .GMAIL : return .gmailIMAP
+            case .OUTLOOK : return .outlook
+            case .YAHOO : return .yahoo
+        }
+    }
+}
