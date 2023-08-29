@@ -42,9 +42,7 @@ class ReceiptCapturePlugin : Plugin() {
     @PluginMethod
     fun login(call: PluginCall){
         if(
-            call.data.getString("source")?.isEmpty() == false
-            && call.data.getString("username")?.isEmpty() == false
-            && call.data.getString("password")?.isEmpty() == false
+            call.data.getString("source").isNullOrEmpty() && !call.data.getString("username").isNullOrEmpty() && !call.data.getString("password").isNullOrEmpty()
         ) {
             val account = Account.fromReq(call.data)
             when (account.accountCommon.type) {
@@ -52,13 +50,13 @@ class ReceiptCapturePlugin : Plugin() {
                 AccountTypeEnum.RETAILER -> receiptCapture.retailer.login(call, account, context)
             }
         } else {
-            if(call.data.getString("source")?.isEmpty() == true){
+            if(call.data.getString("source").isNullOrEmpty()){
                 call.reject("Provide source in login request")
             }
-            if(call.data.getString("username")?.isEmpty() == true){
+            if(call.data.getString("username").isNullOrEmpty()){
                 call.reject("Provide username in login request")
             }
-            if(call.data.getString("password")?.isEmpty() == true){
+            if(call.data.getString("password").isNullOrEmpty()){
                 call.reject("Provide password in login request")
             }
         }
@@ -67,10 +65,10 @@ class ReceiptCapturePlugin : Plugin() {
 
     @PluginMethod
     fun logout(call: PluginCall){
-        if(call.data.getString("source")?.isEmpty() == true && call.data.getString("username")?.isEmpty() == true){
+        if(call.data.getString("source").isNullOrEmpty() && call.data.getString("username").isNullOrEmpty()){
             receiptCapture.retailer.flush(call)
             receiptCapture.email.flush(call)
-        } else if(call.data.getString("source")?.isEmpty() == false && call.data.getString("username")?.isEmpty() == false){
+        } else if(!call.data.getString("source").isNullOrEmpty() && !call.data.getString("username").isNullOrEmpty()){
             val account = Account.fromReq(call.data)
             when (account.accountCommon.type) {
                 AccountTypeEnum.EMAIL -> {
@@ -80,14 +78,14 @@ class ReceiptCapturePlugin : Plugin() {
                     receiptCapture.retailer.remove(call, account.accountCommon)
                 }
             }
-        } else if(call.data.getString("source")?.isEmpty() == false && call.data.getString("username")?.isEmpty() == true){
-            call.reject("Provide username in logout request")
-        } else if(call.data.getString("source")?.isEmpty() == true && call.data.getString("username")?.isEmpty() == false){
+        } else if(call.data.getString("source").isNullOrEmpty() && !call.data.getString("username").isNullOrEmpty()){
+            call.reject("Provide source in logout request")
+        } else if(!call.data.getString("source").isNullOrEmpty() && call.data.getString("username").isNullOrEmpty()){
             val accountCommon = AccountCommon.fromString(call.data.getString("source")?: "")
             if (accountCommon.type == AccountTypeEnum.RETAILER){
                 receiptCapture.retailer.remove(call, accountCommon)
             }else{
-                call.reject("Provide source in email logout request")
+                call.reject("Provide username in email logout request")
             }
         }
     }
