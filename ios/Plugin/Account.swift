@@ -19,6 +19,14 @@ public class Account {
         self.accountType = accountType
         self.user = user
         self.password = password
-        self.isVerified = isVerified
+        self.isVerified = isVerified ?? false
+    }
+    
+    func toResultData() -> PluginCallResultData {
+        return [
+            "username" : user,
+            "source" : accountType.source,
+            "verified" : isVerified ?? false
+        ]
     }
 }
