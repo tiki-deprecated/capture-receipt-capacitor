@@ -15,29 +15,19 @@ export interface ReceiptCapturePlugin {
     productKey?: string;
   }): Promise<{ isInitialized: boolean; reason?: string }>;
 
+  login(options: {
+    username: string,
+    password: string,
+    source: string,
+  }): Promise<Account>
 
+  logout(options?: {
+    username: string,
+    password: string,
+    source: string,
+  }): Promise<Account>
 
   scan(_option: {scanType: ScanType | undefined, account?: Account}): Promise<{receipt: Receipt, isRunning: boolean}>;
 
   accounts(): Promise<Account[]>;
-
-  loginWithEmail(options: {
-    username: string;
-    password: string;
-    provider: string;
-  }): Promise<{ username: string; provider: string }>;
-
-  removeEmail(options: { username: string; password: string; provider: string }): Promise<{ success: boolean }>;
-
-  loginWithRetailer(options: {
-    username: string;
-    password: string;
-    provider: string;
-  }): Promise<Account>;
-
-  removeRetailer(options: { username: string; provider: string }): Promise<Account>;
-
-  flushRetailer(): Promise<void>;
-
-  flushEmail(): Promise<void>;
 }
