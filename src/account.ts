@@ -28,8 +28,11 @@ export interface Account {
   isVerified?: boolean;
 }
 
-/**
- * Enumeration of possible account providers.
+/** The interface with the 3rd-party account info
+ * @type - indicates if the account its from an email service or a retailer service
+ * @name - The name of the email/retailer service
+ * @icon - the icon of the email/retailer service.
+ * @key - the key of the enum value, that will be send to tiki-capture-receipt-capacitor
  */
 export interface AccountType {
   type: 'EMAIL' | 'RETAILER',
@@ -38,9 +41,3 @@ export interface AccountType {
   key: string
 }
 
-// /**
-//  * A reverse lookup map to locate the {@link AccountProvider} by string value.
-//  */
-// export const providers: Map<string, AccountProvider> = new Map(
-//   Object.values(AccountProvider).map((value) => [`${value}`, value] as const),
-// );

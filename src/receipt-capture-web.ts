@@ -44,7 +44,7 @@ export class ReceiptCaptureWeb extends WebPlugin implements ReceiptCapturePlugin
     username: string;
     password: string;
     provider: string;
-  }): Promise<{ username: string; provider: string }> {
+  }): Promise<Account> {
     throw this.unimplemented('Mobile Only.');
   }
 

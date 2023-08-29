@@ -65,7 +65,6 @@ export class ReceiptCapture {
         icon: undefined,
         key: provider
       }
-      //provider: providers.get(rsp.provider),
     };
   };
 
@@ -86,6 +85,14 @@ export class ReceiptCapture {
     if (!rsp.success) throw Error(`Failed to remove: ${provider} | ${username}`);
   };
 
+  /**
+   * Log in to a retailer account.
+   * @param username - The account username.
+   * @param password - The account password.
+   * @param provider - The {@link AccountProvider}.
+   * @returns A Promise that resolves to the logged-in Account object.
+   * @throws Error if removal fails.
+   */
   loginWithRetailer = async (username: string, password: string, provider: string): Promise<Account> => {
     return this.plugin.loginWithRetailer({
       username,
@@ -94,15 +101,33 @@ export class ReceiptCapture {
     });
   };
 
+  /**
+   * loads all the linked accounts
+   * @returns a promise with an array of the accounts that are logged in
+   */
   accounts = async (): Promise<Account[]> =>{
     return (await this.plugin.accounts())
   }
 
+  /**
+   * Logs out and removes a retailer account from the local cache.
+   * @param username - The account username.
+   * @param provider - The {@link AccountProvider}.
+   * @returns A Promise that resolves when the account is removed.
+   * @throws Error if removal fails.
+   */
   removeRetailer = async (username: string, provider: string): Promise<Account> => {
     return await this.plugin.removeRetailer({username, provider});
   };
 
+   /**
+   * Removes from cache and log out all the emails accounts
+   */
   flushEmail = async (): Promise<void> => this.plugin.flushEmail();
+
+  /**
+   * Removes from cache and log out all the retailers accounts
+   */
   flushRetailer = async (): Promise<void> => this.plugin.flushRetailer();
 }
 
