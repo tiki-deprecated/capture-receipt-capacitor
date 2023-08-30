@@ -20,20 +20,15 @@ import com.microblink.digital.ProviderSetupDialogFragment
 import com.microblink.digital.ProviderSetupOptions
 import com.microblink.digital.ProviderSetupResults
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
-import com.mytiki.sdk.capture.receipt.capacitor.req.ReqLogin
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspAccount
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspEmail
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspLogin
+import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspScan
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.tasks.await
-import org.json.JSONArray
-import org.json.JSONObject
 
 class Email {
     private val tag = "ProviderSetupDialogFragment"
-    private var client: ImapClient? = null
+    private lateinit var client: ImapClient
 
     suspend fun initialize(
         req: ReqInitialize,
@@ -54,14 +49,13 @@ class Email {
         return isImapInitialized
     }
 
-    fun login(call: PluginCall, activity: AppCompatActivity) {
-        val req = ReqLogin(call.data)
+    fun login(call: PluginCall, account: Account, activity: AppCompatActivity) {
         ProviderSetupDialogFragment.newInstance(
             ProviderSetupOptions.newBuilder(
                 PasswordCredentials.newBuilder(
-                    Provider.valueOf(req.provider!!),
-                    req.username!!,
-                    req.password!!
+                    Provider.valueOf(account.accountCommon.source),
+                    account.username,
+                    account.password!!
                 ).build()
             ).build()
         ).callback {
@@ -80,55 +74,85 @@ class Email {
                         as ProviderSetupDialogFragment
                 if (dialog.isAdded) {
                     dialog.dismiss()
-                    val rsp = RspLogin(req.username, req.provider)
-                    call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                    MainScope().async {
+                        account.isVerified = client.verify(PasswordCredentials.newBuilder(
+                            Provider.valueOf(account.accountCommon.source),
+                            account.username,
+                            account.password
+                        ).build()
+                        ).await()
+                        call.resolve(account.toRsp())
+                    }
                 }
             }
         }.show(activity.supportFragmentManager, tag)
     }
 
     fun scrape(call: PluginCall) {
-        if (client == null) call.reject("Not initialized")
-
+        call.reject("Not initialized")
         call.setKeepAlive(true)
-        client!!.messages(object : MessagesCallback {
+        client.messages(object : MessagesCallback {
             override fun onComplete(
                 credential: PasswordCredentials,
                 result: List<ScanResults>
             ) {
-                val rsp = RspEmail(credential, result)
-                call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                result.forEach {receipt ->
+                    val rsp = RspScan(receipt, Account.fromEmailAccount(credential))
+                    call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                }
             }
-
             override fun onException(throwable: Throwable) = call.reject(throwable.message)
         })
+        call.setKeepAlive(false)
     }
 
-    fun accounts(call: PluginCall) {
-        val deferred = MainScope().async {
-            val rsp: MutableList<JSONObject> = mutableListOf()
-            val credentials = client?.accounts()?.await()
-            credentials?.forEach { credential ->
-                val verified = client?.verify(credential)?.await()
-                rsp.add(
-                    RspAccount(
-                        credential.username(),
-                        credential.provider().name,
-                        verified ?: false
-                    ).toJson()
-                )
+    fun scrape(call: PluginCall, account: Account) {
+        call.reject("Not initialized")
+        call.setKeepAlive(true)
+        client.messages(object : MessagesCallback {
+            override fun onComplete(
+                credential: PasswordCredentials,
+                result: List<ScanResults>
+            ) {
+                if (credential.provider() === EmailEnum.fromString(account.accountCommon.source).value) {
+                    result.forEach { receipt ->
+                        val rsp = RspScan(receipt, Account.fromEmailAccount(credential))
+                        call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                    }
+                }
             }
-            call.resolve(JSObject.fromJSONObject(JSONObject().put("accounts", JSONArray(rsp))))
-        }
+            override fun onException(throwable: Throwable) = call.reject(throwable.message)
+        })
+        call.setKeepAlive(false)
     }
 
-    fun remove(call: PluginCall) {
-        val req = ReqLogin(call.data)
-        client?.logout(
+    fun accounts(): CompletableDeferred<List<Account>>{
+        val isAccounts = CompletableDeferred<List<Account>>()
+        client.accounts()?.addOnSuccessListener {credentials ->
+            if (credentials != null) {
+                MainScope().async {
+                    val accountList = credentials?.map { credential ->
+                        val account = Account.fromEmailAccount(credential)
+                        account.isVerified = client.verify(credential).await()
+                        account
+                    }
+                    isAccounts.complete(accountList!!)
+                }
+            }else{
+                isAccounts.complete(mutableListOf())
+            }
+        }?.addOnFailureListener{
+            isAccounts.completeExceptionally(it)
+        }
+        return isAccounts
+    }
+
+    fun remove(call: PluginCall, account: Account) {
+        client.logout(
             PasswordCredentials.newBuilder(
-                Provider.valueOf(req.provider!!),
-                req.username!!,
-                req.password!!
+                Provider.valueOf(account.accountCommon.source),
+                account.username,
+                account.password!!
             ).build()
         )?.addOnSuccessListener {
             call.resolve(JSObject().put("success", it))
@@ -138,7 +162,7 @@ class Email {
     }
 
     fun flush(call: PluginCall) {
-        client?.logout()?.addOnSuccessListener {
+        client.logout()?.addOnSuccessListener {
             call.resolve()
         }?.addOnFailureListener {
             call.reject(it.message)

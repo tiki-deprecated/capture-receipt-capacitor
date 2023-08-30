@@ -52,14 +52,17 @@
     "@ionic/eslint-config": "^0.3.0",
     "@ionic/prettier-config": "^4.0.0",
     "@ionic/swiftlint-config": "^1.1.2",
-    "@typescript-eslint/eslint-plugin": "^6.3.0",
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
     "eslint": "^8.47.0",
-    "prettier": "~3.0.1",
-    "prettier-plugin-java": "~2.2.0",
+    "prettier": "^3.0.1",
+    "prettier-plugin-java": "^2.2.0",
     "rimraf": "^5.0.1",
     "rollup": "^3.28.0",
     "swiftlint": "^1.0.2",
-    "typescript": "~5.1.6"
+    "typescript": "^5.1.6"
+  },
+  "overrides": {
+    "eslint": "$eslint"
   },
   "peerDependencies": {
     "@capacitor/core": "^5.0.0"

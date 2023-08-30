@@ -7,6 +7,8 @@ import { WebPlugin } from '@capacitor/core';
 
 import type { Receipt } from './receipt';
 import type { ReceiptCapturePlugin } from './receipt-capture-plugin';
+import { Account } from './account';
+import type { ScanType } from './receipt-capture-plugin';
 
 export class ReceiptCaptureWeb extends WebPlugin implements ReceiptCapturePlugin {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -14,30 +16,28 @@ export class ReceiptCaptureWeb extends WebPlugin implements ReceiptCapturePlugin
     username: string;
     password: string;
     provider: string;
-  }): Promise<{ username: string; provider: string; isVerified: boolean }> {
-    throw new Error('Method not implemented.');
-  }
-  retailers(): Promise<{ accounts: [{ username: string; provider: string; isVerified: boolean }] }> {
+  }): Promise<Account> {
     throw new Error('Method not implemented.');
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   removeRetailer(_options: {
     username: string;
     provider: string;
-  }): Promise<{ username: string; provider: string; isVerified: boolean }> {
+  }): Promise<Account> {
     throw new Error('Method not implemented.');
-  }
-  orders(): Promise<{ provider: string; username: string; scan: Receipt }> {
-    throw this.unimplemented('Mobile Only.');
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async initialize(_options: { licenseKey: string }): Promise<{ isInitialized: boolean; reason?: string }> {
     throw this.unimplemented('Mobile Only.');
   }
 
-  async scan(): Promise<Receipt> {
+  async scan(_options:{scanType: ScanType | undefined, account?: Account}): Promise<{receipt: Receipt, isRunning: boolean}> {
     throw this.unimplemented('Mobile Only.');
   }
+
+  async accounts(): Promise<Account[]>{
+    throw this.unimplemented('Mobile Only.');
+  };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   loginWithEmail(_options: {
@@ -51,12 +51,6 @@ export class ReceiptCaptureWeb extends WebPlugin implements ReceiptCapturePlugin
   scrapeEmail(): Promise<{
     login: { username: string; provider: string };
     scans: Receipt[];
-  }> {
-    throw this.unimplemented('Mobile Only.');
-  }
-
-  verifyEmail(): Promise<{
-    accounts: { username: string; provider: string; verified: boolean }[];
   }> {
     throw this.unimplemented('Mobile Only.');
   }

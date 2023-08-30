@@ -5,16 +5,16 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
+import com.mytiki.sdk.capture.receipt.capacitor.Account
 import org.json.JSONObject
 
 class RspAccount(
-    private val username: String,
-    private val provider: String,
-    private val verified: Boolean
+    private val account: Account
 ) : Rsp {
     override fun toJson(): JSONObject =
         JSONObject()
-            .put("username", username)
-            .put("provider", provider)
-            .put("verified", verified)
+            .put("username", account.username)
+            .put("source", account.accountCommon.source)
+            .put("type", account.accountCommon.type.name)
+            .put("isVerified", account.isVerified)
 }
