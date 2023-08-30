@@ -5,19 +5,14 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor
 
-import android.app.AlertDialog
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.getcapacitor.JSObject
 import com.getcapacitor.PluginCall
 import com.microblink.core.ScanResults
 import com.microblink.linking.*
-import com.mytiki.sdk.capture.receipt.capacitor.components.CustomAlertDialog
-import com.mytiki.sdk.capture.receipt.capacitor.components.CustomAlertDialog.ViewDestroyedListener
-import com.mytiki.sdk.capture.receipt.capacitor.components.MyRendererTrackingWebViewClient
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspScan
 import kotlinx.coroutines.CompletableDeferred
@@ -42,14 +37,15 @@ class Retailer {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun login( call: PluginCall, account: Account, context: Context ) {
-        val mbAccount = com.microblink.linking.Account(
+        val mbAccount = Account(
             RetailerEnum.fromString(account.accountCommon.source).toMbInt(),
             PasswordCredentials(account.username, account.password!!)
         )
+        val client = client(context)
         client.link(mbAccount)
             .addOnSuccessListener {
                 if (it) {
-                    verify(mbAccount, true, context, call)
+                    verify(mbAccount, context, call)
                 } else {
                     call.reject("login failed")
                     client.close()
@@ -61,7 +57,8 @@ class Retailer {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun remove(call: PluginCall, accountCommon: AccountCommon){
+    fun remove(call: PluginCall, accountCommon: AccountCommon, context: Context){
+        val client = client(context)
         client.accounts().addOnSuccessListener { accounts ->
             val mbAccount = accounts?.firstOrNull {
                 it.retailerId == RetailerEnum.fromString(accountCommon.source).toMbInt()
@@ -98,9 +95,8 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun orders( call: PluginCall, context: Context) {
         val client: AccountLinkingClient = client(context)
-
         MainScope().async {
-            val accounts = accounts().await()
+            val accounts = accounts(context).await()
             accounts.forEach {
                 if(it.isVerified!!) {
                     val retailer = RetailerEnum.fromString(it.accountCommon.source).toMbInt()
@@ -136,12 +132,13 @@ class Retailer {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun orders( call: PluginCall, account: Account ) {
+    fun orders( call: PluginCall, account: Account, context: Context ) {
+        val client: AccountLinkingClient = client(context)
         MainScope().async {
-            val mbAccount = mbAccounts().await().first{
+            val mbAccount = mbAccounts(context).await().first{
                 account.username === it.credentials.username() && account.accountCommon.source === RetailerEnum.fromMbInt(it.retailerId).name
             }
-            account.isVerified = verify(mbAccount).await()
+            account.isVerified = verify(mbAccount, context).await()
             if(account.isVerified!!) {
                 val retailer = RetailerEnum.fromString(account.accountCommon.source).toMbInt()
                 val ordersSuccessCallback =
@@ -154,7 +151,6 @@ class Retailer {
                         }
                     }
                 val ordersFailureCallback = { _: Int, exception: AccountLinkingException ->
-                    Log.e("TIKI", exception.message ?: "exception wihtout message")
                     call.reject(exception.message)
                 }
                 client.orders(
@@ -166,13 +162,13 @@ class Retailer {
         }
     }
 
-    fun accounts(): CompletableDeferred<List<Account>> {
+    fun accounts(context: Context): CompletableDeferred<List<Account>> {
         val accounts = CompletableDeferred<List<Account>>()
         val list = mutableListOf<Account>()
         MainScope().async{
-            mbAccounts().await().map{mbAccount ->
+            mbAccounts(context).await().map{mbAccount ->
                 val account = Account.fromRetailerAccount(mbAccount)
-                account.isVerified = verify(mbAccount).await()
+                account.isVerified = verify(mbAccount, context).await()
                 list.add(account)
             }
             accounts.complete(list)
@@ -181,7 +177,8 @@ class Retailer {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun mbAccounts(): CompletableDeferred<List<com.microblink.linking.Account>> {
+    fun mbAccounts(context: Context): CompletableDeferred<List<com.microblink.linking.Account>> {
+        val client: AccountLinkingClient = client(context)
         val mbAccounts = CompletableDeferred<List<com.microblink.linking.Account>>()
         client.accounts()
             .addOnSuccessListener { mbAccountList ->
@@ -201,7 +198,11 @@ class Retailer {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun verify( mbAccount: com.microblink.linking.Account, showDialog: Boolean = false, context: Context? = null, call: PluginCall? = null ): CompletableDeferred<Boolean>{
+    private fun verify(
+        mbAccount: com.microblink.linking.Account,
+        context: Context,
+        call: PluginCall? = null ): CompletableDeferred<Boolean>{
+        val client: AccountLinkingClient = client(context)
         val verifyCompletable = CompletableDeferred<Boolean>()
         val account = Account.fromRetailerAccount(mbAccount)
         client.verify(
@@ -223,7 +224,7 @@ class Retailer {
                 if(call == null){
                     verifyCompletable.complete(false)
                     client.close()
-                }else if (exception.code == VERIFICATION_NEEDED && exception.view != null && context != null) {
+                }else if (exception.code == VERIFICATION_NEEDED && exception.view != null) {
                     exception.view!!.isFocusableInTouchMode = true
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         exception.view!!.focusable = View.FOCUSABLE
@@ -264,7 +265,6 @@ class Retailer {
         client.dayCutoff = dayCutoff
         client.latestOrdersOnly = latestOrdersOnly
         client.countryCode = countryCode
-
         return client
     }
 }

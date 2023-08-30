@@ -11,6 +11,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.result.ActivityResult
 import com.getcapacitor.JSObject
+import com.getcapacitor.PermissionState
+import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
 import com.microblink.BlinkReceiptSdk
 import com.microblink.FrameCharacteristics
@@ -38,7 +40,15 @@ class Physical {
         return isInitialized
     }
 
-    fun open(call: PluginCall, context: Context): Intent {
+    fun scan(call: PluginCall, plugin: Plugin, context: Context, reqPermissionsCallback: () -> Unit ) {
+        if (plugin.getPermissionState("camera") != PermissionState.GRANTED) {
+            reqPermissionsCallback()
+        }else{
+            val intent: Intent = open(context)
+            plugin.startActivityForResult(call, intent, "onScanResult")
+        }
+    }
+    fun open(context: Context): Intent {
         val scanOptions = ScanOptions.newBuilder()
             .detectDuplicates(true)
             .frameCharacteristics(
