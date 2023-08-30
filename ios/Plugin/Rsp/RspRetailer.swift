@@ -12,13 +12,15 @@ struct RspRetailer : Rsp{
     private let id: Int
     private let bannerId: Int
     
-    init (retailer: Retailer) {
-        id = retailer.id()
-        bannerId = retailer.bannerId()
+    init (retailerId: Retailer) {
+        id = retailer.id
+        bannerId = retailer.bannerId
     }
     
-    func toJson() -> JSObject {
-        JSObject.updateValue("id", id)
-        JSObject.updateValue("bannerId", bannerId)
+    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+        return [
+            "id" : id,
+            "bannerId" : bannerId
+        ]
     }
 }

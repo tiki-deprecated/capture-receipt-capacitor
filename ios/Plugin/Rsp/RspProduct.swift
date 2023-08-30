@@ -145,4 +145,48 @@ struct RspProduct : Rsp {
         JSObject.updateValue("subCategory", subCategory)
         JSObject.updateValue("itemType", itemType)
     }
+    
+    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+        return [
+            "productNumber" : productNumber,
+            "description" : description,
+            "quantity" : quantity,
+            "unitPrice" : unitPrice,
+            "unitOfMeasure" : unitOfMeasure,
+            "totalPrice" : totalPrice,
+            "fullPrice" : fullPrice,
+            "line" : line,
+            "productName" : productName,
+            "brand": brand,
+            "category" : category,
+            "size" : size,
+            "rewardsGroup" : rewardsGroup,
+            "competitorRewardsGroup" : competitorRewardsGroup,
+            "upc" : upc,
+            "imageUrl" : imageUrl,
+            "shippingStatus" : shippingStatus,
+            "additionalLines" : additionalLines,
+            "priceAfterCoupons" : priceAfterCoupons,
+            "voided" : voided,
+            "probability" : probability,
+            "sensitive" : sensitive,
+            "possibleProducts" : possibleProducts,
+            "subProducts" : subProducts,
+            "added" : added,
+            "blinkReceiptBrand" : blinkReceiptBrand,
+            "blinkReceiptCategory" : blinkReceiptCategory,
+            "extendedFields" : extendedFields,
+            "fuelType" : fuelType,
+            "descriptionPrefix" : descriptionPrefix,
+            "descriptionPostfix" : descriptionPostfix,
+            "skuPrefix" : skuPrefix,
+            "skuPostfix" : skuPostfix,
+            "attributes" : attributes,
+            "sector" : sector,
+            "department" : department,
+            "majorCategory" : majorCategory,
+            "subCategory" : subCategory,
+            "itemType" : itemType
+        ]
+    }
 }
