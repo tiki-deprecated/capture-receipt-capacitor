@@ -56,7 +56,7 @@ class ReceiptCapture {
         val username = call.data.getString("username")
         val password = call.data.getString("password")
         if(source.isNullOrEmpty() && username.isNullOrEmpty()){
-            retailer.flush(call, context)
+            retailer.flush(call)
             email.flush(call)
         } else if(!source.isNullOrEmpty() && !username.isNullOrEmpty()){
             val account = Account.fromReq(call.data)
