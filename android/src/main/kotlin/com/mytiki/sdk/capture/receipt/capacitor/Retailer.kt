@@ -22,7 +22,10 @@ import kotlinx.coroutines.async
 
 
 class Retailer {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private lateinit var client: AccountLinkingClient
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun initialize(
         req: ReqInitialize,
         context: Context,
@@ -32,6 +35,7 @@ class Retailer {
         BlinkReceiptLinkingSdk.licenseKey = req.licenseKey
         BlinkReceiptLinkingSdk.productIntelligenceKey = req.productKey
         BlinkReceiptLinkingSdk.initialize(context, OnInitialize(isLinkInitialized, onError))
+        client = client(context)
         return isLinkInitialized
     }
 
@@ -48,11 +52,10 @@ class Retailer {
                     verify(mbAccount, context, call)
                 } else {
                     call.reject("login failed")
-                    client.close()
                 }
-            }.addOnFailureListener {
+            }
+            .addOnFailureListener {
                 call.reject(it.message)
-                client.close()
             }
     }
 
@@ -66,29 +69,20 @@ class Retailer {
             if (mbAccount != null) {
                 client.unlink(mbAccount).addOnSuccessListener {
                     call.resolve()
-
                 }.addOnFailureListener {
                     call.reject(it.message)
-                    client.close()
                 }
             } else {
                 call.reject("Account not found")
-                client.close()
             }
-        }.addOnFailureListener{
-            call.reject(it.message)
-            client.close()
         }
     }
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun flush(call: PluginCall, context: Context){
-        val client: AccountLinkingClient = client(context)
+    fun flush(call: PluginCall){
         client.resetHistory().addOnSuccessListener {
             call.resolve()
-            client.close()
         }.addOnFailureListener {
             call.reject(it.message)
-            client.close()
         }
     }
 
@@ -110,16 +104,14 @@ class Retailer {
                                     val rsp = RspScan(results, it)
                                     call.resolve(JSObject(rsp.toJson().toString()))
                                 }
+
+
                             } else {
                                 call.reject("no result")
-                            }
-                            if (remaining == 0){
-                                client.close()
                             }
                         }
                     val ordersFailureCallback = { _: Int, exception: AccountLinkingException ->
                         call.reject(exception.message)
-                        client.close()
                     }
                     client.orders(
                         retailer,
@@ -183,7 +175,6 @@ class Retailer {
         client.accounts()
             .addOnSuccessListener { mbAccountList ->
                 MainScope().async {
-
                     if (mbAccountList != null) {
                         mbAccounts.complete(mbAccountList)
                     } else {
@@ -212,12 +203,10 @@ class Retailer {
                     account.isVerified = true
                     call?.resolve(account.toRsp())
                     verifyCompletable.complete(true)
-                    client.close()
                 }else {
                     client.unlink(mbAccount)
                     call?.reject("login failed")
                     verifyCompletable.complete(false)
-                    client.close()
                 }
             },
             failure = { exception ->
@@ -229,7 +218,6 @@ class Retailer {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         exception.view!!.focusable = View.FOCUSABLE
                     }
-
                     val builder: AlertDialog.Builder = AlertDialog.Builder(context)
                     builder.setTitle("Verify your account")
                     builder.setView(exception.view)
