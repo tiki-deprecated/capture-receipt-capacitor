@@ -37,10 +37,3 @@ export interface AccountType {
   icon?: string,
   key: string
 }
-
-// /**
-//  * A reverse lookup map to locate the {@link AccountProvider} by string value.
-//  */
-// export const providers: Map<string, AccountProvider> = new Map(
-//   Object.values(AccountProvider).map((value) => [`${value}`, value] as const),
-// );

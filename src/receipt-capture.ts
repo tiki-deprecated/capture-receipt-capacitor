@@ -5,7 +5,7 @@
 
 import type { Account } from './account';
 import type { Receipt } from './receipt';
-import type { ReceiptCapturePlugin, ScanType } from './receipt-capture-plugin';
+import type { ReceiptCapturePlugin, ReqInitialize, ScanType } from './receipt-capture-plugin';
 
 /**
  * The primary class for interacting with the Plugin.
@@ -28,26 +28,45 @@ export class ReceiptCapture {
    * @param productKey - The optional product intelligence key for your application.
    * @throws Error if the initialization fails.
    */
-  initialize = async (licenseKey: string, productKey?: string): Promise<void> => {
-    const rsp = await this.plugin.initialize({
+  initialize = async (licenseKey: string, productKey: string): Promise<void> => {
+    const req: ReqInitialize = {
       licenseKey: licenseKey,
       productKey: productKey,
-    });
-    if (!rsp.isInitialized) {
-      throw Error(rsp.reason);
     }
+    await this.plugin.initialize(req).catch( (error) => {
+      throw Error(error);
+    })
   };
 
+  /**
+   * 
+   * @param username 
+   * @param password 
+   * @param source 
+   * @returns 
+   */
   login = (username: string, password: string, source: string): Promise<Account> => this.plugin.login({username, password, source})
 
+  /**
+   * 
+   * @param username 
+   * @param password 
+   * @param source 
+   * @returns 
+   */
   logout = (username: string, password: string, source: string): Promise<Account> => this.plugin.logout({username, password, source})
 
-  scan = (scanType: ScanType | undefined, account?: Account): Promise<{receipt: Receipt, isRunning: boolean}> => this.plugin.scan({scanType, account});
+  /**
+   * 
+   * @param scanType 
+   * @param account 
+   * @returns 
+   */
+  scan = (scanType: ScanType | undefined, account?: Account): Promise<{receipt: Receipt, isRunning: boolean}> => this.plugin.scan({scanType, account})
 
-  accounts = async (): Promise<Account[]> =>{
-    return (await this.plugin.accounts())
-  }
-
+  /**
+   * 
+   * @returns 
+   */
+  accounts = async (): Promise<Account[]> => await this.plugin.accounts()
 }
-
-

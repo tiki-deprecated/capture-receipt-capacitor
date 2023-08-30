@@ -3,29 +3,29 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import { Account } from './account';
+import type { Account } from './account';
 import type { Receipt } from './receipt';
 
 
 export type ScanType = 'PHYSICAL' | 'EMAIL' | 'RETAILER' | 'ONLINE';
 
+export interface ReqAccount {
+  username: string,
+  password: string,
+  source: string,
+}
+
+export interface ReqInitialize{
+  licenseKey: string;
+  productKey: string;
+}
+
 export interface ReceiptCapturePlugin {
-  initialize(options: {
-    licenseKey: string;
-    productKey?: string;
-  }): Promise<{ isInitialized: boolean; reason?: string }>;
+  initialize(options: ReqInitialize): Promise<void>;
 
-  login(options: {
-    username: string,
-    password: string,
-    source: string,
-  }): Promise<Account>
+  login(options: ReqAccount): Promise<Account>
 
-  logout(options?: {
-    username: string,
-    password: string,
-    source: string,
-  }): Promise<Account>
+  logout(options?: ReqAccount): Promise<Account>
 
   scan(_option: {scanType: ScanType | undefined, account?: Account}): Promise<{receipt: Receipt, isRunning: boolean}>;
 
