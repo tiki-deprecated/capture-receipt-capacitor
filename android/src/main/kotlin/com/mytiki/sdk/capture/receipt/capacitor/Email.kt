@@ -20,7 +20,6 @@ import com.microblink.digital.ProviderSetupDialogFragment
 import com.microblink.digital.ProviderSetupOptions
 import com.microblink.digital.ProviderSetupResults
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspLogin
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspScan
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
@@ -75,8 +74,15 @@ class Email {
                         as ProviderSetupDialogFragment
                 if (dialog.isAdded) {
                     dialog.dismiss()
-                    val rsp = RspLogin(account.username, account.accountCommon.source)
-                    call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                    MainScope().async {
+                        account.isVerified = client.verify(PasswordCredentials.newBuilder(
+                            Provider.valueOf(account.accountCommon.source),
+                            account.username,
+                            account.password
+                        ).build()
+                        ).await()
+                        call.resolve(account.toRsp())
+                    }
                 }
             }
         }.show(activity.supportFragmentManager, tag)
