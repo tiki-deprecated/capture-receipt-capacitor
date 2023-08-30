@@ -5,7 +5,7 @@
 
 import type { Account } from './account';
 import type { Receipt } from './receipt';
-import type { ReceiptCapturePlugin, ScanType } from './receipt-capture-plugin';
+import type { ReceiptCapturePlugin, ReqInitialize, ScanType } from './receipt-capture-plugin';
 
 /**
  * The primary class for interacting with the Plugin.
@@ -23,87 +23,50 @@ export class ReceiptCapture {
   }
 
   /**
-   * Initializes the receipt capture plugin with a license key and optional product intelligence key.
+   * Initializes the receipt capture plugin with a license key and product intelligence key.
    * @param licenseKey - The license key for your application.
    * @param productKey - The optional product intelligence key for your application.
    * @throws Error if the initialization fails.
    */
-  initialize = async (licenseKey: string, productKey?: string): Promise<void> => {
-    const rsp = await this.plugin.initialize({
+  initialize = async (licenseKey: string, productKey: string): Promise<void> => {
+    const req: ReqInitialize = {
       licenseKey: licenseKey,
       productKey: productKey,
-    });
-    if (!rsp.isInitialized) {
-      throw Error(rsp.reason);
     }
+    await this.plugin.initialize(req).catch( (error) => {
+      throw Error(error);
+    })
   };
 
   /**
-   * Initiates the receipt scan UI and returns the scanned receipt.
-   * @returns A Promise that resolves to the scanned Receipt object.
+   * Login into a retailer or email account to scan for receipts.
+   * @param username - the username of the account.
+   * @param password - the password of the account
+   * @param source - the source from that account, that can be an email service or a retailer service.
+   * @returns - the Account interface with the logged in information.
    */
-  scan = (scanType: ScanType | undefined, account?: Account): Promise<{receipt: Receipt, isRunning: boolean}> => this.plugin.scan({scanType, account});
+  login = (username: string, password: string, source: string): Promise<Account> => this.plugin.login({username, password, source})
 
   /**
-   * Logs in to an email account using IMAP.
-   * @param username - The account username.
-   * @param password - The account password.
-   * @param provider - The {@link AccountProvider}.
-   * @returns A Promise that resolves to the logged-in Account object.
+   * Log out from one or all {@link Account}.
+   * @param username - the username of the account that will be logged out.
+   * @param password - the password of the account that will be logged out
+   * @param source - the source from that account, that can be an email service or a retailer service.
+   * @returns - the Account that logged out
    */
-  loginWithEmail = async (username: string, password: string, provider: string): Promise<Account> => {
-    const rsp = await this.plugin.loginWithEmail({
-      username: username,
-      password: password,
-      provider: provider,
-    });
-    return {
-      username: rsp.username,
-      accountType: {
-        type: 'EMAIL',
-        name: provider,
-        icon: undefined,
-        key: provider
-      }
-      //provider: providers.get(rsp.provider),
-    };
-  };
+  logout = (username?: string, password?: string, source?: string): Promise<Account> => this.plugin.logout({username: username!, password: password!, source: source!})
 
   /**
-   * Logs out and removes an email account from the local cache.
-   * @param username - The account username.
-   * @param password - The account password.
-   * @param provider - The {@link AccountProvider}.
-   * @returns A Promise that resolves when the account is removed.
-   * @throws Error if removal fails.
+   * Scan for receipts. That can be a physical one, the receipts from an email/retailer account, or all receipts.
+   * @param scanType - The type of the scan.
+   * @param account - The account that will be scanned for receipts.
+   * @returns - The scanned Receipt and a boolean indicates the execution.
    */
-  removeEmail = async (username: string, password: string, provider: string): Promise<void> => {
-    const rsp = await this.plugin.removeEmail({
-      username: username,
-      password: password,
-      provider: provider,
-    });
-    if (!rsp.success) throw Error(`Failed to remove: ${provider} | ${username}`);
-  };
+  scan = (scanType: ScanType | undefined, account?: Account): Promise<{receipt: Receipt, isRunning: boolean}> => this.plugin.scan({scanType, account})
 
-  loginWithRetailer = async (username: string, password: string, provider: string): Promise<Account> => {
-    return this.plugin.loginWithRetailer({
-      username,
-      password,
-      provider,
-    });
-  };
-
-  accounts = async (): Promise<Account[]> =>{
-    return (await this.plugin.accounts())
-  }
-
-  removeRetailer = async (username: string, provider: string): Promise<Account> => {
-    return await this.plugin.removeRetailer({username, provider});
-  };
-
-  flushEmail = async (): Promise<void> => this.plugin.flushEmail();
-  flushRetailer = async (): Promise<void> => this.plugin.flushRetailer();
+  /**
+   * Retrieves all saved accounts.
+   * @returns - an array of Accounts.
+   */
+  accounts = async (): Promise<Account[]> => await this.plugin.accounts()
 }
-
-
