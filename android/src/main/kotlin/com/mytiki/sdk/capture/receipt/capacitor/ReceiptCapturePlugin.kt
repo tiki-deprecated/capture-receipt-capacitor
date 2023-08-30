@@ -119,7 +119,7 @@ class ReceiptCapturePlugin : Plugin() {
             when (req.scanType) {
                 ScanTypeEnum.EMAIL -> receiptCapture.email.scrape(call, req.account)
                 ScanTypeEnum.RETAILER -> receiptCapture.retailer.orders(call, req.account)
-               else -> call.reject("invalid scan type for account")
+                else -> call.reject("invalid scan type for account")
             }
         }
     }
