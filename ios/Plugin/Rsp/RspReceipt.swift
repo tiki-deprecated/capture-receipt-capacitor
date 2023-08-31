@@ -34,7 +34,6 @@ public struct RspReceipt : Rsp {
     private let mallName: String?
     private let last4cc: String?
     private let ocrConfidence: Float
-    private let merchantSource: NSNumber?
     private let foundTopEdge: Bool
     private let foundBottomEdge: Bool
     private let eReceiptOrderNumber: String?
@@ -80,6 +79,8 @@ public struct RspReceipt : Rsp {
     //    private let submissionDate: Int64?
     //    private let eReceiptShippingStatus: String?
     //    private let qualifiedSurveys: [RspSurvey]
+//    private let merchantSource: NSNumber?
+
     
     init(scanResults: BRScanResults) {
         receiptDate = scanResults.receiptDate.value
@@ -208,7 +209,7 @@ public struct RspReceipt : Rsp {
         ret["mallName"] = mallName
         ret["last4cc"] = last4cc
         ret["ocrConfidence"] = ocrConfidence
-        ret["merchantSource"] = merchantSource
+//        ret["merchantSource"] = merchantSource
         ret["foundTopEdge"] = foundTopEdge
         ret["foundBottomEdge"] = foundBottomEdge
         ret["eReceiptOrderNumber"] = eReceiptOrderNumber
@@ -255,7 +256,6 @@ public struct RspReceipt : Rsp {
         //        ret["submissionDate"] = submissionDate as JSValue
         //        ret["eReceiptShippingStatus"] = eReceiptShippingStatus
         //        ret["qualifiedSurveys"] = JSArray(arrayLiteral: qualifiedSurveys.map { survey in survey })
-
-
+        return ret
     }
 }
