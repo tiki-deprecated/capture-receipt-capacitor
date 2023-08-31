@@ -67,8 +67,8 @@ public class Retailer : CAPPlugin{
         }
         
         let taskId = linkingManager.grabNewOrders(for: retailer) { retailer, order, remaining, viewController, errorCode, sessionId in
-            if(errorCode == .none){
-                call.resolve(RspReceipt(scanResults: order).toPluginCallResultData())
+            if(errorCode == .none && order != nil){
+                call.resolve(RspReceipt(scanResults: order!).toPluginCallResultData())
             }
         }
     }

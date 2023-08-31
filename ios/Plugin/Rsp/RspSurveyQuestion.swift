@@ -32,6 +32,6 @@ struct RspSurveyQuestion : Rsp {
         ret["answers"] = JSArray(answers.map { answer in answers })
         ret["multipleAnswers"] = multipleAnswers
         ret["userResponse"] = JSObject(_immutableCocoaDictionary: userResponse)
-        
+        return ret
     }
 }

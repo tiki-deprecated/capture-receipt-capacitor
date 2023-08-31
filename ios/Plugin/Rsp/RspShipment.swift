@@ -22,5 +22,6 @@ struct RspShipment : Rsp {
         var ret = JSObject()
         ret["status"] = status
         ret["products"] = JSArray(arrayLiteral: products.map { prd in prd.toPluginCallResultData() })
+        return ret
     }
 }

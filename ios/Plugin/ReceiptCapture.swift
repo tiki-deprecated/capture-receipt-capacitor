@@ -61,7 +61,7 @@ public class ReceiptCapture: NSObject {
                 call.reject("Call plugin initialize method.")
                 return
             }
-            email.logout(account, call)
+//            email.logout(account, call)
             break
         case .retailer :
             guard let retailer = retailer else {
