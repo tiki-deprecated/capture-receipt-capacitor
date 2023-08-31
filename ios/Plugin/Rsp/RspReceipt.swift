@@ -11,13 +11,13 @@ import Capacitor
 struct RspReceipt : Rsp {
     private let receiptDate: String?
     private let receiptTime: String?
-    private let retailerId: RspRetailer
+    private let retailerId:  UInt
     private let products: [RspProduct]
     private let coupons: [RspCoupon]
-    private let total: RspFloatType?
-    private let tip: RspFloatType?
-    private let subtotal: RspFloatType?
-    private let taxes: RspFloatType?
+    private let total: Float?
+    private let tip: Float?
+    private let subtotal: Float?
+    private let taxes: Float?
     private let storeNumber: String?
     private let merchantName: String?
     private let storeAddress: String?
@@ -25,15 +25,14 @@ struct RspReceipt : Rsp {
     private let blinkReceiptId: String?
     private let storeState: String?
     private let storeZip: String?
-    private let storeCountry: String?
     private let storePhone: String?
     private let cashierId: String?
-    private let transactionId: String??
-    private let registerId: String??
+    private let transactionId: String?
+    private let registerId: String?
     private let paymentMethods: [RspPaymentMethod]
-    private let taxId: String??
-    private let mallName: String??
-    private let last4cc: String??
+    private let taxId: String?
+    private let mallName: String?
+    private let last4cc: String?
     private let ocrConfidence: Float
     private let merchantSource: NSNumber?
     private let foundTopEdge: Bool
@@ -41,19 +40,16 @@ struct RspReceipt : Rsp {
     private let eReceiptOrderNumber: String?
     private let eReceiptOrderStatus: String?
     private let eReceiptRawHtml: String?
-    private let eReceiptShippingAddress: String?
     private let shipments: [RspShipment]
-    private let longTransactionId: String??
+    private let longTransactionId: String?
     private let subtotalMatches: Bool
     private let eReceiptEmailProvider: String?
     private let eReceiptEmailId: String?
     private let eReceiptAuthenticated: Bool
     private let instacartShopper: Bool
-    private let eReceipt: Bool
     private let eReceiptComponentEmails: [RspReceipt]
     private let duplicate: Bool
     private let fraudulent: Bool
-    private let receiptDateTime: Int64?
     private let duplicateBlinkReceiptIds: [String]
     private let merchantMatchGuess: String?
     private let productsPendingLookup: Int
@@ -62,37 +58,39 @@ struct RspReceipt : Rsp {
     private let extendedFields: JSObject?
     private let eReceiptAdditionalFees: JSObject?
     private let purchaseType: String?
-    private let loyaltyForBanner: Bool
-    private let channel: String??
-    private let submissionDate: Int64?
+    private let channel: String?
     private let eReceiptFulfilledBy: String?
-    private let eReceiptShippingStatus: String?
     private let eReceiptPOSSystem: String?
     private let eReceiptSubMerchant: String?
-    //private let qualifiedSurveys: [RspSurvey]
     private let barcode: String?
     private let eReceiptMerchantEmail: String?
     private let eReceiptEmailSubject: String?
     private let eReceiptShippingCosts: Float
     private let currencyCode: String?
-    private let clientMerchantName: String??
+    private let clientMerchantName: String?
     private let loyaltyProgram: Bool
     private let merchantSources: [NSNumber]
-    private let paymentTerminalId: String??
-    private let paymentTransactionId: String??
+    private let paymentTerminalId: String?
+    private let paymentTransactionId: String?
     private let combinedRawText: String?
+    //    private let storeCountry: String?
+    //    private let eReceiptShippingAddress: String?
+    //    private let eReceipt: Bool
+    //    private let receiptDateTime: Int64?
+    //    private let submissionDate: Int64?
+    //    private let eReceiptShippingStatus: String?
+    //    private let qualifiedSurveys: [RspSurvey]
     
     init(scanResults: BRScanResults) {
         receiptDate = scanResults.receiptDate.value
         receiptTime = scanResults.receiptTime.value
-        retailerId = RspRetailer(retailerId: scanResults.retailerId)
-        
-        products = scanResults.products.map { product in RspProduct(product) } ?? []
+        retailerId = scanResults.retailerId.rawValue
+        products = scanResults.products.map { product in RspProduct(product: product) } ?? []
         coupons = scanResults.coupons.map { coupon in RspCoupon(coupon: coupon) } 
-        total = RspFloatType(floatType: scanResults.total)
-        tip = RspFloatType(floatType: scanResults.tip)
-        subtotal = RspFloatType(floatType: scanResults.subtotal)
-        taxes = RspFloatType(floatType: scanResults.taxes)
+        total = scanResults.total.value
+        tip = scanResults.tip.value
+        subtotal = scanResults.subtotal.value
+        taxes = scanResults.taxes.value
         storeNumber = scanResults.storeNumber.value
         merchantName = scanResults.merchantName.value
         storeAddress = scanResults.storeAddress.value
@@ -100,12 +98,11 @@ struct RspReceipt : Rsp {
         blinkReceiptId = scanResults.blinkReceiptId
         storeState = scanResults.storeState.value
         storeZip = scanResults.storeZip.value
-//        storeCountry = scanResults.store)
         storePhone = scanResults.storePhone.value
         cashierId = scanResults.cashierId.value
         transactionId = scanResults.transactionId.value
         registerId = scanResults.registerId.value
-        paymentMethods = scanResults.paymentMethods.map { paymentMethod in RspPaymentMethod(paymentMethod) } ?? []
+        paymentMethods = scanResults.paymentMethods.map { payment in RspPaymentMethod(paymentMethod: payment.method.value, cardType: payment.cardType.value, cardIssuer: payment.cardIssuer.value, amount: payment.amount.value) } ?? []
         taxId = scanResults.taxId.value
         mallName = scanResults.mallName.value
         last4cc = scanResults.last4CC.value
@@ -116,26 +113,23 @@ struct RspReceipt : Rsp {
         eReceiptOrderNumber = scanResults.ereceiptOrderNumber
         eReceiptOrderStatus = scanResults.ereceiptOrderStatus
         eReceiptRawHtml = scanResults.ereceiptRawHTML
-//        eReceiptShippingAddress = scanResults.ereceiptShi ReceiptShippingAddress
-        shipments = scanResults.shipments.map { shipment in RspShipment(shipment) } ?? []
+        shipments = scanResults.shipments.map { shipment in RspShipment(shipment: shipment) } ?? []
         longTransactionId = scanResults.longTransactionId.value
         subtotalMatches = scanResults.subtotalMatches
         eReceiptEmailProvider = scanResults.ereceiptEmailProvider
         eReceiptEmailId = scanResults.ereceiptEmailId
         eReceiptAuthenticated = scanResults.ereceiptAuthenticated
         instacartShopper = scanResults.isInstacartShopper
-//        eReceipt = scanResults.ereceipt
         eReceiptComponentEmails = scanResults.ereceiptComponentEmails.map{ results in
             RspReceipt(scanResults: results)
         }
         duplicate = scanResults.isDuplicate
         fraudulent = scanResults.isFraudulent
-//        receiptDateTime = scanResults.receiptTime
         duplicateBlinkReceiptIds = scanResults.duplicateBlinkReceiptIds ?? []
         merchantMatchGuess = scanResults.merchantGuess
         productsPendingLookup = scanResults.productsPendingLookup
-        qualifiedPromotions = scanResults.qualifiedPromotions.map { promotion in RspPromotion(promotion) } ?? []
-        unqualifiedPromotions = scanResults.unqualifiedPromotions.map { promotion in RspPromotion(promotion) } ?? []
+        qualifiedPromotions = scanResults.qualifiedPromotions.map { promotion in RspPromotion(promotion: promotion) } ?? []
+        unqualifiedPromotions = scanResults.unqualifiedPromotions.map { promotion in RspPromotion(promotion: promotion) } ?? []
         if let extendedFields = scanResults.extendedFields {
             var extendedFieldsDictionary = JSObject()
             for entry in extendedFields {
@@ -155,14 +149,10 @@ struct RspReceipt : Rsp {
             self.eReceiptAdditionalFees = nil
         }
         purchaseType = scanResults.purchaseType
-//        loyaltyForBanner = scanResults.loyaltyForBanner
         channel = scanResults.channel.value
-//        submissionDate = scanResults.submissionDate.time
         eReceiptFulfilledBy = scanResults.ereceiptFulfilledBy
-//        eReceiptShippingStatus = scanResults.eReceiptShippingStatus
         eReceiptPOSSystem = scanResults.ereceiptPOSSystem
         eReceiptSubMerchant = scanResults.ereceiptSubMerchant
-        // qualifiedSurveys = scanResults.qualifiedSurveys.map { survey in RspSurvey(survey) } ?? []
         barcode = scanResults.barcode
         eReceiptMerchantEmail = scanResults.ereceiptMerchantEmail
         eReceiptEmailSubject = scanResults.ereceiptEmailSubject
@@ -170,17 +160,32 @@ struct RspReceipt : Rsp {
         currencyCode = scanResults.currencyCode
         clientMerchantName = scanResults.clientMerchantName.value
         loyaltyProgram = scanResults.loyaltyProgram
-        merchantSources = scanResults.merchantSources ?? []
         paymentTerminalId = scanResults.paymentTerminalId.value
         paymentTransactionId = scanResults.paymentTransactionId.value
         combinedRawText = scanResults.combinedRawText
+        //        storeCountry = scanResults.store)
+        //        eReceiptShippingAddress = scanResults.ereceiptShi ReceiptShippingAddress
+        //        eReceipt = scanResults.ereceipt
+        //        receiptDateTime = scanResults.receiptTime
+        //        loyaltyForBanner = scanResults.loyaltyForBanner
+        //        submissionDate = scanResults.submissionDate
+        //        eReceiptShippingStatus = scanResults.eReceiptShippingStatus
+        //        qualifiedSurveys = scanResults.qualifiedSurveys.map { survey in RspSurvey(survey) } ?? []
+
+
+
+
+
+
+
+
     }
 
     func toPluginCallResultData() -> Capacitor.PluginCallResultData {
         var ret = JSObject()
         ret["receiptDate"] = receiptDate
         ret["receiptTime"] = receiptTime 
-        ret["retailerId"] = JSObject(dictionaryLiteral: retailerId.toPluginCallResultData())
+        ret["retailerId"] = Int(retailerId)
         ret["products"] = JSArray(arrayLiteral: products.map { prd in prd.toPluginCallResultData() })
         ret["coupons"] = JSArray(arrayLiteral: products.map { prd in prd.toPluginCallResultData() })
         ret["total"] = total
@@ -194,12 +199,11 @@ struct RspReceipt : Rsp {
         ret["blinkReceiptId"] = blinkReceiptId
         ret["storeState"] = storeState
         ret["storeZip"] = storeZip
-        ret["storeCountry"] = storeCountry
         ret["storePhone"] = storePhone
         ret["cashierId"] = cashierId
         ret["transactionId"] = transactionId
         ret["registerId"] = registerId
-        ret["paymentMethods"] = JSONArray(paymentMethods.map { method -> method.toJson() })
+        ret["paymentMethods"] = JSArray(arrayLiteral: paymentMethods.map { method in method.toPluginCallResultData() })
         ret["taxId"] = taxId
         ret["mallName"] = mallName
         ret["last4cc"] = last4cc
@@ -210,35 +214,28 @@ struct RspReceipt : Rsp {
         ret["eReceiptOrderNumber"] = eReceiptOrderNumber
         ret["eReceiptOrderStatus"] = eReceiptOrderStatus
         ret["eReceiptRawHtml"] = eReceiptRawHtml
-        ret["eReceiptShippingAddress"] = eReceiptShippingAddress
-        ret["shipments"] = JSONArray(shipments.map { shipment -> shipment.toJson() })
+        ret["shipments"] = JSArray(arrayLiteral: shipments.map { shipment in shipment.toPluginCallResultData() })
         ret["longTransactionId"] = longTransactionId
         ret["subtotalMatches"] = subtotalMatches
         ret["eReceiptEmailProvider"] = eReceiptEmailProvider
         ret["eReceiptEmailId"] = eReceiptEmailId
         ret["eReceiptAuthenticated"] = eReceiptAuthenticated
         ret["instacartShopper"] = instacartShopper
-        ret["eReceipt"] = eReceipt
-        ret["eReceiptComponentEmails"] = JSONArray(eReceiptComponentEmails.map { email - email.toJson()}),
+        ret["eReceiptComponentEmails"] = JSArray(arrayLiteral: eReceiptComponentEmails.map { email in email.toPluginCallResultData()})
         ret["duplicate"] = duplicate
         ret["fraudulent"] = fraudulent
-        ret["receiptDateTime"] = receiptDateTime
-        ret["duplicateBlinkReceiptIds"] = JSONArray(duplicateBlinkReceiptIds)
+        ret["duplicateBlinkReceiptIds"] = JSArray(duplicateBlinkReceiptIds)
         ret["merchantMatchGuess"] = merchantMatchGuess
         ret["productsPendingLookup"] = productsPendingLookup
-        ret["qualifiedPromotions"] = JSONArray(qualifiedPromotions.map { promo -> promo.toJson() }
-        ret["unqualifiedPromotions"] = JSONArray(unqualifiedPromotions.map { promo -> promo.toJson() })
+        ret["qualifiedPromotions"] = JSArray(arrayLiteral: qualifiedPromotions.map { promo in promo.toPluginCallResultData() })
+        ret["unqualifiedPromotions"] = JSArray(arrayLiteral: unqualifiedPromotions.map { promo in promo.toPluginCallResultData() })
         ret["extendedFields"] = extendedFields
         ret["eReceiptAdditionalFees"] = eReceiptAdditionalFees
         ret["purchaseType"] = purchaseType
-        ret["loyaltyForBanner"] = loyaltyForBanner
         ret["channel"] = channel
-        ret["submissionDate"] = submissionDate
         ret["eReceiptFulfilledBy"] = eReceiptFulfilledBy
-        ret["eReceiptShippingStatus"] = eReceiptShippingStatus
         ret["eReceiptPOSSystem"] = eReceiptPOSSystem
         ret["eReceiptSubMerchant"] = eReceiptSubMerchant
-        ret["qualifiedSurveys"] = JSONArray(qualifiedSurveys.map { survey -> survey.toJson() })
         ret["barcode"] = barcode
         ret["eReceiptMerchantEmail"] = eReceiptMerchantEmail
         ret["eReceiptEmailSubject"] = eReceiptEmailSubject
@@ -246,9 +243,19 @@ struct RspReceipt : Rsp {
         ret["currencyCode"] = currencyCode
         ret["clientMerchantName"] = clientMerchantName
         ret["loyaltyProgram"] = loyaltyProgram
-        ret["merchantSources"] = JSONArray(merchantSources)
+        ret["merchantSources"] = JSArray(merchantSources)
         ret["paymentTerminalId"] = paymentTerminalId
         ret["paymentTransactionId"] = paymentTransactionId
-        ret["combinedRawText"] = combinedRawText?.toJso
+        ret["combinedRawText"] = combinedRawText
+        //        ret["storeCountry"] = storeCountry
+        //        ret["eReceiptShippingAddress"] = eReceiptShippingAddress
+        //        ret["eReceipt"] = eReceipt
+        //        ret["receiptDateTime"] = receiptDateTime?.hashValue
+        //        ret["loyaltyForBanner"] = loyaltyForBanner
+        //        ret["submissionDate"] = submissionDate as JSValue
+        //        ret["eReceiptShippingStatus"] = eReceiptShippingStatus
+        //        ret["qualifiedSurveys"] = JSArray(arrayLiteral: qualifiedSurveys.map { survey in survey })
+
+
     }
 }

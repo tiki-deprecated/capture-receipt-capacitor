@@ -11,7 +11,7 @@ public class ReqRetailerLogin {
     var password: String
     var retailer: String
     
-    init (data: JSObject){
+    init (data: CAPPluginCall){
         username = data.getString("username") ?? ""
         password = data.getString("password") ?? ""
         retailer = data.getString("retailer") ?? ""
