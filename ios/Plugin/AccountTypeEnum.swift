@@ -5,7 +5,7 @@
 
 import Foundation
 
-public enum AccountTypeCommon {
+public enum AccountTypeEnum {
     case email
     case retailer
 }

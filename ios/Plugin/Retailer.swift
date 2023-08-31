@@ -10,7 +10,7 @@ import Capacitor
 
 public class Retailer : CAPPlugin{
     
-    let linkingManager = BRAccountLinkingManager.shared()
+    let linkingManager: BRAccountLinkingManager
     
     public init(_ licenseKey: String, _ productKey: String) {
         linkingManager = BRAccountLinkingManager.shared()
@@ -67,8 +67,9 @@ public class Retailer : CAPPlugin{
         }
         
         let taskId = linkingManager.grabNewOrders(for: retailer) { retailer, order, remaining, viewController, errorCode, sessionId in
-            if(errorCode == .none){
-                call.resolve(RspReceipt(scanResults: order).toPluginCallResultData())
+            if(errorCode == .none && order != nil){
+                let order = RspReceipt(scanResults: order!).toPluginCallResultData()
+                call.resolve(order)
             }
         }
     }

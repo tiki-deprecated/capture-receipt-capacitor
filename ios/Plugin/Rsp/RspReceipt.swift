@@ -8,7 +8,7 @@ import BlinkReceipt
 import BlinkEReceipt
 import Capacitor
 
-struct RspReceipt : Rsp {
+public struct RspReceipt : Rsp {
     private let receiptDate: String?
     private let receiptTime: String?
     private let retailerId:  UInt
