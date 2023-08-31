@@ -9,6 +9,7 @@ import BlinkEReceipt
 import Capacitor
 
 struct RspFloatType : Rsp{
+    
     private let confidence: Float
     private let value: Float
     
@@ -18,8 +19,10 @@ struct RspFloatType : Rsp{
         value = floatType.value
     }
     
-    func toJson() -> JSObject {
-        JSObject.updateValue("confidence", confidence)
-        JSObject.updateValue("value", value)
+    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+        var ret = JSObject()
+        ret["confidence"] = confidence
+        ret["value"] = value
+        return ret
     }
 }

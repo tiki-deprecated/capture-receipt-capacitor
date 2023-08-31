@@ -1,10 +1,7 @@
-//
-//  AccountTypeEnum.swift
-//  Plugin
-//
-//  Created by Jesse Monteiro Ferreira on 23/08/23.
-//  Copyright © 2023 Max Lynch. All rights reserved.
-//
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
 
 import Foundation
 

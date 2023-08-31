@@ -9,35 +9,35 @@ import BlinkEReceipt
 import Capacitor
 
 struct  RspPromotion : Rsp {
-    private let id: Int32
+    
     private let slug: String?
-    private let reward: String?
+    private let reward: Float?
     private let rewardCurrency: String?
     private let errorCode: Int
     private let errorMessage: String?
-    private let relatedProductIndexes: List<Int>
-    private let qualifications: List<List<Int>>
+    private let relatedProductIndexes: [NSNumber]
+    private let qualifications: [[NSNumber]]
     
     
-    init (promotion: Promotion) {
-        id = promotion.id()
-        slug = promotion.slug()
-        reward = promotion.reward()?.toPlainString()
-        rewardCurrency = promotion.rewardCurrency()
-        errorCode = promotion.errorCode()
-        errorMessage = promotion.errorMessage()
-        relatedProductIndexes = promotion.relatedProductIndexes() ?? emptyList()
-        qualifications = promotion.qualifications() ?? emptyList()
+    init (promotion: BRPromotion) {
+        slug = promotion.slug
+        reward = promotion.rewardValue
+        rewardCurrency = promotion.rewardCurrency
+        errorCode = promotion.errorCode
+        errorMessage = promotion.errorMessage
+        relatedProductIndexes = promotion.relatedProductIndexes
+        qualifications = promotion.qualifications
     }
     
-    func toJson() -> JSObject {
-        JSObject.updateValue("id", id)
-        JSObject.updateValue("slug", slug)
-        JSObject.updateValue("reward", reward)
-        JSObject.updateValue("rewardCurrency", rewardCurrency)
-        JSObject.updateValue("errorCode", errorCode)
-        JSObject.updateValue("errorMessage", errorMessage)
-        JSObject.updateValue("relatedProductIndexes", JSONArray(relatedProductIndexes))
-        JSObject.updateValue("qualifications", JSArray(qualifications.map { q -> JSONArray(q) }))
+    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+        var ret = JSObject()
+        ret["slug"] = slug
+        ret["reward"] = reward
+        ret["rewardCurrency"] = rewardCurrency
+        ret["errorCode"] = errorCode
+        ret["errorMessage"] = errorMessage
+        ret["relatedProductIndexes"] = JSArray(relatedProductIndexes)
+        ret["qualifications"] = JSArray(qualifications.map { q in JSArray(q) })
+        return ret
     }
 }
