@@ -7,6 +7,10 @@ import Foundation
 import Capacitor
 
 struct RspInitialized : Rsp {
+    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+        <#code#>
+    }
+    
     private let isInitialized: Bool
 
     init(isInitialized: Bool){

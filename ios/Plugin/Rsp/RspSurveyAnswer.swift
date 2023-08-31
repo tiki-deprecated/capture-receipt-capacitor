@@ -9,19 +9,19 @@ import BlinkEReceipt
 import Capacitor
 
 struct RspSurveyAnswer : Rsp {
-    private let id: Int
     private let text: String?
-    private let nextQuestionIndex: Int?
+    private let description : String?
 
-    init (surveyAnswer: SurveyAnswer) {
-        id = surveyAnswer.serverId()
-        text = surveyAnswer.text()
-        nextQuestionIndex = surveyAnswer.nextQuestionIndex()
+    init (surveyAnswer: BRSurveyAnswer) {
+        text = surveyAnswer.text
+        description = surveyAnswer.description
     }
     
-    func toJson() -> JSObject {
-        JSObject.updateValue("id", id)
-        JSObject.updateValue("text", text)
-        JSObject.updateValue("nextQuestionIndex", nextQuestionIndex)
+    
+    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+        return [
+            "text" : text,
+            "decription" : description
+        ]
     }
 }
