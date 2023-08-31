@@ -5,7 +5,6 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor
 
-import android.app.AlertDialog
 import android.content.Context
 import android.os.Build
 import android.util.Log
@@ -15,9 +14,6 @@ import com.getcapacitor.JSObject
 import com.getcapacitor.PluginCall
 import com.microblink.core.ScanResults
 import com.microblink.linking.*
-import com.mytiki.sdk.capture.receipt.capacitor.components.CustomAlertDialog
-import com.mytiki.sdk.capture.receipt.capacitor.components.CustomAlertDialog.ViewDestroyedListener
-import com.mytiki.sdk.capture.receipt.capacitor.components.MyRendererTrackingWebViewClient
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspScan
 import kotlinx.coroutines.CompletableDeferred
@@ -27,7 +23,10 @@ import kotlinx.coroutines.async
 
 
 class Retailer {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private lateinit var client: AccountLinkingClient
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun initialize(
         req: ReqInitialize,
         context: Context,
@@ -37,12 +36,13 @@ class Retailer {
         BlinkReceiptLinkingSdk.licenseKey = req.licenseKey
         BlinkReceiptLinkingSdk.productIntelligenceKey = req.productKey
         BlinkReceiptLinkingSdk.initialize(context, OnInitialize(isLinkInitialized, onError))
+        client = client(context)
         return isLinkInitialized
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun login( call: PluginCall, account: Account, context: Context ) {
-        val mbAccount = com.microblink.linking.Account(
+        val mbAccount = Account(
             RetailerEnum.fromString(account.accountCommon.source).toMbInt(),
             PasswordCredentials(account.username, account.password!!)
         )
@@ -52,11 +52,10 @@ class Retailer {
                     verify(mbAccount, true, context, call)
                 } else {
                     call.reject("login failed")
-                    client.close()
                 }
-            }.addOnFailureListener {
+            }
+            .addOnFailureListener {
                 call.reject(it.message)
-                client.close()
             }
     }
 
@@ -69,36 +68,25 @@ class Retailer {
             if (mbAccount != null) {
                 client.unlink(mbAccount).addOnSuccessListener {
                     call.resolve()
-
                 }.addOnFailureListener {
                     call.reject(it.message)
-                    client.close()
                 }
             } else {
                 call.reject("Account not found")
-                client.close()
             }
-        }.addOnFailureListener{
-            call.reject(it.message)
-            client.close()
         }
     }
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun flush(call: PluginCall, context: Context){
-        val client: AccountLinkingClient = client(context)
+    fun flush(call: PluginCall){
         client.resetHistory().addOnSuccessListener {
             call.resolve()
-            client.close()
         }.addOnFailureListener {
             call.reject(it.message)
-            client.close()
         }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun orders( call: PluginCall, context: Context) {
-        val client: AccountLinkingClient = client(context)
-
+    fun orders( call: PluginCall ) {
         MainScope().async {
             val accounts = accounts().await()
             accounts.forEach {
@@ -114,16 +102,14 @@ class Retailer {
                                     val rsp = RspScan(results, it)
                                     call.resolve(JSObject(rsp.toJson().toString()))
                                 }
+
+
                             } else {
                                 call.reject("no result")
-                            }
-                            if (remaining == 0){
-                                client.close()
                             }
                         }
                     val ordersFailureCallback = { _: Int, exception: AccountLinkingException ->
                         call.reject(exception.message)
-                        client.close()
                     }
                     client.orders(
                         retailer,
@@ -154,7 +140,6 @@ class Retailer {
                         }
                     }
                 val ordersFailureCallback = { _: Int, exception: AccountLinkingException ->
-                    Log.e("TIKI", exception.message ?: "exception wihtout message")
                     call.reject(exception.message)
                 }
                 client.orders(
@@ -186,7 +171,6 @@ class Retailer {
         client.accounts()
             .addOnSuccessListener { mbAccountList ->
                 MainScope().async {
-
                     if (mbAccountList != null) {
                         mbAccounts.complete(mbAccountList)
                     } else {
@@ -211,24 +195,20 @@ class Retailer {
                     account.isVerified = true
                     call?.resolve(account.toRsp())
                     verifyCompletable.complete(true)
-                    client.close()
                 }else {
                     client.unlink(mbAccount)
                     call?.reject("login failed")
                     verifyCompletable.complete(false)
-                    client.close()
                 }
             },
             failure = { exception ->
                 if(call == null){
                     verifyCompletable.complete(false)
-                    client.close()
                 }else if (exception.code == VERIFICATION_NEEDED && exception.view != null && context != null) {
                     exception.view!!.isFocusableInTouchMode = true
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         exception.view!!.focusable = View.FOCUSABLE
                     }
-
                     val builder: AlertDialog.Builder = AlertDialog.Builder(context)
                     builder.setTitle("Verify your account")
                     builder.setView(exception.view)
