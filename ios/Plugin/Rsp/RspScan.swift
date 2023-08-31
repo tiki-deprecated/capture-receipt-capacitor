@@ -1,24 +1,23 @@
-//
-//  RspScan.swift
-//  Plugin
-//
-//  Created by Jesse Monteiro Ferreira on 30/08/23.
-//  Copyright © 2023 Max Lynch. All rights reserved.
-//
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
 
 import Foundation
 import Capacitor
 
 public struct RspScan : Rsp {
-    let _account : Account
-    let _scan : RspReceipt
-    let _isRunning : Bool
+    let scan : RspReceipt
+    let account : Account? = nil
+    let isRunning : Bool = false
     
     func toPluginCallResultData() -> Capacitor.PluginCallResultData {
         return [
-            "account" : (_account != nil) ? _account.toResultData() : nil,
-            "physical" : _scan.toPluginCallResultData()
+            "account" : account?.toResultData() as Any,
+            "scan" : scan.toPluginCallResultData(),
+            "isRunning" : isRunning
         ]
+            
     }
     
 }

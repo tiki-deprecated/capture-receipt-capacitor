@@ -10,9 +10,6 @@ import Capacitor
 
 public class Retailer : CAPPlugin{
     
-    let id: Int
-    let bannerId: Int
-    
     public func initialize(_ req: ReqInitialize) {
         BRScanManager.shared().licenseKey = req.licenseKey
         BRScanManager.shared().prodIntelKey = req.productKey

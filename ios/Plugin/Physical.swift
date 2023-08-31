@@ -7,14 +7,15 @@ import Foundation
 import BlinkReceipt
 import AVKit
 
-public class Scan: NSObject {
+public class Physical: NSObject {
     
     public override init(){
         BRScanManager.shared().licenseKey = ProcessInfo.processInfo.environment["LICENSE_KEY"]!
         BRScanManager.shared().prodIntelKey = ProcessInfo.processInfo.environment["PRODUCT_KEY"]!
     }
     
-    @objc func scanPhysical() {
+    @objc func scan(onError: ((Error) -> Void)? = nil) {
+        let scanResultsDelegate = UIApplication.shared.windows.first!.rootViewController! as! BRScanResultsDelegate
         let mediaType = AVMediaType.video
         let authStatus = AVCaptureDevice.authorizationStatus(for: mediaType)
         let scanOptions = BRScanOptions()
@@ -28,7 +29,7 @@ public class Scan: NSObject {
                     from: UIApplication.shared.windows.first!.rootViewController!,
                     cameraType: .uxStandard,
                     scanOptions: BRScanOptions(),
-                    with: UIApplication.shared.windows.first!.rootViewController!)
+                    with: scanResultsDelegate)
             }
         } else {
             AVCaptureDevice.requestAccess(for: mediaType) { granted in
@@ -38,44 +39,12 @@ public class Scan: NSObject {
                             from: UIApplication.shared.windows.first!.rootViewController!,
                             cameraType: .uxStandard,
                             scanOptions: BRScanOptions(),
-                            with: UIApplication.shared.windows.first!.rootViewController!)
+                            with: scanResultsDelegate)
                     }
                 } else {
-                    // return camera error
+                    onError?(NSError())
                 }
             }
         }
     }
 }
-
-@objc(ScanResultsDelegate)
-extension UIViewController: BRScanResultsDelegate{
-    // Implement the delegate callback to handle scan results:
-    @objc public func didFinishScanning(_ cameraViewController: UIViewController, with scanResults: BRScanResults) {
-        cameraViewController.dismiss(animated: true, completion: nil)
-        
-        // Use scan results
-    }
-    
-    @objc public func didCancelScanning(_ cameraViewController: UIViewController!){
-        cameraViewController.dismiss(animated: true, completion: nil)
-    }
-    
-    @objc public func didOutputRawText(_ rawText: String!){
-        print(rawText)
-    }
-    
-    @objc public func scanningErrorOccurred(_ error: Error!){
-        print(error)
-    }
-    
-    @objc public func didOutputDebugInfo(_ debugInfo: String!){
-        print(debugInfo)
-    }
-    
-    @objc public func didOutputDebugKey(_ key: String!, withValue val: Any!){
-        print(key)
-    }
-    
-}
-

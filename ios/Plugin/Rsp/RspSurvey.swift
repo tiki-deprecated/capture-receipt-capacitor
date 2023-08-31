@@ -15,10 +15,10 @@ struct RspSurvey : Rsp {
     private let rewardValue: String?
     private let startDate: String?
     private let endDate: String?
-    private let questions: List<RspSurveyQuestion>
+    private let questions: [RspSurveyQuestion]
     
-    init (survey: Survey){
-        clientUserId = survey.clientUserId()
+    init (survey: BRSurvey){
+        clientUserId = survey.
         serverId = survey.serverId()
         slug = survey.slug()
         rewardValue = survey.rewardValue()
@@ -28,13 +28,15 @@ struct RspSurvey : Rsp {
             survey.questions()?.map { question -> RspSurveyQuestion(question) } ?? emptyList()
     }
     
-    func toJson() -> JSObject {
-        JSObject.updateValue("clientUserId", clientUserId)
-        JSObject.updateValue("serverId", serverId)
-        JSObject.updateValue("slug", slug)
-        JSObject.updateValue("rewardValue", rewardValue)
-        JSObject.updateValue("startDate", startDate)
-        JSObject.updateValue("endDate", endDate)
-        JSObject.updateValue("questions", JSONArray(questions.map { question -> question.toJson() }))
+    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+        var ret = JSObject()
+        ret["clientUserId"] = clientUserId
+        ret["serverId"] = serverId
+        ret["slug"] = slug
+        ret["rewardValue"] = rewardValue
+        ret["startDate"] = startDate
+        ret["endDate"] = endDate
+        ret["questions"] = questions
+        return ret
     }
 }

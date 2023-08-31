@@ -1,19 +1,19 @@
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
+
 import Foundation
 import Capacitor
-
-/**
- * Please read the Capacitor iOS Plugin Development Guide
- * here: https://capacitorjs.com/docs/plugins/ios
- */
 
 @objc(ReceiptCapturePlugin)
 public class ReceiptCapturePlugin: CAPPlugin {
     private let receiptCapture = ReceiptCapture()
     
-    @objc public func initialize (_ call: CAPPluginCall) {
+    @objc public func initialize(_ call: CAPPluginCall) {
         receiptCapture.initialize(call)
     }
-
+    
     @objc public func login(call: CAPPluginCall) {
         let reqLogin = ReqLogin(data: call)
         guard let accountType = AccountCommon.defaults[reqLogin.source] else {
@@ -34,8 +34,8 @@ public class ReceiptCapturePlugin: CAPPlugin {
                 break
         }
     }
-    
-    @objc func logout (call: CAPPluginCall) {
+
+    @objc func logout(call: CAPPluginCall) {
         let reqLogout = ReqLogin(data: call)
         guard let accountType = AccountCommon.defaults[reqLogout.source] else {
             call.reject("Invalid source: \(reqLogout.source)")
@@ -56,11 +56,7 @@ public class ReceiptCapturePlugin: CAPPlugin {
                 break
             }
         }
-        
-        
-        
-    
-    
+
     @objc func accounts(call: CAPPluginCall){
         
         guard let retailer = receiptCapture.retailer else {
@@ -70,11 +66,12 @@ public class ReceiptCapturePlugin: CAPPlugin {
         
         let data = retailer.accounts(call)
 //      TODO Implement E-Mail case
-        call.resolve(data)
+//        call.resolve(data)
         
     }
     
     func scan(call: CAPPluginCall) {
         
+    
     }
 }
