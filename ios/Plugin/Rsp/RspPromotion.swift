@@ -30,7 +30,7 @@ struct  RspPromotion : Rsp {
     }
     
     func toPluginCallResultData() -> Capacitor.PluginCallResultData {
-        var ret = JSObject()
+        var ret = JSObject()    
         ret["slug"] = slug
         ret["reward"] = reward
         ret["rewardCurrency"] = rewardCurrency

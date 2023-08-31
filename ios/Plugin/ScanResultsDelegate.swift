@@ -7,19 +7,19 @@ import UIKit
 import BlinkReceipt
 
 extension UIViewController: BRScanResultsDelegate{
-    // Implement the delegate callback to handle scan results:
+
     @objc public func didFinishScanning(_ cameraViewController: UIViewController, with scanResults: BRScanResults) {
         cameraViewController.dismiss(animated: true, completion: nil)
-
+        ReceiptCapture.pendingScanCall?.resolve(RspReceipt(scanResults: scanResults).toPluginCallResultData())
     }
     
     @objc public func didCancelScanning(_ cameraViewController: UIViewController!){
         cameraViewController.dismiss(animated: true, completion: nil)
+        ReceiptCapture.pendingScanCall?.reject("scan cancelled")
     }
     
     @objc public func scanningErrorOccurred(_ error: Error!){
-        cameraViewController.dismiss(animated: true, completion: nil)
-        print(error)
+        ReceiptCapture.pendingScanCall?.reject(error.localizedDescription)
     }
     
 }

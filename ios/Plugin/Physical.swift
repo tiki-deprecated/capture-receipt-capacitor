@@ -7,15 +7,10 @@ import Foundation
 import BlinkReceipt
 import AVKit
 
-public class Physical: NSObject {
+public class Physical {
     
-    public override init(){
-        BRScanManager.shared().licenseKey = ProcessInfo.processInfo.environment["LICENSE_KEY"]!
-        BRScanManager.shared().prodIntelKey = ProcessInfo.processInfo.environment["PRODUCT_KEY"]!
-    }
-    
-    @objc func scan(onError: ((Error) -> Void)? = nil) {
-        let scanResultsDelegate = UIApplication.shared.windows.first!.rootViewController! as! BRScanResultsDelegate
+    @objc func scan() {
+        let scanResultsDelegate = UIApplication.shared.windows.first!.rootViewController! as BRScanResultsDelegate
         let mediaType = AVMediaType.video
         let authStatus = AVCaptureDevice.authorizationStatus(for: mediaType)
         let scanOptions = BRScanOptions()
@@ -42,7 +37,7 @@ public class Physical: NSObject {
                             with: scanResultsDelegate)
                     }
                 } else {
-                    onError?(NSError())
+                    ReceiptCapture.pendingScanCall?.reject("Please provide camera access.")
                 }
             }
         }
