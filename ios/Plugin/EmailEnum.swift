@@ -11,7 +11,7 @@ import BlinkReceipt
 import BlinkEReceipt
 import Capacitor
 
-public enum EmailCommon : String {
+public enum EmailEnum: String, CaseIterable {
     case GMAIL
     case AOL
     case YAHOO

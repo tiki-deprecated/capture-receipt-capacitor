@@ -6,12 +6,14 @@
 import Foundation
 import Capacitor
 
-public class ReqInitialize {
+public struct ReqInitialize {
+    
     var licenseKey: String
     var productKey: String
-    init(_ data: CAPPluginCall) {
-        licenseKey = data.getString("licenseKey") ?? ""
-        productKey = data.getString("productKey") ?? ""
+    
+    init(_ call: CAPPluginCall) {
+        licenseKey = call.getString("licenseKey") ?? ""
+        productKey = call.getString("productKey") ?? ""
     }
 }
 

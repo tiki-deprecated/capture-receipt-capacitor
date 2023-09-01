@@ -10,37 +10,28 @@ import Capacitor
 
 
 struct RspSurveyQuestion : Rsp {
-    private let myIndex: Int
-    private let lastQuestion: Boolean
-    private let nextQuestionIndex: Int
-    private let serverId: Int
     private let text: String?
-    private let type: String?
-    private let answers: List<RspSurveyAnswer>
-    private let multipleAnswers: Boolean
-    private let totalNumberOfQuestions: Int
+    private let type: BRSurveyQuestionType
+    private let answers: [BRSurveyAnswer]
+    private let multipleAnswers: Bool
+    private let userResponse: BRSurveyResponse
     
-    init (surveyQuestion: SurveyQuestion) {
-        myIndex = surveyQuestion.myIndex()
-        lastQuestion = surveyQuestion.lastQuestion()
-        nextQuestionIndex = surveyQuestion.nextQuestionIndex()
-        serverId = surveyQuestion.serverId()
-        text = surveyQuestion.text()
-        type = surveyQuestion.type()?.a
-        answers = surveyQuestion.answers()?.map { answer -> RspSurveyAnswer(answer) } ?? emptyList()
-        multipleAnswers = surveyQuestion.multipleAnswers()
-        totalNumberOfQuestions = surveyQuestion.totalNumberOfQuestions()
+    init (surveyQuestion: BRSurveyQuestion) {
+        text = surveyQuestion.text
+        type = surveyQuestion.type
+        answers = surveyQuestion.answers
+        multipleAnswers = surveyQuestion.multipleAnswers
+        userResponse = surveyQuestion.userResponse
     }
     
-    func toJson() -> JSObject {
-        JSObject.updateValue("myIndex", myIndex)
-        JSObject.updateValue("lastQuestion", lastQuestion)
-        JSObject.updateValue("nextQuestionIndex", nextQuestionIndex)
-        JSObject.updateValue("serverId", serverId)
-        JSObject.updateValue("text", text)
-        JSObject.updateValue("type", type)
-        JSObject.updateValue("answers", JSONArray(answers.map { answer -> answer.toJson() }))
-        JSObject.updateValue("multipleAnswers", multipleAnswers)
-        JSObject.updateValue("totalNumberOfQuestions", totalNumberOfQuestions)
+    
+    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+        var ret = JSObject()
+        ret["text"] = text
+        ret["type"] = Int(type.rawValue)
+        ret["answers"] = JSArray(answers.map { answer in answers })
+        ret["multipleAnswers"] = multipleAnswers
+        ret["userResponse"] = JSObject(_immutableCocoaDictionary: userResponse)
+        return ret
     }
 }

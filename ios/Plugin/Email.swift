@@ -1,68 +1,95 @@
-//
-//  Email.swift
-//  Plugin
-//
-//  Created by Jesse Monteiro Ferreira on 29/08/23.
-//  Copyright © 2023 Max Lynch. All rights reserved.
-//
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
 
 import Foundation
 import BlinkReceipt
 import BlinkEReceipt
 import Capacitor
 
+public class Email {
 
-public class email {
-    public init (){
-        
+    let receiptManager = BREReceiptManager()
+    
+    public func login(_ account: Account, _ pluginCall: CAPPluginCall) {
+        let provider = EmailEnum(rawValue:  account.accountType.source)?.toBREReceiptProvider()
+        let rootVc = UIApplication.shared.windows.first?.rootViewController
+        var email = BRIMAPAccount(provider: provider!, email: account.user, password: account.password!)
+        receiptManager.setupIMAP(for: email, viewController: rootVc!) { result in
+            if result == .createdAppPassword {
+                print("Successfully created app password.")
+            } else {
+                
+            }
+        }
     }
     
-    public func account(_ account: Account, _ pluginCall: CAPPluginCall) {
-
-        let provider = EmailCommon(rawValue:  account.accountType.source)?.toBREReceiptProvider()
-        let rootVc = UIApplication.shared.windows.first?.rootViewController
-        var email = BRIMAPAccount.init(provider: provider!, email: account.user, password: account.password!)
-        BREReceiptManager().setupIMAP(for: email, viewController: rootVc!) { result in
-            if result == .createdAppPassword {
-                print("Successfully created app password.")
-            } else if result == .enabledLSA {
-                print("Successfully enabled Gmail Less Secure Apps.")
-            } else if result == .saved {
-                print("saved")
-            } else if result == .userCancelled {
-                print("user canceled")
-            }else if result == .adminNeeded {
-                print("admin needed")
-            }else if result == .unknownFailure {
-                print("UNKNOW FAILURE")
+    public func logout(_ pluginCall: CAPPluginCall, _ account: Account?){
+        if(account != nil){
+            let provider = EmailEnum(rawValue:  account!.accountType.source)?.toBREReceiptProvider()
+            var email = BRIMAPAccount(provider: provider!, email: account!.user, password: account!.password!)
+            receiptManager.signOut(from: email) { error in
+                if(error != nil){
+                    pluginCall.reject(error?.localizedDescription ?? "Email logout error.")
+                }else{
+                    pluginCall.resolve()
+                }
             }
-        }
-        
-        BREReceiptManager().linkIMAPAccountWithoutSetup(email) { result in
-            if result == .createdAppPassword {
-                print("Successfully created app password.")
-            } else if result == .enabledLSA {
-                print("Successfully enabled Gmail Less Secure Apps.")
-            } else if result == .saved {
-                print("saved")
-            } else if result == .userCancelled {
-                print("user canceled")
-            }else if result == .adminNeeded {
-                print("admin needed")
-            }else if result == .unknownFailure {
-                print("UNKNOW FAILURE")
-            }
-        }
-        
-        BREReceiptManager.shared().verifyImapAccount(email) { success, error in
-            if success {
-                //Credentials verified
-                print("Credentials verified.")
-            } else {
-                //Failed to verify credentials
-                print(error)
-
+        }else{
+            receiptManager.signOut{ error in
+                if(error != nil){
+                    pluginCall.reject(error?.localizedDescription ?? "Email logout error.")
+                }else{
+                    pluginCall.resolve()
+                }
             }
         }
     }
+    
+    public func scan(_ pluginCall: CAPPluginCall, _ account: Account?){
+        if(account != nil){
+            let provider = EmailEnum(rawValue:  account!.accountType.source)?.toBREReceiptProvider()
+            var email = BRIMAPAccount(provider: provider!, email: account!.user, password: account!.password!)
+            receiptManager.getEReceipts(for: email){scanResults, emailAccount, error in
+                if(scanResults != nil){
+                    scanResults?.forEach{scanResults in
+                        pluginCall.resolve(
+                            RspScan(scan: RspReceipt(scanResults: scanResults),
+                                account: Account(provider: emailAccount!.provider, email: emailAccount!.email))
+                            .toPluginCallResultData()
+                        )
+                    }
+                }else{
+                    pluginCall.reject(error?.localizedDescription ?? "No receipts.")
+                }
+            }
+        }else{
+            receiptManager.getEReceipts{scanResults, emailAccount, error in
+                if(scanResults != nil){
+                    scanResults?.forEach{scanResults in
+                        pluginCall.resolve(
+                            RspScan(scan: RspReceipt(scanResults: scanResults),
+                                account: Account(provider: emailAccount!.provider, email: emailAccount!.email))
+                            .toPluginCallResultData()
+                        )
+                    }
+                }else{
+                    pluginCall.reject(error?.localizedDescription ?? "No receipts.")
+                }
+            }
+        }
+    }
+    
+    public func accounts() -> [Account]{
+        var verifiedAccounts: [Account] = []
+        let linkedAccounts = receiptManager.getLinkedAccounts()
+        linkedAccounts?.forEach{ brAccount in
+            var account = Account(provider: brAccount.provider, email:brAccount.email)
+            account.isVerified = true
+            verifiedAccounts.append(account)
+        }
+        return verifiedAccounts
+    }
+    
 }

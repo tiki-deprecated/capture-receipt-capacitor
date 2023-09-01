@@ -104,8 +104,6 @@ class Retailer {
                                     val rsp = RspScan(results, it)
                                     call.resolve(JSObject(rsp.toJson().toString()))
                                 }
-
-
                             } else {
                                 call.reject("no result")
                             }

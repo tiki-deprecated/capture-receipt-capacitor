@@ -2,26 +2,30 @@
  * Copyright (c) TIKI Inc.
  * MIT license. See LICENSE file in root directory.
  */
+
 import Foundation
 import Capacitor
 
-struct RspPaymentMethod : Rsp {
-    private let paymentMethod: RspStringTyp?
-    private let cardType: RspStringType?
-    private let cardIssuer: RspStringType?
-    private let amount: RspFloatType?
+public struct RspPaymentMethod : Rsp {
     
-    init (paymentMethod: PaymentMethod) {
-        self.paymentMethod = RspStringType.opt(paymentMethod.paymentMethod())
-        cardType = RspStringType.opt(paymentMethod.cardType())
-        cardIssuer = RspStringType.opt(paymentMethod.cardIssuer())
-        amount = RspFloatType.opt(paymentMethod.amount())
+    private let paymentMethod: String?
+    private let cardType: String?
+    private let cardIssuer: String?
+    private let amount: Float?
+    
+    init(paymentMethod: String?, cardType: String?, cardIssuer: String?, amount: Float?) {
+        self.paymentMethod = paymentMethod
+        self.cardType = cardType
+        self.cardIssuer = cardIssuer
+        self.amount = amount
     }
     
-    func toJson() -> JSObject {
-        JSObject.updateValue("paymentMethod", paymentMethod?.toJson())
-        JSObject.updateValue("cardType", cardType?.toJson())
-        JSObject.updateValue("cardIssuer", cardIssuer?.toJson())
-        JSObject.updateValue("amount", amount?.toJson())
+    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+        var ret = JSObject()
+        ret["paymentMethod"] = paymentMethod
+        ret["cardType"] = cardType
+        ret["cardIssuer"] = cardIssuer
+        ret["amount"] = amount
+        return ret
     }
 }
