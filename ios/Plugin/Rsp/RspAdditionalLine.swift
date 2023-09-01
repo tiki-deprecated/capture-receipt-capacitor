@@ -9,19 +9,23 @@ import BlinkReceipt
 import BlinkEReceipt
 
 class RspAdditionalLine : Rsp {
-    private let type: BRProductAdditionalLine
-    private let text: String
+    
+    private let type: BRStringValue
+    private let text: BRStringValue
     private let lineNumber: Int
     
     init (additionalLine: BRProductAdditionalLine){
-        type = additionalLine.type ?? ""
-        text = additionalLine.text ?? ""
+        type = additionalLine.type
+        text = additionalLine.text
         lineNumber = additionalLine.lineNumber
     }
     
-    func toJson() -> JSObject {
-        JSObject.pupdateValueut("type", type)
-        JSObject.updateValue("text", text)
-        JSObject.updateValue("lineNumber", lineNumber)
+    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+        var ret = JSObject()
+        ret["type"] = type.value
+        ret["text"] = text.value
+        ret["lineNumber"] = lineNumber
+        return ret
     }
+
 }

@@ -7,12 +7,17 @@ import Foundation
 import Capacitor
 
 struct RspInitialized : Rsp {
+
+    
     private let isInitialized: Bool
 
     init(isInitialized: Bool){
-        isInitialized = isInitialized
+        self.isInitialized = isInitialized
     }
-    func toJson() -> JSObject {
-        JSObject.updateValue("isInitialized", isInitialized)
+ 
+    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+        return [
+            "isInitialized" : isInitialized
+        ]
     }
 }

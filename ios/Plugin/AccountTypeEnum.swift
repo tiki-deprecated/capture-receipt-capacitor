@@ -4,8 +4,8 @@
  */
 
 import Foundation
-import Capacitor
 
-protocol Rsp {
-    func toPluginCallResultData() -> PluginCallResultData
+public enum AccountTypeEnum {
+    case email
+    case retailer
 }

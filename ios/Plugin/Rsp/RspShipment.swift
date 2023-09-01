@@ -9,16 +9,19 @@ import BlinkEReceipt
 import Capacitor
 
 struct RspShipment : Rsp {
-    private let status: String
-    private let products: List<RspProduct>
     
-    init(shipment: Shipment){
-        status = shipment.status()
-        products = shipment.products().map { product -> RspProduct(product) }
+    private let status: String
+    private let products: [RspProduct]
+    
+    init(shipment: BRShipment){
+        status = shipment.status
+        products = shipment.products.map { product in RspProduct(product: product) }
     }
     
-    func toJson() -> JSObject {
-        JSObject.updateValue("status", status)
-        JSObject.updateValue("products", JSONArray(products.map { prd -> prd.toJson() }))
+    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+        var ret = JSObject()
+        ret["status"] = status
+        ret["products"] = JSArray(arrayLiteral: products.map { prd in prd.toPluginCallResultData() })
+        return ret
     }
 }

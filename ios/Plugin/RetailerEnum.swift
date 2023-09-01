@@ -1,7 +1,7 @@
 /*
-* Copyright (c) TIKI Inc.
-* MIT license. See LICENSE file in root directory.
-*/
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
 
 import Foundation
 import BlinkEReceipt
@@ -59,7 +59,6 @@ public enum RetailerEnum: String {
     case SHOPRITE
     case SPROUTS
     case STAPLES
-//    case STAPLES_CA
     case STARBUCKS
     case TACO_BELL
     case TARGET
@@ -71,7 +70,6 @@ public enum RetailerEnum: String {
     case WALMART
     case WALMART_CA
     case WEGMANS
-    
     
     func toBRAccountLinkingRetailer() -> BRAccountLinkingRetailer? {
         switch self{
@@ -125,7 +123,6 @@ public enum RetailerEnum: String {
             case .SHOPRITE : return .shoprite
             case .SPROUTS : return .sprouts
             case .STAPLES : return .staples
-//   TODO         case .STAPLES_CA : return STAMPLESCA
             case .STARBUCKS : return .starbucks
             case .TACO_BELL : return .tacoBell
             case .TARGET : return .target
@@ -193,7 +190,6 @@ public enum RetailerEnum: String {
         case .SHOPRITE : return "SHOPRITE"
         case .SPROUTS : return "SPROUTS"
         case .STAPLES : return "STAPLES"
-            //   TODO         case .STAPLES_CA : return STAMPLESCA
         case .STARBUCKS : return "STARBUCKS"
         case .TACO_BELL : return "TACO_BELL"
         case .TARGET : return "TARGET"
