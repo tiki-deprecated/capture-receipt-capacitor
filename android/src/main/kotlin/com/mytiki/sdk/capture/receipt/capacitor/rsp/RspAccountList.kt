@@ -18,6 +18,6 @@ class RspAccountList(
     ) : Rsp {
     override fun toJson(): JSONObject =
         JSONObject()
-            .put("accounts", JSONArray(accounts.map { account -> account.toRsp() }))
+            .put("accounts", JSONArray(accounts.map { account -> account.toRsp()}))
             .put("error", error?.message ?: "")
 }

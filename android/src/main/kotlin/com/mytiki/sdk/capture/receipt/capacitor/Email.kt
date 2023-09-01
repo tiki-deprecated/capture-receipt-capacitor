@@ -26,6 +26,10 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.tasks.await
 
+/**
+ * Class that handles all email's logic related  *
+ * @constructor Create empty Email
+ */
 class Email {
     private val tag = "ProviderSetupDialogFragment"
     private lateinit var client: ImapClient

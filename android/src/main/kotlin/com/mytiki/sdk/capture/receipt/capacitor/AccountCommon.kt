@@ -1,5 +1,14 @@
 package com.mytiki.sdk.capture.receipt.capacitor
 
+/**
+ * Enum of all account providers
+ *
+ * This enum has all account providers supported
+ *
+ * @property type type of the provider, Email or Retailer
+ * @property source source of the provider
+ * @constructor Create empty Account common
+ */
 enum class AccountCommon(val type: AccountTypeEnum, val source: String) {
     ACME_MARKETS(AccountTypeEnum.RETAILER, RetailerEnum.ACME_MARKETS.toString()),
     ALBERTSONS(AccountTypeEnum.RETAILER, RetailerEnum.ALBERTSONS.toString()),
@@ -66,10 +75,18 @@ enum class AccountCommon(val type: AccountTypeEnum, val source: String) {
     GMAIL(AccountTypeEnum.EMAIL, EmailEnum.GMAIL.toString());
 
 
-
+    /**
+     * Converts the [AccountCommon] object into a string
+     *
+     */
     override fun toString() = this.name
 
     companion object {
+        /**
+         * Finds and returns an [AccountCommon] with the [AccountCommon.source] equals to [stringValue]
+         *
+         * @param stringValue is a [AccountCommon.source]
+         */
         fun fromString(stringValue: String) = AccountCommon.values().first{ it.source == stringValue}
 
     }
