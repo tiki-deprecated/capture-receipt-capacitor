@@ -9,6 +9,11 @@ import com.microblink.core.SurveyQuestion
 import org.json.JSONArray
 import org.json.JSONObject
 
+/**
+ * Represents a survey question in the RSP (Receipt Survey Processor) module.
+ *
+ * @param surveyQuestion The [SurveyQuestion] object from the Microblink SDK.
+ */
 class RspSurveyQuestion(surveyQuestion: SurveyQuestion) : Rsp {
     private val myIndex: Int
     private val lastQuestion: Boolean
@@ -32,6 +37,11 @@ class RspSurveyQuestion(surveyQuestion: SurveyQuestion) : Rsp {
         totalNumberOfQuestions = surveyQuestion.totalNumberOfQuestions()
     }
 
+    /**
+     * Converts the RspSurveyQuestion object to a JSON representation.
+     *
+     * @return A [JSONObject] representing the RspSurveyQuestion.
+     */
     override fun toJson(): JSONObject =
         JSONObject()
             .put("myIndex", myIndex)
@@ -45,6 +55,12 @@ class RspSurveyQuestion(surveyQuestion: SurveyQuestion) : Rsp {
             .put("totalNumberOfQuestions", totalNumberOfQuestions)
 
     companion object {
+        /**
+         * Creates an RspSurveyQuestion instance from a [SurveyQuestion] object.
+         *
+         * @param surveyQuestion The [SurveyQuestion] object to convert.
+         * @return An [RspSurveyQuestion] instance or null if the input is null.
+         */
         fun opt(surveyQuestion: SurveyQuestion?): RspSurveyQuestion? =
             if (surveyQuestion != null) RspSurveyQuestion(surveyQuestion) else null
     }

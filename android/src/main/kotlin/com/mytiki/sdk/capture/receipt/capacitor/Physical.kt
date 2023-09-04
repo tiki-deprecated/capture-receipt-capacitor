@@ -25,7 +25,18 @@ import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspReceipt
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspScan
 import kotlinx.coroutines.CompletableDeferred
 
+/**
+ * This class provides functionality for scanning physical receipts using Microblink's SDK.
+ */
 class Physical {
+    /**
+     * Initializes the Microblink SDK with the provided configuration.
+     *
+     * @param req The initialization request parameters.
+     * @param context The Android application context.
+     * @param onError Callback function to handle initialization errors.
+     * @return A [CompletableDeferred] indicating the initialization status.
+     */
     fun initialize(
         req: ReqInitialize,
         context: Context,
@@ -41,14 +52,29 @@ class Physical {
         return isInitialized
     }
 
+    /**
+     * Initiates the receipt scanning process.
+     *
+     * @param call The plugin call associated with the scanning operation.
+     * @param plugin The Capacitor plugin instance.
+     * @param context The Android application context.
+     * @param reqPermissionsCallback Callback to request camera permissions if needed.
+     */
     fun scan(call: PluginCall, plugin: Plugin, context: Context, reqPermissionsCallback: () -> Unit ) {
         if (plugin.getPermissionState("camera") != PermissionState.GRANTED) {
             reqPermissionsCallback()
-        }else{
+        } else {
             val intent: Intent = open(context)
             plugin.startActivityForResult(call, intent, "onScanResult")
         }
     }
+
+    /**
+     * Creates an intent to open the camera for receipt scanning.
+     *
+     * @param context The Android application context.
+     * @return An [Intent] for opening the camera scanner activity.
+     */
     fun open(context: Context): Intent {
         val scanOptions = ScanOptions.newBuilder()
             .detectDuplicates(true)
@@ -66,6 +92,12 @@ class Physical {
             .putExtra(CameraScanActivity.BUNDLE_EXTRA, bundle)
     }
 
+    /**
+     * Handles the scanning result and resolves or rejects the plugin call accordingly.
+     *
+     * @param call The plugin call associated with the scanning operation.
+     * @param result The result of the scanning activity.
+     */
     fun onResult(call: PluginCall, result: ActivityResult) {
         if (result.resultCode == Activity.RESULT_OK) {
             val scanResults: ScanResults? =
@@ -73,6 +105,8 @@ class Physical {
             val media: Media? = result.data?.getParcelableExtra(CameraScanActivity.MEDIA_EXTRA)
             val rsp = RspScan(scanResults, null, false)
             call.resolve(JSObject.fromJSONObject(rsp.toJson()))
-        } else call.reject("Physical failed.")
+        } else {
+            call.reject("Physical failed.")
+        }
     }
 }

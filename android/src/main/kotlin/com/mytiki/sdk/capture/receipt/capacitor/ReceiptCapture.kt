@@ -1,6 +1,6 @@
 /*
  * Copyright (c) TIKI Inc.
- * MIT license. See LICENSE file in root directory.
+ * MIT license. See LICENSE file in the root directory.
  */
 
 package com.mytiki.sdk.capture.receipt.capacitor
@@ -16,11 +16,20 @@ import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspInitialized
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 
+/**
+ * A plugin for capturing and processing receipts in a Capacitor-based Android application.
+ */
 class ReceiptCapture {
     val physical = Physical()
     val email = Email()
     val retailer = Retailer()
 
+    /**
+     * Initialize the receipt capture plugin.
+     *
+     * @param call The plugin call object.
+     * @param context The Android application context.
+     */
     fun initialize(call: PluginCall, context: Context) {
         val req = ReqInitialize(call.data)
         MainScope().async {
@@ -32,6 +41,12 @@ class ReceiptCapture {
         }
     }
 
+    /**
+     * Login with the specified account.
+     *
+     * @param call The plugin call object.
+     * @param context The Android application context.
+     */
     fun login(call: PluginCall, context: AppCompatActivity) {
         val source = call.data.getString("source")
         val username = call.data.getString("username")
@@ -51,6 +66,12 @@ class ReceiptCapture {
         }
     }
 
+    /**
+     * Logout from the specified account or all accounts.
+     *
+     * @param call The plugin call object.
+     * @param context The Android application context.
+     */
     fun logout(call: PluginCall, context: Context) {
         val source = call.data.getString("source")
         val username = call.data.getString("username")
@@ -84,6 +105,12 @@ class ReceiptCapture {
         }
     }
 
+    /**
+     * Get a list of accounts.
+     *
+     * @param call The plugin call object.
+     * @param context The Android application context.
+     */
     fun accounts(call: PluginCall, context: Context) {
         MainScope().async {
             val list = mutableListOf<Account>()
@@ -95,6 +122,14 @@ class ReceiptCapture {
         }
     }
 
+    /**
+     * Perform a receipt scan operation.
+     *
+     * @param plugin The Capacitor plugin.
+     * @param call The plugin call object.
+     * @param context The Android application context.
+     * @param reqPermCallback Callback function for requesting permissions.
+     */
     fun scan(plugin: Plugin, call: PluginCall, context: Context, reqPermCallback: () -> Unit) {
         val req = ReqScan(call.data)
         if(req.account == null) {

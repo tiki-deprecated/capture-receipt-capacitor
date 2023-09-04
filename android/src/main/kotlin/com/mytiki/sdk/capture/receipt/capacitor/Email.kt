@@ -1,6 +1,6 @@
 /*
  * Copyright (c) TIKI Inc.
- * MIT license. See LICENSE file in root directory.
+ * MIT license. See LICENSE file in the root directory.
  */
 
 package com.mytiki.sdk.capture.receipt.capacitor
@@ -27,23 +27,32 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.tasks.await
 
 /**
- * Class that handles all email's logic related  *
- * @constructor Create empty Email
+ * Class that handles all email-related logic.
+ *
+ * @constructor Creates an empty Email.
  */
 class Email {
     private val tag = "ProviderSetupDialogFragment"
     private lateinit var client: ImapClient
 
+    /**
+     * Initializes [BlinkReceiptDigitalSdk] and instantiates [client].
+     *
+     * @param req Data received from the Capacitor plugin.
+     * @param context App [Context].
+     * @param onError Callback called when an error occurs.
+     * @return A [CompletableDeferred] to indicate when the initialization is complete.
+     */
     suspend fun initialize(
         req: ReqInitialize,
         context: Context,
         onError: (msg: String?, data: JSObject) -> Unit,
     ): CompletableDeferred<Unit> {
         val isDigitalInitialized = CompletableDeferred<Unit>()
-        BlinkReceiptDigitalSdk.productIntelligenceKey(req.productKey!!)
+        BlinkReceiptDigitalSdk.productIntelligenceKey(req.productKey)
         BlinkReceiptDigitalSdk.initialize(
             context,
-            req.licenseKey!!,
+            req.licenseKey,
             OnInitialize(isDigitalInitialized, onError)
         )
         isDigitalInitialized.await()
@@ -53,6 +62,13 @@ class Email {
         return isImapInitialized
     }
 
+    /**
+     * Logs in to the email provider.
+     *
+     * @param call Plugin call.
+     * @param account The email account information.
+     * @param activity The [AppCompatActivity] where the login dialog will be displayed.
+     */
     fun login(call: PluginCall, account: Account, activity: AppCompatActivity) {
         ProviderSetupDialogFragment.newInstance(
             ProviderSetupOptions.newBuilder(
@@ -68,7 +84,7 @@ class Email {
                 ProviderSetupResults.BAD_EMAIL -> call.reject("Bad Email")
                 ProviderSetupResults.CREATED_APP_PASSWORD -> Timberland.d("CREATED_APP_PASSWORD")
                 ProviderSetupResults.NO_CREDENTIALS -> call.reject("No Credentials")
-                ProviderSetupResults.UNKNOWN -> call.reject("unknown")
+                ProviderSetupResults.UNKNOWN -> call.reject("Unknown")
                 ProviderSetupResults.NO_APP_PASSWORD -> call.reject("No App Password")
                 ProviderSetupResults.LSA_ENABLED -> call.reject("LSA Enabled")
                 ProviderSetupResults.DUPLICATE_EMAIL -> call.reject("Duplicate Email")
@@ -92,6 +108,11 @@ class Email {
         }.show(activity.supportFragmentManager, tag)
     }
 
+    /**
+     * Scrapes emails.
+     *
+     * @param call Plugin call.
+     */
     fun scrape(call: PluginCall) {
         call.reject("Not initialized")
         call.setKeepAlive(true)
@@ -100,7 +121,7 @@ class Email {
                 credential: PasswordCredentials,
                 result: List<ScanResults>
             ) {
-                result.forEach {receipt ->
+                result.forEach { receipt ->
                     val rsp = RspScan(receipt, Account.fromEmailAccount(credential))
                     call.resolve(JSObject.fromJSONObject(rsp.toJson()))
                 }
@@ -110,6 +131,12 @@ class Email {
         call.setKeepAlive(false)
     }
 
+    /**
+     * Scrapes emails for a specific account.
+     *
+     * @param call Plugin call.
+     * @param account The email account information.
+     */
     fun scrape(call: PluginCall, account: Account) {
         call.reject("Not initialized")
         call.setKeepAlive(true)
@@ -125,14 +152,20 @@ class Email {
                     }
                 }
             }
+
             override fun onException(throwable: Throwable) = call.reject(throwable.message)
         })
         call.setKeepAlive(false)
     }
 
-    fun accounts(): CompletableDeferred<List<Account>>{
+    /**
+     * Retrieves a list of email accounts.
+     *
+     * @return A [CompletableDeferred] containing a list of email accounts.
+     */
+    fun accounts(): CompletableDeferred<List<Account>> {
         val isAccounts = CompletableDeferred<List<Account>>()
-        client.accounts()?.addOnSuccessListener {credentials ->
+        client.accounts()?.addOnSuccessListener { credentials ->
             if (credentials != null) {
                 MainScope().async {
                     val accountList = credentials?.map { credential ->
@@ -142,15 +175,21 @@ class Email {
                     }
                     isAccounts.complete(accountList!!)
                 }
-            }else{
+            } else {
                 isAccounts.complete(mutableListOf())
             }
-        }?.addOnFailureListener{
+        }?.addOnFailureListener {
             isAccounts.completeExceptionally(it)
         }
         return isAccounts
     }
 
+    /**
+     * Removes an email account.
+     *
+     * @param call Plugin call.
+     * @param account The email account information.
+     */
     fun remove(call: PluginCall, account: Account) {
         client.logout(
             PasswordCredentials.newBuilder(
@@ -165,6 +204,11 @@ class Email {
         }
     }
 
+    /**
+     * Logs out of all email accounts.
+     *
+     * @param call Plugin call.
+     */
     fun flush(call: PluginCall) {
         client.logout()?.addOnSuccessListener {
             call.resolve()

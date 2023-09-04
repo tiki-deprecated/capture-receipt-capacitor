@@ -7,15 +7,16 @@ import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspAccount
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspAccountList
 
 /**
- * Account information
+ * Represents information about an account.
  *
- * This class defines the properties of an Account
+ * This class defines the properties of an Account, including common account details,
+ * username, password, and verification status.
  *
- * @property accountCommon  tells from where the account is
- * @property username the [Account] username
- * @property password the [Account] password
- * @property isVerified tells if the account is verified or not
- * @constructor Create empty Account
+ * @property accountCommon The source of the account.
+ * @property username The username associated with the account.
+ * @property password The password associated with the account. (Optional)
+ * @property isVerified Indicates whether the account is verified or not. (Optional)
+ * @constructor Creates an empty Account.
  */
 class Account(
     val accountCommon: AccountCommon,
@@ -24,19 +25,20 @@ class Account(
     var isVerified: Boolean? = null
 ) {
     /**
-     * Convert an [Account] to a [JSObject]
+     * Converts an [Account] to a [JSObject].
      *
-     * the [JSObject] is used to pass data to capacitor plugin
-     * @return JSObject
+     * The [JSObject] is used to pass data to a Capacitor plugin.
+     *
+     * @return JSObject representation of the Account.
      */
     fun toRsp(): JSObject = JSObject.fromJSONObject(RspAccount(this).toJson())
-    companion object{
 
+    companion object {
         /**
-         * Convert a [data] into an [Account] object.
+         * Converts data from a [JSObject] into an [Account] object.
          *
-         * @param data data received from capacitor plugin
-         * @return Account
+         * @param data Data received from a Capacitor plugin.
+         * @return Account object.
          */
         fun fromReq(data: JSObject): Account {
             val req = ReqAccount(data)
@@ -44,37 +46,39 @@ class Account(
         }
 
         /**
-         * Convert [com.microblink.linking.Account] into an [Account] object.
+         * Converts a [com.microblink.linking.Account] into an [Account] object.
          *
-         * @param mbAccount [com.microblink.linking.Account] object
-         * @return
+         * @param mbAccount [com.microblink.linking.Account] object.
+         * @return Account object.
          */
-        fun fromRetailerAccount(mbAccount: com.microblink.linking.Account): Account{
+        fun fromRetailerAccount(mbAccount: com.microblink.linking.Account): Account {
             val accountType = AccountCommon.fromString(RetailerEnum.fromMbInt(mbAccount.retailerId).toString())
             val username = mbAccount.credentials.username()
             return Account(accountType, username)
         }
 
         /**
-         * Convert a [PasswordCredentials] into an [Account] object.
+         * Converts a [PasswordCredentials] into an [Account] object.
          *
-         * @param mbAccount [PasswordCredentials] object
-         * @return
+         * @param mbAccount [PasswordCredentials] object.
+         * @return Account object.
          */
-        fun fromEmailAccount(mbAccount:  PasswordCredentials): Account{
+        fun fromEmailAccount(mbAccount:  PasswordCredentials): Account {
             val accountType = AccountCommon.fromString(mbAccount.provider().name)
             val username = mbAccount.username()
             return Account(accountType, username)
         }
 
         /**
-         * Convert a [List]<[Account]> to a [JSObject] array
-         * the [JSObject] is used to pass data to capacitor plugin
+         * Converts a [List]<[Account]> to a [JSObject] array.
          *
-         * @param list list of [Account]
-         * @param error errors caught when getting the [List]<[Account]>
-         * @return
+         * The [JSObject] array is used to pass data to a Capacitor plugin.
+         *
+         * @param list List of [Account].
+         * @param error Errors encountered while getting the [List]<[Account]>.
+         * @return JSObject representation of the Account list.
          */
-        fun toRspList(list: List<Account>, error: Exception? = null): JSObject = JSObject.fromJSONObject(RspAccountList(list.toMutableList(), error).toJson())
+        fun toRspList(list: List<Account>, error: Exception? = null): JSObject =
+            JSObject.fromJSONObject(RspAccountList(list.toMutableList(), error).toJson())
     }
 }

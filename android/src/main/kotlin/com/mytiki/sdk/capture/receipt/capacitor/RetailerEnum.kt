@@ -1,6 +1,11 @@
 package com.mytiki.sdk.capture.receipt.capacitor
 
-enum class RetailerEnum (val value: Int){
+/**
+ * An enumeration representing various retailers.
+ *
+ * @property value The integer value associated with the retailer.
+ */
+enum class RetailerEnum(val value: Int) {
     ACME_MARKETS(com.microblink.linking.ACME_MARKETS),
     ALBERTSONS(com.microblink.linking.ALBERTSONS),
     AMAZON(com.microblink.linking.AMAZON_BETA),
@@ -38,8 +43,7 @@ enum class RetailerEnum (val value: Int){
     MEIJER(com.microblink.linking.MEIJER),
     NIKE(com.microblink.linking.NIKE),
     PUBLIX(com.microblink.linking.PUBLIX),
-    RALPHS(com.microblink.linking.RALPHS),
-    RITE_AID(com.microblink.linking.RITE_AID),
+    RALPHS(com.microblink.linking.RITE_AID),
     SAFEWAY(com.microblink.linking.SAFEWAY),
     SAMS_CLUB(com.microblink.linking.SAMS_CLUB),
     SEAMLESS(com.microblink.linking.SEAMLESS),
@@ -61,12 +65,37 @@ enum class RetailerEnum (val value: Int){
     WALMART_CA(com.microblink.linking.WALMART_CA),
     WEGMANS(com.microblink.linking.WEGMANS);
 
-    fun toMbInt() : Int = this.value
+    /**
+     * Converts the retailer to its corresponding integer value.
+     *
+     * @return The integer value of the retailer.
+     */
+    fun toMbInt(): Int = this.value
+
+    /**
+     * Returns the string representation of the retailer.
+     *
+     * @return The name of the retailer.
+     */
     override fun toString() = this.name
 
     companion object {
+        /**
+         * Retrieves a retailer based on its integer value.
+         *
+         * @param intValue The integer value of the retailer.
+         * @return The retailer enum matching the provided integer value.
+         * @throws NoSuchElementException if no retailer with the given integer value is found.
+         */
         fun fromMbInt(intValue: Int) = values().first { it.value == intValue }
-        fun fromString(stringValue: String) = values().first { it.name == stringValue }
 
+        /**
+         * Retrieves a retailer based on its string representation.
+         *
+         * @param stringValue The string representation of the retailer.
+         * @return The retailer enum matching the provided string representation.
+         * @throws NoSuchElementException if no retailer with the given string representation is found.
+         */
+        fun fromString(stringValue: String) = values().first { it.name == stringValue }
     }
 }

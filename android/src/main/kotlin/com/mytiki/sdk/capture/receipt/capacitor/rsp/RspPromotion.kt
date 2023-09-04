@@ -1,6 +1,6 @@
 /*
  * Copyright (c) TIKI Inc.
- * MIT license. See LICENSE file in root directory.
+ * MIT license. See LICENSE file in the root directory.
  */
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
@@ -9,6 +9,11 @@ import com.microblink.core.Promotion
 import org.json.JSONArray
 import org.json.JSONObject
 
+/**
+ * Represents a promotional item as a response in the TIKI SDK.
+ *
+ * @property promotion The [Promotion] object to convert into an RspPromotion.
+ */
 class RspPromotion(promotion: Promotion) : Rsp {
     private val id: Long
     private val slug: String?
@@ -30,6 +35,11 @@ class RspPromotion(promotion: Promotion) : Rsp {
         qualifications = promotion.qualifications() ?: emptyList()
     }
 
+    /**
+     * Converts the RspPromotion object into a JSON representation.
+     *
+     * @return A [JSONObject] containing the JSON representation of the RspPromotion.
+     */
     override fun toJson(): JSONObject =
         JSONObject()
             .put("id", id)
@@ -42,6 +52,12 @@ class RspPromotion(promotion: Promotion) : Rsp {
             .put("qualifications", JSONArray(qualifications.map { q -> JSONArray(q) }))
 
     companion object {
+        /**
+         * Converts a [Promotion] object into an [RspPromotion] object.
+         *
+         * @param promotion The [Promotion] object to convert.
+         * @return An [RspPromotion] object or null if the input is null.
+         */
         fun opt(promotion: Promotion?): RspPromotion? =
             if (promotion != null) RspPromotion(promotion) else null
     }

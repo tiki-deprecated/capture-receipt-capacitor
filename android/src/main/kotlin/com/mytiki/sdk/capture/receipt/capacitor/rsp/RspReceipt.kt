@@ -9,7 +9,15 @@ import com.microblink.core.ScanResults
 import org.json.JSONArray
 import org.json.JSONObject
 
+/**
+ * Represents a Receipt Scan Processor (RSP) Receipt.
+ *
+ * This class encapsulates various data extracted from a scanned receipt using the RSP library.
+ *
+ * @param scanResults The scan results containing the data to populate this receipt.
+ */
 class RspReceipt(scanResults: ScanResults) : Rsp {
+    // Properties for various receipt data
     private val receiptDate: RspStringType?
     private val receiptTime: RspStringType?
     private val retailerId: RspRetailer
@@ -83,8 +91,8 @@ class RspReceipt(scanResults: ScanResults) : Rsp {
     private val paymentTransactionId: RspStringType?
     private val combinedRawText: RspStringType?
 
-
     init {
+        // Initialize properties with data from scanResults
         receiptDate = RspStringType.opt(scanResults.receiptDate())
         receiptTime = RspStringType.opt(scanResults.receiptTime())
         retailerId = RspRetailer(scanResults.retailerId())
@@ -176,6 +184,11 @@ class RspReceipt(scanResults: ScanResults) : Rsp {
         combinedRawText = RspStringType.opt(scanResults.combinedRawText())
     }
 
+    /**
+     * Converts the RSP receipt data to a JSON object.
+     *
+     * @return A JSONObject containing the RSP receipt data.
+     */
     override fun toJson(): JSONObject =
         JSONObject()
             .put("receiptDate", receiptDate?.toJson())
@@ -264,6 +277,12 @@ class RspReceipt(scanResults: ScanResults) : Rsp {
             .put("combinedRawText", combinedRawText?.toJson())
 
     companion object {
+        /**
+         * Creates an optional RSP receipt from the provided scan results.
+         *
+         * @param scanResults The scan results to create an RSP receipt from.
+         * @return An optional RSPReceipt instance, or null if scanResults is null.
+         */
         fun opt(scanResults: ScanResults?): RspReceipt? =
             if (scanResults != null) RspReceipt(scanResults) else null
     }

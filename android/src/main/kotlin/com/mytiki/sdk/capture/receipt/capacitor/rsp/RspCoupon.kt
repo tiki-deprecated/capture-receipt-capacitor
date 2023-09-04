@@ -1,6 +1,6 @@
 /*
  * Copyright (c) TIKI Inc.
- * MIT license. See LICENSE file in root directory.
+ * MIT license. See LICENSE file in the root directory.
  */
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
@@ -8,6 +8,11 @@ package com.mytiki.sdk.capture.receipt.capacitor.rsp
 import com.microblink.core.Coupon
 import org.json.JSONObject
 
+/**
+ * Represents a parsed coupon extracted from a receipt during the RSP (Receipt Scanning Processor) process.
+ *
+ * @property coupon The [Coupon] object containing coupon information.
+ */
 class RspCoupon(coupon: Coupon) : Rsp {
     private val type: String?
     private val amount: RspFloatType?
@@ -23,6 +28,11 @@ class RspCoupon(coupon: Coupon) : Rsp {
         relatedProductIndex = coupon.relatedProductIndex()
     }
 
+    /**
+     * Converts the [RspCoupon] object to a JSON representation.
+     *
+     * @return A [JSONObject] containing the coupon information.
+     */
     override fun toJson(): JSONObject =
         JSONObject()
             .put("type", type)
@@ -32,6 +42,12 @@ class RspCoupon(coupon: Coupon) : Rsp {
             .put("relatedProductIndex", relatedProductIndex)
 
     companion object {
+        /**
+         * Creates an optional [RspCoupon] object from a [Coupon].
+         *
+         * @param coupon The [Coupon] object to convert.
+         * @return An [RspCoupon] object if [coupon] is not null, otherwise null.
+         */
         fun opt(coupon: Coupon?): RspCoupon? =
             if (coupon != null) RspCoupon(coupon) else null
     }

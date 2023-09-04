@@ -8,6 +8,15 @@ package com.mytiki.sdk.capture.receipt.capacitor.rsp
 import com.microblink.core.PaymentMethod
 import org.json.JSONObject
 
+/**
+ * Represents a Receipt Scanning Plugin Payment Method for TIKI SDK.
+ *
+ * This class wraps the [PaymentMethod] class provided by MicroBlink
+ * and provides a structured representation for payment-related information
+ * extracted from a receipt.
+ *
+ * @param paymentMethod The [PaymentMethod] instance to be wrapped.
+ */
 class RspPaymentMethod(paymentMethod: PaymentMethod) : Rsp {
     private val paymentMethod: RspStringType?
     private val cardType: RspStringType?
@@ -21,6 +30,11 @@ class RspPaymentMethod(paymentMethod: PaymentMethod) : Rsp {
         amount = RspFloatType.opt(paymentMethod.amount())
     }
 
+    /**
+     * Converts the [RspPaymentMethod] instance to a JSON representation.
+     *
+     * @return A [JSONObject] containing the payment method information.
+     */
     override fun toJson(): JSONObject =
         JSONObject()
             .put("paymentMethod", paymentMethod?.toJson())
@@ -29,6 +43,13 @@ class RspPaymentMethod(paymentMethod: PaymentMethod) : Rsp {
             .put("amount", amount?.toJson())
 
     companion object {
+        /**
+         * Creates an [RspPaymentMethod] instance from a [PaymentMethod] instance,
+         * or returns null if the input is null.
+         *
+         * @param paymentMethod The [PaymentMethod] instance to be converted.
+         * @return An [RspPaymentMethod] instance if [paymentMethod] is not null; otherwise, null.
+         */
         fun opt(paymentMethod: PaymentMethod?): RspPaymentMethod? =
             if (paymentMethod != null) RspPaymentMethod(paymentMethod) else null
     }
