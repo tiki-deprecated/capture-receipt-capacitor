@@ -50,7 +50,7 @@ export class ReceiptCaptureWeb extends WebPlugin implements ReceiptCapturePlugin
    * @param account - The account that will be scanned for receipts.
    * @returns - The scanned Receipt and a boolean indicates the execution.
    */
-  async scan(_options:{scanType: ScanType | undefined, account?: Account}): Promise<{receipt: Receipt, isRunning: boolean}> {
+  async scan(_options:{scanType: ScanType | undefined, account?: Account}): Promise<{receipt: Receipt, isRunning: boolean, account?: Account}> {
     throw this.unimplemented('Mobile Only.');
   }
 

@@ -20,6 +20,7 @@ import com.microblink.camera.ui.CameraScanActivity
 import com.microblink.core.ScanResults
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspReceipt
+import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspScan
 import kotlinx.coroutines.CompletableDeferred
 
 class Physical {
@@ -60,8 +61,8 @@ class Physical {
             val scanResults: ScanResults? =
                 result.data?.getParcelableExtra(CameraScanActivity.DATA_EXTRA)
             val media: Media? = result.data?.getParcelableExtra(CameraScanActivity.MEDIA_EXTRA)
-            val rsp: RspReceipt? = RspReceipt.opt(scanResults)
-            call.resolve(if (rsp != null) JSObject.fromJSONObject(rsp.toJson()) else JSObject())
+            val rsp = RspScan(scanResults, null, false)
+            call.resolve(JSObject.fromJSONObject(rsp.toJson()))
         } else call.reject("Physical failed.")
     }
 }

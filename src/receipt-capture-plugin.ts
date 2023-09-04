@@ -53,7 +53,7 @@ export interface ReceiptCapturePlugin {
    * @param account - The account that will be scanned for receipts.
    * @returns - The scanned Receipt and a boolean indicates the execution.
    */
-  scan(_option: {scanType: ScanType | undefined, account?: Account}): Promise<{receipt: Receipt, isRunning: boolean}>;
+  scan(_option: {scanType: ScanType | undefined, account?: Account}): Promise<{receipt: Receipt, isRunning: boolean, account?: Account}>;
 
   /**
    * Retrieves all saved accounts.
