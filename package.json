@@ -18,10 +18,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tiki-bar/tiki-capture-receipt-capacitor.git"
+    "url": "https://github.com/tiki/tiki-capture-receipt-capacitor.git"
   },
   "bugs": {
-    "url": "https://github.com/tiki-bar/tiki-capture-receipt-capacitor/issues"
+    "url": "https://github.com/tiki/tiki-capture-receipt-capacitor/issues"
   },
   "keywords": [
     "capacitor",

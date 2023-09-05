@@ -1,17 +1,17 @@
 # -------------------------------------------------------------------------------------
 # Frontend owns this repo as a whole.
 # -------------------------------------------------------------------------------------
-*                    @tiki-bar/frontend
+*                    @tiki/frontend
 
 # -------------------------------------------------------------------------------------
 # Content should have eyes on any static asset changes.
 # -------------------------------------------------------------------------------------
-*.md                 @tiki-bar/content
-*.png                @tiki-bar/content
-*.svg                @tiki-bar/content
+*.md                 @tiki/content
+*.png                @tiki/content
+*.svg                @tiki/content
 
 # -------------------------------------------------------------------------------------
 # Infrastructure should all have eyes on any changes under .github/
 # -------------------------------------------------------------------------------------
-/.github/            @tiki-bar/infrastructure
+/.github/            @tiki/infrastructure
 
