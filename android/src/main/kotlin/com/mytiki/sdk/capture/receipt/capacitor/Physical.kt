@@ -21,7 +21,6 @@ import com.microblink.ScanOptions
 import com.microblink.camera.ui.CameraScanActivity
 import com.microblink.core.ScanResults
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspReceipt
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspScan
 import kotlinx.coroutines.CompletableDeferred
 
@@ -93,10 +92,17 @@ class Physical {
     }
 
     /**
-     * Handles the scanning result and resolves or rejects the plugin call accordingly.
+     * Handles the scanning result and appropriately resolves or rejects the plugin call based on the outcome.
+     *
+     * This method is responsible for processing the scanning result and responding to the plugin call accordingly.
      *
      * @param call The plugin call associated with the scanning operation.
-     * @param result The result of the scanning activity.
+     * @param result The result of the scanning activity, typically obtained from an activity result callback.
+     *
+     * If the scanning operation is successful (resultCode == Activity.RESULT_OK), it extracts scan results and media data
+     * from the result and resolves the plugin call with a JSON representation of the scan results.
+     *
+     * If the scanning operation fails (resultCode != Activity.RESULT_OK), it rejects the plugin call with an error message.
      */
     fun onResult(call: PluginCall, result: ActivityResult) {
         if (result.resultCode == Activity.RESULT_OK) {
@@ -109,4 +115,5 @@ class Physical {
             call.reject("Physical failed.")
         }
     }
+
 }

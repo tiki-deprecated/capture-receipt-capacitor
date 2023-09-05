@@ -20,6 +20,7 @@ import com.getcapacitor.annotation.PermissionCallback
  * A Capacitor plugin for receipt capture functionality.
  *
  * This plugin provides methods for initializing, logging in, logging out, fetching accounts, and capturing receipts.
+ * It allows you to integrate receipt capture capabilities into your Capacitor-based mobile application.
  */
 @CapacitorPlugin(
     name = "ReceiptCapture",
@@ -36,6 +37,9 @@ class ReceiptCapturePlugin : Plugin() {
     /**
      * Initializes the receipt capture functionality.
      *
+     * This method initializes the receipt capture service, preparing it for use. You should call this method
+     * before using any other receipt capture features.
+     *
      * @param call The Capacitor plugin call instance.
      */
     @PluginMethod
@@ -43,6 +47,9 @@ class ReceiptCapturePlugin : Plugin() {
 
     /**
      * Logs in to the receipt capture service.
+     *
+     * This method allows users to log in to their receipt capture service account. Successful login is required
+     * for accessing certain features and functionalities.
      *
      * @param call The Capacitor plugin call instance.
      */
@@ -52,6 +59,9 @@ class ReceiptCapturePlugin : Plugin() {
     /**
      * Logs out of the receipt capture service.
      *
+     * This method logs the user out of their receipt capture service account. It can be used to end the session
+     * and secure user data.
+     *
      * @param call The Capacitor plugin call instance.
      */
     @PluginMethod
@@ -60,6 +70,9 @@ class ReceiptCapturePlugin : Plugin() {
     /**
      * Fetches accounts associated with the receipt capture service.
      *
+     * This method retrieves a list of user accounts associated with the receipt capture service.
+     * It can be useful for user management and selection.
+     *
      * @param call The Capacitor plugin call instance.
      */
     @PluginMethod
@@ -67,6 +80,9 @@ class ReceiptCapturePlugin : Plugin() {
 
     /**
      * Initiates the receipt capture process.
+     *
+     * This method starts the receipt capture process, launching the camera for scanning receipts.
+     * It requires the camera permission to be granted. If not, it will request the permission from the user.
      *
      * @param call The Capacitor plugin call instance.
      */
@@ -78,6 +94,9 @@ class ReceiptCapturePlugin : Plugin() {
     /**
      * Callback invoked when the receipt capture activity returns a result.
      *
+     * This callback is triggered when the receipt capture activity completes successfully or with an error.
+     * It provides the result of the capture operation, including scan data and media if successful.
+     *
      * @param call The Capacitor plugin call instance.
      * @param result The result of the receipt capture activity.
      */
@@ -86,6 +105,9 @@ class ReceiptCapturePlugin : Plugin() {
 
     /**
      * Callback invoked when the camera permission is requested.
+     *
+     * This callback is called when the plugin requests camera permission. If permission is granted, it will initiate
+     * the receipt capture process. If not, it will reject the call with a permission error message.
      *
      * @param call The Capacitor plugin call instance.
      */

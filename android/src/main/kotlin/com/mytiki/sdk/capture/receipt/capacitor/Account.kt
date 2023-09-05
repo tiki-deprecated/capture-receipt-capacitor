@@ -12,7 +12,7 @@ import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspAccountList
  * This class defines the properties of an Account, including common account details,
  * username, password, and verification status.
  *
- * @property accountCommon The source of the account.
+ * @property accountCommon The source of the account. See [AccountCommon]
  * @property username The username associated with the account.
  * @property password The password associated with the account. (Optional)
  * @property isVerified Indicates whether the account is verified or not. (Optional)
@@ -51,9 +51,9 @@ class Account(
          * @param mbAccount [com.microblink.linking.Account] object.
          * @return Account object.
          */
-        fun fromRetailerAccount(mbAccount: com.microblink.linking.Account): Account {
-            val accountType = AccountCommon.fromString(RetailerEnum.fromMbInt(mbAccount.retailerId).toString())
-            val username = mbAccount.credentials.username()
+        fun fromRetailerAccount(retailerAccount: com.microblink.linking.Account): Account {
+            val accountType = AccountCommon.fromString(RetailerEnum.fromMbInt(retailerAccount.retailerId).toString())
+            val username = retailerAccount.credentials.username()
             return Account(accountType, username)
         }
 
@@ -63,9 +63,9 @@ class Account(
          * @param mbAccount [PasswordCredentials] object.
          * @return Account object.
          */
-        fun fromEmailAccount(mbAccount:  PasswordCredentials): Account {
-            val accountType = AccountCommon.fromString(mbAccount.provider().name)
-            val username = mbAccount.username()
+        fun fromEmailAccount(emailAccount:  PasswordCredentials): Account {
+            val accountType = AccountCommon.fromString(emailAccount.provider().name)
+            val username = emailAccount.username()
             return Account(accountType, username)
         }
 
