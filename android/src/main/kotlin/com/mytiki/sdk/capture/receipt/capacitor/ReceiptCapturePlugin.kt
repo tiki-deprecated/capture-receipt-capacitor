@@ -17,10 +17,13 @@ import com.getcapacitor.annotation.Permission
 import com.getcapacitor.annotation.PermissionCallback
 
 /**
- * A Capacitor plugin for receipt capture functionality.
- *
- * This plugin provides methods for initializing, logging in, logging out, fetching accounts, and capturing receipts.
- * It allows you to integrate receipt capture capabilities into your Capacitor-based mobile application.
+*
+*A Capacitor plugin for receipt capture functionality.
+*This plugin provides methods for initializing, logging in, logging out, fetching accounts, and capturing receipts.
+*It allows you to integrate receipt capture capabilities into your Capacitor-based mobile application.
+*@license MIT license. See LICENSE file in the root directory for more details.
+*@author TIKI Inc.
+*@version 1.0.0
  */
 @CapacitorPlugin(
     name = "ReceiptCapture",
@@ -46,12 +49,14 @@ class ReceiptCapturePlugin : Plugin() {
     fun initialize(call: PluginCall) = receiptCapture.initialize(call, activity)
 
     /**
-     * Logs in to the receipt capture service.
+     * Logs in with the specified account.
      *
-     * This method allows users to log in to their receipt capture service account. Successful login is required
+     * This method allows users to log in their email or retailer (amazon, wallmart, best-buy...) account.
+     * Successful login is required
      * for accessing certain features and functionalities.
+     * The [JSObject] from [PluginCall.data] sent through call must have source, username and password properties
      *
-     * @param call The Capacitor plugin call instance.
+     * @param call The Capacitor [PluginCall] instance.
      */
     @PluginMethod
     fun login(call: PluginCall) = receiptCapture.login(call, activity)
@@ -59,8 +64,11 @@ class ReceiptCapturePlugin : Plugin() {
     /**
      * Logs out of the receipt capture service.
      *
-     * This method logs the user out of their receipt capture service account. It can be used to end the session
-     * and secure user data.
+     * This method allows users to logout their email or retailer (amazon, wallmart, best-buy...) account.
+     * It can be used to end the session and secure user data.
+     * To logout from a retailer account the [JSObject] from [PluginCall.data] sent through call must have a source propertie.
+     * To logout from an email account the [JSObject] from [PluginCall.data] sent through call must have source and source, username and password properties.
+     * To logout from all retailer and email accounts the [JSObject] from [PluginCall.data] sent through call must have be empty.
      *
      * @param call The Capacitor plugin call instance.
      */
@@ -68,9 +76,9 @@ class ReceiptCapturePlugin : Plugin() {
     fun logout(call: PluginCall) = receiptCapture.logout(call, activity)
 
     /**
-     * Fetches accounts associated with the receipt capture service.
+     * Fetches accounts associated.
      *
-     * This method retrieves a list of user accounts associated with the receipt capture service.
+     * This method retrieves a list of user email and retailer accounts associated.
      * It can be useful for user management and selection.
      *
      * @param call The Capacitor plugin call instance.
@@ -79,10 +87,12 @@ class ReceiptCapturePlugin : Plugin() {
     fun accounts(call: PluginCall) = receiptCapture.accounts(call, activity)
 
     /**
-     * Initiates the receipt capture process.
+     * Fetches all receipts on logged accounts or starts the physical receipt scan process.
      *
-     * This method starts the receipt capture process, launching the camera for scanning receipts.
+     * This method fetches all receipts on logged accounts or depending on the inputs starts the physical receipt scan process, launching the camera for scanning receipts.
      * It requires the camera permission to be granted. If not, it will request the permission from the user.
+     * To Fetches receipts from a specific retailer or email account the [JSObject] from [PluginCall.data] sent through call must have a scanType, source, username and password properties.
+     * To Fetches receipts from all email, retailer, both or to scan a physical one the [JSObject] from [PluginCall.data] sent through call must have a scanType property.
      *
      * @param call The Capacitor plugin call instance.
      */
