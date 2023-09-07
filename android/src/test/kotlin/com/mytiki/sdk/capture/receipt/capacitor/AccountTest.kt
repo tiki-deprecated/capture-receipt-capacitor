@@ -1,6 +1,5 @@
 package com.mytiki.sdk.capture.receipt.capacitor
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.getcapacitor.JSObject
 import com.microblink.digital.PasswordCredentials
 import io.mockk.MockKAnnotations
@@ -10,9 +9,7 @@ import io.mockk.unmockkAll
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
 class AccountTest {
     private lateinit var accountCommon: AccountCommon
     private lateinit var data: JSObject
@@ -56,19 +53,15 @@ class AccountTest {
         val account = Account(accountCommon, "testUsername", "testPassword", true)
         val jsObject = account.toRsp()
 
-        // Assert the properties of the JSObject as needed
         assert(jsObject.getString("username") == "testUsername")
         assert(jsObject.getString("source") == "testSource")
         assert(jsObject.getString("type") == "testType")
-        assert(jsObject.getBoolean("isVerified") == true)
+        assert(jsObject.getBoolean("isVerified"))
     }
 
     @Test
     fun testFromReq() {
         val account = Account.fromReq(data)
-
-        // Assert the properties of the Account object as needed
-
         assert(account.accountCommon == AccountCommon.AMAZON)
         assert(account.username == "testUsername")
         assert(account.password == "testPassword")
@@ -78,8 +71,6 @@ class AccountTest {
     @Test
     fun testFromRetailerAccount() {
         val account = Account.fromRetailerAccount(retailerAccount)
-
-        // Assert the properties of the Account object as needed
         assert(account.accountCommon == AccountCommon.fromString(RetailerEnum.AMAZON.toString()))
         assert(account.username == "testUsername")
     }
@@ -87,8 +78,6 @@ class AccountTest {
     @Test
     fun testFromEmailAccount() {
         val account = Account.fromEmailAccount(emailAccount)
-
-        // Assert the properties of the Account object as needed
         assert(account.accountCommon == AccountCommon.fromString(EmailEnum.GMAIL.toString()))
         assert(account.username == "testUsername")
     }
@@ -100,8 +89,6 @@ class AccountTest {
         val accountList = listOf(account1, account2)
 
         val jsObject = Account.toRspList(accountList)
-
-        // Assert the properties of the JSObject as needed
         assert(jsObject.getJSONArray("accounts").length() == 2)
     }
 }
