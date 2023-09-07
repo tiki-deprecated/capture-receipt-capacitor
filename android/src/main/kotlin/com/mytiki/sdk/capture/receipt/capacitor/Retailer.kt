@@ -7,7 +7,6 @@ package com.mytiki.sdk.capture.receipt.capacitor
 
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.getcapacitor.JSObject
@@ -21,11 +20,21 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 
-
+/**
+ * This class represents the Retailer functionality for account linking and order retrieval.
+ */
 class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     private lateinit var client: AccountLinkingClient
 
+    /**
+     * Initializes the Retailer SDK.
+     *
+     * @param req The initialization request.
+     * @param context The Android application context.
+     * @param onError A callback to handle initialization errors.
+     * @return A [CompletableDeferred] indicating whether the initialization was successful.
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
     fun initialize(
         req: ReqInitialize,
@@ -40,16 +49,24 @@ class Retailer {
         return isLinkInitialized
     }
 
+    /**
+     * Logs in a user account.
+     *
+     * @param call The plugin call.
+     * @param account The user's account.
+     * @param context The Android application context.
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun login( call: PluginCall, account: Account, context: Context ) {
+    fun login(call: PluginCall, account: Account, context: Context) {
         val mbAccount = Account(
             RetailerEnum.fromString(account.accountCommon.source).toMbInt(),
             PasswordCredentials(account.username, account.password!!)
         )
+        val client = client(context)
         client.link(mbAccount)
             .addOnSuccessListener {
                 if (it) {
-                    verify(mbAccount, true, context, call)
+                    verify(mbAccount, context, call)
                 } else {
                     call.reject("login failed")
                 }
@@ -59,8 +76,16 @@ class Retailer {
             }
     }
 
+    /**
+     * Removes a user account.
+     *
+     * @param call The plugin call.
+     * @param accountCommon The common account details.
+     * @param context The Android application context.
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun remove(call: PluginCall, accountCommon: AccountCommon){
+    fun remove(call: PluginCall, accountCommon: AccountCommon, context: Context) {
+        val client = client(context)
         client.accounts().addOnSuccessListener { accounts ->
             val mbAccount = accounts?.firstOrNull {
                 it.retailerId == RetailerEnum.fromString(accountCommon.source).toMbInt()
@@ -76,8 +101,14 @@ class Retailer {
             }
         }
     }
+
+    /**
+     * Flushes the order history.
+     *
+     * @param call The plugin call.
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun flush(call: PluginCall){
+    fun flush(call: PluginCall) {
         client.resetHistory().addOnSuccessListener {
             call.resolve()
         }.addOnFailureListener {
@@ -85,20 +116,27 @@ class Retailer {
         }
     }
 
+    /**
+     * Retrieves orders for all verified accounts.
+     *
+     * @param call The plugin call.
+     * @param context The Android application context.
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun orders( call: PluginCall ) {
+    fun orders(call: PluginCall, context: Context) {
+        val client: AccountLinkingClient = client(context)
         MainScope().async {
-            val accounts = accounts().await()
+            val accounts = accounts(context).await()
             accounts.forEach {
-                if(it.isVerified!!) {
+                if (it.isVerified!!) {
                     val retailer = RetailerEnum.fromString(it.accountCommon.source).toMbInt()
                     val ordersSuccessCallback =
                         { _: Int, results: ScanResults?, remaining: Int, _: String ->
                             if (results != null) {
-                                if(remaining == 0) {
+                                if (remaining == 0) {
                                     val rsp = RspScan(results, it, false)
                                     call.resolve(JSObject(rsp.toJson().toString()))
-                                }else{
+                                } else {
                                     val rsp = RspScan(results, it)
                                     call.resolve(JSObject(rsp.toJson().toString()))
                                 }
@@ -119,19 +157,29 @@ class Retailer {
         }
     }
 
+    /**
+     * Retrieves orders for a specific user account.
+     *
+     * @param call The plugin call.
+     * @param account The user's account.
+     * @param context The Android application context.
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun orders( call: PluginCall, account: Account ) {
+    fun orders(call: PluginCall, account: Account, context: Context) {
+        val client: AccountLinkingClient = client(context)
         MainScope().async {
-            val mbAccount = mbAccounts().await().first{
-                account.username === it.credentials.username() && account.accountCommon.source === RetailerEnum.fromMbInt(it.retailerId).name
+            val mbAccount = mbAccounts(context).await().first {
+                account.username === it.credentials.username() && account.accountCommon.source === RetailerEnum.fromMbInt(
+                    it.retailerId
+                ).name
             }
-            account.isVerified = verify(mbAccount).await()
-            if(account.isVerified!!) {
+            account.isVerified = verify(mbAccount, context).await()
+            if (account.isVerified!!) {
                 val retailer = RetailerEnum.fromString(account.accountCommon.source).toMbInt()
                 val ordersSuccessCallback =
                     { _: Int, results: ScanResults?, _: Int, _: String ->
                         if (results != null) {
-                            val rsp = RspScan(results, account,false)
+                            val rsp = RspScan(results, account, false)
                             call.resolve(JSObject(rsp.toJson().toString()))
                         } else {
                             call.reject("no result")
@@ -149,13 +197,19 @@ class Retailer {
         }
     }
 
-    fun accounts(): CompletableDeferred<List<Account>> {
+    /**
+     * Retrieves a list of user accounts.
+     *
+     * @param context The Android application context.
+     * @return A [CompletableDeferred] containing the list of user accounts.
+     */
+    fun accounts(context: Context): CompletableDeferred<List<Account>> {
         val accounts = CompletableDeferred<List<Account>>()
         val list = mutableListOf<Account>()
-        MainScope().async{
-            mbAccounts().await().map{mbAccount ->
+        MainScope().async {
+            mbAccounts(context).await().map { mbAccount ->
                 val account = Account.fromRetailerAccount(mbAccount)
-                account.isVerified = verify(mbAccount).await()
+                account.isVerified = verify(mbAccount, context).await()
                 list.add(account)
             }
             accounts.complete(list)
@@ -163,8 +217,15 @@ class Retailer {
         return accounts
     }
 
+    /**
+     * Retrieves a list of user accounts from the Retailer SDK.
+     *
+     * @param context The Android application context.
+     * @return A [CompletableDeferred] containing the list of user accounts.
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun mbAccounts(): CompletableDeferred<List<com.microblink.linking.Account>> {
+    fun mbAccounts(context: Context): CompletableDeferred<List<com.microblink.linking.Account>> {
+        val client: AccountLinkingClient = client(context)
         val mbAccounts = CompletableDeferred<List<com.microblink.linking.Account>>()
         client.accounts()
             .addOnSuccessListener { mbAccountList ->
@@ -182,27 +243,41 @@ class Retailer {
         return mbAccounts
     }
 
+    /**
+     * Verifies a user account.
+     *
+     * @param mbAccount The user's account in the Retailer SDK.
+     * @param context The Android application context.
+     * @param call The plugin call (optional).
+     * @return A [CompletableDeferred] indicating whether the account verification was successful.
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun verify( mbAccount: com.microblink.linking.Account, showDialog: Boolean = false, context: Context? = null, call: PluginCall? = null ): CompletableDeferred<Boolean>{
+    private fun verify(
+        mbAccount: com.microblink.linking.Account,
+        context: Context,
+        call: PluginCall? = null
+    ): CompletableDeferred<Boolean> {
+        val client: AccountLinkingClient = client(context)
         val verifyCompletable = CompletableDeferred<Boolean>()
         val account = Account.fromRetailerAccount(mbAccount)
         client.verify(
             RetailerEnum.fromString(account.accountCommon.source).value,
             success = { isVerified: Boolean, _: String ->
-                if(isVerified){
+                if (isVerified) {
                     account.isVerified = true
                     call?.resolve(account.toRsp())
                     verifyCompletable.complete(true)
-                }else {
+                } else {
                     client.unlink(mbAccount)
                     call?.reject("login failed")
                     verifyCompletable.complete(false)
                 }
             },
             failure = { exception ->
-                if(call == null){
+                if (call == null) {
                     verifyCompletable.complete(false)
-                }else if (exception.code == VERIFICATION_NEEDED && exception.view != null && context != null) {
+                    client.close()
+                } else if (exception.code == VERIFICATION_NEEDED && exception.view != null) {
                     exception.view!!.isFocusableInTouchMode = true
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         exception.view!!.focusable = View.FOCUSABLE
@@ -212,9 +287,8 @@ class Retailer {
                     builder.setView(exception.view)
                     val dialog: AlertDialog = builder.create()
                     dialog.show()
-
-                }else{
-                    when (exception.code){
+                } else {
+                    when (exception.code) {
                         INTERNAL_ERROR -> call.reject("Login failed: Internal Error")
                         INVALID_CREDENTIALS -> call.reject("Login failed: Invalid Credentials")
                         PARSING_FAILURE -> call.reject("Login failed: Parsing Failure")
@@ -231,18 +305,26 @@ class Retailer {
         return verifyCompletable
     }
 
+    /**
+     * Creates an instance of the AccountLinkingClient with optional configuration parameters.
+     *
+     * @param context The Android application context.
+     * @param dayCutoff The day cutoff for order retrieval (optional, default is 500).
+     * @param latestOrdersOnly Indicates whether to retrieve only the latest orders (optional, default is false).
+     * @param countryCode The country code for order retrieval (optional, default is "US").
+     * @return An instance of the [AccountLinkingClient].
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun client(
         context: Context,
         dayCutoff: Int = 500,
         latestOrdersOnly: Boolean = false,
         countryCode: String = "US",
-    ): AccountLinkingClient{
+    ): AccountLinkingClient {
         val client = AccountLinkingClient(context)
         client.dayCutoff = dayCutoff
         client.latestOrdersOnly = latestOrdersOnly
         client.countryCode = countryCode
-
         return client
     }
 }

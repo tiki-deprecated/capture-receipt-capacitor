@@ -9,6 +9,49 @@ import com.microblink.core.Product
 import org.json.JSONArray
 import org.json.JSONObject
 
+/**
+ * Represents a parsed product from a receipt using the RSP (Receipt Structure Parser) framework.
+ *
+ * @property productNumber The product number, if available.
+ * @property description The product description, if available.
+ * @property quantity The quantity of the product, if available.
+ * @property unitPrice The unit price of the product, if available.
+ * @property unitOfMeasure The unit of measure for the product, if available.
+ * @property totalPrice The total price of the product, if available.
+ * @property fullPrice The full price of the product.
+ * @property line The line number of the product on the receipt.
+ * @property productName The product name, if available.
+ * @property brand The product brand, if available.
+ * @property category The product category, if available.
+ * @property size The product size, if available.
+ * @property rewardsGroup The rewards group associated with the product, if available.
+ * @property competitorRewardsGroup The competitor's rewards group, if available.
+ * @property upc The Universal Product Code (UPC) of the product, if available.
+ * @property imageUrl The URL of the product image, if available.
+ * @property shippingStatus The shipping status of the product, if available.
+ * @property additionalLines Additional lines of text associated with the product.
+ * @property priceAfterCoupons The product price after applying coupons, if available.
+ * @property voided Indicates whether the product is voided.
+ * @property probability The probability score associated with the product.
+ * @property sensitive Indicates whether the product is sensitive.
+ * @property possibleProducts List of possible sub-products associated with the product.
+ * @property subProducts List of sub-products associated with the product.
+ * @property added Indicates whether the product was added.
+ * @property blinkReceiptBrand The brand information from the BlinkReceipt SDK, if available.
+ * @property blinkReceiptCategory The category information from the BlinkReceipt SDK, if available.
+ * @property extendedFields Additional extended fields associated with the product.
+ * @property fuelType The fuel type of the product, if available.
+ * @property descriptionPrefix The prefix of the product description, if available.
+ * @property descriptionPostfix The postfix of the product description, if available.
+ * @property skuPrefix The prefix of the product SKU, if available.
+ * @property skuPostfix The postfix of the product SKU, if available.
+ * @property attributes List of attributes associated with the product.
+ * @property sector The sector of the product, if available.
+ * @property department The department of the product, if available.
+ * @property majorCategory The major category of the product, if available.
+ * @property subCategory The sub-category of the product, if available.
+ * @property itemType The item type of the product, if available.
+ */
 class RspProduct(product: Product) : Rsp {
     private val productNumber: RspStringType?
     private val description: RspStringType?
@@ -82,7 +125,7 @@ class RspProduct(product: Product) : Rsp {
         blinkReceiptCategory = product.blinkReceiptCategory()
         fuelType = product.fuelType()
         descriptionPrefix = RspStringType.opt(product.descriptionPrefix())
-        descriptionPostfix = RspStringType.opt(product.descriptionPostfix())
+        descriptionPostfix = RspStringType.opt(product.skuPostfix())
         skuPrefix = RspStringType.opt(product.skuPrefix())
         skuPostfix = RspStringType.opt(product.skuPostfix())
         sector = product.sector()
@@ -105,6 +148,11 @@ class RspProduct(product: Product) : Rsp {
         } else emptyList()
     }
 
+    /**
+     * Converts the RSP product to a JSON representation.
+     *
+     * @return A JSON object representing the RSP product.
+     */
     override fun toJson(): JSONObject =
         JSONObject()
             .put("productNumber", productNumber?.toJson())
@@ -148,6 +196,12 @@ class RspProduct(product: Product) : Rsp {
             .put("itemType", itemType)
 
     companion object {
+        /**
+         * Creates an optional [RspProduct] from a [Product] instance.
+         *
+         * @param product The [Product] instance to create an [RspProduct] from.
+         * @return An [RspProduct] instance or null if the input is null.
+         */
         fun opt(product: Product?): RspProduct? =
             if (product != null) RspProduct(product) else null
     }
