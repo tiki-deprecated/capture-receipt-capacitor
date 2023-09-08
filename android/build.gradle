@@ -136,6 +136,8 @@ dependencies {
     implementation "com.microblink:earnings:$microblinkVersion"
     implementation "com.microblink:recognizer:$microblinkVersion"
     implementation "com.microblink:surveys:$microblinkVersion"
+    implementation 'androidx.test:monitor:1.6.1'
+    implementation 'androidx.test.ext:junit-ktx:1.1.5'
 
     testImplementation 'org.json:json:20230227'
     testImplementation "junit:junit:$junitVersion"
