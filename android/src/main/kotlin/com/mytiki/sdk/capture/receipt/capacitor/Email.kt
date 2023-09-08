@@ -95,7 +95,7 @@ class Email {
                 if (dialog.isAdded) {
                     dialog.dismiss()
                     MainScope().async {
-                        account.isVerified = client.verify(PasswordCredentials.newBuilder(
+                         account.isVerified =client.verify(PasswordCredentials.newBuilder(
                             Provider.valueOf(account.accountCommon.source),
                             account.username,
                             account.password
