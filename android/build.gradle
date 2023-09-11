@@ -124,10 +124,17 @@ dependencies {
     implementation "com.microblink:core:$microblinkVersion"
     implementation "com.microblink:digital:$microblinkVersion"
     implementation "com.microblink:recognizer:$microblinkVersion"
+    
+    implementation 'androidx.test:monitor:1.6.1'
+    implementation 'androidx.test.ext:junit-ktx:1.1.5'
 
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
     testImplementation "io.mockk:mockk:$mockkVersion"
     testImplementation 'org.json:json:20230227'
+
+    testImplementation 'org.json:json:20230227'
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation "io.mockk:mockk:$mockkVersion"
 
     androidTestImplementation "io.mockk:mockk-android:$mockkVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
