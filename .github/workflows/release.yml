@@ -4,8 +4,8 @@ on:
   pull_request:
     branches:
       - main
-    types:
-      - closed
+    # types:
+    #   - closed
 
 permissions:
   contents: write
@@ -61,27 +61,27 @@ jobs:
         id: version
         run: echo "current=$(npm pkg get version | tr -d '"')" >> $GITHUB_OUTPUT
 
-      - name: Publish
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # - name: Publish
+      #   run: npm publish --access public
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
+      # - name: Setup Pages
+      #   uses: actions/configure-pages@v3
 
-      - name: Build Docs
-        run: npx typedoc src/index.ts
+      # - name: Build Docs
+      #   run: npx typedoc src/index.ts
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
-        with:
-          path: './docs'
+      # - name: Upload artifact
+      #   uses: actions/upload-pages-artifact@v2
+      #   with:
+      #     path: './docs'
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
+      # - name: Deploy to GitHub Pages
+      #   id: deployment
+      #   uses: actions/deploy-pages@v2
 
-      - name: Release
-        uses: ncipollo/release-action@v1
-        with:
-          tag: ${{ steps.version.outputs.current }}
+      # - name: Release
+      #   uses: ncipollo/release-action@v1
+      #   with:
+      #     tag: ${{ steps.version.outputs.current }}
