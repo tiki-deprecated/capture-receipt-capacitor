@@ -22,7 +22,7 @@ public class Account {
         self.isVerified = isVerified ?? false
     }
     
-    init(provider: BREReceiptProvider, email: String){
+    init(provider: BREReceiptProvider, email: String, password: String? = nil){
         let emailEnum = EmailEnum.allCases.first(where: {value in
             value.toBREReceiptProvider() == provider
         })
@@ -30,6 +30,7 @@ public class Account {
             value.source == emailEnum!.rawValue
         })!.value
         self.user = email
+        self.password = password
     }
     
     func toResultData() -> PluginCallResultData {

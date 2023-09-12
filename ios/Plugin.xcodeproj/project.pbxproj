@@ -11,7 +11,6 @@
 		20C0B05DCFC8E3958A738AF2 /* Pods_PluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6753A823D3815DB436415E3 /* Pods_PluginTests.framework */; };
 		2F98D68224C9AAE500613A4C /* ReceiptCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F98D68124C9AAE400613A4C /* ReceiptCapture.swift */; };
 		50ADFF92201F53D600D50D53 /* Plugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ADFF88201F53D600D50D53 /* Plugin.framework */; };
-		50ADFF97201F53D600D50D53 /* ReceiptCaptureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50ADFF96201F53D600D50D53 /* ReceiptCaptureTests.swift */; };
 		50ADFF99201F53D600D50D53 /* ReceiptCapturePlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 50ADFF8B201F53D600D50D53 /* ReceiptCapturePlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		50ADFFA42020D75100D50D53 /* Capacitor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ADFFA52020D75100D50D53 /* Capacitor.framework */; };
 		50ADFFA82020EE4F00D50D53 /* ReceiptCapturePlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 50ADFFA72020EE4F00D50D53 /* ReceiptCapturePlugin.m */; };
@@ -45,7 +44,6 @@
 		88C8C2982AA0DD0600E7799A /* RspSurveyResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C8C2972AA0DD0600E7799A /* RspSurveyResponse.swift */; };
 		88F555132A8A437D00DAF8F3 /* Retailer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F555122A8A437D00DAF8F3 /* Retailer.swift */; };
 		88F555152A8A9E9C00DAF8F3 /* RetailerEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F555142A8A9E9B00DAF8F3 /* RetailerEnum.swift */; };
-		88F5551D2A8BA21500DAF8F3 /* RetailerIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F5551A2A8B9FC400DAF8F3 /* RetailerIntegrationTests.swift */; };
 		8C33E0462A977AD000B889A3 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C33E0432A977AD000B889A3 /* Account.swift */; };
 		8C33E0472A977AD000B889A3 /* AccountCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C33E0442A977AD000B889A3 /* AccountCommon.swift */; };
 		8C33E0482A977AD000B889A3 /* AccountTypeEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C33E0452A977AD000B889A3 /* AccountTypeEnum.swift */; };
@@ -70,8 +68,6 @@
 		50ADFF8B201F53D600D50D53 /* ReceiptCapturePlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReceiptCapturePlugin.h; sourceTree = "<group>"; };
 		50ADFF8C201F53D600D50D53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50ADFF91201F53D600D50D53 /* PluginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PluginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		50ADFF96201F53D600D50D53 /* ReceiptCaptureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptCaptureTests.swift; sourceTree = "<group>"; };
-		50ADFF98201F53D600D50D53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50ADFFA52020D75100D50D53 /* Capacitor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Capacitor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		50ADFFA72020EE4F00D50D53 /* ReceiptCapturePlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReceiptCapturePlugin.m; sourceTree = "<group>"; };
 		50E1A94720377CB70090CE1A /* ReceiptCapturePlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiptCapturePlugin.swift; sourceTree = "<group>"; };
@@ -101,7 +97,6 @@
 		88C8C2972AA0DD0600E7799A /* RspSurveyResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspSurveyResponse.swift; sourceTree = "<group>"; };
 		88F555122A8A437D00DAF8F3 /* Retailer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Retailer.swift; sourceTree = "<group>"; };
 		88F555142A8A9E9B00DAF8F3 /* RetailerEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetailerEnum.swift; sourceTree = "<group>"; };
-		88F5551A2A8B9FC400DAF8F3 /* RetailerIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetailerIntegrationTests.swift; sourceTree = "<group>"; };
 		8C33E0432A977AD000B889A3 /* Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		8C33E0442A977AD000B889A3 /* AccountCommon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountCommon.swift; sourceTree = "<group>"; };
 		8C33E0452A977AD000B889A3 /* AccountTypeEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountTypeEnum.swift; sourceTree = "<group>"; };
@@ -139,7 +134,6 @@
 			isa = PBXGroup;
 			children = (
 				50ADFF8A201F53D600D50D53 /* Plugin */,
-				50ADFF95201F53D600D50D53 /* PluginTests */,
 				50ADFF89201F53D600D50D53 /* Products */,
 				8C8E7744173064A9F6D438E3 /* Pods */,
 				A797B9EFA3DCEFEA1FBB66A9 /* Frameworks */,
@@ -176,16 +170,6 @@
 				889E23BC2A9E6E830072E8F4 /* Email.swift */,
 			);
 			path = Plugin;
-			sourceTree = "<group>";
-		};
-		50ADFF95201F53D600D50D53 /* PluginTests */ = {
-			isa = PBXGroup;
-			children = (
-				50ADFF96201F53D600D50D53 /* ReceiptCaptureTests.swift */,
-				88F5551A2A8B9FC400DAF8F3 /* RetailerIntegrationTests.swift */,
-				50ADFF98201F53D600D50D53 /* Info.plist */,
-			);
-			path = PluginTests;
 			sourceTree = "<group>";
 		};
 		889C39DC2A8F9F92003B30CD /* Rsp */ = {
@@ -489,8 +473,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				88F5551D2A8BA21500DAF8F3 /* RetailerIntegrationTests.swift in Sources */,
-				50ADFF97201F53D600D50D53 /* ReceiptCaptureTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

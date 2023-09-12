@@ -14,6 +14,7 @@ public class Retailer : CAPPlugin{
     
     public init(_ licenseKey: String, _ productKey: String) {
         linkingManager = BRAccountLinkingManager.shared()
+        super.init()
     }
     
     public func login(_ account: Account, _ call: CAPPluginCall){
