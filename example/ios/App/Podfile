@@ -11,6 +11,9 @@ def assertDeploymentTarget(installer)
   end
 end
 
+source 'https://github.com/BlinkReceipt/PodSpecRepo.git'
+source 'https://cdn.cocoapods.org/'
+
 platform :ios, '13.0'
 use_frameworks!
 
@@ -27,7 +30,10 @@ end
 
 target 'App' do
   capacitor_pods
-  # Add your Pods here
+  use_frameworks!
+
+  pod 'BlinkReceipt', '~> 1.27'
+  pod 'BlinkEReceipt', '~> 2.0'
 end
 
 post_install do |installer|
