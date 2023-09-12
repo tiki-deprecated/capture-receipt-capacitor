@@ -62,15 +62,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2F98D68124C9AAE400613A4C /* ReceiptCapture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiptCapture.swift; sourceTree = "<group>"; };
+		2F98D68124C9AAE400613A4C /* ReceiptCapture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ReceiptCapture.swift; path = ../ReceiptCapture.swift; sourceTree = "<group>"; };
 		3B2A61DA5A1F2DD4F959604D /* Pods_Plugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Plugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		50ADFF88201F53D600D50D53 /* Plugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Plugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		50ADFF8B201F53D600D50D53 /* ReceiptCapturePlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReceiptCapturePlugin.h; sourceTree = "<group>"; };
-		50ADFF8C201F53D600D50D53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		50ADFF8B201F53D600D50D53 /* ReceiptCapturePlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ReceiptCapturePlugin.h; path = ../ReceiptCapturePlugin.h; sourceTree = "<group>"; };
+		50ADFF8C201F53D600D50D53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Info.plist; sourceTree = "<group>"; };
 		50ADFF91201F53D600D50D53 /* PluginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PluginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		50ADFFA52020D75100D50D53 /* Capacitor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Capacitor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		50ADFFA72020EE4F00D50D53 /* ReceiptCapturePlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReceiptCapturePlugin.m; sourceTree = "<group>"; };
-		50E1A94720377CB70090CE1A /* ReceiptCapturePlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiptCapturePlugin.swift; sourceTree = "<group>"; };
+		50ADFFA72020EE4F00D50D53 /* ReceiptCapturePlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ReceiptCapturePlugin.m; path = ../ReceiptCapturePlugin.m; sourceTree = "<group>"; };
+		50E1A94720377CB70090CE1A /* ReceiptCapturePlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ReceiptCapturePlugin.swift; path = ../ReceiptCapturePlugin.swift; sourceTree = "<group>"; };
 		5E23F77F099397094342571A /* Pods-Plugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plugin.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Plugin/Pods-Plugin.debug.xcconfig"; sourceTree = "<group>"; };
 		883708C72A8FE6D7007D8F0A /* RspFloatType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspFloatType.swift; sourceTree = "<group>"; };
 		883708D02A8FECBD007D8F0A /* RspPaymentMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspPaymentMethod.swift; sourceTree = "<group>"; };
@@ -86,8 +86,8 @@
 		889C39DF2A8FA08F003B30CD /* RspAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspAccount.swift; sourceTree = "<group>"; };
 		889C39E12A8FA466003B30CD /* RspAdditionalLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspAdditionalLine.swift; sourceTree = "<group>"; };
 		889C39E32A8FA926003B30CD /* RspCoupon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspCoupon.swift; sourceTree = "<group>"; };
-		889E23BC2A9E6E830072E8F4 /* Email.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Email.swift; sourceTree = "<group>"; };
-		88A312A92A86AC6C00EEDC00 /* Physical.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Physical.swift; sourceTree = "<group>"; };
+		889E23BC2A9E6E830072E8F4 /* Email.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Email.swift; path = ../Email.swift; sourceTree = "<group>"; };
+		88A312A92A86AC6C00EEDC00 /* Physical.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Physical.swift; path = ../Physical.swift; sourceTree = "<group>"; };
 		88A312AC2A86B1FF00EEDC00 /* ReqInitialize‎.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReqInitialize‎.swift"; sourceTree = "<group>"; };
 		88C8C28D2A9FDA5200E7799A /* RspScan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspScan.swift; sourceTree = "<group>"; };
 		88C8C28F2AA0A6FF00E7799A /* RspSurveyQuestion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspSurveyQuestion.swift; sourceTree = "<group>"; };
@@ -95,13 +95,13 @@
 		88C8C2912AA0A6FF00E7799A /* RspSurveyAnswer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspSurveyAnswer.swift; sourceTree = "<group>"; };
 		88C8C2922AA0A6FF00E7799A /* RspInitialized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspInitialized.swift; sourceTree = "<group>"; };
 		88C8C2972AA0DD0600E7799A /* RspSurveyResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspSurveyResponse.swift; sourceTree = "<group>"; };
-		88F555122A8A437D00DAF8F3 /* Retailer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Retailer.swift; sourceTree = "<group>"; };
-		88F555142A8A9E9B00DAF8F3 /* RetailerEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetailerEnum.swift; sourceTree = "<group>"; };
-		8C33E0432A977AD000B889A3 /* Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
-		8C33E0442A977AD000B889A3 /* AccountCommon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountCommon.swift; sourceTree = "<group>"; };
-		8C33E0452A977AD000B889A3 /* AccountTypeEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountTypeEnum.swift; sourceTree = "<group>"; };
-		8C33E0492A977BFC00B889A3 /* EmailEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailEnum.swift; sourceTree = "<group>"; };
-		8C91C1042AA0167A00BAB8CE /* ScanResultsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanResultsDelegate.swift; sourceTree = "<group>"; };
+		88F555122A8A437D00DAF8F3 /* Retailer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Retailer.swift; path = ../Retailer.swift; sourceTree = "<group>"; };
+		88F555142A8A9E9B00DAF8F3 /* RetailerEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RetailerEnum.swift; path = ../RetailerEnum.swift; sourceTree = "<group>"; };
+		8C33E0432A977AD000B889A3 /* Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Account.swift; path = ../Account.swift; sourceTree = "<group>"; };
+		8C33E0442A977AD000B889A3 /* AccountCommon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AccountCommon.swift; path = ../AccountCommon.swift; sourceTree = "<group>"; };
+		8C33E0452A977AD000B889A3 /* AccountTypeEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AccountTypeEnum.swift; path = ../AccountTypeEnum.swift; sourceTree = "<group>"; };
+		8C33E0492A977BFC00B889A3 /* EmailEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EmailEnum.swift; path = ../EmailEnum.swift; sourceTree = "<group>"; };
+		8C91C1042AA0167A00BAB8CE /* ScanResultsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScanResultsDelegate.swift; path = ../ScanResultsDelegate.swift; sourceTree = "<group>"; };
 		91781294A431A2A7CC6EB714 /* Pods-Plugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plugin.release.xcconfig"; path = "Pods/Target Support Files/Pods-Plugin/Pods-Plugin.release.xcconfig"; sourceTree = "<group>"; };
 		96ED1B6440D6672E406C8D19 /* Pods-PluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PluginTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PluginTests/Pods-PluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F65BB2953ECE002E1EF3E424 /* Pods-PluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PluginTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PluginTests/Pods-PluginTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -152,22 +152,7 @@
 		50ADFF8A201F53D600D50D53 /* Plugin */ = {
 			isa = PBXGroup;
 			children = (
-				889C39DC2A8F9F92003B30CD /* Rsp */,
-				88A312AB2A86B1CC00EEDC00 /* Req */,
-				88A312A92A86AC6C00EEDC00 /* Physical.swift */,
-				8C91C1042AA0167A00BAB8CE /* ScanResultsDelegate.swift */,
-				88F555122A8A437D00DAF8F3 /* Retailer.swift */,
-				8C33E0432A977AD000B889A3 /* Account.swift */,
-				8C33E0442A977AD000B889A3 /* AccountCommon.swift */,
-				8C33E0452A977AD000B889A3 /* AccountTypeEnum.swift */,
-				88F555142A8A9E9B00DAF8F3 /* RetailerEnum.swift */,
-				50E1A94720377CB70090CE1A /* ReceiptCapturePlugin.swift */,
-				2F98D68124C9AAE400613A4C /* ReceiptCapture.swift */,
-				50ADFF8B201F53D600D50D53 /* ReceiptCapturePlugin.h */,
-				50ADFFA72020EE4F00D50D53 /* ReceiptCapturePlugin.m */,
-				50ADFF8C201F53D600D50D53 /* Info.plist */,
-				8C33E0492A977BFC00B889A3 /* EmailEnum.swift */,
-				889E23BC2A9E6E830072E8F4 /* Email.swift */,
+				8C0621FE2AB07EE200CABC17 /* Src */,
 			);
 			path = Plugin;
 			sourceTree = "<group>";
@@ -193,7 +178,8 @@
 				88C8C28D2A9FDA5200E7799A /* RspScan.swift */,
 				88C8C2972AA0DD0600E7799A /* RspSurveyResponse.swift */,
 			);
-			path = Rsp;
+			name = Rsp;
+			path = ../Rsp;
 			sourceTree = "<group>";
 		};
 		88A312AB2A86B1CC00EEDC00 /* Req */ = {
@@ -204,8 +190,65 @@
 				889C39DA2A8F9F41003B30CD /* ReqRetailerLogin.swift */,
 				883E66CD2A98CD9C00A75373 /* ReqLogout.swift */,
 			);
-			path = Req;
+			name = Req;
+			path = ../Req;
 			sourceTree = "<group>";
+		};
+		8C0621FA2AB07EE200CABC17 /* Receipt */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Receipt;
+			sourceTree = "<group>";
+		};
+		8C0621FB2AB07EE200CABC17 /* Capture */ = {
+			isa = PBXGroup;
+			children = (
+				8C0621FA2AB07EE200CABC17 /* Receipt */,
+			);
+			path = Capture;
+			sourceTree = "<group>";
+		};
+		8C0621FC2AB07EE200CABC17 /* Sdk */ = {
+			isa = PBXGroup;
+			children = (
+				8C0621FB2AB07EE200CABC17 /* Capture */,
+			);
+			path = Sdk;
+			sourceTree = "<group>";
+		};
+		8C0621FD2AB07EE200CABC17 /* Mytiki */ = {
+			isa = PBXGroup;
+			children = (
+				8C0621FC2AB07EE200CABC17 /* Sdk */,
+			);
+			path = Mytiki;
+			sourceTree = "<group>";
+		};
+		8C0621FE2AB07EE200CABC17 /* Src */ = {
+			isa = PBXGroup;
+			children = (
+				889C39DC2A8F9F92003B30CD /* Rsp */,
+				88A312AB2A86B1CC00EEDC00 /* Req */,
+				88A312A92A86AC6C00EEDC00 /* Physical.swift */,
+				8C91C1042AA0167A00BAB8CE /* ScanResultsDelegate.swift */,
+				88F555122A8A437D00DAF8F3 /* Retailer.swift */,
+				8C33E0432A977AD000B889A3 /* Account.swift */,
+				8C33E0442A977AD000B889A3 /* AccountCommon.swift */,
+				8C33E0452A977AD000B889A3 /* AccountTypeEnum.swift */,
+				88F555142A8A9E9B00DAF8F3 /* RetailerEnum.swift */,
+				50E1A94720377CB70090CE1A /* ReceiptCapturePlugin.swift */,
+				2F98D68124C9AAE400613A4C /* ReceiptCapture.swift */,
+				50ADFF8B201F53D600D50D53 /* ReceiptCapturePlugin.h */,
+				50ADFFA72020EE4F00D50D53 /* ReceiptCapturePlugin.m */,
+				50ADFF8C201F53D600D50D53 /* Info.plist */,
+				8C33E0492A977BFC00B889A3 /* EmailEnum.swift */,
+				889E23BC2A9E6E830072E8F4 /* Email.swift */,
+				8C0621FD2AB07EE200CABC17 /* Mytiki */,
+			);
+			name = Src;
+			path = "/Users/ricardo/dev/tiki-capture-receipt-capacitor/ios/Plugin/Src";
+			sourceTree = "<absolute>";
 		};
 		8C8E7744173064A9F6D438E3 /* Pods */ = {
 			isa = PBXGroup;

@@ -1,0 +1,38 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.8.1 (swiftlang-5.8.0.124.5 clang-1403.0.22.11.100)
+// swift-module-flags: -target arm64-apple-ios12.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name BlinkReceiptStatic
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+@_exported import BlinkReceiptStatic
+import Foundation
+import Swift
+import UIKit
+import _Concurrency
+import _StringProcessing
+@_inheritsConvenienceInitializers @objc public class BRSimpleKeychain : ObjectiveC.NSObject {
+  @objc public func getValueFromKeychain(forKey key: Swift.String) -> Swift.String?
+  @objc public func getDataFromKeychain(forKey key: Swift.String) -> Foundation.NSData?
+  @objc public func setKeychain(value: Swift.String, forKey key: Swift.String)
+  @objc public func setKeychain(data: Foundation.NSData, forKey key: Swift.String)
+  @objc public func deleteKeychainValue(forKey key: Swift.String)
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc public class BRDebugFileManager : ObjectiveC.NSObject {
+  @objc public var urlsOfImageFiles: [Foundation.URL] {
+    @objc get
+  }
+  @objc public var urlsOfOCRResultsFiles: [Foundation.URL] {
+    @objc get
+  }
+  @objc public var markerFileExists: Swift.Bool {
+    @objc get
+  }
+  @objc public init(fileManager: Foundation.FileManager = .default, device: UIKit.UIDevice = .current)
+  @discardableResult
+  @objc public func saveData(_ data: Foundation.Data?, fileExtension: Swift.String, additionalMetadata: Any?) -> Swift.String?
+  @objc public func deleteFile(named name: Swift.String?, fileExtension: Swift.String)
+  @objc public func deleteFiles(withExtension fileExtension: Swift.String)
+  @objc public func deleteFile(at url: Foundation.URL)
+  @objc public func metadataForFile(at url: Foundation.URL) -> Swift.String?
+  @objc deinit
+}
