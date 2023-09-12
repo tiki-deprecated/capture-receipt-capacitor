@@ -52,9 +52,6 @@ jobs:
 
       - name: Build Dist
         run: npm run verify:android
-        env:
-          GITHUB_USER: ${{ github.actor }}
-          GITHUB_KEY: ${{ github.token }}
 
       - name: Get version
         id: version
