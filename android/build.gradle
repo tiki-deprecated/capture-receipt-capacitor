@@ -1,6 +1,5 @@
 buildscript {
     ext {
-        microblinkVersion = project.hasProperty('microblinkVersion') ? rootProject.ext.microblinkVersion : "1.6.7"
         kotlinVersion = project.hasProperty('kotlinVersion') ? rootProject.ext.kotlinVersion : "1.8.22"
         mockkVersion = project.hasProperty('mockkVersion') ? rootProject.ext.mockkVersion : "1.13.5"
         junitVersion = project.hasProperty('junitVersion') ? rootProject.ext.junitVersion : '4.13.2'
@@ -64,17 +63,7 @@ android {
 repositories {
     google()
     mavenCentral()
-    maven {
-        url = uri("https://maven.pkg.github.com/tiki-bar/tiki-capture-receipt-capacitor")
-        credentials {
-            username = providers
-                    .gradleProperty("gpr.user")
-                    .getOrElse(System.getenv("GITHUB_USER"))
-            password = providers
-                    .gradleProperty("gpr.key")
-                    .getOrElse(System.getenv("GITHUB_KEY"))
-        }
-    }
+    maven { url  "https://maven.microblink.com" }
 }
 
 dependencies {
@@ -118,12 +107,13 @@ dependencies {
     implementation "com.sun.mail:android-mail:$sunMailVersion"
     implementation "com.sun.mail:android-activation:$sunMailVersion"
 
-    implementation "com.microblink:linking:$microblinkVersion"
-    implementation "com.microblink:camera:$microblinkVersion"
-    implementation "com.microblink:camera.ui:$microblinkVersion"
-    implementation "com.microblink:core:$microblinkVersion"
-    implementation "com.microblink:digital:$microblinkVersion"
-    implementation "com.microblink:recognizer:$microblinkVersion"
+    implementation(platform("com.microblink.blinkreceipt:blinkreceipt-bom:1.6.8"))
+    implementation("com.microblink.blinkreceipt:blinkreceipt-account-linking")
+    implementation("com.microblink.blinkreceipt:camera")
+    implementation("com.microblink.blinkreceipt:camera-ui")
+    implementation("com.microblink.blinkreceipt:blinkreceipt-core")
+    implementation("com.microblink.blinkreceipt:blinkreceipt-digital")
+    implementation("com.microblink.blinkreceipt:blinkreceipt-recognizer")
     
     implementation 'androidx.test:monitor:1.6.1'
     implementation 'androidx.test.ext:junit-ktx:1.1.5'
