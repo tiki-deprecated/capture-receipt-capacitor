@@ -22,7 +22,7 @@ public class ReceiptCapture: NSObject {
         retailer = Retailer(licenseKey, productKey)
     }
     
-    public func login(_ call: CAPPluginCall) {
+   public func login(_ call: CAPPluginCall) {
         let reqLogin = ReqLogin(data: call)
         guard let accountType = AccountCommon.defaults[reqLogin.source] else {
             call.reject("Invalid source: \(reqLogin.source)")

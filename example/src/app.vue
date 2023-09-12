@@ -1,9 +1,6 @@
-<!--
-  - Copyright (c) TIKI Inc.
-  - MIT license. See LICENSE file in root directory.
-  -->
-
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { login, accounts, scan, logout, initialize } from './main';
+</script>
 
 <template>
   <header>
@@ -13,6 +10,11 @@
   <main>
     <div class="greetings">
       <h1>Oh, Hi!</h1>
+      <button @click="login('teste', 'teste','teste')">Login</button>
+      <button @click="accounts()">Accounts</button>
+      <button @click="scan()">Scan</button>
+      <button @click="logout()">Logout</button>
+      <button @click="initialize()">initialize</button>
     </div>
   </main>
 </template>

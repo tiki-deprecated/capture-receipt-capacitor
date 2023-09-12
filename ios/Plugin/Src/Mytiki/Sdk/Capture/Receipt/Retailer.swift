@@ -9,11 +9,13 @@ import BlinkEReceipt
 import Capacitor
 
 public class Retailer : CAPPlugin{
-    
-    let linkingManager: BRAccountLinkingManager
-    
-    public init(_ licenseKey: String, _ productKey: String) {
-        linkingManager = BRAccountLinkingManager.shared()
+        
+    public init(_ licenseKey: String, _ productKey: String)  {
+        DispatchQueue.main.async {
+            BRScanManager.shared().licenseKey = licenseKey
+            BRScanManager.shared().prodIntelKey = productKey
+            BRAccountLinkingManager.shared()
+        }
         super.init()
     }
     
@@ -35,7 +37,7 @@ public class Retailer : CAPPlugin{
         connection.configuration.returnLatestOrdersOnly = false
         connection.configuration.countryCode = "US"
     
-        linkingManager.verifyRetailer(with: connection, withCompletion: {
+        BRAccountLinkingManager.shared().verifyRetailer(with: connection, withCompletion: {
             error, viewController, sessionId in
             self.verifyRetailerCallback(error,viewController, connection, call, account)
         })
@@ -43,7 +45,7 @@ public class Retailer : CAPPlugin{
 
     public func logout(_ account: Account, _ call: CAPPluginCall) {
         if (account.user == "" && account.accountType.source == "") {
-            linkingManager.unlinkAllAccounts {
+            BRAccountLinkingManager.shared().unlinkAllAccounts {
                 call.resolve()
             }
         }
@@ -54,7 +56,7 @@ public class Retailer : CAPPlugin{
             return
         }
         if (account.accountType.source != "") {
-            linkingManager.unlinkAccount(for: retailer) {
+            BRAccountLinkingManager.shared().unlinkAccount(for: retailer) {
                 call.resolve()
             }
         }
@@ -67,7 +69,7 @@ public class Retailer : CAPPlugin{
             return
         }
         
-        let taskId = linkingManager.grabNewOrders(for: retailer) { retailer, order, remaining, viewController, errorCode, sessionId in
+        let taskId = BRAccountLinkingManager.shared().grabNewOrders(for: retailer) { retailer, order, remaining, viewController, errorCode, sessionId in
             if(errorCode == .none && order != nil){
                 call.resolve(RspReceipt(scanResults: order!).toPluginCallResultData())
             }
@@ -76,27 +78,27 @@ public class Retailer : CAPPlugin{
     
     public func accounts (_ call: CAPPluginCall) -> [Account] {
         var retailers = [BRAccountLinkingRetailer]()
-        for ret in linkingManager.getLinkedRetailers() {
+        for ret in BRAccountLinkingManager.shared().getLinkedRetailers() {
             retailers.append(BRAccountLinkingRetailer(rawValue: ret.uintValue)!)
         }
         
         var accountsList = [Account]()
         for retLinked in retailers {
-            let connection = linkingManager.getLinkedRetailerConnection(retLinked)
+            let connection = BRAccountLinkingManager.shared().getLinkedRetailerConnection(retLinked)
             var isVerified =  false
-            linkingManager.verifyRetailer(with: connection!) { error, viewController, sessionId in
-                if (error == .none || error == .accountLinkedAlready) {
-                    isVerified = true
-                }
-            }
-            
-            let source = (RetailerEnum(rawValue: "")?.toString(retLinked.self)!)!
-            let accountCommon = AccountCommon(type: .retailer, source: source)
+//            BRAccountLinkingManager.shared().verifyRetailer(with: connection!) { error, viewController, sessionId in
+//                if (error == .none || error == .accountLinkedAlready) {
+//                    isVerified = true
+//                }
+//            }
+                        
+            let source = RetailerEnum.AMAZON_BETA
+            let accountCommon = AccountCommon.init(type: .retailer, source: "AMAZON")
             let account = Account(accountType: accountCommon, user: connection!.username!, password: connection!.password!, isVerified: isVerified)
             
             accountsList.append(account)
         }
-                
+        print(accountsList)
         return accountsList
     }
     
@@ -133,7 +135,7 @@ public class Retailer : CAPPlugin{
                 call.reject("Account login canceled.")
                 break
             default :
-                linkingManager.linkRetailer(with: connection)
+                BRAccountLinkingManager.shared().linkRetailer(with: connection)
                 account.isVerified = true
                 call.resolve(RspAccount(account: account).toResultData())
             }

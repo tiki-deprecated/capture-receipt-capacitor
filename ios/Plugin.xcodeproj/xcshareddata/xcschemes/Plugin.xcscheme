@@ -47,16 +47,6 @@
             value = "sRwAAAAoY29tLm15dGlraS5zZGsuY2FwdHVyZS5yZWNlaXB0LmNhcGFjaXRvcgY6SQlVDCCrMOCc/j3oG8q4R37b51+hnxE+gy+INAyCYTh8o8wWbXhW0ljpl1WVyCHnJmip2gdcZKWJRSh4U5cSQLUTQg8ZpEngcde9h/8etQFq7M69BYu64NY7NL82VAFuVn+ie2ViSlnw+rPBAMqb5aq/v58fV3JOmWj+b6Y//9xHiAhd"
             isEnabled = "YES">
          </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "JESSE_LOGIN"
-            value = "jessemonteiroferreira@gmail.com"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "JESSE_PASSWORD"
-            value = "#Jesse1994"
-            isEnabled = "YES">
-         </EnvironmentVariable>
       </EnvironmentVariables>
       <Testables>
          <TestableReference

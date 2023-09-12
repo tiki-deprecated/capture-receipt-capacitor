@@ -14,6 +14,6 @@ public class ReqLogin {
     init (data: CAPPluginCall){
         username = data.getString("username") ?? ""
         password = data.getString("password") ?? ""
-        source = data.getString("account_type") ?? ""
+        source = data.getString("source") ?? ""
     }
 }

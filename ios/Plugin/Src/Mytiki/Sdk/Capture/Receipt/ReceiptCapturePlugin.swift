@@ -15,19 +15,19 @@ public class ReceiptCapturePlugin: CAPPlugin {
         receiptCapture.initialize(call)
     }
     
-    @objc public func login(call: CAPPluginCall) {
+    @objc public func login(_ call: CAPPluginCall) {
         receiptCapture.login(call)
     }
 
-    @objc func logout(call: CAPPluginCall) {
+    @objc func logout(_ call: CAPPluginCall) {
         receiptCapture.logout(call)
     }
 
-    @objc func accounts(call: CAPPluginCall){
+    @objc func accounts(_ call: CAPPluginCall){
         receiptCapture.accounts(call)
     }
     
-    @objc func scan(call: CAPPluginCall) {
+    @objc func scan(_ call: CAPPluginCall) {
         receiptCapture.scan(call)
     }
 }

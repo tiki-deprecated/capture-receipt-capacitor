@@ -1,0 +1,11 @@
+framework module BlinkReceiptStatic {
+  umbrella header "BlinkReceiptStatic.h"
+
+  export *
+  module * { export * }
+}
+
+module BlinkReceiptStatic.Swift {
+  header "BlinkReceiptStatic-Swift.h"
+  requires objc
+}
