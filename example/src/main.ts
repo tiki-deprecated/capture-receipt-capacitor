@@ -17,7 +17,7 @@ const instance: ReceiptCapture = new ReceiptCapture(plugin);
 export const login = async () =>{
     console.log('teste login')
 
-      console.log(await instance.login("email", "senha", "AMAZON").catch(error=>console.log(error)))
+      console.log(await instance.login("user", "password", "AMAZON").catch(error=>console.log(error)))
 }
 
 export const accounts = async () =>{
@@ -28,7 +28,7 @@ export const accounts = async () =>{
 export const scan = async () =>{
     console.log('teste scan')
 
-    await instance.scan("RETAILER", )
+    await instance.scan("PHYSICAL")
 }
 export const logout = async () =>{
     console.log('teste logout')
