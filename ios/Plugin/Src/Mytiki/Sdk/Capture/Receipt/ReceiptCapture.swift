@@ -80,15 +80,43 @@ public class ReceiptCapture: NSObject {
         }
         
         let data = retailer.accounts(call)
+        print(data)
     }
     
     public func scan(_ call: CAPPluginCall) {
-        guard let physical = physical else {
-            call.reject("Call plugin initialize method.")
-            return
+
+
+        let req = ReqScan(data: call)
+        if req.account == nil {
+            switch req.scanType {
+            case .EMAIL:
+                Email().scan(call, req.account)
+            case .RETAILER:
+                Retailer().orders(req.account, call)
+            case .PHYSICAL:
+                guard let physical = physical else {
+                call.reject("Call plugin initialize method.")
+                return
+            }
+            ReceiptCapture.pendingScanCall = call
+            physical.scan()
+            case .ONLINE:
+                Email().scan(call, req.account)
+                Retailer().orders(req.account, call)
+            default:
+                call.reject("invalid scan type for account")
+            }
+        } else {
+            switch req.scanType {
+            case .EMAIL:
+                Email().scan(call, req.account)
+            case .RETAILER:
+                Retailer("","").orders(req.account, call)
+            default:
+                call.reject("invalid scan type for account")
+            }
         }
-        ReceiptCapture.pendingScanCall = call
-        physical.scan()
+
     }
     
 }
