@@ -1,5 +1,5 @@
-source 'https://github.com/BlinkReceipt/PodSpecRepo.git'
-source 'https://cdn.cocoapods.org/'
+source 'https://github.com/BlinkReceipt/PodSpecRepo.git' # <- add this
+source 'https://cdn.cocoapods.org/' # <- add this
 
 platform :ios, '13.0'
 
@@ -13,8 +13,8 @@ target 'Plugin'do
   capacitor_pods
   use_frameworks!
   
-  pod 'BlinkReceipt', '~> 1.27'
-  pod 'BlinkEReceipt', '~> 2.0'
+  pod 'BlinkReceipt', '~> 1.27' # <- add this
+  pod 'BlinkEReceipt', '~> 2.0' # <- add this
 end
 
 

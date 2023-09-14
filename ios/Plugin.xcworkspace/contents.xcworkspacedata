@@ -1,26 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Workspace
    version = "1.0">
-   <Group
-      location = "group:/Users/ricardo/dev/tiki-capture-receipt-capacitor/ios/Plugin/Src"
-      name = "Src">
-      <Group
-         location = "group:Mytiki"
-         name = "Mytiki">
-         <Group
-            location = "group:Sdk"
-            name = "Sdk">
-            <Group
-               location = "group:Capture"
-               name = "Capture">
-               <Group
-                  location = "group:Receipt"
-                  name = "Receipt">
-               </Group>
-            </Group>
-         </Group>
-      </Group>
-   </Group>
    <FileRef
       location = "group:Plugin.xcodeproj">
    </FileRef>
