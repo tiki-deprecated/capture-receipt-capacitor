@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
+
 import Foundation
 import Capacitor
 import BlinkReceipt
@@ -22,7 +27,7 @@ public class ReceiptCapture: NSObject {
         retailer = Retailer(licenseKey, productKey)
     }
     
-    public func login(_ call: CAPPluginCall) {
+   public func login(_ call: CAPPluginCall) {
         let reqLogin = ReqLogin(data: call)
         guard let accountType = AccountCommon.defaults[reqLogin.source] else {
             call.reject("Invalid source: \(reqLogin.source)")
@@ -32,14 +37,14 @@ public class ReceiptCapture: NSObject {
         switch account.accountType.type {
         case .email :
             guard let email = email else {
-                call.reject("Call the initialize method.")
+                call.reject("Email not initialized. Did you call .initialize()?")
                 return
             }
             email.login(account, call)
             break
         case .retailer :
             guard let retailer = retailer else {
-                call.reject("Call the initialize method.")
+                call.reject("Retailer not initialized. Did you call .initialize()?")
                 return
             }
             retailer.login(account, call)
@@ -57,15 +62,15 @@ public class ReceiptCapture: NSObject {
         let account = Account.init(accountType: accountType, user: reqLogout.username, password: reqLogout.password, isVerified: false)
         switch account.accountType.type {
         case .email :
-            guard let retailer = email else {
-                call.reject("Call plugin initialize method.")
+            guard let email = email else {
+                call.reject("Email not initialized. Did you call .initialize()?")
                 return
             }
-            email!.logout(account, call)
+            email.logout(call, account)
             break
         case .retailer :
             guard let retailer = retailer else {
-                call.reject("Call plugin initialize method.")
+                call.reject("Retailer not initialized. Did you call .initialize()?")
                 return
             }
             retailer.logout(account, call)
@@ -75,20 +80,59 @@ public class ReceiptCapture: NSObject {
     
     public func accounts(_ call: CAPPluginCall) {
         guard let retailer = retailer else {
-            call.reject("Call plugin initialize method.")
+            call.reject("Retailer not initialized. Did you call .initialize()?")
             return
         }
-        
-        let data = retailer.accounts(call)
+        let retailers = retailer.accounts()
+        call.resolve(RspAccountList(accounts: retailers).toPluginCallResultData())
     }
     
     public func scan(_ call: CAPPluginCall) {
-        guard let physical = physical else {
-            call.reject("Call plugin initialize method.")
-            return
+        let req = ReqScan(data: call)
+        if req.account == nil {
+            switch req.scanType {
+            case .EMAIL:
+                guard let email = email else {
+                    call.reject("Email not initialized. Did you call .initialize()?")
+                    return
+                }
+                email.scan(call, req.account)
+                break
+            case .RETAILER:
+                guard let retailer = retailer else {
+                    call.reject("Retailer not initialized. Did you call .initialize()?")
+                    return
+                }
+                retailer.orders(req.account, call)
+                break
+            case .PHYSICAL:
+                guard let physical = physical else {
+                    call.reject("Physical not initialized. Did you call .initialize()?")
+                    return
+                }
+                ReceiptCapture.pendingScanCall = call
+                physical.scan()
+                break
+            case .ONLINE:
+                Email().scan(call, req.account)
+                Retailer().orders(req.account, call)
+                break
+            default:
+                call.reject("invalid scan type for account")
+            }
+        } else {
+            switch req.scanType {
+            case .EMAIL:
+                Email().scan(call, req.account)
+                break
+            case .RETAILER:
+                Retailer("","").orders(req.account, call)
+                break
+            default:
+                call.reject("invalid scan type for account")
+            }
         }
-        ReceiptCapture.pendingScanCall = call
-        physical.scan()
+
     }
     
 }

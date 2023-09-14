@@ -12,12 +12,39 @@ This plugin wraps (and simplifies) Microblink's native [iOS](https://github.com/
 
 ## Installing
 
-Install the dependency from NPM
+1. Install the dependency from NPM
+
+`npm install @mytiki/tiki-capture-receipt-capacitor`
+
+2. Add Microblink iOS dependencies in `ios/App/Podfile`
 
 ```
-npm install @mytiki/tiki-capture-receipt-capacitor
-npx cap sync
+source 'https://github.com/BlinkReceipt/PodSpecRepo.git' # <- add this
+source 'https://cdn.cocoapods.org/' # <- add this
+
+platform :ios, '13.0'
+
+def capacitor_pods
+  use_frameworks!
+  pod 'Capacitor', :path => '../node_modules/@capacitor/ios'
+  pod 'CapacitorCordova', :path => '../node_modules/@capacitor/ios'
+end
+
+target 'Plugin'do
+  capacitor_pods
+  use_frameworks!
+  
+  pod 'BlinkReceipt', '~> 1.27' # <- add this
+  pod 'BlinkEReceipt', '~> 2.0' # <- add this
+end
+
+
+target 'PluginTests' do
+  capacitor_pods
+end
 ```
+
+3. run `npx cap sync`
 
 That's it. And yes, it's really that easy.
 
