@@ -45,11 +45,12 @@ public class Retailer : CAPPlugin{
         })
     }
     
-    public func logout(_ account: Account, _ call: CAPPluginCall) {
+    public func logout(_ call: CAPPluginCall, _ account: Account) {
         if (account.user == "" && account.accountType.source == "") {
             BRAccountLinkingManager.shared().unlinkAllAccounts {
                 call.resolve()
             }
+            return
         }
         
         guard let retailer: BRAccountLinkingRetailer = RetailerEnum(
