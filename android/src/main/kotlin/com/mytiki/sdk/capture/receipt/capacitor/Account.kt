@@ -1,6 +1,7 @@
 package com.mytiki.sdk.capture.receipt.capacitor
 
 import com.getcapacitor.JSObject
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.microblink.digital.PasswordCredentials
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqAccount
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspAccount
@@ -48,7 +49,7 @@ class Account(
         /**
          * Converts a [com.microblink.linking.Account] into an [Account] object.
          *
-         * @param mbAccount [com.microblink.linking.Account] object.
+         * @param retailerAccount [com.microblink.linking.Account] object.
          * @return Account object.
          */
         fun fromRetailerAccount(retailerAccount: com.microblink.linking.Account): Account {
@@ -60,12 +61,24 @@ class Account(
         /**
          * Converts a [PasswordCredentials] into an [Account] object.
          *
-         * @param mbAccount [PasswordCredentials] object.
+         * @param emailAccount [PasswordCredentials] object.
          * @return Account object.
          */
         fun fromEmailAccount(emailAccount:  PasswordCredentials): Account {
             val accountType = AccountCommon.fromString(emailAccount.provider().name)
             val username = emailAccount.username()
+            return Account(accountType, username)
+        }
+
+        /**
+         * Converts a [GoogleSignInAccount] into an [Account] object.
+         *
+         * @param gmailAccount [GoogleSignInAccount] object.
+         * @return Account object.
+         */
+        fun fromGmailAccount(gmailAccount: GoogleSignInAccount): Account {
+            val accountType = AccountCommon.GMAIL
+            val username = gmailAccount.email!!
             return Account(accountType, username)
         }
 

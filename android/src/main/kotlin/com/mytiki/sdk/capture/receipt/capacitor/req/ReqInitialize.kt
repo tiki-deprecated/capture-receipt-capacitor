@@ -20,6 +20,7 @@ import com.getcapacitor.JSObject
 class ReqInitialize(data: JSObject) {
     val licenseKey: String
     val productKey: String
+    val googleId: String
 
     /**
      * Initializes the [ReqInitialize] object by extracting the licenseKey and productKey
@@ -33,5 +34,6 @@ class ReqInitialize(data: JSObject) {
     init {
         licenseKey = data.getString("licenseKey") ?: ""
         productKey = data.getString("productKey") ?: ""
+        googleId = data.getString("googleId") ?: ""
     }
 }

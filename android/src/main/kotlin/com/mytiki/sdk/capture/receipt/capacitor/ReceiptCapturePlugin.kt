@@ -113,6 +113,19 @@ class ReceiptCapturePlugin : Plugin() {
     @ActivityCallback
     private fun onScanResult(call: PluginCall, result: ActivityResult) = receiptCapture.physical.onResult(call, result)
 
+//    TODO CALLBACK FOR GMAIL LOGIN
+//    @ActivityCallback
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        val gmailClient = GmailClient(this, googleId)
+//        gmailClient.onAccountAuthorizationActivityResult(requestCode, resultCode, data)
+//            .addOnSuccessListener { signInAccount ->
+//
+//            }.addOnFailureListener {
+//                //Set error display
+//            }
+//    }
+
     /**
      * Callback invoked when the camera permission is requested.
      *
