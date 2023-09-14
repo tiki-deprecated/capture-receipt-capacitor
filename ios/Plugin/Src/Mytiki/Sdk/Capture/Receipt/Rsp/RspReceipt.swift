@@ -33,25 +33,25 @@ public struct RspReceipt : Rsp {
     private let taxId: String?
     private let mallName: String?
     private let last4cc: String?
-    private let ocrConfidence: Float
-    private let foundTopEdge: Bool
-    private let foundBottomEdge: Bool
+    private let ocrConfidence: Float?
+    private let foundTopEdge: Bool?
+    private let foundBottomEdge: Bool?
     private let eReceiptOrderNumber: String?
     private let eReceiptOrderStatus: String?
     private let eReceiptRawHtml: String?
     private let shipments: [RspShipment]
     private let longTransactionId: String?
-    private let subtotalMatches: Bool
+    private let subtotalMatches: Bool?
     private let eReceiptEmailProvider: String?
     private let eReceiptEmailId: String?
-    private let eReceiptAuthenticated: Bool
-    private let instacartShopper: Bool
+    private let eReceiptAuthenticated: Bool?
+    private let instacartShopper: Bool?
     private let eReceiptComponentEmails: [RspReceipt]
-    private let duplicate: Bool
-    private let fraudulent: Bool
+    private let duplicate: Bool?
+    private let fraudulent: Bool?
     private let duplicateBlinkReceiptIds: [String]
     private let merchantMatchGuess: String?
-    private let productsPendingLookup: Int
+    private let productsPendingLookup: Int?
     private let qualifiedPromotions: [RspPromotion]
     private let unqualifiedPromotions: [RspPromotion]
     private let extendedFields: JSObject?
@@ -64,10 +64,10 @@ public struct RspReceipt : Rsp {
     private let barcode: String?
     private let eReceiptMerchantEmail: String?
     private let eReceiptEmailSubject: String?
-    private let eReceiptShippingCosts: Float
+    private let eReceiptShippingCosts: Float?
     private let currencyCode: String?
     private let clientMerchantName: String?
-    private let loyaltyProgram: Bool
+    private let loyaltyProgram: Bool?
     private let merchantSources: [NSNumber]
     private let paymentTerminalId: String?
     private let paymentTransactionId: String?
@@ -83,30 +83,30 @@ public struct RspReceipt : Rsp {
 
     
     init(scanResults: BRScanResults) {
-        receiptDate = scanResults.receiptDate.value
-        receiptTime = scanResults.receiptTime.value
+        receiptDate = scanResults.receiptDate?.value
+        receiptTime = scanResults.receiptTime?.value
         retailerId = scanResults.retailerId.rawValue
-        products = scanResults.products.map { product in RspProduct(product: product) } ?? []
-        coupons = scanResults.coupons.map { coupon in RspCoupon(coupon: coupon) } 
-        total = scanResults.total.value
-        tip = scanResults.tip.value
-        subtotal = scanResults.subtotal.value
-        taxes = scanResults.taxes.value
-        storeNumber = scanResults.storeNumber.value
-        merchantName = scanResults.merchantName.value
-        storeAddress = scanResults.storeAddress.value
-        storeCity = scanResults.storeCity.value
+        products = scanResults.products.map { product in RspProduct(product: product) }
+        coupons = scanResults.coupons.map { coupon in RspCoupon(coupon: coupon) }
+        total = scanResults.total?.value
+        tip = scanResults.tip?.value
+        subtotal = scanResults.subtotal?.value
+        taxes = scanResults.taxes?.value
+        storeNumber = scanResults.storeNumber?.value
+        merchantName = scanResults.merchantName?.value
+        storeAddress = scanResults.storeAddress?.value
+        storeCity = scanResults.storeCity?.value
         blinkReceiptId = scanResults.blinkReceiptId
-        storeState = scanResults.storeState.value
-        storeZip = scanResults.storeZip.value
-        storePhone = scanResults.storePhone.value
-        cashierId = scanResults.cashierId.value
-        transactionId = scanResults.transactionId.value
-        registerId = scanResults.registerId.value
-        paymentMethods = scanResults.paymentMethods.map { payment in RspPaymentMethod(paymentMethod: payment.method.value, cardType: payment.cardType.value, cardIssuer: payment.cardIssuer.value, amount: payment.amount.value) } ?? []
-        taxId = scanResults.taxId.value
-        mallName = scanResults.mallName.value
-        last4cc = scanResults.last4CC.value
+        storeState = scanResults.storeState?.value
+        storeZip = scanResults.storeZip?.value
+        storePhone = scanResults.storePhone?.value
+        cashierId = scanResults.cashierId?.value
+        transactionId = scanResults.transactionId?.value
+        registerId = scanResults.registerId?.value
+        paymentMethods = scanResults.paymentMethods.map { payment in RspPaymentMethod(paymentMethod: payment.method?.value, cardType: payment.cardType?.value, cardIssuer: payment.cardIssuer?.value, amount: payment.amount.value) }
+        taxId = scanResults.taxId?.value
+        mallName = scanResults.mallName?.value
+        last4cc = scanResults.last4CC?.value
         ocrConfidence = scanResults.ocrConfidence
         merchantSources = scanResults.merchantSources
         foundTopEdge = scanResults.foundTopEdge
@@ -114,23 +114,27 @@ public struct RspReceipt : Rsp {
         eReceiptOrderNumber = scanResults.ereceiptOrderNumber
         eReceiptOrderStatus = scanResults.ereceiptOrderStatus
         eReceiptRawHtml = scanResults.ereceiptRawHTML
-        shipments = scanResults.shipments.map { shipment in RspShipment(shipment: shipment) } ?? []
-        longTransactionId = scanResults.longTransactionId.value
+        shipments = scanResults.shipments.map { shipment in RspShipment(shipment: shipment) } 
+        longTransactionId = scanResults.longTransactionId?.value
         subtotalMatches = scanResults.subtotalMatches
         eReceiptEmailProvider = scanResults.ereceiptEmailProvider
         eReceiptEmailId = scanResults.ereceiptEmailId
         eReceiptAuthenticated = scanResults.ereceiptAuthenticated
         instacartShopper = scanResults.isInstacartShopper
-        eReceiptComponentEmails = scanResults.ereceiptComponentEmails.map{ results in
-            RspReceipt(scanResults: results)
+        if(scanResults.ereceiptComponentEmails != nil){
+            eReceiptComponentEmails = scanResults.ereceiptComponentEmails.map{ results in
+                RspReceipt(scanResults: results)
+            }
+        }else {
+            eReceiptComponentEmails = []
         }
         duplicate = scanResults.isDuplicate
         fraudulent = scanResults.isFraudulent
         duplicateBlinkReceiptIds = scanResults.duplicateBlinkReceiptIds ?? []
         merchantMatchGuess = scanResults.merchantGuess
         productsPendingLookup = scanResults.productsPendingLookup
-        qualifiedPromotions = scanResults.qualifiedPromotions.map { promotion in RspPromotion(promotion: promotion) } ?? []
-        unqualifiedPromotions = scanResults.unqualifiedPromotions.map { promotion in RspPromotion(promotion: promotion) } ?? []
+        qualifiedPromotions = scanResults.qualifiedPromotions.map { promotion in RspPromotion(promotion: promotion) } 
+        unqualifiedPromotions = scanResults.unqualifiedPromotions.map { promotion in RspPromotion(promotion: promotion) } 
         if let extendedFields = scanResults.extendedFields {
             var extendedFieldsDictionary = JSObject()
             for entry in extendedFields {
@@ -150,7 +154,7 @@ public struct RspReceipt : Rsp {
             self.eReceiptAdditionalFees = nil
         }
         purchaseType = scanResults.purchaseType
-        channel = scanResults.channel.value
+        channel = scanResults.channel?.value
         eReceiptFulfilledBy = scanResults.ereceiptFulfilledBy
         eReceiptPOSSystem = scanResults.ereceiptPOSSystem
         eReceiptSubMerchant = scanResults.ereceiptSubMerchant
@@ -159,10 +163,10 @@ public struct RspReceipt : Rsp {
         eReceiptEmailSubject = scanResults.ereceiptEmailSubject
         eReceiptShippingCosts = scanResults.ereceiptShippingCosts
         currencyCode = scanResults.currencyCode
-        clientMerchantName = scanResults.clientMerchantName.value
+        clientMerchantName = scanResults.clientMerchantName?.value
         loyaltyProgram = scanResults.loyaltyProgram
-        paymentTerminalId = scanResults.paymentTerminalId.value
-        paymentTransactionId = scanResults.paymentTransactionId.value
+        paymentTerminalId = scanResults.paymentTerminalId?.value
+        paymentTransactionId = scanResults.paymentTransactionId?.value
         combinedRawText = scanResults.combinedRawText
         //        storeCountry = scanResults.store)
         //        eReceiptShippingAddress = scanResults.ereceiptShi ReceiptShippingAddress
