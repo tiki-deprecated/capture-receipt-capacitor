@@ -15,7 +15,7 @@ struct RspProduct : Rsp {
     private let unitPrice: Float?
     private let unitOfMeasure: String?
     private let totalPrice: Float?
-    private let fullPrice: Float
+    private let fullPrice: Float?
 //    private let line: Int
     private let productName: String?
     private let brand: String?
@@ -50,13 +50,13 @@ struct RspProduct : Rsp {
     private let itemType: String?
     
     init (product: BRProduct){
-        productNumber = product.productNumber.value
+        productNumber = product.productNumber?.value
         description = product.description
-        quantity = product.quantity.value
-        unitPrice = product.unitPrice.value
-        unitOfMeasure = product.unitOfMeasure.value
-        totalPrice = product.totalPrice.value
-        fullPrice = product.fullPrice.value
+        quantity = product.quantity?.value
+        unitPrice = product.unitPrice?.value
+        unitOfMeasure = product.unitOfMeasure?.value
+        totalPrice = product.totalPrice?.value
+        fullPrice = product.fullPrice?.value
 //        line = product.line line.value
         productName = product.productName
         brand = product.brand
@@ -68,7 +68,7 @@ struct RspProduct : Rsp {
         imageUrl = product.imgUrl
         shippingStatus = product.shippingStatus
         additionalLines = product.additionalLines?.map { additionalLine in RspAdditionalLine(additionalLine: additionalLine) } ?? []
-        priceAfterCoupons = product.priceAfterCoupons.value
+        priceAfterCoupons = product.priceAfterCoupons?.value
         voided = product.isVoided
         probability = product.probability
         sensitive = product.isSensitive
@@ -78,10 +78,10 @@ struct RspProduct : Rsp {
         blinkReceiptBrand = product.brand
         blinkReceiptCategory = product.category
         fuelType = product.fuelType
-        descriptionPrefix = product.prodDescPrefix.value
-        descriptionPostfix = product.prodDescPostfix.value
-        skuPrefix = product.prodNumPrefix.value
-        skuPostfix = product.prodNumPostfix.value
+        descriptionPrefix = product.prodDescPrefix?.value
+        descriptionPostfix = product.prodDescPostfix?.value
+        skuPrefix = product.prodNumPrefix?.value
+        skuPostfix = product.prodNumPostfix?.value
         sector = product.sector
         department = product.department
         majorCategory = product.majorCategory
