@@ -16,7 +16,7 @@ enum class EmailEnum(val value: Provider) {
     /**
      * Outlook email provider.
      */
-    OUTLOOK(Provider.OUTLOOK_SDK),
+    OUTLOOK_SDK(Provider.OUTLOOK_SDK),
 
     /**
      * AOL email provider.

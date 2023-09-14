@@ -70,7 +70,7 @@ enum class AccountCommon(val type: AccountTypeEnum, val source: String) {
     WALMART_CA(AccountTypeEnum.RETAILER, RetailerEnum.WALMART_CA.toString()),
     WEGMANS(AccountTypeEnum.RETAILER, RetailerEnum.WEGMANS.toString()),
     YAHOO(AccountTypeEnum.EMAIL, EmailEnum.YAHOO.toString()),
-    OUTLOOK(AccountTypeEnum.EMAIL, EmailEnum.OUTLOOK.toString()),
+    OUTLOOK_SDK(AccountTypeEnum.EMAIL, EmailEnum.OUTLOOK_SDK.toString()),
     AOL(AccountTypeEnum.EMAIL, EmailEnum.AOL.toString()),
     GMAIL(AccountTypeEnum.EMAIL, EmailEnum.GMAIL.toString());
 
