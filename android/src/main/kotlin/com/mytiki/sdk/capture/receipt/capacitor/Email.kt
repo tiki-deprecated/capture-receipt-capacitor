@@ -165,20 +165,20 @@ class Email {
      */
     fun accounts(): CompletableDeferred<List<Account>> {
         val isAccounts = CompletableDeferred<List<Account>>()
-        client.accounts()?.addOnSuccessListener { credentials ->
+        client.accounts().addOnSuccessListener { credentials ->
             if (credentials != null) {
                 MainScope().async {
-                    val accountList = credentials?.map { credential ->
+                    val accountList = credentials.map { credential ->
                         val account = Account.fromEmailAccount(credential)
                         account.isVerified = client.verify(credential).await()
                         account
                     }
-                    isAccounts.complete(accountList!!)
+                    isAccounts.complete(accountList)
                 }
             } else {
                 isAccounts.complete(mutableListOf())
             }
-        }?.addOnFailureListener {
+        }.addOnFailureListener {
             isAccounts.completeExceptionally(it)
         }
         return isAccounts
@@ -197,9 +197,9 @@ class Email {
                 account.username,
                 account.password!!
             ).build()
-        )?.addOnSuccessListener {
+        ).addOnSuccessListener {
             call.resolve(JSObject().put("success", it))
-        }?.addOnFailureListener {
+        }.addOnFailureListener {
             call.reject(it.message)
         }
     }
@@ -210,9 +210,9 @@ class Email {
      * @param call Plugin call.
      */
     fun flush(call: PluginCall) {
-        client.logout()?.addOnSuccessListener {
+        client.logout().addOnSuccessListener {
             call.resolve()
-        }?.addOnFailureListener {
+        }.addOnFailureListener {
             call.reject(it.message)
         }
     }
