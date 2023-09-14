@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
+
 #import <UIKit/UIKit.h>
 
 //! Project version number for Plugin.

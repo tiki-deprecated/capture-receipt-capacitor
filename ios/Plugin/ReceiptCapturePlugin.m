@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
+
 #import <Foundation/Foundation.h>
 #import <Capacitor/Capacitor.h>
 

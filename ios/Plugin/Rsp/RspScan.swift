@@ -8,8 +8,8 @@ import Capacitor
 
 public struct RspScan : Rsp {
     let scan : RspReceipt
-    let account : Account? = nil
     let isRunning : Bool = false
+    var account : Account? = nil
     
     public init(scan: RspReceipt, account: Account? = nil) {
         self.scan = scan

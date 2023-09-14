@@ -7,50 +7,46 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		03FC29A292ACC40490383A1F /* Pods_Plugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B2A61DA5A1F2DD4F959604D /* Pods_Plugin.framework */; };
-		20C0B05DCFC8E3958A738AF2 /* Pods_PluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6753A823D3815DB436415E3 /* Pods_PluginTests.framework */; };
-		2F98D68224C9AAE500613A4C /* ReceiptCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F98D68124C9AAE400613A4C /* ReceiptCapture.swift */; };
 		50ADFF92201F53D600D50D53 /* Plugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ADFF88201F53D600D50D53 /* Plugin.framework */; };
-		50ADFF97201F53D600D50D53 /* ReceiptCaptureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50ADFF96201F53D600D50D53 /* ReceiptCaptureTests.swift */; };
-		50ADFF99201F53D600D50D53 /* ReceiptCapturePlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 50ADFF8B201F53D600D50D53 /* ReceiptCapturePlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		50ADFFA42020D75100D50D53 /* Capacitor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ADFFA52020D75100D50D53 /* Capacitor.framework */; };
-		50ADFFA82020EE4F00D50D53 /* ReceiptCapturePlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 50ADFFA72020EE4F00D50D53 /* ReceiptCapturePlugin.m */; };
-		50E1A94820377CB70090CE1A /* ReceiptCapturePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E1A94720377CB70090CE1A /* ReceiptCapturePlugin.swift */; };
-		883708C82A8FE6D7007D8F0A /* RspFloatType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708C72A8FE6D7007D8F0A /* RspFloatType.swift */; };
-		883708D12A8FECBD007D8F0A /* RspPaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708D02A8FECBD007D8F0A /* RspPaymentMethod.swift */; };
-		883708D42A8FFFB7007D8F0A /* RspProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708D32A8FFFB7007D8F0A /* RspProduct.swift */; };
-		883708D92A900180007D8F0A /* RspPromotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708D82A900180007D8F0A /* RspPromotion.swift */; };
-		883708E52A9008C3007D8F0A /* RspReceipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708E42A9008C3007D8F0A /* RspReceipt.swift */; };
-		883708E72A900C99007D8F0A /* RspShipment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708E62A900C99007D8F0A /* RspShipment.swift */; };
-		883708E92A900DA2007D8F0A /* RspStringType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883708E82A900DA2007D8F0A /* RspStringType.swift */; };
-		883E66CE2A98CD9C00A75373 /* ReqLogout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 883E66CD2A98CD9C00A75373 /* ReqLogout.swift */; };
-		889C39D62A8F9D22003B30CD /* ReqLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889C39D52A8F9D22003B30CD /* ReqLogin.swift */; };
-		889C39DB2A8F9F41003B30CD /* ReqRetailerLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889C39DA2A8F9F41003B30CD /* ReqRetailerLogin.swift */; };
-		889C39DE2A8F9FFD003B30CD /* Rsp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889C39DD2A8F9FFD003B30CD /* Rsp.swift */; };
-		889C39E02A8FA08F003B30CD /* RspAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889C39DF2A8FA08F003B30CD /* RspAccount.swift */; };
-		889C39E22A8FA466003B30CD /* RspAdditionalLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889C39E12A8FA466003B30CD /* RspAdditionalLine.swift */; };
-		889C39E42A8FA926003B30CD /* RspCoupon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889C39E32A8FA926003B30CD /* RspCoupon.swift */; };
-		889E23BD2A9E6E830072E8F4 /* Email.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889E23BC2A9E6E830072E8F4 /* Email.swift */; };
-		88A3129E2A85974400EEDC00 /* Pods-Plugin.debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 5E23F77F099397094342571A /* Pods-Plugin.debug.xcconfig */; };
-		88A3129F2A85974800EEDC00 /* Pods-Plugin.release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 91781294A431A2A7CC6EB714 /* Pods-Plugin.release.xcconfig */; };
-		88A312A12A85975100EEDC00 /* Pods-PluginTests.debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 96ED1B6440D6672E406C8D19 /* Pods-PluginTests.debug.xcconfig */; };
-		88A312A22A85975400EEDC00 /* Pods-PluginTests.release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = F65BB2953ECE002E1EF3E424 /* Pods-PluginTests.release.xcconfig */; };
-		88A312AA2A86AC6C00EEDC00 /* Physical.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A312A92A86AC6C00EEDC00 /* Physical.swift */; };
-		88A312AD2A86B1FF00EEDC00 /* ReqInitialize‎.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88A312AC2A86B1FF00EEDC00 /* ReqInitialize‎.swift */; };
-		88C8C28E2A9FDA5200E7799A /* RspScan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C8C28D2A9FDA5200E7799A /* RspScan.swift */; };
-		88C8C2932AA0A6FF00E7799A /* RspSurveyQuestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C8C28F2AA0A6FF00E7799A /* RspSurveyQuestion.swift */; };
-		88C8C2942AA0A6FF00E7799A /* RspSurvey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C8C2902AA0A6FF00E7799A /* RspSurvey.swift */; };
-		88C8C2952AA0A6FF00E7799A /* RspSurveyAnswer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C8C2912AA0A6FF00E7799A /* RspSurveyAnswer.swift */; };
-		88C8C2962AA0A6FF00E7799A /* RspInitialized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C8C2922AA0A6FF00E7799A /* RspInitialized.swift */; };
-		88C8C2982AA0DD0600E7799A /* RspSurveyResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C8C2972AA0DD0600E7799A /* RspSurveyResponse.swift */; };
-		88F555132A8A437D00DAF8F3 /* Retailer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F555122A8A437D00DAF8F3 /* Retailer.swift */; };
-		88F555152A8A9E9C00DAF8F3 /* RetailerEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F555142A8A9E9B00DAF8F3 /* RetailerEnum.swift */; };
-		88F5551D2A8BA21500DAF8F3 /* RetailerIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F5551A2A8B9FC400DAF8F3 /* RetailerIntegrationTests.swift */; };
-		8C33E0462A977AD000B889A3 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C33E0432A977AD000B889A3 /* Account.swift */; };
-		8C33E0472A977AD000B889A3 /* AccountCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C33E0442A977AD000B889A3 /* AccountCommon.swift */; };
-		8C33E0482A977AD000B889A3 /* AccountTypeEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C33E0452A977AD000B889A3 /* AccountTypeEnum.swift */; };
-		8C33E04A2A977BFC00B889A3 /* EmailEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C33E0492A977BFC00B889A3 /* EmailEnum.swift */; };
-		8C91C1052AA0167A00BAB8CE /* ScanResultsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C91C1042AA0167A00BAB8CE /* ScanResultsDelegate.swift */; };
+		86963BF58A4F7A8881391C34 /* Pods_Plugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01CCC5A7344AC2EDCF34BB1F /* Pods_Plugin.framework */; };
+		8C06235F2AB2F9AE00CABC17 /* AccountCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623392AB2F9AE00CABC17 /* AccountCommon.swift */; };
+		8C0623602AB2F9AE00CABC17 /* Email.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06233A2AB2F9AE00CABC17 /* Email.swift */; };
+		8C0623612AB2F9AE00CABC17 /* ScanResultsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06233B2AB2F9AE00CABC17 /* ScanResultsDelegate.swift */; };
+		8C0623622AB2F9AE00CABC17 /* EmailEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06233C2AB2F9AE00CABC17 /* EmailEnum.swift */; };
+		8C0623632AB2F9AE00CABC17 /* ReceiptCapturePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06233D2AB2F9AE00CABC17 /* ReceiptCapturePlugin.swift */; };
+		8C0623642AB2F9AE00CABC17 /* ReceiptCapturePlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C06233E2AB2F9AE00CABC17 /* ReceiptCapturePlugin.h */; };
+		8C0623662AB2F9AE00CABC17 /* Physical.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623402AB2F9AE00CABC17 /* Physical.swift */; };
+		8C0623672AB2F9AE00CABC17 /* RspScan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623422AB2F9AE00CABC17 /* RspScan.swift */; };
+		8C0623682AB2F9AE00CABC17 /* RspProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623432AB2F9AE00CABC17 /* RspProduct.swift */; };
+		8C0623692AB2F9AE00CABC17 /* RspInitialized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623442AB2F9AE00CABC17 /* RspInitialized.swift */; };
+		8C06236A2AB2F9AE00CABC17 /* RspFloatType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623452AB2F9AE00CABC17 /* RspFloatType.swift */; };
+		8C06236B2AB2F9AE00CABC17 /* RspAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623462AB2F9AE00CABC17 /* RspAccount.swift */; };
+		8C06236C2AB2F9AE00CABC17 /* RspSurveyQuestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623472AB2F9AE00CABC17 /* RspSurveyQuestion.swift */; };
+		8C06236D2AB2F9AE00CABC17 /* RspCoupon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623482AB2F9AE00CABC17 /* RspCoupon.swift */; };
+		8C06236E2AB2F9AE00CABC17 /* RspStringType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623492AB2F9AE00CABC17 /* RspStringType.swift */; };
+		8C0623702AB2F9AE00CABC17 /* RspAdditionalLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06234B2AB2F9AE00CABC17 /* RspAdditionalLine.swift */; };
+		8C0623712AB2F9AE00CABC17 /* RspSurveyAnswer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06234C2AB2F9AE00CABC17 /* RspSurveyAnswer.swift */; };
+		8C0623722AB2F9AE00CABC17 /* RspSurveyResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06234D2AB2F9AE00CABC17 /* RspSurveyResponse.swift */; };
+		8C0623732AB2F9AE00CABC17 /* RspShipment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06234E2AB2F9AE00CABC17 /* RspShipment.swift */; };
+		8C0623742AB2F9AE00CABC17 /* RspPaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06234F2AB2F9AE00CABC17 /* RspPaymentMethod.swift */; };
+		8C0623752AB2F9AE00CABC17 /* Rsp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623502AB2F9AE00CABC17 /* Rsp.swift */; };
+		8C0623762AB2F9AE00CABC17 /* RspReceipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623512AB2F9AE00CABC17 /* RspReceipt.swift */; };
+		8C0623772AB2F9AE00CABC17 /* RspPromotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623522AB2F9AE00CABC17 /* RspPromotion.swift */; };
+		8C0623782AB2F9AE00CABC17 /* ReqInitialize‎.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623542AB2F9AE00CABC17 /* ReqInitialize‎.swift */; };
+		8C0623792AB2F9AE00CABC17 /* ReqScan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623552AB2F9AE00CABC17 /* ReqScan.swift */; };
+		8C06237A2AB2F9AE00CABC17 /* ReqRetailerLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623562AB2F9AE00CABC17 /* ReqRetailerLogin.swift */; };
+		8C06237B2AB2F9AE00CABC17 /* ReqLogout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623572AB2F9AE00CABC17 /* ReqLogout.swift */; };
+		8C06237C2AB2F9AE00CABC17 /* ReqLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623582AB2F9AE00CABC17 /* ReqLogin.swift */; };
+		8C06237D2AB2F9AE00CABC17 /* RetailerEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623592AB2F9AE00CABC17 /* RetailerEnum.swift */; };
+		8C06237E2AB2F9AE00CABC17 /* ReceiptCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235A2AB2F9AE00CABC17 /* ReceiptCapture.swift */; };
+		8C06237F2AB2F9AE00CABC17 /* AccountTypeEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235B2AB2F9AE00CABC17 /* AccountTypeEnum.swift */; };
+		8C0623802AB2F9AE00CABC17 /* ReceiptCapturePlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235C2AB2F9AE00CABC17 /* ReceiptCapturePlugin.m */; };
+		8C0623812AB2F9AE00CABC17 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235D2AB2F9AE00CABC17 /* Account.swift */; };
+		8C0623822AB2F9AE00CABC17 /* Retailer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235E2AB2F9AE00CABC17 /* Retailer.swift */; };
+		8C06238D2AB2FC7800CABC17 /* ScanTypeEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06238C2AB2FC7800CABC17 /* ScanTypeEnum.swift */; };
+		8C0623912AB3074D00CABC17 /* RspAccountList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623902AB3074D00CABC17 /* RspAccountList.swift */; };
+		EBC93010F3E70FBB15A2549B /* Pods_PluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5188EACB9E20B6A019E55043 /* Pods_PluginTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,53 +60,54 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2F98D68124C9AAE400613A4C /* ReceiptCapture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiptCapture.swift; sourceTree = "<group>"; };
-		3B2A61DA5A1F2DD4F959604D /* Pods_Plugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Plugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		01CCC5A7344AC2EDCF34BB1F /* Pods_Plugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Plugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		50ADFF88201F53D600D50D53 /* Plugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Plugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		50ADFF8B201F53D600D50D53 /* ReceiptCapturePlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReceiptCapturePlugin.h; sourceTree = "<group>"; };
-		50ADFF8C201F53D600D50D53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50ADFF91201F53D600D50D53 /* PluginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PluginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		50ADFF96201F53D600D50D53 /* ReceiptCaptureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptCaptureTests.swift; sourceTree = "<group>"; };
-		50ADFF98201F53D600D50D53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50ADFFA52020D75100D50D53 /* Capacitor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Capacitor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		50ADFFA72020EE4F00D50D53 /* ReceiptCapturePlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReceiptCapturePlugin.m; sourceTree = "<group>"; };
-		50E1A94720377CB70090CE1A /* ReceiptCapturePlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiptCapturePlugin.swift; sourceTree = "<group>"; };
-		5E23F77F099397094342571A /* Pods-Plugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plugin.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Plugin/Pods-Plugin.debug.xcconfig"; sourceTree = "<group>"; };
-		883708C72A8FE6D7007D8F0A /* RspFloatType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspFloatType.swift; sourceTree = "<group>"; };
-		883708D02A8FECBD007D8F0A /* RspPaymentMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspPaymentMethod.swift; sourceTree = "<group>"; };
-		883708D32A8FFFB7007D8F0A /* RspProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspProduct.swift; sourceTree = "<group>"; };
-		883708D82A900180007D8F0A /* RspPromotion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspPromotion.swift; sourceTree = "<group>"; };
-		883708E42A9008C3007D8F0A /* RspReceipt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspReceipt.swift; sourceTree = "<group>"; };
-		883708E62A900C99007D8F0A /* RspShipment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspShipment.swift; sourceTree = "<group>"; };
-		883708E82A900DA2007D8F0A /* RspStringType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspStringType.swift; sourceTree = "<group>"; };
-		883E66CD2A98CD9C00A75373 /* ReqLogout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReqLogout.swift; sourceTree = "<group>"; };
-		889C39D52A8F9D22003B30CD /* ReqLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReqLogin.swift; sourceTree = "<group>"; };
-		889C39DA2A8F9F41003B30CD /* ReqRetailerLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReqRetailerLogin.swift; sourceTree = "<group>"; };
-		889C39DD2A8F9FFD003B30CD /* Rsp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rsp.swift; sourceTree = "<group>"; };
-		889C39DF2A8FA08F003B30CD /* RspAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspAccount.swift; sourceTree = "<group>"; };
-		889C39E12A8FA466003B30CD /* RspAdditionalLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspAdditionalLine.swift; sourceTree = "<group>"; };
-		889C39E32A8FA926003B30CD /* RspCoupon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspCoupon.swift; sourceTree = "<group>"; };
-		889E23BC2A9E6E830072E8F4 /* Email.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Email.swift; sourceTree = "<group>"; };
-		88A312A92A86AC6C00EEDC00 /* Physical.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Physical.swift; sourceTree = "<group>"; };
-		88A312AC2A86B1FF00EEDC00 /* ReqInitialize‎.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReqInitialize‎.swift"; sourceTree = "<group>"; };
-		88C8C28D2A9FDA5200E7799A /* RspScan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspScan.swift; sourceTree = "<group>"; };
-		88C8C28F2AA0A6FF00E7799A /* RspSurveyQuestion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspSurveyQuestion.swift; sourceTree = "<group>"; };
-		88C8C2902AA0A6FF00E7799A /* RspSurvey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspSurvey.swift; sourceTree = "<group>"; };
-		88C8C2912AA0A6FF00E7799A /* RspSurveyAnswer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspSurveyAnswer.swift; sourceTree = "<group>"; };
-		88C8C2922AA0A6FF00E7799A /* RspInitialized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspInitialized.swift; sourceTree = "<group>"; };
-		88C8C2972AA0DD0600E7799A /* RspSurveyResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspSurveyResponse.swift; sourceTree = "<group>"; };
-		88F555122A8A437D00DAF8F3 /* Retailer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Retailer.swift; sourceTree = "<group>"; };
-		88F555142A8A9E9B00DAF8F3 /* RetailerEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetailerEnum.swift; sourceTree = "<group>"; };
-		88F5551A2A8B9FC400DAF8F3 /* RetailerIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetailerIntegrationTests.swift; sourceTree = "<group>"; };
-		8C33E0432A977AD000B889A3 /* Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
-		8C33E0442A977AD000B889A3 /* AccountCommon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountCommon.swift; sourceTree = "<group>"; };
-		8C33E0452A977AD000B889A3 /* AccountTypeEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountTypeEnum.swift; sourceTree = "<group>"; };
-		8C33E0492A977BFC00B889A3 /* EmailEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailEnum.swift; sourceTree = "<group>"; };
-		8C91C1042AA0167A00BAB8CE /* ScanResultsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanResultsDelegate.swift; sourceTree = "<group>"; };
-		91781294A431A2A7CC6EB714 /* Pods-Plugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plugin.release.xcconfig"; path = "Pods/Target Support Files/Pods-Plugin/Pods-Plugin.release.xcconfig"; sourceTree = "<group>"; };
-		96ED1B6440D6672E406C8D19 /* Pods-PluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PluginTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PluginTests/Pods-PluginTests.debug.xcconfig"; sourceTree = "<group>"; };
-		F65BB2953ECE002E1EF3E424 /* Pods-PluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PluginTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PluginTests/Pods-PluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		F6753A823D3815DB436415E3 /* Pods_PluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5188EACB9E20B6A019E55043 /* Pods_PluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		871ED285029DF8C9DF7AAC89 /* Pods-Plugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plugin.release.xcconfig"; path = "Target Support Files/Pods-Plugin/Pods-Plugin.release.xcconfig"; sourceTree = "<group>"; };
+		8C0623392AB2F9AE00CABC17 /* AccountCommon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountCommon.swift; sourceTree = "<group>"; };
+		8C06233A2AB2F9AE00CABC17 /* Email.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Email.swift; sourceTree = "<group>"; };
+		8C06233B2AB2F9AE00CABC17 /* ScanResultsDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanResultsDelegate.swift; sourceTree = "<group>"; };
+		8C06233C2AB2F9AE00CABC17 /* EmailEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmailEnum.swift; sourceTree = "<group>"; };
+		8C06233D2AB2F9AE00CABC17 /* ReceiptCapturePlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiptCapturePlugin.swift; sourceTree = "<group>"; };
+		8C06233E2AB2F9AE00CABC17 /* ReceiptCapturePlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReceiptCapturePlugin.h; sourceTree = "<group>"; };
+		8C06233F2AB2F9AE00CABC17 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8C0623402AB2F9AE00CABC17 /* Physical.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Physical.swift; sourceTree = "<group>"; };
+		8C0623422AB2F9AE00CABC17 /* RspScan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspScan.swift; sourceTree = "<group>"; };
+		8C0623432AB2F9AE00CABC17 /* RspProduct.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspProduct.swift; sourceTree = "<group>"; };
+		8C0623442AB2F9AE00CABC17 /* RspInitialized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspInitialized.swift; sourceTree = "<group>"; };
+		8C0623452AB2F9AE00CABC17 /* RspFloatType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspFloatType.swift; sourceTree = "<group>"; };
+		8C0623462AB2F9AE00CABC17 /* RspAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspAccount.swift; sourceTree = "<group>"; };
+		8C0623472AB2F9AE00CABC17 /* RspSurveyQuestion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspSurveyQuestion.swift; sourceTree = "<group>"; };
+		8C0623482AB2F9AE00CABC17 /* RspCoupon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspCoupon.swift; sourceTree = "<group>"; };
+		8C0623492AB2F9AE00CABC17 /* RspStringType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspStringType.swift; sourceTree = "<group>"; };
+		8C06234B2AB2F9AE00CABC17 /* RspAdditionalLine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspAdditionalLine.swift; sourceTree = "<group>"; };
+		8C06234C2AB2F9AE00CABC17 /* RspSurveyAnswer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspSurveyAnswer.swift; sourceTree = "<group>"; };
+		8C06234D2AB2F9AE00CABC17 /* RspSurveyResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspSurveyResponse.swift; sourceTree = "<group>"; };
+		8C06234E2AB2F9AE00CABC17 /* RspShipment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspShipment.swift; sourceTree = "<group>"; };
+		8C06234F2AB2F9AE00CABC17 /* RspPaymentMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspPaymentMethod.swift; sourceTree = "<group>"; };
+		8C0623502AB2F9AE00CABC17 /* Rsp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rsp.swift; sourceTree = "<group>"; };
+		8C0623512AB2F9AE00CABC17 /* RspReceipt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspReceipt.swift; sourceTree = "<group>"; };
+		8C0623522AB2F9AE00CABC17 /* RspPromotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspPromotion.swift; sourceTree = "<group>"; };
+		8C0623542AB2F9AE00CABC17 /* ReqInitialize‎.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ReqInitialize‎.swift"; sourceTree = "<group>"; };
+		8C0623552AB2F9AE00CABC17 /* ReqScan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReqScan.swift; sourceTree = "<group>"; };
+		8C0623562AB2F9AE00CABC17 /* ReqRetailerLogin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReqRetailerLogin.swift; sourceTree = "<group>"; };
+		8C0623572AB2F9AE00CABC17 /* ReqLogout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReqLogout.swift; sourceTree = "<group>"; };
+		8C0623582AB2F9AE00CABC17 /* ReqLogin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReqLogin.swift; sourceTree = "<group>"; };
+		8C0623592AB2F9AE00CABC17 /* RetailerEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RetailerEnum.swift; sourceTree = "<group>"; };
+		8C06235A2AB2F9AE00CABC17 /* ReceiptCapture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiptCapture.swift; sourceTree = "<group>"; };
+		8C06235B2AB2F9AE00CABC17 /* AccountTypeEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountTypeEnum.swift; sourceTree = "<group>"; };
+		8C06235C2AB2F9AE00CABC17 /* ReceiptCapturePlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReceiptCapturePlugin.m; sourceTree = "<group>"; };
+		8C06235D2AB2F9AE00CABC17 /* Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
+		8C06235E2AB2F9AE00CABC17 /* Retailer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Retailer.swift; sourceTree = "<group>"; };
+		8C0623832AB2FA2400CABC17 /* BlinkReceiptStatic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BlinkReceiptStatic.framework; path = ../microblink/ios/BlinkReceiptStatic.framework; sourceTree = "<group>"; };
+		8C06238C2AB2FC7800CABC17 /* ScanTypeEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanTypeEnum.swift; sourceTree = "<group>"; };
+		8C06238E2AB2FE9400CABC17 /* BlinkReceiptStatic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BlinkReceiptStatic.framework; path = Plugin/microblink/BlinkReceiptStatic.framework; sourceTree = "<group>"; };
+		8C0623902AB3074D00CABC17 /* RspAccountList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspAccountList.swift; sourceTree = "<group>"; };
+		9A9BE134341CF2F30A03DCF8 /* Pods-Plugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plugin.debug.xcconfig"; path = "Target Support Files/Pods-Plugin/Pods-Plugin.debug.xcconfig"; sourceTree = "<group>"; };
+		BF423A4EE44F1FFC20CC7022 /* Pods-PluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PluginTests.release.xcconfig"; path = "Target Support Files/Pods-PluginTests/Pods-PluginTests.release.xcconfig"; sourceTree = "<group>"; };
+		DFD1D90CC23C5431463731C3 /* Pods-PluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PluginTests.debug.xcconfig"; path = "Target Support Files/Pods-PluginTests/Pods-PluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,7 +116,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				50ADFFA42020D75100D50D53 /* Capacitor.framework in Frameworks */,
-				03FC29A292ACC40490383A1F /* Pods_Plugin.framework in Frameworks */,
+				86963BF58A4F7A8881391C34 /* Pods_Plugin.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -128,7 +125,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				50ADFF92201F53D600D50D53 /* Plugin.framework in Frameworks */,
-				20C0B05DCFC8E3958A738AF2 /* Pods_PluginTests.framework in Frameworks */,
+				EBC93010F3E70FBB15A2549B /* Pods_PluginTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,10 +136,9 @@
 			isa = PBXGroup;
 			children = (
 				50ADFF8A201F53D600D50D53 /* Plugin */,
-				50ADFF95201F53D600D50D53 /* PluginTests */,
 				50ADFF89201F53D600D50D53 /* Products */,
-				8C8E7744173064A9F6D438E3 /* Pods */,
 				A797B9EFA3DCEFEA1FBB66A9 /* Frameworks */,
+				74B12954E94D52575716D347 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -158,88 +154,82 @@
 		50ADFF8A201F53D600D50D53 /* Plugin */ = {
 			isa = PBXGroup;
 			children = (
-				889C39DC2A8F9F92003B30CD /* Rsp */,
-				88A312AB2A86B1CC00EEDC00 /* Req */,
-				88A312A92A86AC6C00EEDC00 /* Physical.swift */,
-				8C91C1042AA0167A00BAB8CE /* ScanResultsDelegate.swift */,
-				88F555122A8A437D00DAF8F3 /* Retailer.swift */,
-				8C33E0432A977AD000B889A3 /* Account.swift */,
-				8C33E0442A977AD000B889A3 /* AccountCommon.swift */,
-				8C33E0452A977AD000B889A3 /* AccountTypeEnum.swift */,
-				88F555142A8A9E9B00DAF8F3 /* RetailerEnum.swift */,
-				50E1A94720377CB70090CE1A /* ReceiptCapturePlugin.swift */,
-				2F98D68124C9AAE400613A4C /* ReceiptCapture.swift */,
-				50ADFF8B201F53D600D50D53 /* ReceiptCapturePlugin.h */,
-				50ADFFA72020EE4F00D50D53 /* ReceiptCapturePlugin.m */,
-				50ADFF8C201F53D600D50D53 /* Info.plist */,
-				8C33E0492A977BFC00B889A3 /* EmailEnum.swift */,
-				889E23BC2A9E6E830072E8F4 /* Email.swift */,
+				8C06235D2AB2F9AE00CABC17 /* Account.swift */,
+				8C0623392AB2F9AE00CABC17 /* AccountCommon.swift */,
+				8C06235B2AB2F9AE00CABC17 /* AccountTypeEnum.swift */,
+				8C06233A2AB2F9AE00CABC17 /* Email.swift */,
+				8C06233C2AB2F9AE00CABC17 /* EmailEnum.swift */,
+				8C06233F2AB2F9AE00CABC17 /* Info.plist */,
+				8C0623402AB2F9AE00CABC17 /* Physical.swift */,
+				8C06235A2AB2F9AE00CABC17 /* ReceiptCapture.swift */,
+				8C06233E2AB2F9AE00CABC17 /* ReceiptCapturePlugin.h */,
+				8C06235C2AB2F9AE00CABC17 /* ReceiptCapturePlugin.m */,
+				8C06233D2AB2F9AE00CABC17 /* ReceiptCapturePlugin.swift */,
+				8C0623532AB2F9AE00CABC17 /* Req */,
+				8C06235E2AB2F9AE00CABC17 /* Retailer.swift */,
+				8C0623592AB2F9AE00CABC17 /* RetailerEnum.swift */,
+				8C0623412AB2F9AE00CABC17 /* Rsp */,
+				8C06233B2AB2F9AE00CABC17 /* ScanResultsDelegate.swift */,
+				8C06238C2AB2FC7800CABC17 /* ScanTypeEnum.swift */,
 			);
 			path = Plugin;
 			sourceTree = "<group>";
 		};
-		50ADFF95201F53D600D50D53 /* PluginTests */ = {
+		74B12954E94D52575716D347 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				50ADFF96201F53D600D50D53 /* ReceiptCaptureTests.swift */,
-				88F5551A2A8B9FC400DAF8F3 /* RetailerIntegrationTests.swift */,
-				50ADFF98201F53D600D50D53 /* Info.plist */,
+				9A9BE134341CF2F30A03DCF8 /* Pods-Plugin.debug.xcconfig */,
+				871ED285029DF8C9DF7AAC89 /* Pods-Plugin.release.xcconfig */,
+				DFD1D90CC23C5431463731C3 /* Pods-PluginTests.debug.xcconfig */,
+				BF423A4EE44F1FFC20CC7022 /* Pods-PluginTests.release.xcconfig */,
 			);
-			path = PluginTests;
+			path = Pods;
 			sourceTree = "<group>";
 		};
-		889C39DC2A8F9F92003B30CD /* Rsp */ = {
+		8C0623412AB2F9AE00CABC17 /* Rsp */ = {
 			isa = PBXGroup;
 			children = (
-				88C8C2922AA0A6FF00E7799A /* RspInitialized.swift */,
-				88C8C2902AA0A6FF00E7799A /* RspSurvey.swift */,
-				88C8C2912AA0A6FF00E7799A /* RspSurveyAnswer.swift */,
-				88C8C28F2AA0A6FF00E7799A /* RspSurveyQuestion.swift */,
-				889C39DD2A8F9FFD003B30CD /* Rsp.swift */,
-				889C39DF2A8FA08F003B30CD /* RspAccount.swift */,
-				889C39E12A8FA466003B30CD /* RspAdditionalLine.swift */,
-				889C39E32A8FA926003B30CD /* RspCoupon.swift */,
-				883708C72A8FE6D7007D8F0A /* RspFloatType.swift */,
-				883708D02A8FECBD007D8F0A /* RspPaymentMethod.swift */,
-				883708D32A8FFFB7007D8F0A /* RspProduct.swift */,
-				883708D82A900180007D8F0A /* RspPromotion.swift */,
-				883708E42A9008C3007D8F0A /* RspReceipt.swift */,
-				883708E62A900C99007D8F0A /* RspShipment.swift */,
-				883708E82A900DA2007D8F0A /* RspStringType.swift */,
-				88C8C28D2A9FDA5200E7799A /* RspScan.swift */,
-				88C8C2972AA0DD0600E7799A /* RspSurveyResponse.swift */,
+				8C0623422AB2F9AE00CABC17 /* RspScan.swift */,
+				8C0623432AB2F9AE00CABC17 /* RspProduct.swift */,
+				8C0623442AB2F9AE00CABC17 /* RspInitialized.swift */,
+				8C0623452AB2F9AE00CABC17 /* RspFloatType.swift */,
+				8C0623462AB2F9AE00CABC17 /* RspAccount.swift */,
+				8C0623472AB2F9AE00CABC17 /* RspSurveyQuestion.swift */,
+				8C0623482AB2F9AE00CABC17 /* RspCoupon.swift */,
+				8C0623492AB2F9AE00CABC17 /* RspStringType.swift */,
+				8C06234B2AB2F9AE00CABC17 /* RspAdditionalLine.swift */,
+				8C06234C2AB2F9AE00CABC17 /* RspSurveyAnswer.swift */,
+				8C06234D2AB2F9AE00CABC17 /* RspSurveyResponse.swift */,
+				8C06234E2AB2F9AE00CABC17 /* RspShipment.swift */,
+				8C06234F2AB2F9AE00CABC17 /* RspPaymentMethod.swift */,
+				8C0623502AB2F9AE00CABC17 /* Rsp.swift */,
+				8C0623512AB2F9AE00CABC17 /* RspReceipt.swift */,
+				8C0623522AB2F9AE00CABC17 /* RspPromotion.swift */,
+				8C0623902AB3074D00CABC17 /* RspAccountList.swift */,
 			);
 			path = Rsp;
 			sourceTree = "<group>";
 		};
-		88A312AB2A86B1CC00EEDC00 /* Req */ = {
+		8C0623532AB2F9AE00CABC17 /* Req */ = {
 			isa = PBXGroup;
 			children = (
-				88A312AC2A86B1FF00EEDC00 /* ReqInitialize‎.swift */,
-				889C39D52A8F9D22003B30CD /* ReqLogin.swift */,
-				889C39DA2A8F9F41003B30CD /* ReqRetailerLogin.swift */,
-				883E66CD2A98CD9C00A75373 /* ReqLogout.swift */,
+				8C0623542AB2F9AE00CABC17 /* ReqInitialize‎.swift */,
+				8C0623552AB2F9AE00CABC17 /* ReqScan.swift */,
+				8C0623562AB2F9AE00CABC17 /* ReqRetailerLogin.swift */,
+				8C0623572AB2F9AE00CABC17 /* ReqLogout.swift */,
+				8C0623582AB2F9AE00CABC17 /* ReqLogin.swift */,
 			);
 			path = Req;
-			sourceTree = "<group>";
-		};
-		8C8E7744173064A9F6D438E3 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				5E23F77F099397094342571A /* Pods-Plugin.debug.xcconfig */,
-				91781294A431A2A7CC6EB714 /* Pods-Plugin.release.xcconfig */,
-				96ED1B6440D6672E406C8D19 /* Pods-PluginTests.debug.xcconfig */,
-				F65BB2953ECE002E1EF3E424 /* Pods-PluginTests.release.xcconfig */,
-			);
-			name = Pods;
 			sourceTree = "<group>";
 		};
 		A797B9EFA3DCEFEA1FBB66A9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8C0623832AB2FA2400CABC17 /* BlinkReceiptStatic.framework */,
+				8C06238E2AB2FE9400CABC17 /* BlinkReceiptStatic.framework */,
 				50ADFFA52020D75100D50D53 /* Capacitor.framework */,
-				3B2A61DA5A1F2DD4F959604D /* Pods_Plugin.framework */,
-				F6753A823D3815DB436415E3 /* Pods_PluginTests.framework */,
+				01CCC5A7344AC2EDCF34BB1F /* Pods_Plugin.framework */,
+				5188EACB9E20B6A019E55043 /* Pods_PluginTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -251,7 +241,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				50ADFF99201F53D600D50D53 /* ReceiptCapturePlugin.h in Headers */,
+				8C0623642AB2F9AE00CABC17 /* ReceiptCapturePlugin.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -262,7 +252,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 50ADFF9C201F53D600D50D53 /* Build configuration list for PBXNativeTarget "Plugin" */;
 			buildPhases = (
-				AB5B3E54B4E897F32C2279DA /* [CP] Check Pods Manifest.lock */,
+				A361546A56CB2E0D7171FF3A /* [CP] Check Pods Manifest.lock */,
 				50ADFF83201F53D600D50D53 /* Sources */,
 				50ADFF84201F53D600D50D53 /* Frameworks */,
 				50ADFF85201F53D600D50D53 /* Headers */,
@@ -281,11 +271,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 50ADFF9F201F53D600D50D53 /* Build configuration list for PBXNativeTarget "PluginTests" */;
 			buildPhases = (
-				0596884F929ED6F1DE134961 /* [CP] Check Pods Manifest.lock */,
+				CF127E0F5577D0FAF417C6E6 /* [CP] Check Pods Manifest.lock */,
 				50ADFF8D201F53D600D50D53 /* Sources */,
 				50ADFF8E201F53D600D50D53 /* Frameworks */,
 				50ADFF8F201F53D600D50D53 /* Resources */,
-				8E97F58B69A94C6503FC9C85 /* [CP] Embed Pods Frameworks */,
+				58691663D2820C622E7BFB21 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -309,7 +299,7 @@
 				TargetAttributes = {
 					50ADFF87201F53D600D50D53 = {
 						CreatedOnToolsVersion = 9.2;
-						LastSwiftMigration = 1100;
+						LastSwiftMigration = 1430;
 						ProvisioningStyle = Automatic;
 					};
 					50ADFF90201F53D600D50D53 = {
@@ -343,8 +333,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				88A3129F2A85974800EEDC00 /* Pods-Plugin.release.xcconfig in Resources */,
-				88A3129E2A85974400EEDC00 /* Pods-Plugin.debug.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -352,33 +340,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				88A312A22A85975400EEDC00 /* Pods-PluginTests.release.xcconfig in Resources */,
-				88A312A12A85975100EEDC00 /* Pods-PluginTests.debug.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0596884F929ED6F1DE134961 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-PluginTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		8E97F58B69A94C6503FC9C85 /* [CP] Embed Pods Frameworks */ = {
+		58691663D2820C622E7BFB21 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -424,18 +392,44 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PluginTests/Pods-PluginTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		AB5B3E54B4E897F32C2279DA /* [CP] Check Pods Manifest.lock */ = {
+		A361546A56CB2E0D7171FF3A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			inputFileListPaths = (
 			);
 			inputPaths = (
 				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
 				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-Plugin-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CF127E0F5577D0FAF417C6E6 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-PluginTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -449,39 +443,41 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				88C8C2982AA0DD0600E7799A /* RspSurveyResponse.swift in Sources */,
-				88A312AD2A86B1FF00EEDC00 /* ReqInitialize‎.swift in Sources */,
-				889C39D62A8F9D22003B30CD /* ReqLogin.swift in Sources */,
-				889C39DB2A8F9F41003B30CD /* ReqRetailerLogin.swift in Sources */,
-				8C33E04A2A977BFC00B889A3 /* EmailEnum.swift in Sources */,
-				50E1A94820377CB70090CE1A /* ReceiptCapturePlugin.swift in Sources */,
-				8C91C1052AA0167A00BAB8CE /* ScanResultsDelegate.swift in Sources */,
-				883E66CE2A98CD9C00A75373 /* ReqLogout.swift in Sources */,
-				8C33E0472A977AD000B889A3 /* AccountCommon.swift in Sources */,
-				889E23BD2A9E6E830072E8F4 /* Email.swift in Sources */,
-				883708D92A900180007D8F0A /* RspPromotion.swift in Sources */,
-				2F98D68224C9AAE500613A4C /* ReceiptCapture.swift in Sources */,
-				889C39E22A8FA466003B30CD /* RspAdditionalLine.swift in Sources */,
-				889C39E42A8FA926003B30CD /* RspCoupon.swift in Sources */,
-				883708C82A8FE6D7007D8F0A /* RspFloatType.swift in Sources */,
-				88F555132A8A437D00DAF8F3 /* Retailer.swift in Sources */,
-				88C8C28E2A9FDA5200E7799A /* RspScan.swift in Sources */,
-				883708E72A900C99007D8F0A /* RspShipment.swift in Sources */,
-				883708D42A8FFFB7007D8F0A /* RspProduct.swift in Sources */,
-				889C39E02A8FA08F003B30CD /* RspAccount.swift in Sources */,
-				88A312AA2A86AC6C00EEDC00 /* Physical.swift in Sources */,
-				8C33E0462A977AD000B889A3 /* Account.swift in Sources */,
-				88F555152A8A9E9C00DAF8F3 /* RetailerEnum.swift in Sources */,
-				883708E92A900DA2007D8F0A /* RspStringType.swift in Sources */,
-				88C8C2932AA0A6FF00E7799A /* RspSurveyQuestion.swift in Sources */,
-				883708E52A9008C3007D8F0A /* RspReceipt.swift in Sources */,
-				88C8C2942AA0A6FF00E7799A /* RspSurvey.swift in Sources */,
-				88C8C2962AA0A6FF00E7799A /* RspInitialized.swift in Sources */,
-				8C33E0482A977AD000B889A3 /* AccountTypeEnum.swift in Sources */,
-				88C8C2952AA0A6FF00E7799A /* RspSurveyAnswer.swift in Sources */,
-				889C39DE2A8F9FFD003B30CD /* Rsp.swift in Sources */,
-				883708D12A8FECBD007D8F0A /* RspPaymentMethod.swift in Sources */,
-				50ADFFA82020EE4F00D50D53 /* ReceiptCapturePlugin.m in Sources */,
+				8C0623802AB2F9AE00CABC17 /* ReceiptCapturePlugin.m in Sources */,
+				8C0623722AB2F9AE00CABC17 /* RspSurveyResponse.swift in Sources */,
+				8C0623742AB2F9AE00CABC17 /* RspPaymentMethod.swift in Sources */,
+				8C06237C2AB2F9AE00CABC17 /* ReqLogin.swift in Sources */,
+				8C06236D2AB2F9AE00CABC17 /* RspCoupon.swift in Sources */,
+				8C0623632AB2F9AE00CABC17 /* ReceiptCapturePlugin.swift in Sources */,
+				8C06237F2AB2F9AE00CABC17 /* AccountTypeEnum.swift in Sources */,
+				8C0623912AB3074D00CABC17 /* RspAccountList.swift in Sources */,
+				8C06237E2AB2F9AE00CABC17 /* ReceiptCapture.swift in Sources */,
+				8C06236C2AB2F9AE00CABC17 /* RspSurveyQuestion.swift in Sources */,
+				8C06237D2AB2F9AE00CABC17 /* RetailerEnum.swift in Sources */,
+				8C0623692AB2F9AE00CABC17 /* RspInitialized.swift in Sources */,
+				8C06237A2AB2F9AE00CABC17 /* ReqRetailerLogin.swift in Sources */,
+				8C0623682AB2F9AE00CABC17 /* RspProduct.swift in Sources */,
+				8C0623752AB2F9AE00CABC17 /* Rsp.swift in Sources */,
+				8C0623712AB2F9AE00CABC17 /* RspSurveyAnswer.swift in Sources */,
+				8C0623602AB2F9AE00CABC17 /* Email.swift in Sources */,
+				8C06238D2AB2FC7800CABC17 /* ScanTypeEnum.swift in Sources */,
+				8C0623762AB2F9AE00CABC17 /* RspReceipt.swift in Sources */,
+				8C06236A2AB2F9AE00CABC17 /* RspFloatType.swift in Sources */,
+				8C0623612AB2F9AE00CABC17 /* ScanResultsDelegate.swift in Sources */,
+				8C0623822AB2F9AE00CABC17 /* Retailer.swift in Sources */,
+				8C0623702AB2F9AE00CABC17 /* RspAdditionalLine.swift in Sources */,
+				8C06236B2AB2F9AE00CABC17 /* RspAccount.swift in Sources */,
+				8C0623782AB2F9AE00CABC17 /* ReqInitialize‎.swift in Sources */,
+				8C06237B2AB2F9AE00CABC17 /* ReqLogout.swift in Sources */,
+				8C0623812AB2F9AE00CABC17 /* Account.swift in Sources */,
+				8C0623672AB2F9AE00CABC17 /* RspScan.swift in Sources */,
+				8C0623792AB2F9AE00CABC17 /* ReqScan.swift in Sources */,
+				8C0623772AB2F9AE00CABC17 /* RspPromotion.swift in Sources */,
+				8C06236E2AB2F9AE00CABC17 /* RspStringType.swift in Sources */,
+				8C0623732AB2F9AE00CABC17 /* RspShipment.swift in Sources */,
+				8C06235F2AB2F9AE00CABC17 /* AccountCommon.swift in Sources */,
+				8C0623662AB2F9AE00CABC17 /* Physical.swift in Sources */,
+				8C0623622AB2F9AE00CABC17 /* EmailEnum.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -489,8 +485,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				88F5551D2A8BA21500DAF8F3 /* RetailerIntegrationTests.swift in Sources */,
-				50ADFF97201F53D600D50D53 /* ReceiptCaptureTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -632,7 +626,7 @@
 		};
 		50ADFF9D201F53D600D50D53 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5E23F77F099397094342571A /* Pods-Plugin.debug.xcconfig */;
+			baseConfigurationReference = 9A9BE134341CF2F30A03DCF8 /* Pods-Plugin.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -641,6 +635,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Plugin/microblink",
+				);
 				INFOPLIST_FILE = Plugin/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -649,7 +647,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.getcapacitor.Plugin;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -658,7 +658,7 @@
 		};
 		50ADFF9E201F53D600D50D53 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 91781294A431A2A7CC6EB714 /* Pods-Plugin.release.xcconfig */;
+			baseConfigurationReference = 871ED285029DF8C9DF7AAC89 /* Pods-Plugin.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -667,6 +667,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Plugin/microblink",
+				);
 				INFOPLIST_FILE = Plugin/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -675,7 +679,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.getcapacitor.Plugin;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -683,8 +689,9 @@
 		};
 		50ADFFA0201F53D600D50D53 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 96ED1B6440D6672E406C8D19 /* Pods-PluginTests.debug.xcconfig */;
+			baseConfigurationReference = DFD1D90CC23C5431463731C3 /* Pods-PluginTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = PluginTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -697,8 +704,9 @@
 		};
 		50ADFFA1201F53D600D50D53 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F65BB2953ECE002E1EF3E424 /* Pods-PluginTests.release.xcconfig */;
+			baseConfigurationReference = BF423A4EE44F1FFC20CC7022 /* Pods-PluginTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = PluginTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
