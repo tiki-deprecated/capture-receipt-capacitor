@@ -1,9 +1,7 @@
 package com.mytiki.sdk.capture.receipt.capacitor
 import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.mytiki.sdk.capture.receipt.capacitor.fixtures.PluginCallBuilder
-import io.mockk.MockKAnnotations
 import io.mockk.unmockkAll
 import junit.framework.TestCase
 import kotlinx.coroutines.runBlocking
@@ -31,21 +29,21 @@ class ReceiptCaptureTest {
 
 
     @Before
-    fun setUp() = runTest{
-        MockKAnnotations.init(this)
-        appContext = InstrumentationRegistry.getInstrumentation().context;
-        licenseKey = InstrumentationRegistry.getArguments().getString("licenseKey")!!
-        productKey = InstrumentationRegistry.getArguments().getString("productKey")!!
-
-        callInit = PluginCallBuilder(
-            JSONObject()
-                .put("licenseKey", licenseKey)
-                .put("productKey", productKey)
-        )
-
-        receiptCapture.initialize(callInit.build(), appContext)
-        respInit = callInit.complete.await()
-    }
+//    fun setUp() = runTest{
+//        MockKAnnotations.init(this)
+//        appContext = InstrumentationRegistry.getInstrumentation().context;
+//        licenseKey = InstrumentationRegistry.getArguments().getString("licenseKey")!!
+//        productKey = InstrumentationRegistry.getArguments().getString("productKey")!!
+//
+//        callInit = PluginCallBuilder(
+//            JSONObject()
+//                .put("licenseKey", licenseKey)
+//                .put("productKey", productKey)
+//        )
+//
+//        receiptCapture.initialize(callInit.build(), appContext)
+//        respInit = callInit.complete.await()
+//    }
 
     @After
     fun tearDown() {

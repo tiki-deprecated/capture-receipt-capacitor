@@ -52,15 +52,23 @@ class ReceiptCapture {
         val password = call.data.getString("password")
         if (source.isNullOrEmpty()) {
             call.reject("Provide source in login request")
-        } else if (username.isNullOrEmpty()) {
-            call.reject("Provide username in login request")
-        } else if (password.isNullOrEmpty()) {
-            call.reject("Provide password in login request")
         } else {
+            if(source == EmailEnum.GMAIL.toString()){
+                email.login(call, activity)
+                return
+            }
+            if (username.isNullOrEmpty()) {
+                call.reject("Provide username in login request")
+            }
+            if (password.isNullOrEmpty()) {
+                call.reject("Provide password in login request")
+            }
+
             val account = Account.fromReq(call.data)
             when (account.accountCommon.type) {
-                AccountTypeEnum.EMAIL -> email.login(call, account, activity)
+                AccountTypeEnum.EMAIL -> email.login(call, activity, account)
                 AccountTypeEnum.RETAILER -> retailer.login(call, account, activity)
+
             }
         }
     }

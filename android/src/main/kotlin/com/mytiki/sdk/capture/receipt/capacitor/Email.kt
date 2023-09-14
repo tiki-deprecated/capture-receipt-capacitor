@@ -62,7 +62,7 @@ class Email {
         isDigitalInitialized.await()
         val isImapInitialized = CompletableDeferred<Unit>()
         try {
-            gmailClient = GmailClient(context, req.googleId).apply { dayCutoff(30) }
+            gmailClient = GmailClient(context, req.googleId)
         }catch (err: Exception){
             onError(err.message, null)
         }
@@ -79,7 +79,7 @@ class Email {
      * @param account The email account information.
      * @param activity The [AppCompatActivity] where the login dialog will be displayed.
      */
-    fun imapLogin(call: PluginCall, account: Account, activity: AppCompatActivity) {
+    fun login(call: PluginCall, activity: AppCompatActivity, account: Account) {
         ProviderSetupDialogFragment.newInstance(
             ProviderSetupOptions.newBuilder(
                 PasswordCredentials.newBuilder(
@@ -118,7 +118,7 @@ class Email {
         }.show(activity.supportFragmentManager, tag)
     }
 
-    fun gmailLogin(activity: Activity, call: PluginCall) {
+    fun login(call: PluginCall, activity: Activity) {
         gmailClient.login()
             .addOnSuccessListener {gmailAccount ->
                 call.resolve(Account.fromGmailAccount(gmailAccount).toRsp())
@@ -134,14 +134,6 @@ class Email {
                     call.reject(error.message)
                 }
             }
-    }
-
-    fun login(call: PluginCall, account: Account, activity: AppCompatActivity){
-        if(EmailEnum.fromString(account.accountCommon.source) == EmailEnum.GMAIL){
-            gmailLogin(activity,call)
-        } else{
-            imapLogin(call, account, activity)
-        }
     }
 
     /**
@@ -176,7 +168,6 @@ class Email {
             }.addOnFailureListener {
                 call.reject(it.message)
             }
-
     }
 
     /**
@@ -245,7 +236,6 @@ class Email {
                accounts.complete(accountList)
             }
         }
-
         gmailClient.account().addOnSuccessListener{account ->
             MainScope().async {
                 val gmailAccount = Account.fromGmailAccount(account)
@@ -298,6 +288,11 @@ class Email {
     fun flush(call: PluginCall) {
         imapClient.logout().addOnSuccessListener {
             call.resolve()
+        }.addOnFailureListener {
+            call.reject(it.message)
+        }
+        gmailClient.logout().addOnSuccessListener {
+            call.resolve(JSObject().put("success", it))
         }.addOnFailureListener {
             call.reject(it.message)
         }
