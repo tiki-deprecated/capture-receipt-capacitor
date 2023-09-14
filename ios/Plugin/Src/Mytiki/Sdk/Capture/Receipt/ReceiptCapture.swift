@@ -49,12 +49,22 @@ public class ReceiptCapture: NSObject {
     
     public func logout(_ call: CAPPluginCall) {
         let reqLogout = ReqLogin(data: call)
+        if(reqLogout.source == ""){
+            if(reqLogout.username != "" || reqLogout.password != ""){
+                call.reject("Error: Invalid logout arguments. If you want delete all accounts, don't send username of password")
+                return
+            }else{
+                Email().logout(call, nil)
+                Retailer().logout(call,  Account(retailer: "", username: "", password: ""))
+                return
+            }
+
+        }
         guard let accountType = AccountCommon.defaults[reqLogout.source] else {
             call.reject("Invalid source: \(reqLogout.source)")
             return
         }
-        
-        let account = Account.init(accountType: accountType, user: reqLogout.username, password: reqLogout.password, isVerified: false)
+        let account = Account.init(accountType: AccountCommon.defaults[reqLogout.source]!, user: reqLogout.username, password: reqLogout.password, isVerified: false)
         switch account.accountType.type {
         case .email :
             guard let retailer = email else {
@@ -68,7 +78,7 @@ public class ReceiptCapture: NSObject {
                 call.reject("Call plugin initialize method.")
                 return
             }
-            retailer.logout(account, call)
+            retailer.logout(call, account)
             break
         }
     }

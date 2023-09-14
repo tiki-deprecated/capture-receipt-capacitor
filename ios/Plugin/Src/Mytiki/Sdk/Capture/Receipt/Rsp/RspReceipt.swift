@@ -213,7 +213,6 @@ public struct RspReceipt : Rsp {
         ret["mallName"] = mallName
         ret["last4cc"] = last4cc
         ret["ocrConfidence"] = ocrConfidence
-//        ret["merchantSource"] = merchantSource
         ret["foundTopEdge"] = foundTopEdge
         ret["foundBottomEdge"] = foundBottomEdge
         ret["eReceiptOrderNumber"] = eReceiptOrderNumber
@@ -252,6 +251,7 @@ public struct RspReceipt : Rsp {
         ret["paymentTerminalId"] = paymentTerminalId
         ret["paymentTransactionId"] = paymentTransactionId
         ret["combinedRawText"] = combinedRawText
+        //        ret["merchantSource"] = merchantSource
         //        ret["storeCountry"] = storeCountry
         //        ret["eReceiptShippingAddress"] = eReceiptShippingAddress
         //        ret["eReceipt"] = eReceipt

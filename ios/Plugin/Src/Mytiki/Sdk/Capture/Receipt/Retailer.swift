@@ -45,11 +45,12 @@ public class Retailer : CAPPlugin{
         })
     }
     
-    public func logout(_ account: Account, _ call: CAPPluginCall) {
+    public func logout(_ call: CAPPluginCall, _ account: Account) {
         if (account.user == "" && account.accountType.source == "") {
             BRAccountLinkingManager.shared().unlinkAllAccounts {
                 call.resolve()
             }
+            return
         }
         
         guard let retailer: BRAccountLinkingRetailer = RetailerEnum(
@@ -116,11 +117,13 @@ public class Retailer : CAPPlugin{
         for retLinked in retailers {
             let connection = BRAccountLinkingManager.shared().getLinkedRetailerConnection(retLinked)
             var isVerified =  false
-            //            BRAccountLinkingManager.shared().verifyRetailer(with: connection!) { error, viewController, sessionId in
-            //                if (error == .none || error == .accountLinkedAlready) {
-            //                    isVerified = true
-            //                }
-            //            }
+            DispatchQueue.main.async {
+                BRAccountLinkingManager.shared().verifyRetailer(with: connection!) { error, viewController, sessionId in
+                    if (error == .none || error == .accountLinkedAlready) {
+                        isVerified = true
+                    }
+                }
+            }
             
             let source = RetailerEnum.AMAZON_BETA
             let accountCommon = AccountCommon.init(type: .retailer, source: "AMAZON")
