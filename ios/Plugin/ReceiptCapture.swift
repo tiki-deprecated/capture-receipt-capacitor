@@ -19,11 +19,12 @@ public class ReceiptCapture: NSObject {
         let reqInit = ReqInitialize(call)
         let licenseKey = reqInit.licenseKey
         let productKey = reqInit.productKey
+        let googleClientId = reqInit.googleClientId
         let scanManager = BRScanManager.shared()
         scanManager.licenseKey = licenseKey
         scanManager.prodIntelKey = productKey
         physical = Physical()
-        email = Email()
+        email = Email(licenseKey, productKey, googleClientId)
         retailer = Retailer(licenseKey, productKey)
     }
     
@@ -59,8 +60,16 @@ public class ReceiptCapture: NSObject {
                 call.reject("Error: Invalid logout arguments. If you want delete all accounts, don't send username of password")
                 return
             }else{
-                Email().logout(call, nil)
-                Retailer().logout(call,  Account(retailer: "", username: "", password: ""))
+                guard let retailer = retailer else {
+                    call.reject("Retailer not initialized. Did you call .initialize()?")
+                    return
+                }
+                guard let email = email else {
+                    call.reject("Email not initialized. Did you call .initialize()?")
+                    return
+                }
+                email.logout(call, nil)
+                retailer.logout(call,  Account(retailer: "", username: "", password: ""))
                 return
             }
 
@@ -93,8 +102,18 @@ public class ReceiptCapture: NSObject {
             call.reject("Retailer not initialized. Did you call .initialize()?")
             return
         }
+        guard let email = email else {
+            call.reject("Retailer not initialized. Did you call .initialize()?")
+            return
+        }
+        
+        let emails = email.accounts()
         let retailers = retailer.accounts()
-        call.resolve(RspAccountList(accounts: retailers).toPluginCallResultData())
+        call.resolve(
+            RspAccountList(
+                accounts: emails + retailers
+            ).toPluginCallResultData()
+        )
     }
     
     public func scan(_ call: CAPPluginCall) {
@@ -124,8 +143,16 @@ public class ReceiptCapture: NSObject {
                 physical.scan()
                 break
             case .ONLINE:
-                Email().scan(call, req.account)
-                Retailer().orders(req.account, call)
+                guard let retailer = retailer else {
+                    call.reject("Retailer not initialized. Did you call .initialize()?")
+                    return
+                }
+                guard let email = email else {
+                    call.reject("Email not initialized. Did you call .initialize()?")
+                    return
+                }
+                email.scan(call, req.account)
+                retailer.orders(req.account, call)
                 break
             default:
                 call.reject("invalid scan type for account")
@@ -133,10 +160,18 @@ public class ReceiptCapture: NSObject {
         } else {
             switch req.scanType {
             case .EMAIL:
-                Email().scan(call, req.account)
+                guard let email = email else {
+                    call.reject("Email not initialized. Did you call .initialize()?")
+                    return
+                }
+                email.scan(call, req.account)
                 break
             case .RETAILER:
-                Retailer("","").orders(req.account, call)
+                guard let retailer = retailer else {
+                    call.reject("Retailer not initialized. Did you call .initialize()?")
+                    return
+                }
+                retailer.orders(req.account, call)
                 break
             default:
                 call.reject("invalid scan type for account")

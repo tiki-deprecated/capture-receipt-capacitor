@@ -28,10 +28,11 @@ export class ReceiptCapture {
    * @param productKey - The optional product intelligence key for your application.
    * @throws Error if the initialization fails.
    */
-  initialize = async (licenseKey: string, productKey: string): Promise<void> => {
+  initialize = async (licenseKey: string, productKey: string, googleClientId?: string ): Promise<void> => {
     const req: ReqInitialize = {
       licenseKey: licenseKey,
       productKey: productKey,
+      googleClientId: googleClientId!
     }
     await this.plugin.initialize(req).catch( (error) => {
       throw Error(error);

@@ -18,6 +18,7 @@ export interface ReqAccount {
 export interface ReqInitialize{
   licenseKey: string;
   productKey: string;
+  googleClientId?: string
 }
 
 export interface ReceiptCapturePlugin {

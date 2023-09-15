@@ -39,7 +39,6 @@ public class Account {
         self.isVerified = false
     }
     
-    
     func toResultData() -> PluginCallResultData {
         return [
             "username" : user,

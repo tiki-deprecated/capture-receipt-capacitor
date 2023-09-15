@@ -11,4 +11,5 @@ struct RspAccountList: Rsp {
         result["error"] = error
         return result
     }
+    
 }
