@@ -15,6 +15,7 @@ import com.getcapacitor.annotation.ActivityCallback
 import com.getcapacitor.annotation.CapacitorPlugin
 import com.getcapacitor.annotation.Permission
 import com.getcapacitor.annotation.PermissionCallback
+import kotlin.properties.Delegates
 
 /**
 *
@@ -36,6 +37,7 @@ import com.getcapacitor.annotation.PermissionCallback
 )
 class ReceiptCapturePlugin : Plugin() {
     private val receiptCapture = ReceiptCapture()
+    private var requestCode by Delegates.notNull<Int>()
 
     /**
      * Initializes the receipt capture functionality.
@@ -59,7 +61,10 @@ class ReceiptCapturePlugin : Plugin() {
      * @param call The Capacitor [PluginCall] instance.
      */
     @PluginMethod
-    fun login(call: PluginCall) = receiptCapture.login(call, activity)
+    fun login(call: PluginCall) = receiptCapture.login(call, activity){intent, reqCode ->
+        requestCode = reqCode
+        startActivityForResult(call, intent, "onLoginResult")
+    }
 
     /**
      * Logs out of the receipt capture service.
@@ -113,18 +118,10 @@ class ReceiptCapturePlugin : Plugin() {
     @ActivityCallback
     private fun onScanResult(call: PluginCall, result: ActivityResult) = receiptCapture.physical.onResult(call, result)
 
-//    TODO CALLBACK FOR GMAIL LOGIN
-//    @ActivityCallback
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        val gmailClient = GmailClient(this, googleId)
-//        gmailClient.onAccountAuthorizationActivityResult(requestCode, resultCode, data)
-//            .addOnSuccessListener { signInAccount ->
-//
-//            }.addOnFailureListener {
-//                //Set error display
-//            }
-//    }
+    @ActivityCallback
+    private fun onLoginResult(call: PluginCall,  result: ActivityResult) {
+        receiptCapture.email.onLoginResult(call, requestCode, result.resultCode, result.data)
+    }
 
     /**
      * Callback invoked when the camera permission is requested.

@@ -5,6 +5,7 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import com.getcapacitor.JSObject
 import com.getcapacitor.Plugin
@@ -46,7 +47,7 @@ class ReceiptCapture {
      * @param call The plugin call object.
      * @param activity The Android application activity.
      */
-    fun login(call: PluginCall, activity: AppCompatActivity) {
+    fun login(call: PluginCall, activity: AppCompatActivity, loginCallback: (Intent, Int) -> Unit) {
         val source = call.data.getString("source")
         val username = call.data.getString("username")
         val password = call.data.getString("password")
@@ -54,21 +55,20 @@ class ReceiptCapture {
             call.reject("Provide source in login request")
         } else {
             if(source == EmailEnum.GMAIL.toString()){
-                email.login(call, activity)
-                return
-            }
-            if (username.isNullOrEmpty()) {
-                call.reject("Provide username in login request")
-            }
-            if (password.isNullOrEmpty()) {
-                call.reject("Provide password in login request")
-            }
+                email.login(call, activity, loginCallback)
+            } else {
+                if (username.isNullOrEmpty()) {
+                    call.reject("Provide username in login request")
+                }
+                if (password.isNullOrEmpty()) {
+                    call.reject("Provide password in login request")
+                }
 
-            val account = Account.fromReq(call.data)
-            when (account.accountCommon.type) {
-                AccountTypeEnum.EMAIL -> email.login(call, activity, account)
-                AccountTypeEnum.RETAILER -> retailer.login(call, account, activity)
-
+                val account = Account.fromReq(call.data)
+                when (account.accountCommon.type) {
+                    AccountTypeEnum.EMAIL -> email.login(call, activity, account)
+                    AccountTypeEnum.RETAILER -> retailer.login(call, account, activity)
+                }
             }
         }
     }
@@ -151,7 +151,7 @@ class ReceiptCapture {
             }
         } else {
             when (req.scanType) {
-                ScanTypeEnum.EMAIL -> email.scrape(call, activity, req.account)
+                ScanTypeEnum.EMAIL -> email.scrape(call, req.account, activity)
                 ScanTypeEnum.RETAILER -> retailer.orders(call, req.account, activity)
                 else -> call.reject("invalid scan type for account")
             }
