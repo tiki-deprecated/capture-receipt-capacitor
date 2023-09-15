@@ -32,6 +32,13 @@ public class Account {
         self.user = email
         self.password = password
     }
+    init(retailer: String, username: String, password: String){
+        self.accountType = AccountCommon(type: .retailer, source: retailer)
+        self.user = username
+        self.password = password
+        self.isVerified = false
+    }
+    
     
     func toResultData() -> PluginCallResultData {
         return [
