@@ -1,6 +1,7 @@
 /*
+ * Retailer Class
  * Copyright (c) TIKI Inc.
- * MIT license. See LICENSE file in root directory.
+ * MIT license. See LICENSE file in the root directory.
  */
 
 import Foundation
@@ -8,8 +9,14 @@ import BlinkReceipt
 import BlinkEReceipt
 import Capacitor
 
+/// A Swift class representing a retailer plugin for use with Capacitor.
 public class Retailer : CAPPlugin{
     
+    /// Initializes the Retailer plugin with license and product keys.
+    ///
+    /// - Parameters:
+    ///   - licenseKey: The license key for the plugin.
+    ///   - productKey: The product key for the plugin.
     public init(_ licenseKey: String, _ productKey: String)  {
         DispatchQueue.main.async {
             BRScanManager.shared().licenseKey = licenseKey
@@ -18,9 +25,15 @@ public class Retailer : CAPPlugin{
         }
         super.init()
     }
+    /// Default initializer for the Retailer plugin.
     public override init() {
         super.init()
     }
+    /// Logs in a user account with the specified credentials.
+    ///
+    /// - Parameters:
+    ///   - account: An instance of the Account struct containing user and account information.
+    ///   - call: The CAPPluginCall object representing the plugin call.
     public func login(_ account: Account, _ call: CAPPluginCall){
         let dayCutoff: Int = 365
         let username: String = account.user
@@ -44,7 +57,11 @@ public class Retailer : CAPPlugin{
             self.verifyRetailerCallback(error,viewController, connection, call, account)
         })
     }
-    
+    /// Logs out a user account.
+     ///
+     /// - Parameters:
+     ///   - call: The CAPPluginCall object representing the plugin call.
+     ///   - account: An instance of the Account struct containing user and account information.
     public func logout(_ call: CAPPluginCall, _ account: Account) {
         if (account.user == "" && account.accountType.source == "") {
             BRAccountLinkingManager.shared().unlinkAllAccounts {
@@ -64,7 +81,11 @@ public class Retailer : CAPPlugin{
             }
         }
     }
-    
+    /// Retrieves orders for a specific user account or for all linked accounts.
+    ///
+    /// - Parameters:
+    ///   - account: An optional instance of the Account struct containing user and account information.
+    ///   - call: The CAPPluginCall object representing the plugin call.
     public func orders(_ account: Account?, _ call: CAPPluginCall){
         if(account == nil){
             allAccountsOrders(call)
@@ -76,12 +97,17 @@ public class Retailer : CAPPlugin{
             return
         }
         
-        let taskId = BRAccountLinkingManager.shared().grabNewOrders(for: retailer) { retailer, order, remaining, viewController, errorCode, sessionId in
+        BRAccountLinkingManager.shared().grabNewOrders(for: retailer) { retailer, order, remaining, viewController, errorCode, sessionId in
             if(errorCode == .none && order != nil){
                 call.resolve(RspReceipt(scanResults: order!).toPluginCallResultData())
             }
         }
     }
+    
+    /// Retrieves orders for all linked accounts.
+    ///
+    /// - Parameters:
+    ///   - call: The CAPPluginCall object representing the plugin call.
     public func allAccountsOrders(_ call: CAPPluginCall){
         call.keepAlive = true
         var returnedAccounts = 0
@@ -102,20 +128,29 @@ public class Retailer : CAPPlugin{
         }
     }
     
+    /// Retrieves a list of linked accounts.
+    ///
+    /// - Returns: An array of Account objects representing linked accounts.
     public func accounts () -> [Account] {
-        var retailers = BRAccountLinkingManager.shared().getLinkedRetailers()
+        let retailers = BRAccountLinkingManager.shared().getLinkedRetailers()
         var accountsList = [Account]()
         for ret in retailers {
             let connection = BRAccountLinkingManager.shared().getLinkedRetailerConnection(BRAccountLinkingRetailer(rawValue: ret.uintValue)!)
             let isVerified =  false
-            let source = RetailerEnum.AMAZON_BETA
             let accountCommon = AccountCommon.init(type: .retailer, source: "AMAZON")
             let account = Account(accountType: accountCommon, user: connection!.username!, password: connection!.password!, isVerified: isVerified)
             accountsList.append(account)
         }
         return accountsList
     }
-    
+    /// Handles the callback after attempting to verify a retailer account.
+    ///
+    /// - Parameters:
+    ///   - error: The BRAccountLinkingError code indicating the result of the verification.
+    ///   - viewController: The UIViewController to present for verification if needed.
+    ///   - connection: The BRAccountLinkingConnection object representing the user's account connection.
+    ///   - call: The CAPPluginCall object representing the plugin call.
+    ///   - account: An instance of the Account struct containing user and account information.
     private func verifyRetailerCallback(
         _ error: BRAccountLinkingError,
         _ viewController: UIViewController?,

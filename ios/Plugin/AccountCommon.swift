@@ -1,22 +1,21 @@
 /*
+ * AccountCommon Struct
  * Copyright (c) TIKI Inc.
- * MIT license. See LICENSE file in root directory.
+ * MIT license. See LICENSE file in the root directory.
  */
 
 import Foundation
 
+/// A Swift struct representing common properties of an account, such as its type and source.
 public struct AccountCommon{
     
+    /// The type of the account, represented by an AccountTypeEnum.
     let type: AccountTypeEnum
+    /// The source of the account, typically a string identifier.
     let source: String
     
+    /// A dictionary of default AccountCommon objects for various sources.
     static let defaults: [String: AccountCommon] = [
-//        "AMAZON" : AccountCommon(type: .retailer, source: RetailerEnum.AMAZON_BETA.rawValue),
-//        "amazonBeta" : AccountCommon(type: .retailer, source: RetailerEnum.AMAZON_BETA.rawValue),
-//        "amazon" : AccountCommon(type: .retailer, source: RetailerEnum.AMAZON_BETA.rawValue),
-//        "gmail" : AccountCommon(type: .email, source: EmailEnum.GMAIL.rawValue)
-//        
-//        
         "ACME_MARKETS" : AccountCommon(type: .retailer, source: RetailerEnum.ACME_MARKETS.rawValue),
         "ALBERTSONS" : AccountCommon(type: .retailer, source: RetailerEnum.ALBERTSONS.rawValue),
         "AMAZON": AccountCommon(type: .retailer, source: RetailerEnum.AMAZON_BETA.rawValue),

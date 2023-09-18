@@ -1,20 +1,26 @@
 /*
+ * ReceiptCapture Class
  * Copyright (c) TIKI Inc.
- * MIT license. See LICENSE file in root directory.
+ * MIT license. See LICENSE file in the root directory.
  */
 
 import Foundation
 import Capacitor
 import BlinkReceipt
 
+/// A Swift class responsible for receipt capture and management.
 public class ReceiptCapture: NSObject {
     
     var email: Email? = nil
     var physical: Physical? = nil
     var retailer: Retailer? = nil
     
+    /// The pending CAPPluginCall to handle asynchronous scanning.
     public static var pendingScanCall: CAPPluginCall?
     
+    /// Initializes the ReceiptCapture class.
+    ///
+    /// - Parameter call: The CAPPluginCall representing the initialization request.
     public func initialize(_ call: CAPPluginCall) {
         let reqInit = ReqInitialize(call)
         let licenseKey = reqInit.licenseKey
@@ -28,6 +34,9 @@ public class ReceiptCapture: NSObject {
         retailer = Retailer(licenseKey, productKey)
     }
     
+    /// Handles user login for receipt management.
+    ///
+    /// - Parameter call: The CAPPluginCall representing the login request.
    public func login(_ call: CAPPluginCall) {
         let reqLogin = ReqLogin(data: call)
         guard let accountType = AccountCommon.defaults[reqLogin.source] else {
@@ -52,7 +61,9 @@ public class ReceiptCapture: NSObject {
             break
         }
     }
-    
+    /// Handles user logout from receipt management.
+    ///
+    /// - Parameter call: The CAPPluginCall representing the logout request.
     public func logout(_ call: CAPPluginCall) {
         let reqLogout = ReqLogin(data: call)
         if(reqLogout.source == ""){
@@ -96,7 +107,9 @@ public class ReceiptCapture: NSObject {
             break
         }
     }
-    
+    /// Retrieves a list of user accounts for receipt management.
+     ///
+     /// - Parameter call: The CAPPluginCall representing the request for account information.
     public func accounts(_ call: CAPPluginCall) {
         guard let retailer = retailer else {
             call.reject("Retailer not initialized. Did you call .initialize()?")
@@ -116,6 +129,9 @@ public class ReceiptCapture: NSObject {
         )
     }
     
+    /// Initiates receipt scanning based on the specified account type.
+    ///
+    /// - Parameter call: The CAPPluginCall representing the scan request.
     public func scan(_ call: CAPPluginCall) {
         let req = ReqScan(data: call)
         if req.account == nil {
