@@ -28,14 +28,15 @@ export class ReceiptCapture {
    * @param productKey - The optional product intelligence key for your application.
    * @throws Error if the initialization fails.
    */
-  initialize = async (licenseKey: string, productKey: string): Promise<void> => {
+  initialize = async (licenseKey: string, productKey: string, googleId: string | undefined): Promise<void> => {
     const req: ReqInitialize = {
       licenseKey: licenseKey,
       productKey: productKey,
-    }
-    await this.plugin.initialize(req).catch( (error) => {
+      googleId: googleId,
+    };
+    await this.plugin.initialize(req).catch((error) => {
       throw Error(error);
-    })
+    });
   };
 
   /**
@@ -45,7 +46,8 @@ export class ReceiptCapture {
    * @param source - the source from that account, that can be an email service or a retailer service.
    * @returns - the Account interface with the logged in information.
    */
-  login = (username: string, password: string, source: string): Promise<Account> => this.plugin.login({username, password, source})
+  login = (username: string, password: string, source: string): Promise<Account> =>
+    this.plugin.login({ username, password, source });
 
   /**
    * Log out from one or all {@link Account}.
@@ -54,7 +56,8 @@ export class ReceiptCapture {
    * @param source - the source from that account, that can be an email service or a retailer service.
    * @returns - the Account that logged out
    */
-  logout = (username?: string, password?: string, source?: string): Promise<Account> => this.plugin.logout({username: username!, password: password!, source: source!})
+  logout = (username?: string, password?: string, source?: string): Promise<Account> =>
+    this.plugin.logout({ username: username!, password: password!, source: source! });
 
   /**
    * Scan for receipts. That can be a physical one, the receipts from an email/retailer account, or all receipts.
@@ -62,11 +65,14 @@ export class ReceiptCapture {
    * @param account - The account that will be scanned for receipts.
    * @returns - The scanned Receipt and a boolean indicates the execution.
    */
-  scan = (scanType: ScanType | undefined, account?: Account): Promise<{receipt: Receipt, isRunning: boolean, account?: Account}> => this.plugin.scan({scanType, account})
+  scan = (
+    scanType: ScanType | undefined,
+    account?: Account,
+  ): Promise<{ receipt: Receipt; isRunning: boolean; account?: Account }> => this.plugin.scan({ scanType, account });
 
   /**
    * Retrieves all saved accounts.
    * @returns - an array of Accounts.
    */
-  accounts = async (): Promise<Account[]> => await this.plugin.accounts()
+  accounts = async (): Promise<Account[]> => await this.plugin.accounts();
 }
