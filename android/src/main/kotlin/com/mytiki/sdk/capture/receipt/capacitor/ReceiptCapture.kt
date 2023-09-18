@@ -5,6 +5,7 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import com.getcapacitor.JSObject
@@ -27,10 +28,12 @@ class ReceiptCapture {
     /**
      * Initialize the receipt capture plugin.
      *
+     * This function initializes the receipt capture plugin and its components (physical, email, and retailer).
+     *
      * @param call The plugin call object.
      * @param activity The Android application activity.
      */
-    fun initialize(call: PluginCall, activity: AppCompatActivity) {
+    fun initialize(call: PluginCall, activity: Context) {
         val req = ReqInitialize(call.data)
         MainScope().async {
             physical.initialize(req, activity) { msg, data -> call.reject(msg, data) }.await()
@@ -44,10 +47,13 @@ class ReceiptCapture {
     /**
      * Login with the specified account.
      *
+     * This function allows users to log in with their email or retailer accounts.
+     *
      * @param call The plugin call object.
      * @param activity The Android application activity.
+     * @param gmailLoginCallback Callback function for handling login activities.
      */
-    fun login(call: PluginCall, activity: AppCompatActivity, loginCallback: (Intent, Int) -> Unit) {
+    fun login(call: PluginCall, activity: AppCompatActivity, gmailLoginCallback: (Intent, Int) -> Unit) {
         val source = call.data.getString("source")
         val username = call.data.getString("username")
         val password = call.data.getString("password")
@@ -55,7 +61,7 @@ class ReceiptCapture {
             call.reject("Provide source in login request")
         } else {
             if(source == EmailEnum.GMAIL.toString()){
-                email.login(call, activity, loginCallback)
+                email.login(call, activity, gmailLoginCallback)
             } else {
                 if (username.isNullOrEmpty()) {
                     call.reject("Provide username in login request")
@@ -75,6 +81,8 @@ class ReceiptCapture {
 
     /**
      * Logout from the specified account or all accounts.
+     *
+     * This function allows users to log out from specific accounts or all accounts.
      *
      * @param call The plugin call object.
      * @param activity The Android application activity.
@@ -115,6 +123,8 @@ class ReceiptCapture {
     /**
      * Get a list of accounts.
      *
+     * This function retrieves a list of email and retailer accounts.
+     *
      * @param call The plugin call object.
      * @param activity The Android application activity.
      */
@@ -131,6 +141,8 @@ class ReceiptCapture {
 
     /**
      * Perform a receipt scan operation.
+     *
+     * This function performs a receipt scan operation based on the provided scan type and account.
      *
      * @param plugin The Capacitor plugin.
      * @param call The plugin call object.
