@@ -15,6 +15,7 @@ import com.getcapacitor.annotation.ActivityCallback
 import com.getcapacitor.annotation.CapacitorPlugin
 import com.getcapacitor.annotation.Permission
 import com.getcapacitor.annotation.PermissionCallback
+import kotlin.properties.Delegates
 
 /**
 *
@@ -36,6 +37,7 @@ import com.getcapacitor.annotation.PermissionCallback
 )
 class ReceiptCapturePlugin : Plugin() {
     private val receiptCapture = ReceiptCapture()
+    private var requestCode by Delegates.notNull<Int>()
 
     /**
      * Initializes the receipt capture functionality.
@@ -51,7 +53,7 @@ class ReceiptCapturePlugin : Plugin() {
     /**
      * Logs in with the specified account.
      *
-     * This method allows users to log in their email or retailer (amazon, wallmart, best-buy...) account.
+     * This method allows users to log in their email or retailer (amazon, wallmart, gmail...) account.
      * Successful login is required
      * for accessing certain features and functionalities.
      * The [JSObject] from [PluginCall.data] sent through call must have source, username and password properties
@@ -59,12 +61,15 @@ class ReceiptCapturePlugin : Plugin() {
      * @param call The Capacitor [PluginCall] instance.
      */
     @PluginMethod
-    fun login(call: PluginCall) = receiptCapture.login(call, activity)
+    fun login(call: PluginCall) = receiptCapture.login(call, activity){intent, reqCode ->
+        requestCode = reqCode
+        startActivityForResult(call, intent, "onLoginResult")
+    }
 
     /**
      * Logs out of the receipt capture service.
      *
-     * This method allows users to logout their email or retailer (amazon, wallmart, best-buy...) account.
+     * This method allows users to logout their email or retailer (amazon, wallmart, gmail...) account.
      * It can be used to end the session and secure user data.
      * To logout from a retailer account the [JSObject] from [PluginCall.data] sent through call must have a source propertie.
      * To logout from an email account the [JSObject] from [PluginCall.data] sent through call must have source and source, username and password properties.
@@ -112,6 +117,20 @@ class ReceiptCapturePlugin : Plugin() {
      */
     @ActivityCallback
     private fun onScanResult(call: PluginCall, result: ActivityResult) = receiptCapture.physical.onResult(call, result)
+
+    /**
+     * Callback invoked when the gmail sing in activity returns a result.
+     *
+     * This callback is triggered when the gmail sing in activity completes successfully or with an error.
+     * It provides the result of the sing in if successful.
+     *
+     * @param call The Capacitor plugin call instance.
+     * @param result The result of the gmail sing in.
+     */
+    @ActivityCallback
+    private fun onLoginResult(call: PluginCall,  result: ActivityResult) {
+        receiptCapture.email.onLoginResult(call, requestCode, result.resultCode, result.data)
+    }
 
     /**
      * Callback invoked when the camera permission is requested.

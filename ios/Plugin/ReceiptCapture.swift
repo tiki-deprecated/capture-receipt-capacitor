@@ -1,32 +1,42 @@
 /*
+ * ReceiptCapture Class
  * Copyright (c) TIKI Inc.
- * MIT license. See LICENSE file in root directory.
+ * MIT license. See LICENSE file in the root directory.
  */
 
 import Foundation
 import Capacitor
 import BlinkReceipt
 
+/// A Swift class responsible for receipt capture and management.
 public class ReceiptCapture: NSObject {
     
     var email: Email? = nil
     var physical: Physical? = nil
     var retailer: Retailer? = nil
     
+    /// The pending CAPPluginCall to handle asynchronous scanning.
     public static var pendingScanCall: CAPPluginCall?
     
+    /// Initializes the ReceiptCapture class.
+    ///
+    /// - Parameter call: The CAPPluginCall representing the initialization request.
     public func initialize(_ call: CAPPluginCall) {
         let reqInit = ReqInitialize(call)
         let licenseKey = reqInit.licenseKey
         let productKey = reqInit.productKey
+        let googleClientId = reqInit.googleClientId
         let scanManager = BRScanManager.shared()
         scanManager.licenseKey = licenseKey
         scanManager.prodIntelKey = productKey
         physical = Physical()
-        email = Email()
+        email = Email(licenseKey, productKey, googleClientId)
         retailer = Retailer(licenseKey, productKey)
     }
     
+    /// Handles user login for receipt management.
+    ///
+    /// - Parameter call: The CAPPluginCall representing the login request.
    public func login(_ call: CAPPluginCall) {
         let reqLogin = ReqLogin(data: call)
         guard let accountType = AccountCommon.defaults[reqLogin.source] else {
@@ -51,15 +61,35 @@ public class ReceiptCapture: NSObject {
             break
         }
     }
-    
+    /// Handles user logout from receipt management.
+    ///
+    /// - Parameter call: The CAPPluginCall representing the logout request.
     public func logout(_ call: CAPPluginCall) {
         let reqLogout = ReqLogin(data: call)
+        if(reqLogout.source == ""){
+            if(reqLogout.username != "" || reqLogout.password != ""){
+                call.reject("Error: Invalid logout arguments. If you want delete all accounts, don't send username of password")
+                return
+            }else{
+                guard let retailer = retailer else {
+                    call.reject("Retailer not initialized. Did you call .initialize()?")
+                    return
+                }
+                guard let email = email else {
+                    call.reject("Email not initialized. Did you call .initialize()?")
+                    return
+                }
+                email.logout(call, nil)
+                retailer.logout(call,  Account(retailer: "", username: "", password: ""))
+                return
+            }
+
+        }
         guard let accountType = AccountCommon.defaults[reqLogout.source] else {
             call.reject("Invalid source: \(reqLogout.source)")
             return
         }
-        
-        let account = Account.init(accountType: accountType, user: reqLogout.username, password: reqLogout.password, isVerified: false)
+        let account = Account.init(accountType: AccountCommon.defaults[reqLogout.source]!, user: reqLogout.username, password: reqLogout.password, isVerified: false)
         switch account.accountType.type {
         case .email :
             guard let email = email else {
@@ -73,20 +103,35 @@ public class ReceiptCapture: NSObject {
                 call.reject("Retailer not initialized. Did you call .initialize()?")
                 return
             }
-            retailer.logout(account, call)
+            retailer.logout(call, account)
             break
         }
     }
-    
+    /// Retrieves a list of user accounts for receipt management.
+     ///
+     /// - Parameter call: The CAPPluginCall representing the request for account information.
     public func accounts(_ call: CAPPluginCall) {
         guard let retailer = retailer else {
             call.reject("Retailer not initialized. Did you call .initialize()?")
             return
         }
+        guard let email = email else {
+            call.reject("Retailer not initialized. Did you call .initialize()?")
+            return
+        }
+        
+        let emails = email.accounts()
         let retailers = retailer.accounts()
-        call.resolve(RspAccountList(accounts: retailers).toPluginCallResultData())
+        call.resolve(
+            RspAccountList(
+                accounts: emails + retailers
+            ).toPluginCallResultData()
+        )
     }
     
+    /// Initiates receipt scanning based on the specified account type.
+    ///
+    /// - Parameter call: The CAPPluginCall representing the scan request.
     public func scan(_ call: CAPPluginCall) {
         let req = ReqScan(data: call)
         if req.account == nil {
@@ -114,8 +159,16 @@ public class ReceiptCapture: NSObject {
                 physical.scan()
                 break
             case .ONLINE:
-                Email().scan(call, req.account)
-                Retailer().orders(req.account, call)
+                guard let retailer = retailer else {
+                    call.reject("Retailer not initialized. Did you call .initialize()?")
+                    return
+                }
+                guard let email = email else {
+                    call.reject("Email not initialized. Did you call .initialize()?")
+                    return
+                }
+                email.scan(call, req.account)
+                retailer.orders(req.account, call)
                 break
             default:
                 call.reject("invalid scan type for account")
@@ -123,10 +176,18 @@ public class ReceiptCapture: NSObject {
         } else {
             switch req.scanType {
             case .EMAIL:
-                Email().scan(call, req.account)
+                guard let email = email else {
+                    call.reject("Email not initialized. Did you call .initialize()?")
+                    return
+                }
+                email.scan(call, req.account)
                 break
             case .RETAILER:
-                Retailer("","").orders(req.account, call)
+                guard let retailer = retailer else {
+                    call.reject("Retailer not initialized. Did you call .initialize()?")
+                    return
+                }
+                retailer.orders(req.account, call)
                 break
             default:
                 call.reject("invalid scan type for account")

@@ -1,14 +1,17 @@
 /*
+ * RetailerEnum Enum
  * Copyright (c) TIKI Inc.
- * MIT license. See LICENSE file in root directory.
+ * MIT license. See LICENSE file in the root directory.
  */
 
 import Foundation
 import BlinkEReceipt
 import Capacitor
 
+/// An enumeration representing various retailer names as raw string values.
 public enum RetailerEnum: String {
     
+    // List of supported retailer names
     case ACME_MARKETS
     case ALBERTSONS
     case AMAZON
@@ -71,6 +74,9 @@ public enum RetailerEnum: String {
     case WALMART_CA
     case WEGMANS
     
+    /// Converts a `RetailerEnum` value to its corresponding `BRAccountLinkingRetailer` representation.
+    ///
+    /// - Returns: The `BRAccountLinkingRetailer` associated with the `RetailerEnum` value.
     func toBRAccountLinkingRetailer() -> BRAccountLinkingRetailer? {
         switch self{
             case .ACME_MARKETS : return .acmeMarkets
@@ -137,7 +143,10 @@ public enum RetailerEnum: String {
 
         }
     }
-    
+    /// Converts a `BRAccountLinkingRetailer` value to its corresponding `RetailerEnum` representation.
+    ///
+    /// - Parameter retailer: The `BRAccountLinkingRetailer` value to convert.
+    /// - Returns: The raw string value of the `RetailerEnum` associated with the `BRAccountLinkingRetailer`, or `nil` if not found.
     func toString(_ retailer: BRAccountLinkingRetailer) -> String? {
         switch self{
         case .ACME_MARKETS : return "ACME_MARKETS"

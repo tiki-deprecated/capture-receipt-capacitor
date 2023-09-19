@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { login, accounts, scan, logout, initialize } from './main';
+import { login, accounts, scan, logout, initialize, loginGmail, scanGmail } from './main';
 </script>
 
 <template>
@@ -10,9 +10,11 @@ import { login, accounts, scan, logout, initialize } from './main';
   <main>
     <div class="greetings">
       <h1>Oh, Hi!</h1>
-      <button @click="login('teste', 'teste','teste')">Login</button>
+      <button @click="login()">Login</button>
+      <button @click="loginGmail()">Login Gmail</button>
       <button @click="accounts()">Accounts</button>
-      <button @click="scan()">Scan</button>
+      <button @click="scan()">Scan Retailer</button>
+      <button @click="scanGmail()">Scan Gmail</button>
       <button @click="logout()">Logout</button>
       <button @click="initialize()">initialize</button>
     </div>

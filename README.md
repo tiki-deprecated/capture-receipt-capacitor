@@ -62,6 +62,17 @@ instance.initialize('<LICENSE KEY>', '<PRODUCT KEY>')
 
 _NOTE: Only iOS and Android are supported._
 
+### Google OAuth
+
+To use Google OAuth for Gmail login provide a valid [Google OAuth Client ID](https://developers.google.com/identity/protocols/oauth2) in initialization:
+
+```ts
+import { instance } from '@mytiki/tiki-capture-receipt-capacitor'
+
+instance.initialize('<LICENSE KEY>', '<PRODUCT KEY>', '<GOOGLE_CLIENT_ID>')
+        .then((rsp) => console.log(`initialized`))
+```
+
 # Contributing
 
 - Use [GitHub Issues](https://github.com/tiki/tiki-capture-receipt-capacitor/issues) to report any bugs you find or to request enhancements.

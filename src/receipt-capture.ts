@@ -23,50 +23,74 @@ export class ReceiptCapture {
   }
 
   /**
-   * Initializes the receipt capture plugin with a license key and product intelligence key.
+   * Initializes the receipt capture plugin.
+   * 
+   * It initializes the Microblink SDK with the License Key and Product Intelligence Key.
+   * To use Google OAuth for Gmail, provide a [Google OAuth Client Id]((https://developers.google.com/identity/protocols/oauth2) 
+   * 
    * @param licenseKey - The license key for your application.
-   * @param productKey - The optional product intelligence key for your application.
+   * @param productKey - The product intelligence key for your application.
+   * @param googleClientId - The Google Client Id for OAuth login. If not provided, Gmail scraping will
+   * use IMAP login. 
+   * 
    * @throws Error if the initialization fails.
    */
-  initialize = async (licenseKey: string, productKey: string): Promise<void> => {
+  initialize = async (licenseKey: string, productKey: string, googleClientId: string | undefined): Promise<void> => {
     const req: ReqInitialize = {
       licenseKey: licenseKey,
       productKey: productKey,
-    }
-    await this.plugin.initialize(req).catch( (error) => {
+      googleClientId: googleClientId,
+    };
+    await this.plugin.initialize(req).catch((error) => {
       throw Error(error);
-    })
+    });
   };
 
   /**
    * Login into a retailer or email account to scan for receipts.
+   * 
    * @param username - the username of the account.
    * @param password - the password of the account
    * @param source - the source from that account, that can be an email service or a retailer service.
+   * 
    * @returns - the Account interface with the logged in information.
    */
-  login = (username: string, password: string, source: string): Promise<Account> => this.plugin.login({username, password, source})
+  login = (username: string, password: string, source: string): Promise<Account> =>
+    this.plugin.login({ username, password, source });
 
   /**
    * Log out from one or all {@link Account}.
+   * 
+   * To logout from all accounts, do not provide username or password. 
+   * 
    * @param username - the username of the account that will be logged out.
    * @param password - the password of the account that will be logged out
    * @param source - the source from that account, that can be an email service or a retailer service.
+   * 
    * @returns - the Account that logged out
    */
-  logout = (username?: string, password?: string, source?: string): Promise<Account> => this.plugin.logout({username: username!, password: password!, source: source!})
+  logout = (username?: string, password?: string, source?: string): Promise<Account> =>
+    this.plugin.logout({ username: username!, password: password!, source: source! });
 
   /**
-   * Scan for receipts. That can be a physical one, the receipts from an email/retailer account, or all receipts.
+   * Scan for receipts. 
+   * 
+   * The scanType method defines which scan will be performed.
+   * 
    * @param scanType - The type of the scan.
    * @param account - The account that will be scanned for receipts.
+   * 
    * @returns - The scanned Receipt and a boolean indicates the execution.
    */
-  scan = (scanType: ScanType | undefined, account?: Account): Promise<{receipt: Receipt, isRunning: boolean, account?: Account}> => this.plugin.scan({scanType, account})
+  scan = (
+    scanType: ScanType | undefined,
+    account?: Account,
+  ): Promise<{ receipt: Receipt; isRunning: boolean; account?: Account }> => this.plugin.scan({ scanType, account });
 
   /**
-   * Retrieves all saved accounts.
+   * Retrieves all saved email and accounts.
+   * 
    * @returns - an array of Accounts.
    */
-  accounts = async (): Promise<Account[]> => await this.plugin.accounts()
+  accounts = async (): Promise<Account[]> => await this.plugin.accounts();
 }
