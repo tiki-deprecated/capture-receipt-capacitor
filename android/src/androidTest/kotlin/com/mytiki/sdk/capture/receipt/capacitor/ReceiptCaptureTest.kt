@@ -22,6 +22,7 @@ class ReceiptCaptureTest {
 
     private lateinit var licenseKey: String
     private lateinit var productKey: String
+    private lateinit var googleId: String
     private lateinit var retailerUsername: String
     private lateinit var retailerPassword: String
     private lateinit var retailerSource: String
@@ -36,11 +37,14 @@ class ReceiptCaptureTest {
         appContext = InstrumentationRegistry.getInstrumentation().context;
         licenseKey = InstrumentationRegistry.getArguments().getString("licenseKey")!!
         productKey = InstrumentationRegistry.getArguments().getString("productKey")!!
+        googleId = InstrumentationRegistry.getArguments().getString("googleId")!!
+
 
         callInit = PluginCallBuilder(
             JSONObject()
                 .put("licenseKey", licenseKey)
                 .put("productKey", productKey)
+                .put("googleId", googleId)
         )
 
         receiptCapture.initialize(callInit.build(), appContext)
