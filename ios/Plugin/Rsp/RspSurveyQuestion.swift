@@ -1,4 +1,5 @@
 /*
+ * RspSurveyQuestion Struct
  * Copyright (c) TIKI Inc.
  * MIT license. See LICENSE file in root directory.
  */
@@ -9,22 +10,42 @@ import BlinkEReceipt
 import Capacitor
 
 
-struct RspSurveyQuestion : Rsp {
+/**
+ Represents a response containing survey question details.
+
+ This struct is used to convey survey question details including text, type, answers, multipleAnswers flag, and user response.
+ */
+struct RspSurveyQuestion: Rsp {
+    /// The text of the survey question.
     private let text: String?
+    /// The type of the survey question.
     private let type: BRSurveyQuestionType
+    /// The list of survey answers associated with the question.
     private let answers: [BRSurveyAnswer]
+    /// A boolean flag indicating whether multiple answers are allowed.
     private let multipleAnswers: Bool
+    /// The user's response to the survey question.
     private let userResponse: BRSurveyResponse
-    
-    init (surveyQuestion: BRSurveyQuestion) {
+
+    /**
+     Initializes an `RspSurveyQuestion` struct.
+
+     - Parameters:
+        - surveyQuestion: The survey question containing text, type, answers, multipleAnswers flag, and user response.
+     */
+    init(surveyQuestion: BRSurveyQuestion) {
         text = surveyQuestion.text
         type = surveyQuestion.type
         answers = surveyQuestion.answers
         multipleAnswers = surveyQuestion.multipleAnswers
         userResponse = surveyQuestion.userResponse
     }
-    
-    
+
+    /**
+     Converts the `RspSurveyQuestion` struct into a dictionary suitable for use in plugin response data.
+
+     - Returns: A dictionary containing the survey question's text, type, answers, multipleAnswers flag, and user response in a format suitable for a Capacitor plugin call result.
+     */
     func toPluginCallResultData() -> Capacitor.PluginCallResultData {
         var ret = JSObject()
         ret["text"] = text
@@ -35,3 +56,4 @@ struct RspSurveyQuestion : Rsp {
         return ret
     }
 }
+

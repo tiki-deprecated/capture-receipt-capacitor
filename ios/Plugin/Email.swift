@@ -19,10 +19,12 @@ public class Email {
     ///   - productKey: The product key for the plugin.
     ///   - googleClientId: The Google Client ID for OAuth authentication (optional).
     public init(_ licenseKey: String, _ productKey: String, _ googleClientId: String?)  {
-        BRScanManager.shared().licenseKey = licenseKey
-        BRScanManager.shared().prodIntelKey = productKey
-        BREReceiptManager.shared().googleClientId = googleClientId
-        BRAccountLinkingManager.shared()
+        DispatchQueue.main.async {
+            BRScanManager.shared().licenseKey = licenseKey
+            BRScanManager.shared().prodIntelKey = productKey
+            BREReceiptManager.shared().googleClientId = googleClientId
+            BRAccountLinkingManager.shared()
+        }
         
     }
     
@@ -32,9 +34,11 @@ public class Email {
     ///   - licenseKey: The license key for the plugin.
     ///   - productKey: The product key for the plugin.
     public init(_ licenseKey: String, _ productKey: String){
-        BRScanManager.shared().licenseKey = licenseKey
-        BRScanManager.shared().prodIntelKey = productKey
-        BRAccountLinkingManager.shared()
+        DispatchQueue.main.async {
+            BRScanManager.shared().licenseKey = licenseKey
+            BRScanManager.shared().prodIntelKey = productKey
+            BRAccountLinkingManager.shared()
+        }
     }
     
     /// Logs in a user account using the provided credentials or initiates OAuth authentication for Gmail.
