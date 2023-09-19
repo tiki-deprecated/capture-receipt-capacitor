@@ -8,81 +8,147 @@ import BlinkReceipt
 import BlinkEReceipt
 import Capacitor
 
-public struct RspReceipt : Rsp {
-    private let receiptDate: String?
-    private let receiptTime: String?
-    private let retailerId:  UInt
-    private let products: [RspProduct]
-    private let coupons: [RspCoupon]
-    private let total: Float?
-    private let tip: Float?
-    private let subtotal: Float?
-    private let taxes: Float?
-    private let storeNumber: String?
-    private let merchantName: String?
-    private let storeAddress: String?
-    private let storeCity: String?
-    private let blinkReceiptId: String?
-    private let storeState: String?
-    private let storeZip: String?
-    private let storePhone: String?
-    private let cashierId: String?
-    private let transactionId: String?
-    private let registerId: String?
-    private let paymentMethods: [RspPaymentMethod]
-    private let taxId: String?
-    private let mallName: String?
-    private let last4cc: String?
-    private let ocrConfidence: Float?
-    private let foundTopEdge: Bool?
-    private let foundBottomEdge: Bool?
-    private let eReceiptOrderNumber: String?
-    private let eReceiptOrderStatus: String?
-    private let eReceiptRawHtml: String?
-    private let shipments: [RspShipment]
-    private let longTransactionId: String?
-    private let subtotalMatches: Bool?
-    private let eReceiptEmailProvider: String?
-    private let eReceiptEmailId: String?
-    private let eReceiptAuthenticated: Bool?
-    private let instacartShopper: Bool?
-    private let eReceiptComponentEmails: [RspReceipt]
-    private let duplicate: Bool?
-    private let fraudulent: Bool?
-    private let duplicateBlinkReceiptIds: [String]
-    private let merchantMatchGuess: String?
-    private let productsPendingLookup: Int?
-    private let qualifiedPromotions: [RspPromotion]
-    private let unqualifiedPromotions: [RspPromotion]
-    private let extendedFields: JSObject?
-    private let eReceiptAdditionalFees: JSObject?
-    private let purchaseType: String?
-    private let channel: String?
-    private let eReceiptFulfilledBy: String?
-    private let eReceiptPOSSystem: String?
-    private let eReceiptSubMerchant: String?
-    private let barcode: String?
-    private let eReceiptMerchantEmail: String?
-    private let eReceiptEmailSubject: String?
-    private let eReceiptShippingCosts: Float?
-    private let currencyCode: String?
-    private let clientMerchantName: String?
-    private let loyaltyProgram: Bool?
-    private let merchantSources: [NSNumber]
-    private let paymentTerminalId: String?
-    private let paymentTransactionId: String?
-    private let combinedRawText: String?
-    //    private let storeCountry: String?
-    //    private let eReceiptShippingAddress: String?
-    //    private let eReceipt: Bool
-    //    private let receiptDateTime: Int64?
-    //    private let submissionDate: Int64?
-    //    private let eReceiptShippingStatus: String?
-    //    private let qualifiedSurveys: [RspSurvey]
-//    private let merchantSource: NSNumber?
+/**
+ Represents a response containing receipt information.
 
-    
+ This struct is used to convey details about a receipt, including various receipt fields, such as date, time, products, coupons, totals, and more.
+ */
+public struct RspReceipt: Rsp {
+    /// The date of the receipt, if available.
+    private let receiptDate: String?
+    /// The time of the receipt, if available.
+    private let receiptTime: String?
+    /// The retailer's identifier.
+    private let retailerId: UInt
+    /// An array of products associated with the receipt.
+    private let products: [RspProduct]
+    /// An array of coupons associated with the receipt.
+    private let coupons: [RspCoupon]
+    /// The total amount of the receipt, if available.
+    private let total: Float?
+    /// The tip amount, if available.
+    private let tip: Float?
+    /// The subtotal amount, if available.
+    private let subtotal: Float?
+    /// The taxes amount, if available.
+    private let taxes: Float?
+    /// The store number, if available.
+    private let storeNumber: String?
+    /// The merchant name, if available.
+    private let merchantName: String?
+    /// The store address, if available.
+    private let storeAddress: String?
+    /// The store city, if available.
+    private let storeCity: String?
+    /// The unique identifier for the receipt.
+    private let blinkReceiptId: String?
+    /// The store state, if available.
+    private let storeState: String?
+    /// The store zip code, if available.
+    private let storeZip: String?
+    /// The store phone number, if available.
+    private let storePhone: String?
+    /// The cashier's identifier, if available.
+    private let cashierId: String?
+    /// The transaction identifier, if available.
+    private let transactionId: String?
+    /// The register identifier, if available.
+    private let registerId: String?
+    /// An array of payment methods used for the receipt.
+    private let paymentMethods: [RspPaymentMethod]
+    /// The tax identifier, if available.
+    private let taxId: String?
+    /// The mall name, if available.
+    private let mallName: String?
+    /// The last four digits of the credit card, if available.
+    private let last4cc: String?
+    /// The OCR (Optical Character Recognition) confidence level, if available.
+    private let ocrConfidence: Float?
+    /// Indicates if the top edge of the receipt was found during processing.
+    private let foundTopEdge: Bool?
+    /// Indicates if the bottom edge of the receipt was found during processing.
+    private let foundBottomEdge: Bool?
+    /// The eReceipt order number, if available.
+    private let eReceiptOrderNumber: String?
+    /// The eReceipt order status, if available.
+    private let eReceiptOrderStatus: String?
+    /// The raw HTML content of the eReceipt, if available.
+    private let eReceiptRawHtml: String?
+    /// An array of shipment information associated with the receipt.
+    private let shipments: [RspShipment]
+    /// The long transaction identifier, if available.
+    private let longTransactionId: String?
+    /// Indicates if the subtotal matches expectations.
+    private let subtotalMatches: Bool?
+    /// The email provider associated with the eReceipt, if available.
+    private let eReceiptEmailProvider: String?
+    /// The email identifier associated with the eReceipt, if available.
+    private let eReceiptEmailId: String?
+    /// Indicates if the eReceipt was successfully authenticated.
+    private let eReceiptAuthenticated: Bool?
+    /// Indicates if the shopper is an Instacart shopper.
+    private let instacartShopper: Bool?
+    /// An array of component emails associated with the eReceipt.
+    private let eReceiptComponentEmails: [RspReceipt]
+    /// Indicates if the receipt is a duplicate.
+    private let duplicate: Bool?
+    /// Indicates if the receipt is fraudulent.
+    private let fraudulent: Bool?
+    /// An array of duplicate BlinkReceipt IDs.
+    private let duplicateBlinkReceiptIds: [String]
+    /// A guess at the merchant's name.
+    private let merchantMatchGuess: String?
+    /// The number of products pending lookup.
+    private let productsPendingLookup: Int?
+    /// An array of qualified promotions associated with the receipt.
+    private let qualifiedPromotions: [RspPromotion]
+    /// An array of unqualified promotions associated with the receipt.
+    private let unqualifiedPromotions: [RspPromotion]
+    /// Extended fields of the receipt, if available.
+    private let extendedFields: JSObject?
+    /// Additional fees associated with the eReceipt, if available.
+    private let eReceiptAdditionalFees: JSObject?
+    /// The purchase type, if available.
+    private let purchaseType: String?
+    /// The channel, if available.
+    private let channel: String?
+    /// The entity that fulfilled the eReceipt, if available.
+    private let eReceiptFulfilledBy: String?
+    /// The point of sale (POS) system used for the eReceipt, if available.
+    private let eReceiptPOSSystem: String?
+    /// The sub-merchant associated with the eReceipt, if available.
+    private let eReceiptSubMerchant: String?
+    /// The barcode associated with the receipt, if available.
+    private let barcode: String?
+    /// The email address of the merchant, if available.
+    private let eReceiptMerchantEmail: String?
+    /// The subject of the eReceipt email, if available.
+    private let eReceiptEmailSubject: String?
+    /// The shipping costs associated with the eReceipt, if available.
+    private let eReceiptShippingCosts: Float?
+    /// The currency code, if available.
+    private let currencyCode: String?
+    /// The client's merchant name, if available.
+    private let clientMerchantName: String?
+    /// Indicates if the receipt is part of a loyalty program.
+    private let loyaltyProgram: Bool?
+    /// An array of merchant sources associated with the receipt.
+    private let merchantSources: [NSNumber]
+    /// The payment terminal identifier, if available.
+    private let paymentTerminalId: String?
+    /// The payment transaction identifier, if available.
+    private let paymentTransactionId: String?
+    /// The combined raw text of the receipt, if available.
+    private let combinedRawText: String?
+
+    /**
+     Initializes an `RspReceipt` struct.
+
+     - Parameters:
+        - scanResults: The `BRScanResults` object containing receipt information.
+     */
     init(scanResults: BRScanResults) {
+        // Initialization logic to map values from BRScanResults to struct properties.
         receiptDate = scanResults.receiptDate?.value
         receiptTime = scanResults.receiptTime?.value
         retailerId = scanResults.retailerId.rawValue
@@ -168,26 +234,17 @@ public struct RspReceipt : Rsp {
         paymentTerminalId = scanResults.paymentTerminalId?.value
         paymentTransactionId = scanResults.paymentTransactionId?.value
         combinedRawText = scanResults.combinedRawText
-        //        storeCountry = scanResults.store)
-        //        eReceiptShippingAddress = scanResults.ereceiptShi ReceiptShippingAddress
-        //        eReceipt = scanResults.ereceipt
-        //        receiptDateTime = scanResults.receiptTime
-        //        loyaltyForBanner = scanResults.loyaltyForBanner
-        //        submissionDate = scanResults.submissionDate
-        //        eReceiptShippingStatus = scanResults.eReceiptShippingStatus
-        //        qualifiedSurveys = scanResults.qualifiedSurveys.map { survey in RspSurvey(survey) } ?? []
-
-
-
-
-
-
-
-
     }
 
+    
+    /**
+     Converts the `RspReceipt` struct into a dictionary suitable for use in plugin response data.
+
+     - Returns: A dictionary containing receipt information in a format suitable for a Capacitor plugin call result.
+     */
     func toPluginCallResultData() -> Capacitor.PluginCallResultData {
         var ret = JSObject()
+        // Mapping struct properties to dictionary values.
         ret["receiptDate"] = receiptDate
         ret["receiptTime"] = receiptTime 
         ret["retailerId"] = Int(retailerId)
@@ -251,15 +308,6 @@ public struct RspReceipt : Rsp {
         ret["paymentTerminalId"] = paymentTerminalId
         ret["paymentTransactionId"] = paymentTransactionId
         ret["combinedRawText"] = combinedRawText
-        //        ret["merchantSource"] = merchantSource
-        //        ret["storeCountry"] = storeCountry
-        //        ret["eReceiptShippingAddress"] = eReceiptShippingAddress
-        //        ret["eReceipt"] = eReceipt
-        //        ret["receiptDateTime"] = receiptDateTime?.hashValue
-        //        ret["loyaltyForBanner"] = loyaltyForBanner
-        //        ret["submissionDate"] = submissionDate as JSValue
-        //        ret["eReceiptShippingStatus"] = eReceiptShippingStatus
-        //        ret["qualifiedSurveys"] = JSArray(arrayLiteral: qualifiedSurveys.map { survey in survey })
         return ret
     }
 }
