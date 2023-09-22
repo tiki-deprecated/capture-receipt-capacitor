@@ -74,4 +74,15 @@ public class Account {
             "verified" : isVerified ?? false
         ]
     }
+    
+    /// Converts the Account object to a PluginCallResultData dictionary for use in plugin calls.
+    ///
+    /// - Returns: A PluginCallResultData dictionary representing the Account object's properties.
+    func toString() -> [String : Any] {
+        return [
+            "username" : self.user,
+            "source" : self.accountType.source,
+            "verified" : self.isVerified ?? false
+        ]
+    }
 }

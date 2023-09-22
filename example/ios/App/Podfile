@@ -32,7 +32,7 @@ target 'App' do
   capacitor_pods
   use_frameworks!
 
-  pod 'BlinkReceipt', '~> 1.27'
+  pod 'BlinkReceipt', '~> 1.38'
   pod 'BlinkEReceipt', '~> 2.0'
 end
 

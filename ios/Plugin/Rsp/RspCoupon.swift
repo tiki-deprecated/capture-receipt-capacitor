@@ -37,8 +37,8 @@ struct RspCoupon: Rsp {
      */
     init(coupon: BRCoupon) {
         type = coupon.couponType.rawValue
-        amount = coupon.couponAmount.value
-        sku = coupon.couponSku.value
+        amount = coupon.couponAmount?.value
+        sku = coupon.couponSku?.value
         description = coupon.description
         relatedProductIndex = coupon.relatedProductIndex
     }

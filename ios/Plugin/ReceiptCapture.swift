@@ -32,6 +32,9 @@ public class ReceiptCapture: NSObject {
         physical = Physical()
         email = Email(licenseKey, productKey, googleClientId)
         retailer = Retailer(licenseKey, productKey)
+//        Task(priority: .high){
+//            retailer?.allAccountsOrders(call)
+//        }
     }
     
     /// Handles user login for receipt management.

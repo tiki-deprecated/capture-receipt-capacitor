@@ -36,27 +36,27 @@ struct RspProduct: Rsp {
     /// The category of the product, if available.
     private let category: String?
     /// The size of the product, if available.
-    private let size: String?
+//    private let size: String?
     /// The URL of the product image, if available.
-    private let imageUrl: String?
+//    private let imageUrl: String?
     /// The shipping status of the product, if available.
     private let shippingStatus: String?
     /// Additional lines associated with the product.
-    private let additionalLines: [RspAdditionalLine]
+    private let additionalLines: [RspAdditionalLine]?
     /// The price of the product after applying coupons, if available.
     private let priceAfterCoupons: Float?
     /// Indicates if the product is voided.
-    private let voided: Bool
+    private let voided: Bool?
     /// The probability associated with the product.
-    private let probability: Float
+    private let probability: Float?
     /// Indicates if the product is sensitive.
-    private let sensitive: Bool
+    private let sensitive: Bool?
     /// Possible sub-products associated with the product.
-    private let possibleProducts: [RspProduct]
+    private let possibleProducts: [RspProduct]?
     /// Sub-products of the product.
-    private let subProducts: [RspProduct]
+    private let subProducts: [RspProduct]?
     /// Indicates if the product is user-added.
-    private let added: Bool
+    private let added: Bool?
     /// The brand according to BlinkReceipt.
     private let blinkReceiptBrand: String?
     /// The category according to BlinkReceipt.
@@ -99,8 +99,8 @@ struct RspProduct: Rsp {
         productName = product.productName
         brand = product.brand
         category = product.category
-        size = product.size
-        imageUrl = product.imgUrl
+//        size = product.size
+//        imageUrl = product.imgUrl
         shippingStatus = product.shippingStatus
         additionalLines = product.additionalLines?.map { additionalLine in RspAdditionalLine(additionalLine: additionalLine) } ?? []
         priceAfterCoupons = product.priceAfterCoupons?.value
@@ -141,8 +141,8 @@ struct RspProduct: Rsp {
         ret["productName"] = productName
         ret["brand"] = brand
         ret["category"] = category
-        ret["size"] = size
-        ret["imageUrl"] = imageUrl
+//        ret["size"] = size
+//        ret["imageUrl"] = imageUrl
         ret["shippingStatus"] = shippingStatus
         ret["additionalLines"] = additionalLines
         ret["priceAfterCoupons"] = priceAfterCoupons

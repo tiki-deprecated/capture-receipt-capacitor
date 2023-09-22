@@ -17,8 +17,8 @@ public class Retailer : CAPPlugin{
     /// - Parameters:
     ///   - licenseKey: The license key for the plugin.
     ///   - productKey: The product key for the plugin.
-    public init(_ licenseKey: String, _ productKey: String)  {
-        DispatchQueue.main.async {
+    public init(_ licenseKey: String, _ productKey: String){
+        DispatchQueue.main.async{
             BRScanManager.shared().licenseKey = licenseKey
             BRScanManager.shared().prodIntelKey = productKey
             BRAccountLinkingManager.shared()
@@ -35,7 +35,7 @@ public class Retailer : CAPPlugin{
     ///   - account: An instance of the Account struct containing user and account information.
     ///   - call: The CAPPluginCall object representing the plugin call.
     public func login(_ account: Account, _ call: CAPPluginCall){
-        let dayCutoff: Int = 365
+        let dayCutoff: Int = 15
         let username: String = account.user
         guard let retailer: BRAccountLinkingRetailer =
                 RetailerEnum(rawValue: account.accountType.source)?.toBRAccountLinkingRetailer() else {
@@ -51,11 +51,19 @@ public class Retailer : CAPPlugin{
         connection.configuration.dayCutoff = dayCutoff
         connection.configuration.returnLatestOrdersOnly = false
         connection.configuration.countryCode = "US"
-        
-        BRAccountLinkingManager.shared().verifyRetailer(with: connection, withCompletion: {
-            error, viewController, sessionId in
-            self.verifyRetailerCallback(error,viewController, connection, call, account)
-        })
+        let error = BRAccountLinkingManager.shared().linkRetailer(with: connection)
+        if (error == .none) {
+            // Success
+            Task(priority: .high){
+                await BRAccountLinkingManager.shared().verifyRetailer(with: connection, withCompletion: {
+                    error, viewController, sessionId in
+                    self.verifyRetailerCallback(error,viewController, connection, call, account)
+                })
+                call.resolve(account.toResultData())
+            }
+        }else {
+            call.reject("Login Error")
+        }
     }
     /// Logs out a user account.
      ///
@@ -97,7 +105,7 @@ public class Retailer : CAPPlugin{
             return
         }
         
-        BRAccountLinkingManager.shared().grabNewOrders(for: retailer) { retailer, order, remaining, viewController, errorCode, sessionId in
+        BRAccountLinkingManager.shared().grabNewOrders(for: .walmart) { retailer, order, remaining, viewController, errorCode, sessionId in
             if(errorCode == .none && order != nil){
                 call.resolve(RspReceipt(scanResults: order!).toPluginCallResultData())
             }
@@ -111,16 +119,18 @@ public class Retailer : CAPPlugin{
     public func allAccountsOrders(_ call: CAPPluginCall){
         call.keepAlive = true
         var returnedAccounts = 0
-        let retailers = BRAccountLinkingManager.shared().getLinkedRetailers()
-        for ret in  retailers {
-            DispatchQueue.main.async {
-                BRAccountLinkingManager.shared().grabNewOrders( for: BRAccountLinkingRetailer(rawValue: ret.uintValue)!) { retailer, order, remaining, viewController, errorCode, sessionId in
-                    if(errorCode == .none && order != nil){
-                        call.resolve(RspReceipt(scanResults: order!).toPluginCallResultData())
-                        returnedAccounts+=1
-                        if (returnedAccounts >= retailers.count){
-                            call.keepAlive = false
-                            call.resolve()
+        Task(priority: .high) {
+            let retailers = await BRAccountLinkingManager.shared().getLinkedRetailers()
+            for ret in  retailers {
+                DispatchQueue.main.async {
+                    BRAccountLinkingManager.shared().grabNewOrders( for: .amazonBeta) { retailer, order, remaining, viewController, errorCode, sessionId in
+                        if(errorCode == .none && order != nil){
+                            call.resolve(RspReceipt(scanResults: order!).toPluginCallResultData())
+                            returnedAccounts+=1
+                            if (returnedAccounts >= retailers.count){
+                                call.keepAlive = false
+                                call.resolve()
+                            }
                         }
                     }
                 }
@@ -132,16 +142,17 @@ public class Retailer : CAPPlugin{
     ///
     /// - Returns: An array of Account objects representing linked accounts.
     public func accounts () -> [Account] {
-        let retailers = BRAccountLinkingManager.shared().getLinkedRetailers()
         var accountsList = [Account]()
-        for ret in retailers {
-            let connection = BRAccountLinkingManager.shared().getLinkedRetailerConnection(BRAccountLinkingRetailer(rawValue: ret.uintValue)!)
-            let isVerified =  false
-            let accountCommon = AccountCommon.init(type: .retailer, source: "AMAZON")
-            let account = Account(accountType: accountCommon, user: connection!.username!, password: connection!.password!, isVerified: isVerified)
-            accountsList.append(account)
-        }
+            let retailers = BRAccountLinkingManager.shared().getLinkedRetailers()
+            for ret in retailers {
+                let connection =  BRAccountLinkingManager.shared().getLinkedRetailerConnection(BRAccountLinkingRetailer(rawValue: ret.uintValue)!)
+                let isVerified =  false
+                let accountCommon = AccountCommon.init(type: .retailer, source: RetailerEnum.fromBRAccountLinkingRetailer(BRAccountLinkingRetailer(rawValue: ret.uintValue)!).toString()!)
+                let account = Account(accountType: accountCommon, user: connection!.username!, password: connection!.password!, isVerified: isVerified)
+                accountsList.append(account)
+            }
         return accountsList
+
     }
     /// Handles the callback after attempting to verify a retailer account.
     ///

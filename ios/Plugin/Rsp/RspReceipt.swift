@@ -152,8 +152,8 @@ public struct RspReceipt: Rsp {
         receiptDate = scanResults.receiptDate?.value
         receiptTime = scanResults.receiptTime?.value
         retailerId = scanResults.retailerId.rawValue
-        products = scanResults.products.map { product in RspProduct(product: product) }
-        coupons = scanResults.coupons.map { coupon in RspCoupon(coupon: coupon) }
+        products = scanResults.products?.map { product in RspProduct(product: product) } ?? []
+        coupons = scanResults.coupons?.map { coupon in RspCoupon(coupon: coupon) } ?? []
         total = scanResults.total?.value
         tip = scanResults.tip?.value
         subtotal = scanResults.subtotal?.value
@@ -169,18 +169,18 @@ public struct RspReceipt: Rsp {
         cashierId = scanResults.cashierId?.value
         transactionId = scanResults.transactionId?.value
         registerId = scanResults.registerId?.value
-        paymentMethods = scanResults.paymentMethods.map { payment in RspPaymentMethod(paymentMethod: payment.method?.value, cardType: payment.cardType?.value, cardIssuer: payment.cardIssuer?.value, amount: payment.amount.value) }
+        paymentMethods = scanResults.paymentMethods?.map { payment in RspPaymentMethod(paymentMethod: payment.method?.value, cardType: payment.cardType?.value, cardIssuer: payment.cardIssuer?.value, amount: payment.amount.value) } ?? []
         taxId = scanResults.taxId?.value
         mallName = scanResults.mallName?.value
         last4cc = scanResults.last4CC?.value
         ocrConfidence = scanResults.ocrConfidence
-        merchantSources = scanResults.merchantSources
+        merchantSources = scanResults.merchantSources ?? []
         foundTopEdge = scanResults.foundTopEdge
         foundBottomEdge = scanResults.foundBottomEdge
         eReceiptOrderNumber = scanResults.ereceiptOrderNumber
         eReceiptOrderStatus = scanResults.ereceiptOrderStatus
         eReceiptRawHtml = scanResults.ereceiptRawHTML
-        shipments = scanResults.shipments.map { shipment in RspShipment(shipment: shipment) } 
+        shipments = scanResults.shipments?.map { shipment in RspShipment(shipment: shipment) } ?? []
         longTransactionId = scanResults.longTransactionId?.value
         subtotalMatches = scanResults.subtotalMatches
         eReceiptEmailProvider = scanResults.ereceiptEmailProvider
@@ -188,9 +188,9 @@ public struct RspReceipt: Rsp {
         eReceiptAuthenticated = scanResults.ereceiptAuthenticated
         instacartShopper = scanResults.isInstacartShopper
         if(scanResults.ereceiptComponentEmails != nil){
-            eReceiptComponentEmails = scanResults.ereceiptComponentEmails.map{ results in
+            eReceiptComponentEmails = scanResults.ereceiptComponentEmails?.map{ results in
                 RspReceipt(scanResults: results)
-            }
+            } ?? []
         }else {
             eReceiptComponentEmails = []
         }
@@ -199,8 +199,8 @@ public struct RspReceipt: Rsp {
         duplicateBlinkReceiptIds = scanResults.duplicateBlinkReceiptIds ?? []
         merchantMatchGuess = scanResults.merchantGuess
         productsPendingLookup = scanResults.productsPendingLookup
-        qualifiedPromotions = scanResults.qualifiedPromotions.map { promotion in RspPromotion(promotion: promotion) } 
-        unqualifiedPromotions = scanResults.unqualifiedPromotions.map { promotion in RspPromotion(promotion: promotion) } 
+        qualifiedPromotions = scanResults.qualifiedPromotions?.map { promotion in RspPromotion(promotion: promotion) } ?? []
+        unqualifiedPromotions = scanResults.unqualifiedPromotions?.map { promotion in RspPromotion(promotion: promotion) } ?? []
         if let extendedFields = scanResults.extendedFields {
             var extendedFieldsDictionary = JSObject()
             for entry in extendedFields {
@@ -248,8 +248,8 @@ public struct RspReceipt: Rsp {
         ret["receiptDate"] = receiptDate
         ret["receiptTime"] = receiptTime 
         ret["retailerId"] = Int(retailerId)
-        ret["products"] = JSArray(arrayLiteral: products.map { prd in prd.toPluginCallResultData() })
-        ret["coupons"] = JSArray(arrayLiteral: products.map { prd in prd.toPluginCallResultData() })
+        ret["products"] = JSArray(arrayLiteral: products.map { prd in prd.toPluginCallResultData() } )
+        ret["coupons"] = JSArray(arrayLiteral: products.map { prd in prd.toPluginCallResultData() } )
         ret["total"] = total
         ret["tip"] = tip
         ret["subtotal"] = subtotal
@@ -282,14 +282,14 @@ public struct RspReceipt: Rsp {
         ret["eReceiptEmailId"] = eReceiptEmailId
         ret["eReceiptAuthenticated"] = eReceiptAuthenticated
         ret["instacartShopper"] = instacartShopper
-        ret["eReceiptComponentEmails"] = JSArray(arrayLiteral: eReceiptComponentEmails.map { email in email.toPluginCallResultData()})
+        ret["eReceiptComponentEmails"] = JSArray(arrayLiteral: eReceiptComponentEmails.map { email in email.toPluginCallResultData()} )
         ret["duplicate"] = duplicate
         ret["fraudulent"] = fraudulent
-        ret["duplicateBlinkReceiptIds"] = JSArray(duplicateBlinkReceiptIds)
+        ret["duplicateBlinkReceiptIds"] = JSArray(duplicateBlinkReceiptIds )
         ret["merchantMatchGuess"] = merchantMatchGuess
         ret["productsPendingLookup"] = productsPendingLookup
-        ret["qualifiedPromotions"] = JSArray(arrayLiteral: qualifiedPromotions.map { promo in promo.toPluginCallResultData() })
-        ret["unqualifiedPromotions"] = JSArray(arrayLiteral: unqualifiedPromotions.map { promo in promo.toPluginCallResultData() })
+        ret["qualifiedPromotions"] = JSArray(arrayLiteral: qualifiedPromotions.map { promo in promo.toPluginCallResultData() } )
+        ret["unqualifiedPromotions"] = JSArray(arrayLiteral: unqualifiedPromotions.map { promo in promo.toPluginCallResultData() } )
         ret["extendedFields"] = extendedFields
         ret["eReceiptAdditionalFees"] = eReceiptAdditionalFees
         ret["purchaseType"] = purchaseType
@@ -304,7 +304,7 @@ public struct RspReceipt: Rsp {
         ret["currencyCode"] = currencyCode
         ret["clientMerchantName"] = clientMerchantName
         ret["loyaltyProgram"] = loyaltyProgram
-        ret["merchantSources"] = JSArray(merchantSources)
+        ret["merchantSources"] = JSArray(merchantSources )
         ret["paymentTerminalId"] = paymentTerminalId
         ret["paymentTransactionId"] = paymentTransactionId
         ret["combinedRawText"] = combinedRawText
