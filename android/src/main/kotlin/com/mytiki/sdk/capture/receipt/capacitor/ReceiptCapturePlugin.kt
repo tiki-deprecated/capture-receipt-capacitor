@@ -48,7 +48,9 @@ class ReceiptCapturePlugin : Plugin() {
      * @param call The Capacitor plugin call instance.
      */
     @PluginMethod
-    fun initialize(call: PluginCall) = receiptCapture.initialize(call, activity)
+    fun initialize(call: PluginCall) = receiptCapture.initialize(call, activity){
+//        receiptCapture.scanInitialize(call, activity)
+    }
 
     /**
      * Logs in with the specified account.

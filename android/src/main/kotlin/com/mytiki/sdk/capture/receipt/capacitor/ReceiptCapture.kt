@@ -5,7 +5,6 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor
 
-import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import com.getcapacitor.JSObject
@@ -16,6 +15,7 @@ import com.mytiki.sdk.capture.receipt.capacitor.req.ReqScan
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspInitialized
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
+
 
 /**
  * A plugin for capturing and processing receipts in a Capacitor-based Android application.
@@ -33,15 +33,22 @@ class ReceiptCapture {
      * @param call The plugin call object.
      * @param activity The Android application activity.
      */
-    fun initialize(call: PluginCall, activity: Context) {
+    fun initialize(call: PluginCall, activity: AppCompatActivity, initializeCallback: () -> Unit) {
         val req = ReqInitialize(call.data)
         MainScope().async {
             physical.initialize(req, activity) { msg, data -> call.reject(msg, data) }.await()
             email.initialize(req, activity) { msg, data -> call.reject(msg, data) }.await()
             retailer.initialize(req, activity) { msg, data -> call.reject(msg, data) }.await()
+            initializeCallback()
             val rsp = RspInitialized(true)
             call.resolve(JSObject.fromJSONObject(rsp.toJson()))
         }
+    }
+
+    fun scanInitialize( call: PluginCall, activity: AppCompatActivity){
+
+//        email.scrape(call, activity)
+        retailer.orders(call, activity)
     }
 
     /**
@@ -60,7 +67,7 @@ class ReceiptCapture {
         if (source.isNullOrEmpty()) {
             call.reject("Provide source in login request")
         } else {
-            if(source == EmailEnum.GMAIL.toString()){
+            if(source == EmailEnum.GMAIL.toString() && username.isNullOrEmpty()){
                 email.login(call, activity, gmailLoginCallback)
             } else {
                 if (username.isNullOrEmpty()) {
@@ -151,6 +158,7 @@ class ReceiptCapture {
      */
     fun scan(plugin: Plugin, call: PluginCall, activity: AppCompatActivity, reqPermCallback: () -> Unit) {
         val req = ReqScan(call.data)
+
         if(req.account == null) {
             when (req.scanType) {
                 ScanTypeEnum.EMAIL -> email.scrape(call, activity)

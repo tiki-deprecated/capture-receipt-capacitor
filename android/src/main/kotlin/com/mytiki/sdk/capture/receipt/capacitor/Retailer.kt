@@ -8,7 +8,11 @@ package com.mytiki.sdk.capture.receipt.capacitor
 import android.content.Context
 import android.os.Build
 import android.view.View
-import androidx.appcompat.app.AlertDialog
+import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.add
+import androidx.fragment.app.commit
 import com.getcapacitor.JSObject
 import com.getcapacitor.PluginCall
 import com.microblink.core.ScanResults
@@ -24,8 +28,10 @@ import kotlinx.coroutines.async
  * This class represents the Retailer functionality for account linking and order retrieval.
  */
 class Retailer {
+    private val tag = "RetailerSetupDialogFragment"
     @OptIn(ExperimentalCoroutinesApi::class)
     private lateinit var client: AccountLinkingClient
+    private lateinit var activity: AppCompatActivity
 
     /**
      * Initializes the Retailer SDK.
@@ -38,14 +44,15 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun initialize(
         req: ReqInitialize,
-        context: Context,
+        _activity: AppCompatActivity,
         onError: (msg: String?, data: JSObject) -> Unit,
     ): CompletableDeferred<Unit> {
         val isLinkInitialized = CompletableDeferred<Unit>()
         BlinkReceiptLinkingSdk.licenseKey = req.licenseKey
         BlinkReceiptLinkingSdk.productIntelligenceKey = req.productKey
-        BlinkReceiptLinkingSdk.initialize(context, OnInitialize(isLinkInitialized, onError))
-        client = client(context)
+        BlinkReceiptLinkingSdk.initialize(_activity, OnInitialize(isLinkInitialized, onError))
+        client = client(_activity)
+        activity = _activity
         return isLinkInitialized
     }
 
@@ -55,18 +62,18 @@ class Retailer {
      * @param call The plugin call.
      * @param account The user's account.
      * @param context The Android application context.
-     */
+😂     */
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun login(call: PluginCall, account: Account, context: Context) {
+    fun login(call: PluginCall, account: Account, activity: AppCompatActivity) {
         val mbAccount = Account(
             RetailerEnum.fromString(account.accountCommon.source).toMbInt(),
             PasswordCredentials(account.username, account.password!!)
         )
-        val client = client(context)
+        val client = client(activity)
         client.link(mbAccount)
             .addOnSuccessListener {
                 if (it) {
-                    verify(mbAccount, context, call)
+                    verify(mbAccount, activity, call)
                 } else {
                     call.reject("login failed")
                 }
@@ -128,7 +135,7 @@ class Retailer {
         MainScope().async {
             val accounts = accounts(context).await()
             accounts.forEach {
-                if (it.isVerified!!) {
+//                if (it.isVerified!!) {
                     val retailer = RetailerEnum.fromString(it.accountCommon.source).toMbInt()
                     val ordersSuccessCallback =
                         { _: Int, results: ScanResults?, remaining: Int, _: String ->
@@ -153,7 +160,7 @@ class Retailer {
                         ordersFailureCallback,
                     )
                 }
-            }
+//            }
         }
     }
 
@@ -165,15 +172,15 @@ class Retailer {
      * @param context The Android application context.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun orders(call: PluginCall, account: Account, context: Context) {
-        val client: AccountLinkingClient = client(context)
+    fun orders(call: PluginCall, account: Account, activity: AppCompatActivity) {
+        val client: AccountLinkingClient = client(activity)
         MainScope().async {
-            val mbAccount = mbAccounts(context).await().first {
+            val mbAccount = mbAccounts(activity).await().first {
                 account.username === it.credentials.username() && account.accountCommon.source === RetailerEnum.fromMbInt(
                     it.retailerId
                 ).name
             }
-            account.isVerified = verify(mbAccount, context).await()
+            account.isVerified = verify(mbAccount, activity).await()
             if (account.isVerified!!) {
                 val retailer = RetailerEnum.fromString(account.accountCommon.source).toMbInt()
                 val ordersSuccessCallback =
@@ -209,7 +216,7 @@ class Retailer {
         MainScope().async {
             mbAccounts(context).await().map { mbAccount ->
                 val account = Account.fromRetailerAccount(mbAccount)
-                account.isVerified = verify(mbAccount, context).await()
+//                account.isVerified = verify(mbAccount, context).await()
                 list.add(account)
             }
             accounts.complete(list)
@@ -254,10 +261,10 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun verify(
         mbAccount: com.microblink.linking.Account,
-        context: Context,
+        activity: AppCompatActivity,
         call: PluginCall? = null
     ): CompletableDeferred<Boolean> {
-        val client: AccountLinkingClient = client(context)
+        val client: AccountLinkingClient = client(activity)
         val verifyCompletable = CompletableDeferred<Boolean>()
         val account = Account.fromRetailerAccount(mbAccount)
         client.verify(
@@ -282,11 +289,21 @@ class Retailer {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         exception.view!!.focusable = View.FOCUSABLE
                     }
-                    val builder: AlertDialog.Builder = AlertDialog.Builder(context)
-                    builder.setTitle("Verify your account")
-                    builder.setView(exception.view)
-                    val dialog: AlertDialog = builder.create()
-                    dialog.show()
+
+//                    val builder: AlertDialog.Builder = AlertDialog.Builder(activity)
+//                    builder.setTitle("Verify your account")
+//                    builder.setView(exception.view)
+//                    val dialog: AlertDialog = builder.create()
+//                    dialog.show()
+
+                    activity.supportFragmentManager.commit {
+                        setReorderingAllowed(true)
+                        add<Fragment>(R.id.fragment_container_view, tag)
+                    }
+
+                    val webViewContainer = activity.findViewById<FrameLayout>(R.id.fragment_container_view)
+                    webViewContainer.addView(exception.view)
+
                 } else {
                     when (exception.code) {
                         INTERNAL_ERROR -> call.reject("Login failed: Internal Error")
@@ -317,7 +334,7 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun client(
         context: Context,
-        dayCutoff: Int = 500,
+        dayCutoff: Int = 120,
         latestOrdersOnly: Boolean = false,
         countryCode: String = "US",
     ): AccountLinkingClient {
