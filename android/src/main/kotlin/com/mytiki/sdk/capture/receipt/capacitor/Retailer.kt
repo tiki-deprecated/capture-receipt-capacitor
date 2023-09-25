@@ -8,11 +8,9 @@ package com.mytiki.sdk.capture.receipt.capacitor
 import android.content.Context
 import android.os.Build
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.add
-import androidx.fragment.app.commit
 import com.getcapacitor.JSObject
 import com.getcapacitor.PluginCall
 import com.microblink.core.ScanResults
@@ -23,6 +21,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
+
 
 /**
  * This class represents the Retailer functionality for account linking and order retrieval.
@@ -44,15 +43,15 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun initialize(
         req: ReqInitialize,
-        _activity: AppCompatActivity,
+        activity: AppCompatActivity,
         onError: (msg: String?, data: JSObject) -> Unit,
     ): CompletableDeferred<Unit> {
         val isLinkInitialized = CompletableDeferred<Unit>()
         BlinkReceiptLinkingSdk.licenseKey = req.licenseKey
         BlinkReceiptLinkingSdk.productIntelligenceKey = req.productKey
-        BlinkReceiptLinkingSdk.initialize(_activity, OnInitialize(isLinkInitialized, onError))
-        client = client(_activity)
-        activity = _activity
+        BlinkReceiptLinkingSdk.initialize(activity, OnInitialize(isLinkInitialized, onError))
+        client = client(activity)
+        this.activity = activity
         return isLinkInitialized
     }
 
@@ -290,18 +289,12 @@ class Retailer {
                         exception.view!!.focusable = View.FOCUSABLE
                     }
 
-//                    val builder: AlertDialog.Builder = AlertDialog.Builder(activity)
-//                    builder.setTitle("Verify your account")
-//                    builder.setView(exception.view)
-//                    val dialog: AlertDialog = builder.create()
-//                    dialog.show()
-
-                    activity.supportFragmentManager.commit {
-                        setReorderingAllowed(true)
-                        add<Fragment>(R.id.fragment_container_view, tag)
+                    activity.findViewById<FrameLayout>(R.id.webview_container)?.let{
+                        (it.parent as ViewGroup).removeView(it)
                     }
-
-                    val webViewContainer = activity.findViewById<FrameLayout>(R.id.fragment_container_view)
+                    val viewGroup = (activity.findViewById(android.R.id.content) as ViewGroup).getChildAt(0) as ViewGroup
+                    View.inflate(activity, R.layout.webview_container, viewGroup)
+                    val webViewContainer = activity.findViewById<FrameLayout>(R.id.webview_container)
                     webViewContainer.addView(exception.view)
 
                 } else {

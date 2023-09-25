@@ -1,22 +1,37 @@
 <script setup lang="ts">
-import { login, accounts, scan, logout, initialize, loginGmail, scanGmail } from './main';
+import { ref } from 'vue';
+import { login, accounts, scan, logout, initialize } from './main';
+const username = ref<HTMLInputElement>()
+const pass = ref<HTMLInputElement>()
 </script>
 
 <template>
   <header>
     <img alt="TIKI Icon" class="logo" src="./assets/logo.svg" width="125" height="125" />
+    <style>
+      .greetings {
+        display:flex; 
+        flex-direction:column; 
+        justify-content: space-evenly;
+      }
+
+      .greetings input, .greetings button{
+        margin-top: 10px;
+        height: 48px;
+      }
+    </style>
   </header>
 
   <main>
-    <div class="greetings">
+    <div class="greetings" style="">
       <h1>Oh, Hi!</h1>
-      <button @click="login()">Login</button>
-      <button @click="loginGmail()">Login Gmail</button>
-      <button @click="accounts()">Accounts</button>
-      <button @click="scan()">Scan Retailer</button>
-      <button @click="scanGmail()">Scan Gmail</button>
-      <button @click="logout()">Logout</button>
+      <input type="text" ref="username" />
+      <input type="password" ref="pass" />
       <button @click="initialize()">initialize</button>
+      <button @click="login(username?.value ?? '', pass?.value ?? '', 'AMAZON')">Login</button>
+      <button @click="accounts()">Accounts</button>
+      <button @click="scan()">Scan</button>
+      <button @click="logout()">Logout</button>
     </div>
   </main>
 </template>
