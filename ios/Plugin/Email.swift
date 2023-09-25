@@ -18,12 +18,12 @@ public class Email {
     ///   - licenseKey: The license key for the plugin.
     ///   - productKey: The product key for the plugin.
     ///   - googleClientId: The Google Client ID for OAuth authentication (optional).
-    public init(_ licenseKey: String, _ productKey: String, _ googleClientId: String?)  {
+    public init(_ licenseKey: String, _ productKey: String, _ googleClientId: String?, _ daysToStoreReceiptData: Int?)  {
         DispatchQueue.main.async {
-            BRScanManager.shared().licenseKey = licenseKey
+            BRScanManager.shared().licenseKey = licenseKeys
             BRScanManager.shared().prodIntelKey = productKey
             BREReceiptManager.shared().googleClientId = googleClientId
-            BRScanManager.shared().daysToStoreReceiptData = 1
+            BRScanManager.shared().daysToStoreReceiptData = daysToStoreReceiptData ?? 7
             BRAccountLinkingManager.shared()
         }
         
@@ -34,11 +34,11 @@ public class Email {
     /// - Parameters:
     ///   - licenseKey: The license key for the plugin.
     ///   - productKey: The product key for the plugin.
-    public init(_ licenseKey: String, _ productKey: String){
+    public init(_ licenseKey: String, _ productKey: String, _ daysToStoreReceiptData: Int?){
         DispatchQueue.main.async {
             BRScanManager.shared().licenseKey = licenseKey
             BRScanManager.shared().prodIntelKey = productKey
-            BRScanManager.shared().daysToStoreReceiptData = 1
+            BRScanManager.shared().daysToStoreReceiptData = daysToStoreReceiptData ?? 7
             BRAccountLinkingManager.shared()
         }
     }
