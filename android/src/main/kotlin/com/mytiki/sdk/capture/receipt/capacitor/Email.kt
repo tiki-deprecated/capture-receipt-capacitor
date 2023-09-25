@@ -70,7 +70,7 @@ class Email {
         }
         val isImapInitialized = CompletableDeferred<Unit>()
         imapClient =
-            ImapClient(context, OnInitialize(isImapInitialized, onError)).apply { dayCutoff(30) }
+            ImapClient(context, OnInitialize(isImapInitialized, onError)).apply { dayCutoff(5) }
         return isImapInitialized
     }
 
@@ -352,13 +352,17 @@ class Email {
             }
         }
         if (gmailClient != null) {
-            gmailClient!!.logout().addOnSuccessListener {
-                imap()
-            }.addOnFailureListener {
-                call.reject(it.message)
+            imapClient.clearLastCheckedTime().addOnSuccessListener {
+                gmailClient!!.logout().addOnSuccessListener {
+                    imap()
+                }.addOnFailureListener {
+                    call.reject(it.message)
+                }
             }
         } else {
-            imap()
+            imapClient.clearLastCheckedTime().addOnSuccessListener {
+                imap()
+            }
         }
 
     }
