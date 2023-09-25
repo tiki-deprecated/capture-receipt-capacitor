@@ -24,7 +24,6 @@ public class Email {
             BRScanManager.shared().prodIntelKey = productKey
             BREReceiptManager.shared().googleClientId = googleClientId
             BRScanManager.shared().daysToStoreReceiptData = 1
-            UserDefaults.standard.set(true, forKey: "br_ereceipt_debug")
             BRAccountLinkingManager.shared()
         }
         
