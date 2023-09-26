@@ -43,7 +43,7 @@ jobs:
           distribution: 'adopt'
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
+        uses: android-actions/setup-android@v3
 
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
@@ -52,7 +52,7 @@ jobs:
         run: npm ci
 
       - name: Build Dist
-        run: npm run verify:android
+        run: npm run verify
 
       - name: Get version
         id: version
