@@ -78,6 +78,7 @@ public struct AccountCommon{
         "YAHOO" : AccountCommon(type: .email, source: EmailEnum.YAHOO.rawValue),
         "OUTLOOK" : AccountCommon(type: .email, source: EmailEnum.OUTLOOK.rawValue),
         "AOL" : AccountCommon(type: .email, source: EmailEnum.AOL.rawValue),
-        "GMAIL" : AccountCommon(type: .email, source: EmailEnum.GMAIL.rawValue)
+        "GMAIL" : AccountCommon(type: .email, source: EmailEnum.GMAIL.rawValue),
+        "GMAILIMAP" : AccountCommon(type: .email, source: EmailEnum.GMAILIMAP.rawValue)
     ]
 }

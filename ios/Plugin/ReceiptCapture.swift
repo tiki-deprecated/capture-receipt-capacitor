@@ -144,7 +144,7 @@ public class ReceiptCapture: NSObject {
                     call.reject("Email not initialized. Did you call .initialize()?")
                     return
                 }
-                email.scan(call, req.account)
+                email.scan(call, req.account, call.getInt("dayCutOff"))
                 break
             case .RETAILER:
                 guard let retailer = retailer else {
@@ -170,7 +170,7 @@ public class ReceiptCapture: NSObject {
                     call.reject("Email not initialized. Did you call .initialize()?")
                     return
                 }
-                email.scan(call, req.account)
+                email.scan(call, req.account, call.getInt("dayCutOff"))
                 retailer.orders(req.account, call)
                 break
             default:
@@ -183,7 +183,7 @@ public class ReceiptCapture: NSObject {
                     call.reject("Email not initialized. Did you call .initialize()?")
                     return
                 }
-                email.scan(call, req.account)
+                email.scan(call, req.account, call.getInt("dayCutOff"))
                 break
             case .RETAILER:
                 guard let retailer = retailer else {

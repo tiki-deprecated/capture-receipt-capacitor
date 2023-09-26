@@ -46,7 +46,7 @@ public class Account {
             value.toBREReceiptProvider() == provider
         })
         self.accountType = AccountCommon.defaults.first(where: {key, value in
-            value.source == emailEnum!.rawValue
+            value.source == emailEnum?.rawValue
         })!.value
         self.user = email
         self.password = password

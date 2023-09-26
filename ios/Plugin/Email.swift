@@ -18,12 +18,12 @@ public class Email {
     ///   - licenseKey: The license key for the plugin.
     ///   - productKey: The product key for the plugin.
     ///   - googleClientId: The Google Client ID for OAuth authentication (optional).
-    public init(_ licenseKey: String, _ productKey: String, _ googleClientId: String?, _ daysToStoreReceiptData: Int?)  {
+    public init(_ licenseKey: String, _ productKey: String, _ googleClientId: String?)  {
         DispatchQueue.main.async {
-            BRScanManager.shared().licenseKey = licenseKeys
+            BRScanManager.shared().licenseKey = licenseKey
             BRScanManager.shared().prodIntelKey = productKey
             BREReceiptManager.shared().googleClientId = googleClientId
-            BRScanManager.shared().daysToStoreReceiptData = daysToStoreReceiptData ?? 7
+            BRScanManager.shared().daysToStoreReceiptData =  30
             BRAccountLinkingManager.shared()
         }
         
@@ -34,11 +34,12 @@ public class Email {
     /// - Parameters:
     ///   - licenseKey: The license key for the plugin.
     ///   - productKey: The product key for the plugin.
-    public init(_ licenseKey: String, _ productKey: String, _ daysToStoreReceiptData: Int?){
+    public init(_ licenseKey: String, _ productKey: String){
         DispatchQueue.main.async {
             BRScanManager.shared().licenseKey = licenseKey
             BRScanManager.shared().prodIntelKey = productKey
-            BRScanManager.shared().daysToStoreReceiptData = daysToStoreReceiptData ?? 7
+            BREReceiptManager.shared().dayCutoff = 7
+            BRScanManager.shared().daysToStoreReceiptData =  30
             BRAccountLinkingManager.shared()
         }
     }
@@ -49,25 +50,19 @@ public class Email {
     ///   - account: An instance of the Account struct containing user and account information.
     ///   - pluginCall: The CAPPluginCall object representing the plugin call.
     public func login(_ account: Account, _ pluginCall: CAPPluginCall) {
-        if (account.accountType.source == "GMAIL") {
-            loginOauth(pluginCall)
-        }else {
         let provider = EmailEnum(rawValue:  account.accountType.source)?.toBREReceiptProvider()
         let email = BRIMAPAccount(provider: .gmailIMAP, email: account.user, password: account.password!)
         let rootVc = UIApplication.shared.windows.first?.rootViewController
         Task(priority: .high) {
             await BREReceiptManager.shared().setupIMAP(for: email, viewController: rootVc!, withCompletion: { result in
-                print(result.rawValue)
             })
             await BREReceiptManager.shared().verifyImapAccount(email, withCompletion: { success, error in
                 if success {
-                    print(success.description)
                     pluginCall.resolve()
                 } else {
                     pluginCall.reject(error.debugDescription)
                 }
             })
-        }
     }
 
 
@@ -83,8 +78,7 @@ public class Email {
     ///   - account: An optional instance of the Account struct containing user and account information.
     public func logout(_ pluginCall: CAPPluginCall, _ account: Account?){
         if(account != nil ){
-            let provider = EmailEnum(rawValue:  account!.accountType.source)?.toBREReceiptProvider()
-            let email = BRIMAPAccount(provider: provider!, email: account!.user, password: account!.password!)
+            let email = BRIMAPAccount(provider: .gmailIMAP, email: "jessemonteiroferreira@gmail.com", password: "")
             BREReceiptManager.shared().signOut(from: email) { error in
                 if(error != nil){
                     pluginCall.reject(error?.localizedDescription ?? "Email logout error.")
@@ -108,7 +102,8 @@ public class Email {
     /// - Parameters:
     ///   - pluginCall: The CAPPluginCall object representing the plugin call.
     ///   - account: An optional instance of the Account struct containing user and account information.
-    public func scan(_ pluginCall: CAPPluginCall, _ account: Account?){
+    public func scan(_ pluginCall: CAPPluginCall, _ account: Account?, _ dayCutOff: Int?){
+        BREReceiptManager.shared().dayCutoff = dayCutOff ?? 7
         if(account != nil){
             let provider = EmailEnum(rawValue:  account!.accountType.source)?.toBREReceiptProvider()
             let email = BRIMAPAccount(provider: provider!, email: account!.user, password: account!.password!)
@@ -127,7 +122,19 @@ public class Email {
             }
         }else{
             Task(priority: .high){
-                scanOauth(pluginCall)
+                BREReceiptManager.shared().getEReceipts(){scanResults, emailAccount, error in
+                    if(scanResults != nil){
+                        scanResults?.forEach{scanResults in
+                            pluginCall.resolve(
+                                RspScan(scan: RspReceipt(scanResults: scanResults),
+                                        account: Account(provider: emailAccount!.provider, email: emailAccount!.email))
+                                .toPluginCallResultData()
+                            )
+                        }
+                    }else{
+                        pluginCall.reject(error?.localizedDescription ?? "No receipts.")
+                    }
+                }
             }
         }
     }
@@ -179,17 +186,11 @@ public class Email {
             await BREReceiptManager.shared().getEReceipts(completion: {scanResults, emailAccount, error in
                 if(scanResults != nil){
                     scanResults?.forEach{scanResults in
-                        let account = Account(provider: emailAccount?.provider ?? .gmail, email: emailAccount?.email ?? "")
-                        print("#######")
-                        print(account.toString())
-                        print("#######")
-                        let rspReceipt = RspReceipt(scanResults: scanResults)
-                        print(rspReceipt.toPluginCallResultData().values)
-                        print("#######+")
-                        var response =
-                            RspScan(scan: rspReceipt,
-                                    account: account)
-                        pluginCall.resolve(response.toPluginCallResultData())
+                        pluginCall.resolve(
+                            RspScan(scan: RspReceipt(scanResults: scanResults),
+                                    account: Account(provider: emailAccount!.provider, email: emailAccount!.email))
+                            .toPluginCallResultData()
+                        )
                     }
                 }else{
                     print(error?.localizedDescription ?? "No receipts.")
