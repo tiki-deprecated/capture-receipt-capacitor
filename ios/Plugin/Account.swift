@@ -46,7 +46,7 @@ public class Account {
             value.toBREReceiptProvider() == provider
         })
         self.accountType = AccountCommon.defaults.first(where: {key, value in
-            value.source == emailEnum!.rawValue
+            value.source == emailEnum?.rawValue
         })!.value
         self.user = email
         self.password = password
@@ -72,6 +72,17 @@ public class Account {
             "username" : user,
             "source" : accountType.source,
             "verified" : isVerified ?? false
+        ]
+    }
+    
+    /// Converts the Account object to a PluginCallResultData dictionary for use in plugin calls.
+    ///
+    /// - Returns: A PluginCallResultData dictionary representing the Account object's properties.
+    func toString() -> [String : Any] {
+        return [
+            "username" : self.user,
+            "source" : self.accountType.source,
+            "verified" : self.isVerified ?? false
         ]
     }
 }

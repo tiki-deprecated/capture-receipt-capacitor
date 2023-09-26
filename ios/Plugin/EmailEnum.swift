@@ -13,7 +13,7 @@ public enum EmailEnum: String, CaseIterable {
     
     /// Represents the Gmail email provider.
     case GMAIL
-    
+
     /// Represents the AOL email provider.
     case AOL
     

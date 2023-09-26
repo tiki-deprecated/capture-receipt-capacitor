@@ -73,11 +73,81 @@ public enum RetailerEnum: String {
     case WALMART
     case WALMART_CA
     case WEGMANS
+    case POSTMATES
+    
+    
+    static func fromBRAccountLinkingRetailer(_ ret: BRAccountLinkingRetailer) -> RetailerEnum {
+        switch ret{
+            case .acmeMarkets : return .ACME_MARKETS
+            case .albertsons : return .ALBERTSONS
+            case .amazon : return .AMAZON
+            case .amazonBeta : return .AMAZON_BETA
+            case .amazonBetaCA : return .AMAZON_CA
+            case .amazonBetaUK : return .AMAZON_UK
+            case .bedBath : return .BED_BATH_AND_BEYOND
+            case .bestBuy : return .BESTBUY
+            case .bjs : return .BJS_WHOLESALE
+            case .chewy : return .CHEWY
+            case .costco : return .COSTCO
+            case .CVS : return .CVS
+            case .dicksSportingGoods : return .DICKS_SPORTING_GOODS
+            case .dollarGeneral : return .DOLLAR_GENERAL
+            case .dollarTree : return .DOLLAR_TREE
+            case .dominosPizza : return .DOMINOS_PIZZA
+            case .doordash : return .DOOR_DASH
+            case .drizly : return .DRIZLY
+            case .familyDollar : return .FAMILY_DOLLAR
+            case .food4Less : return .FOOD_4_LESS
+            case .foodLion : return .FOOD_LION
+            case .fredMeyer : return .FRED_MEYER
+            case .gap : return .GAP
+            case .giantEagle : return .GIANT_EAGLE
+            case .grubhub : return .GRUBHUB
+            case .harrisTeeter : return .HARRIS_TEETER
+            case .HEB : return .HEB
+            case .homeDepot : return .HOME_DEPOT
+            case .hyVee : return .HYVEE
+            case .instacart : return .INSTACART
+            case .jewelOsco : return .JEWEL_OSCO
+            case .kohls : return .KOHLS
+            case .kroger : return .KROGER
+            case .lowes : return .LOWES
+            case .macys : return .MACYS
+            case .marshalls : return .MARSHALLS
+            case .meijer : return .MEIJER
+            case .nike : return .NIKE
+            case .publix : return .PUBLIX
+            case .ralphs : return .RALPHS
+            case .riteAid : return .RITE_AID
+            case .safeway : return .SAFEWAY
+            case .samsClub : return .SAMS_CLUB
+            case .seamless : return .SEAMLESS
+            case .sephora : return .SEPHORA
+            case .shipt : return .SHIPT
+            case .shoprite : return .SHOPRITE
+            case .sprouts : return .SPROUTS
+            case .staples : return .STAPLES
+            case .starbucks : return .STARBUCKS
+            case .tacoBell : return .TACO_BELL
+            case .target : return .TARGET
+            case .tjMaxx : return .TJ_MAXX
+            case .uberEats : return .UBER_EATS
+            case .ulta : return .ULTA
+            case .vons : return .VONS
+            case .walgreens : return .WALGREENS
+            case .walmart : return .WALMART
+            case .walmartCA : return .WALMART_CA
+            case .wegmans : return .WEGMANS
+            case .postmates: return .POSTMATES
+        }
+            
+        
+    }
     
     /// Converts a `RetailerEnum` value to its corresponding `BRAccountLinkingRetailer` representation.
     ///
     /// - Returns: The `BRAccountLinkingRetailer` associated with the `RetailerEnum` value.
-    func toBRAccountLinkingRetailer() -> BRAccountLinkingRetailer? {
+func toBRAccountLinkingRetailer() -> BRAccountLinkingRetailer? {
         switch self{
             case .ACME_MARKETS : return .acmeMarkets
             case .ALBERTSONS : return .albertsons
@@ -140,6 +210,7 @@ public enum RetailerEnum: String {
             case .WALMART : return .walmart
             case .WALMART_CA : return .walmartCA
             case .WEGMANS : return .wegmans
+            case .POSTMATES: return .postmates
 
         }
     }
@@ -147,7 +218,7 @@ public enum RetailerEnum: String {
     ///
     /// - Parameter retailer: The `BRAccountLinkingRetailer` value to convert.
     /// - Returns: The raw string value of the `RetailerEnum` associated with the `BRAccountLinkingRetailer`, or `nil` if not found.
-    func toString(_ retailer: BRAccountLinkingRetailer) -> String? {
+    func toString() -> String? {
         switch self{
         case .ACME_MARKETS : return "ACME_MARKETS"
         case .ALBERTSONS : return "ALBERTSONS"
@@ -210,6 +281,7 @@ public enum RetailerEnum: String {
         case .WALMART : return "WALMART"
         case .WALMART_CA : return "WALMART_CA"
         case .WEGMANS : return "WEGMANS"
+        case .POSTMATES: return "POSTMATES"
         }
     }
 }
