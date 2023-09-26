@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.getcapacitor.JSObject
 import com.getcapacitor.PluginCall
 import com.microblink.core.ScanResults
+import com.microblink.core.Timberland
 import com.microblink.digital.BlinkReceiptDigitalSdk
 import com.microblink.digital.GmailAuthException
 import com.microblink.digital.GmailClient
@@ -93,12 +94,13 @@ class Email {
             when (it) {
                 ProviderSetupResults.BAD_PASSWORD -> call.reject("Bad Password")
                 ProviderSetupResults.BAD_EMAIL -> call.reject("Bad Email")
-                ProviderSetupResults.CREATED_APP_PASSWORD -> call.reject("CREATED_APP_PASSWORD")
+                ProviderSetupResults.CREATED_APP_PASSWORD -> Timberland.d("CREATED_APP_PASSWORD")
                 ProviderSetupResults.NO_CREDENTIALS -> call.reject("No Credentials")
                 ProviderSetupResults.UNKNOWN -> call.reject("Unknown")
                 ProviderSetupResults.NO_APP_PASSWORD -> call.reject("No App Password")
                 ProviderSetupResults.LSA_ENABLED -> call.reject("LSA Enabled")
                 ProviderSetupResults.DUPLICATE_EMAIL -> call.reject("Duplicate Email")
+                else -> {}
             }
             if (!activity.supportFragmentManager.isDestroyed) {
                 val dialog = activity.supportFragmentManager.findFragmentByTag(tag)
