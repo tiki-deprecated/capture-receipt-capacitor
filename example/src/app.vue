@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { login, accounts, scanRetailer, logout, initialize, scanEmail } from './main';
 const username = ref<HTMLInputElement>()
-const pass = ref<HTMLInputElement>()
+const password = ref<HTMLInputElement>()
 const source = ref<HTMLSelectElement>()
 </script>
 
@@ -27,14 +27,15 @@ const source = ref<HTMLSelectElement>()
     <div class="greetings" style="">
       <h1>Oh, Hi!</h1>
       <div class="form">
-        <input placeholder="username" type="text" ref="username" />
-        <input placeholder="password" type="password" ref="pass" />
+        <label for="">Choose the Account</label>
         <select ref="source">
-          <option value="AMAZON">AMAZON</option>
-          <option value="GMAIL">AMAZON</option>
+          <option value="AMAZON" label="Amazon" />
+          <option value="GMAIL" label="Gmail" />
         </select>
+        <input placeholder="username" type="text" ref="username" />
+        <input placeholder="password" type="password" ref="password" />
         <button @click="initialize()">initialize</button>
-        <button @click="login(username?.value ?? '', pass?.value ?? '', source?.value ?? '')">Login</button>
+        <button @click="login(username?.value ?? '', password?.value ?? '', source?.value ?? '')">Login</button>
         <button @click="accounts()">Accounts</button>
         <button @click="scanEmail()">Scan Email</button>
         <button @click="scanRetailer()">Scan Retailer</button>
@@ -54,6 +55,10 @@ const source = ref<HTMLSelectElement>()
 .form input, .form button, .form select{
   height: 48px;
   margin-bottom: 1.5em;
+  width: 100%;
+  border: none;
+  background-color: #ebebeb;
+  border-radius: 0.7em;
 }
 
 header {

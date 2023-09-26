@@ -5,8 +5,6 @@ import type { ReceiptCapturePlugin } from '@/receipt-capture-plugin';
 import { registerPlugin } from '@capacitor/core';
 
 import App from '@/app.vue';
-import type { AccountType } from '@/account';
-import { AccountTypeCommom } from '@mytiki/tiki-receipt-capacitor';
 
 const plugin: ReceiptCapturePlugin = registerPlugin<ReceiptCapturePlugin>('ReceiptCapture', {
   web: () => import('../../src/receipt-capture-web').then((m) => new m.ReceiptCaptureWeb()),
@@ -14,28 +12,39 @@ const plugin: ReceiptCapturePlugin = registerPlugin<ReceiptCapturePlugin>('Recei
 
 const instance: ReceiptCapture = new ReceiptCapture(plugin);
 
-export const login = async (username: string, password: string, source: string) => 
-  await instance.login(username, password, source).catch((error) => console.log(error));
-  
+export const login = async (username: string, password: string, source: string) => {
+  console.log('login', username, password, source)
+  try{
+   await instance.login(source, username, password).catch((error) => console.log(error));
+  } catch (error) {
+    console.log(error)
+    return error
+  }
+} 
+
 export const accounts = async () => {
-  console.log('teste accounts');
+  try{
+  console.log('account')
   console.log(await instance.accounts());
+  } catch(error){
+    console.log(error)
+    return error
+  }
 };
 
 export const scanEmail = async () => {
-  console.log('teste scan email');
+
   try {
     instance.scan('EMAIL').then((scan) => {
       console.log(scan);
     });
   } catch (e) {
-    console.log('scan error')
+    return e
     console.log(e);
   }
 };
 
 export const scanRetailer = async () => {
-  console.log('teste scan retailer');
   try {
     instance.scan('RETAILER').then((scan) => {
       console.log(scan);
@@ -47,7 +56,6 @@ export const scanRetailer = async () => {
 };
 
 export const logout = async () => {
-  console.log('teste logout');
   console.log(await instance.logout());
 };
 
