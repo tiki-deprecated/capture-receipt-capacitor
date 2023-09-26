@@ -13,6 +13,7 @@ public class ReceiptCapturePlugin: CAPPlugin {
     
     @objc public func initialize(_ call: CAPPluginCall) {
         receiptCapture.initialize(call)
+        onScan()
     }
     
     @objc public func login(_ call: CAPPluginCall) {
@@ -29,5 +30,9 @@ public class ReceiptCapturePlugin: CAPPlugin {
     
     @objc func scan(_ call: CAPPluginCall) {
         receiptCapture.scan(call)
+    }
+    
+    func onScan(_ scanResult: RspScan? = nil){
+        self.notifyListeners("onScan", data: scanResult?.toPluginCallResultData())
     }
 }

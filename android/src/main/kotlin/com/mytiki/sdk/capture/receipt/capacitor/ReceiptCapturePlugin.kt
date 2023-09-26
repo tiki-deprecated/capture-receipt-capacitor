@@ -7,6 +7,7 @@ package com.mytiki.sdk.capture.receipt.capacitor
 
 import android.Manifest
 import androidx.activity.result.ActivityResult
+import com.getcapacitor.JSObject
 import com.getcapacitor.PermissionState
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
@@ -15,6 +16,7 @@ import com.getcapacitor.annotation.ActivityCallback
 import com.getcapacitor.annotation.CapacitorPlugin
 import com.getcapacitor.annotation.Permission
 import com.getcapacitor.annotation.PermissionCallback
+import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspReceipt
 import kotlin.properties.Delegates
 
 /**
@@ -48,7 +50,10 @@ class ReceiptCapturePlugin : Plugin() {
      * @param call The Capacitor plugin call instance.
      */
     @PluginMethod
-    fun initialize(call: PluginCall) = receiptCapture.initialize(call, activity)
+    fun initialize(call: PluginCall) {
+        receiptCapture.initialize(call, activity)
+        onScan()
+    }
 
     /**
      * Logs in with the specified account.
@@ -149,5 +154,9 @@ class ReceiptCapturePlugin : Plugin() {
         } else {
             call.reject("Permission is required to capture a receipt")
         }
+    }
+
+    fun onScan(receipt: RspReceipt? = null) {
+      notifyListeners("onScan", JSObject.fromJSONObject(receipt?.toJson()))
     }
 }

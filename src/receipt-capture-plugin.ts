@@ -5,6 +5,7 @@
 
 import type { Account } from './account';
 import type { Receipt } from './receipt';
+import type { PluginListenerHandle } from '@capacitor/core';
 
 export type ScanType = 'PHYSICAL' | 'EMAIL' | 'RETAILER' | 'ONLINE';
 
@@ -63,4 +64,18 @@ export interface ReceiptCapturePlugin {
    * @returns - an array of Accounts.
    */
   accounts(): Promise<Account[]>;
+
+  /**
+   * Listen for the onReceipt event.
+   * 
+   * Android and iOS plugins will fire this event to send receipts from native code.
+   * 
+   * @param eventName 
+   * @param listenerFunc 
+   */
+  addListener(
+    eventName: 'onReceipt',
+    listenerFunc: (receipt: Receipt) => void,
+  ): Promise<PluginListenerHandle> & PluginListenerHandle;
+
 }
