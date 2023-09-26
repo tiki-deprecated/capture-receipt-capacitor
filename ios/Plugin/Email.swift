@@ -85,7 +85,6 @@ public class Email {
                 if(error == nil){
                     pluginCall.reject(error?.localizedDescription ?? "Email logout error.")
                 }else{
-                    BREReceiptManager.shared().resetEmailsChecked()
                     pluginCall.resolve()
                 }
             })
