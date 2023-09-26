@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.getcapacitor.JSObject
 import com.getcapacitor.PluginCall
 import com.microblink.core.ScanResults
-import com.microblink.core.Timberland
 import com.microblink.digital.BlinkReceiptDigitalSdk
 import com.microblink.digital.GmailAuthException
 import com.microblink.digital.GmailClient
@@ -94,7 +93,10 @@ class Email {
             when (it) {
                 ProviderSetupResults.BAD_PASSWORD -> call.reject("Bad Password")
                 ProviderSetupResults.BAD_EMAIL -> call.reject("Bad Email")
-                ProviderSetupResults.CREATED_APP_PASSWORD -> Timberland.d("CREATED_APP_PASSWORD")
+                ProviderSetupResults.CREATED_APP_PASSWORD -> {
+                    account.isVerified = true
+                    call.resolve(account.toRsp())
+                }
                 ProviderSetupResults.NO_CREDENTIALS -> call.reject("No Credentials")
                 ProviderSetupResults.UNKNOWN -> call.reject("Unknown")
                 ProviderSetupResults.NO_APP_PASSWORD -> call.reject("No App Password")
@@ -107,15 +109,6 @@ class Email {
                         as ProviderSetupDialogFragment
                 if (dialog.isAdded) {
                     dialog.dismiss()
-                    MainScope().async {
-                         account.isVerified =imapClient.verify(PasswordCredentials.newBuilder(
-                            Provider.valueOf(account.accountCommon.source),
-                            account.username,
-                            account.password
-                        ).build()
-                        ).await()
-                        call.resolve(account.toRsp())
-                    }
                 }
             }
         }.show(activity.supportFragmentManager, tag)
@@ -177,9 +170,13 @@ class Email {
                     credential: PasswordCredentials,
                     result: List<ScanResults>
                 ) {
-                    result.forEach { receipt ->
-                        val rsp = RspScan(receipt, Account.fromEmailAccount(credential))
-                        call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                    if (result.isEmpty()){
+                        call.resolve(JSObject())
+                    } else {
+                        result.forEach { receipt ->
+                            val rsp = RspScan(receipt, Account.fromEmailAccount(credential))
+                            call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                        }
                     }
                 }
 
