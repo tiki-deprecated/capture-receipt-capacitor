@@ -13,10 +13,7 @@ public enum EmailEnum: String, CaseIterable {
     
     /// Represents the Gmail email provider.
     case GMAIL
-    
-    /// Represents the Gmail IMAP email provider.
-    case GMAILIMAP
-    
+
     /// Represents the AOL email provider.
     case AOL
     
@@ -33,7 +30,6 @@ public enum EmailEnum: String, CaseIterable {
         switch self{
             case .AOL : return .AOL
             case .GMAIL : return .gmail
-            case .GMAILIMAP : return .gmailIMAP
             case .OUTLOOK : return .outlook
             case .YAHOO : return .yahoo
         }

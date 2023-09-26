@@ -50,7 +50,6 @@ public class Email {
     ///   - account: An instance of the Account struct containing user and account information.
     ///   - pluginCall: The CAPPluginCall object representing the plugin call.
     public func login(_ account: Account, _ pluginCall: CAPPluginCall) {
-        let provider = EmailEnum(rawValue:  account.accountType.source)?.toBREReceiptProvider()
         let email = BRIMAPAccount(provider: .gmailIMAP, email: account.user, password: account.password!)
         let rootVc = UIApplication.shared.windows.first?.rootViewController
         Task(priority: .high) {
@@ -64,11 +63,6 @@ public class Email {
                 }
             })
     }
-
-
-    
-
-        
     }
     
     /// Logs out a user account or signs out of all accounts.
@@ -78,7 +72,7 @@ public class Email {
     ///   - account: An optional instance of the Account struct containing user and account information.
     public func logout(_ pluginCall: CAPPluginCall, _ account: Account?){
         if(account != nil ){
-            let email = BRIMAPAccount(provider: .gmailIMAP, email: "jessemonteiroferreira@gmail.com", password: "")
+            let email = BRIMAPAccount(provider: .gmailIMAP, email: account?.user ?? "", password: account?.password ?? "")
             BREReceiptManager.shared().signOut(from: email) { error in
                 if(error != nil){
                     pluginCall.reject(error?.localizedDescription ?? "Email logout error.")
