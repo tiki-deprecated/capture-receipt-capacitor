@@ -33,22 +33,15 @@ class ReceiptCapture {
      * @param call The plugin call object.
      * @param activity The Android application activity.
      */
-    fun initialize(call: PluginCall, activity: AppCompatActivity, initializeCallback: () -> Unit) {
+    fun initialize(call: PluginCall, activity: AppCompatActivity) {
         val req = ReqInitialize(call.data)
         MainScope().async {
             physical.initialize(req, activity) { msg, data -> call.reject(msg, data) }.await()
             email.initialize(req, activity) { msg, data -> call.reject(msg, data) }.await()
             retailer.initialize(req, activity) { msg, data -> call.reject(msg, data) }.await()
-            initializeCallback()
             val rsp = RspInitialized(true)
             call.resolve(JSObject.fromJSONObject(rsp.toJson()))
         }
-    }
-
-    fun scanInitialize( call: PluginCall, activity: AppCompatActivity){
-
-//        email.scrape(call, activity)
-        retailer.orders(call, activity)
     }
 
     /**
