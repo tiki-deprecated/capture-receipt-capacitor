@@ -83,7 +83,7 @@ public struct RspReceipt: Rsp {
     /// The email provider associated with the eReceipt, if available.
     private let eReceiptEmailProvider: String?
     /// The email identifier associated with the eReceipt, if available.
-    private let eReceiptEmailId: String?
+//    private let eReceiptEmailId: String?
     /// Indicates if the eReceipt was successfully authenticated.
     private let eReceiptAuthenticated: Bool?
     /// Indicates if the shopper is an Instacart shopper.
@@ -184,7 +184,7 @@ public struct RspReceipt: Rsp {
         longTransactionId = scanResults.longTransactionId?.value
         subtotalMatches = scanResults.subtotalMatches
         eReceiptEmailProvider = scanResults.ereceiptEmailProvider
-        eReceiptEmailId = scanResults.ereceiptEmailId
+//        eReceiptEmailId = scanResults.ereceiptEmailId
         eReceiptAuthenticated = scanResults.ereceiptAuthenticated
         instacartShopper = scanResults.isInstacartShopper
         if(scanResults.ereceiptComponentEmails != nil){
@@ -279,7 +279,7 @@ public struct RspReceipt: Rsp {
         ret["longTransactionId"] = longTransactionId
         ret["subtotalMatches"] = subtotalMatches
         ret["eReceiptEmailProvider"] = eReceiptEmailProvider
-        ret["eReceiptEmailId"] = eReceiptEmailId
+//        ret["eReceiptEmailId"] = eReceiptEmailId
         ret["eReceiptAuthenticated"] = eReceiptAuthenticated
         ret["instacartShopper"] = instacartShopper
         ret["eReceiptComponentEmails"] = JSArray(arrayLiteral: eReceiptComponentEmails.map { email in email.toPluginCallResultData()} )
