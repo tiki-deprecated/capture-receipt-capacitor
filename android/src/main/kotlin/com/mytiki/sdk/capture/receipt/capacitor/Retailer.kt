@@ -33,15 +33,15 @@ class Retailer {
      * @return A [CompletableDeferred] indicating whether the initialization was successful.
      */
     fun initialize(
+        context: Context,
         licenseKey: String,
         productKey: String,
-        activity: AppCompatActivity,
         onError: (msg: String?) -> Unit,
     ): CompletableDeferred<Unit> {
         val isLinkInitialized = CompletableDeferred<Unit>()
         BlinkReceiptLinkingSdk.licenseKey = licenseKey
         BlinkReceiptLinkingSdk.productIntelligenceKey = productKey
-        BlinkReceiptLinkingSdk.initialize(activity, OnInitialize(isLinkInitialized, onError))
+        BlinkReceiptLinkingSdk.initialize(context, OnInitialize(isLinkInitialized, onError))
         return isLinkInitialized
     }
 
@@ -58,8 +58,8 @@ class Retailer {
         password: String,
         source: String,
         activity: AppCompatActivity,
-        onAccount: ((Account) -> Void)? = null,
-        onError: ((String) -> Void)? = null
+        onAccount: ((Account) -> Unit)? = null,
+        onError: ((String) -> Unit)? = null
     ) {
         val mbAccount = Account(
             RetailerEnum.fromString(source).toMbInt(),
@@ -94,17 +94,16 @@ class Retailer {
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     fun remove(
-        username: String,
-        source: String,
         context: Context,
-        onComplete: () -> Void,
+        account: Account,
+        onComplete: () -> Unit,
         onError: (msg: String?) -> Unit
     ) {
         val client = client(context)
         client.accounts().addOnSuccessListener { accounts ->
             val mbAccount = accounts?.firstOrNull {
-                it.retailerId == RetailerEnum.fromString(source).toMbInt() &&
-                        it.credentials.username() == username
+                it.retailerId == RetailerEnum.fromString(account.accountCommon.source).toMbInt() &&
+                        it.credentials.username() == account.username
             }
             if (mbAccount != null) {
                 client.unlink(mbAccount).addOnSuccessListener {
@@ -113,7 +112,7 @@ class Retailer {
                     onError(it.message)
                 }
             } else {
-                onError("Error in logout: Account not found $source - $username")
+                onError("Error in logout: Account not found ${account.accountCommon.source} - ${account.username}")
             }
         }
     }
@@ -124,7 +123,7 @@ class Retailer {
      * @param call The plugin call.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun flush(context: Context, onComplete: () -> Void, onError: ((msg: String?) -> Void)? = null) {
+    fun flush(context: Context, onComplete: () -> Unit, onError: ((msg: String?) -> Unit)? = null) {
         client(context).resetHistory().addOnSuccessListener {
             onComplete()
         }.addOnFailureListener { ex ->
@@ -140,12 +139,12 @@ class Retailer {
      */
     fun orders(
         context: Context,
+        onReceipt: (ScanResults) -> Unit,
+        onError: (msg: String?) -> Unit,
         daysCutOff: Int,
-        onScan: (ScanResults) -> Void,
-        onError: (msg: String?) -> Void
     ) {
         val onAccount = { account: Account ->
-            this.orders(context, account, onScan, daysCutOff, onError)
+            this.orders(context, account, onReceipt, daysCutOff, onError)
         }
         accounts(
             context,
@@ -165,9 +164,9 @@ class Retailer {
     fun orders(
         context: Context,
         account: Account,
-        onScan: (ScanResults) -> Void,
+        onScan: (ScanResults) -> Unit,
         daysCutOff: Int?,
-        onError: (msg: String?) -> Void
+        onError: (msg: String?) -> Unit
     ) {
         val client: AccountLinkingClient = client(context, daysCutOff ?: 7)
         val source = account.accountCommon.source
@@ -202,8 +201,8 @@ class Retailer {
     fun accounts(
         context: Context,
         onAccount: (Account) -> Unit,
-        onError: ((msg: String) -> Void),
-        onComplete: (() -> Void)? = null
+        onError: ((msg: String) -> Unit),
+        onComplete: (() -> Unit)? = null
     ) {
         val client: AccountLinkingClient = client(context)
         client.accounts()
@@ -237,8 +236,8 @@ class Retailer {
     private fun verify(
         mbAccount: com.microblink.linking.Account,
         activity: AppCompatActivity,
-        onVerify: ((Account) -> Void)?,
-        onError: ((msg: String) -> Void)?
+        onVerify: ((Account) -> Unit)?,
+        onError: ((msg: String) -> Unit)?
     ) {
         val client: AccountLinkingClient = client(activity)
         val account = Account.fromRetailerAccount(mbAccount)

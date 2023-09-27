@@ -40,9 +40,9 @@ class Email {
      * @return A [CompletableDeferred] to indicate when the initialization is complete.
      */
     fun initialize(
+        context: Context,
         licenseKey: String,
         productKey: String,
-        context: Context,
         onError: (msg: String?) -> Unit,
     ): CompletableDeferred<Unit> {
         val isInitialized = CompletableDeferred<Unit>()
@@ -67,8 +67,8 @@ class Email {
         password: String,
         source: String,
         supportFragmentManager: FragmentManager,
-        onComplete: ((Account) -> Void)? = null,
-        onError: ((String) -> Void)? = null
+        onComplete: ((Account) -> Unit)? = null,
+        onError: ((String) -> Unit)? = null
     ) {
         ProviderSetupDialogFragment.newInstance(
             ProviderSetupOptions.newBuilder(
@@ -109,12 +109,12 @@ class Email {
      */
     fun scrape(
         context: Context,
-        onReceipt: (receipt: ScanResults?) -> Void,
+        onReceipt: (receipt: ScanResults?) -> Unit,
         onError: (msg: String?) -> Unit,
-        dayCutOff: Int?
+        dayCutOff: Int
     ) {
         this.client(context, onError) { client ->
-            client.dayCutoff(dayCutOff ?: 7)
+            client.dayCutoff(dayCutOff)
             client.messages(object : MessagesCallback {
                 override fun onComplete(
                     credential: PasswordCredentials,
@@ -139,7 +139,7 @@ class Email {
      *
      * @return A [CompletableDeferred] containing a list of email accounts.
      */
-    fun accounts(context: Context, onAccount: (Account) -> Void, onError: (msg: String?) -> Unit) {
+    fun accounts(context: Context, onAccount: (Account) -> Unit, onError: (msg: String?) -> Unit) {
         this.client(context, onError) { client ->
             client.accounts().addOnSuccessListener { credentials ->
                 credentials?.forEach { credential ->
@@ -168,7 +168,7 @@ class Email {
     fun remove(
         context: Context,
         account: Account,
-        onRemove: () -> Void,
+        onRemove: () -> Unit,
         onError: (String) -> Unit
     ) {
         this.client(context, onError) { client ->
@@ -194,7 +194,7 @@ class Email {
      *
      * @param call Plugin call.
      */
-    fun flush(context: Context, onComplete: () -> Void, onError: (msg: String?) -> Unit) {
+    fun flush(context: Context, onComplete: () -> Unit, onError: (msg: String?) -> Unit) {
         this.client(context, onError) { client ->
             client.logout().addOnSuccessListener {
                 onComplete()
