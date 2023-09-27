@@ -5,9 +5,7 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor
 
-import com.getcapacitor.JSObject
 import com.microblink.core.InitializeCallback
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspInitialized
 import kotlinx.coroutines.CompletableDeferred
 
 /**
@@ -18,7 +16,7 @@ import kotlinx.coroutines.CompletableDeferred
  */
 class OnInitialize(
     private val completable: CompletableDeferred<Unit>,
-    private val onError: (msg: String?, data: JSObject) -> Unit,
+    private val onError: (msg: String) -> Unit,
 ) : InitializeCallback {
 
     /**
@@ -34,8 +32,7 @@ class OnInitialize(
      * @param throwable The exception that occurred during initialization.
      */
     override fun onException(throwable: Throwable) {
-        val rsp = RspInitialized(false)
-        onError(throwable.message, JSObject.fromJSONObject(rsp.toJson()))
+        onError(throwable.message ?: "$throwable")
         completable.complete(Unit)
     }
 }

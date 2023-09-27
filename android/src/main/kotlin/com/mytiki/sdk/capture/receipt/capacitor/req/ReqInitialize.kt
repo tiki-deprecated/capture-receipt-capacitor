@@ -20,20 +20,23 @@ import com.getcapacitor.JSObject
 class ReqInitialize(data: JSObject) {
     val licenseKey: String
     val productKey: String
-    val googleId: String?
 
     /**
      * Initializes the [ReqInitialize] object by extracting the licenseKey and productKey
      * from the provided [JSObject] data.
      *
-     * If the licenseKey or productKey is not present in the data, empty strings are used
-     * as defaults.
-     *
      * @param data A [JSObject] containing the initialization data.
      */
     init {
-        licenseKey = data.getString("licenseKey") ?: ""
-        productKey = data.getString("productKey") ?: ""
-        googleId = data.getString("googleId")
+        val licenseKey = data.getString("licenseKey")
+        val productKey = data.getString("productKey")
+        if (licenseKey == null){
+            throw Error("Provide a License Key for initialization.")
+        }
+        if (productKey == null){
+            throw Error("Provide a Product Intelligence Key for initialization.")
+        }
+        this.productKey = productKey
+        this.licenseKey = licenseKey
     }
 }
