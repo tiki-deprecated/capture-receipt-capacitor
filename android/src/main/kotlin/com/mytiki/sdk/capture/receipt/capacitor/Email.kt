@@ -125,6 +125,9 @@ class Email {
                     credential: PasswordCredentials,
                     result: List<ScanResults>
                 ) {
+                    if(result.isEmpty()){
+                        onError("No results for ${credential.username()} - ${credential.provider()}")
+                    }
                     result.forEach { receipt ->
                         onReceipt(receipt)
                     }

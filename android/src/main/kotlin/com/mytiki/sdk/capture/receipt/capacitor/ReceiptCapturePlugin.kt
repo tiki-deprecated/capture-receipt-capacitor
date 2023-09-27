@@ -80,7 +80,7 @@ class ReceiptCapturePlugin : Plugin() {
          * @param message The error message.
          */
         fun onError(message: String) {
-            instance.notifyListeners("onError", JSObject(message))
+            instance.notifyListeners("onError", JSObject().put("message", message))
         }
     }
 
@@ -181,7 +181,7 @@ class ReceiptCapturePlugin : Plugin() {
      */
     @PluginMethod
     fun scan(call: PluginCall) {
-        val dayCutOff = call.data.getInt("dayCutOff")
+        val dayCutOff = call.data.getInteger("dayCutOff", 7)
         receiptCapture.scan(activity, dayCutOff)
     }
 }

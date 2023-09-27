@@ -5,10 +5,11 @@
 
 import type { Account } from './account';
 import type { Receipt } from './receipt';
-import type { PluginListenerHandle } from '@capacitor/core';
+import type { ListenerCallback, PluginListenerHandle } from '@capacitor/core';
 
 export type ScanType = 'PHYSICAL' | 'EMAIL' | 'RETAILER' | 'ONLINE';
 
+export type ListenerEvent = 'onInitialize' | 'onReceipt' | 'onError' | 'onAccount'
 export interface ReqAccount {
   username?: string;
   password?: string;
@@ -66,7 +67,7 @@ export interface ReceiptCapturePlugin {
   accounts(): Promise<Account[]>;
 
   /**
-   * Listen for the onReceipt event.
+   * Listen for the onInitialize event.
    * 
    * Android and iOS plugins will fire this event to send receipts from native code.
    * 
@@ -74,8 +75,9 @@ export interface ReceiptCapturePlugin {
    * @param listenerFunc 
    */
   addListener(
-    eventName: 'onReceipt',
-    listenerFunc: (receipt: Receipt) => void,
+    eventName: ListenerEvent,
+    listenerFunc: ListenerCallback,
   ): Promise<PluginListenerHandle> & PluginListenerHandle;
+
 
 }
