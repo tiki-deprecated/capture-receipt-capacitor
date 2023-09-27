@@ -52,8 +52,6 @@ class ReceiptCapturePlugin : Plugin() {
     @PluginMethod
     fun initialize(call: PluginCall) {
         receiptCapture.initialize(call, activity)
-        onScan()
-        bridge.triggerJSEvent("onScan", "window")
     }
 
     /**

@@ -13,7 +13,6 @@ public class ReceiptCapturePlugin: CAPPlugin {
     
     @objc public func initialize(_ call: CAPPluginCall) {
         receiptCapture.initialize(call)
-        onScan()
     }
     
     @objc public func login(_ call: CAPPluginCall) {
