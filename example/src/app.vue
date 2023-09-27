@@ -2,7 +2,8 @@
 import { ref } from 'vue';
 import { login, accounts, scan, logout, initialize } from './main';
 const username = ref<HTMLInputElement>()
-const pass = ref<HTMLInputElement>()
+const password = ref<HTMLInputElement>()
+const source = ref<HTMLSelectElement>()
 </script>
 
 <template>
@@ -25,18 +26,40 @@ const pass = ref<HTMLInputElement>()
   <main>
     <div class="greetings" style="">
       <h1>Oh, Hi!</h1>
-      <input type="text" ref="username" />
-      <input type="password" ref="pass" />
-      <button @click="initialize()">initialize</button>
-      <button @click="login(username?.value ?? '', pass?.value ?? '', 'AMAZON')">Login</button>
-      <button @click="accounts()">Accounts</button>
-      <button @click="scan()">Scan</button>
-      <button @click="logout()">Logout</button>
+      <div class="form">
+        <label for="">Choose the Account</label>
+        <select ref="source">
+          <option value="AMAZON" label="Amazon" />
+          <option value="GMAIL" label="Gmail" />
+        </select>
+        <input placeholder="username" type="text" ref="username" />
+        <input placeholder="password" type="password" ref="password" />
+        <button @click="initialize()">initialize</button>
+        <button @click="login(username?.value ?? '', password?.value ?? '', source?.value ?? '')">Login</button>
+        <button @click="accounts()">Accounts</button>
+        <button @click="scan()">Scan</button>
+        <button @click="logout()">Logout</button>
+      </div>
     </div>
   </main>
 </template>
 
 <style scoped>
+.form{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.form input, .form button, .form select{
+  height: 48px;
+  margin-bottom: 1.5em;
+  width: 100%;
+  border: none;
+  background-color: #ebebeb;
+  border-radius: 0.7em;
+}
+
 header {
   line-height: 1.5;
 }

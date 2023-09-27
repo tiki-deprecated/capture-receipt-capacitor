@@ -53,7 +53,7 @@ class Account(
          * @return Account object.
          */
         fun fromRetailerAccount(retailerAccount: com.microblink.linking.Account): Account {
-            val accountType = AccountCommon.fromString(RetailerEnum.fromMbInt(retailerAccount.retailerId).toString())
+            val accountType = AccountCommon.fromSource(RetailerEnum.fromMbInt(retailerAccount.retailerId).toString())
             val username = retailerAccount.credentials.username()
             return Account(accountType, username)
         }
@@ -65,7 +65,7 @@ class Account(
          * @return Account object.
          */
         fun fromEmailAccount(emailAccount:  PasswordCredentials): Account {
-            val accountType = AccountCommon.fromString(emailAccount.provider().name)
+            val accountType = AccountCommon.fromSource(emailAccount.provider().name)
             val username = emailAccount.username()
             return Account(accountType, username)
         }

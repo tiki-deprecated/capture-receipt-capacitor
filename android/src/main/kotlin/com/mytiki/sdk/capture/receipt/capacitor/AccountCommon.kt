@@ -89,7 +89,7 @@ enum class AccountCommon(val type: AccountTypeEnum, val source: String) {
          * @param stringValue The [AccountCommon.source] to search for.
          * @return The matching [AccountCommon] enum entry, or null if not found.
          */
-        fun fromString(stringValue: String) = AccountCommon.values().first{ it.source == stringValue}
+        fun fromSource(source: String) = AccountCommon.values().first{ it.source == source}
 
     }
 
