@@ -7,6 +7,7 @@ package com.mytiki.sdk.capture.receipt.capacitor
 
 import android.Manifest
 import androidx.activity.result.ActivityResult
+import androidx.appcompat.app.AppCompatActivity
 import com.getcapacitor.JSObject
 import com.getcapacitor.PermissionState
 import com.getcapacitor.Plugin
@@ -16,7 +17,12 @@ import com.getcapacitor.annotation.ActivityCallback
 import com.getcapacitor.annotation.CapacitorPlugin
 import com.getcapacitor.annotation.Permission
 import com.getcapacitor.annotation.PermissionCallback
+import com.microblink.core.ScanResults
+import com.mytiki.sdk.capture.receipt.capacitor.req.ReqAccount
+import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
+import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspAccount
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspReceipt
+import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspScan
 import kotlin.properties.Delegates
 
 /**
@@ -29,17 +35,36 @@ import kotlin.properties.Delegates
 *@version 1.0.0
  */
 @CapacitorPlugin(
-    name = "ReceiptCapture",
-    permissions = [
-        Permission(
-            alias = "camera",
-            strings = [Manifest.permission.CAMERA]
-        )
-    ]
+    name = "ReceiptCapture"
 )
 class ReceiptCapturePlugin : Plugin() {
-    private val receiptCapture = ReceiptCapture()
-    private var requestCode by Delegates.notNull<Int>()
+    private val receiptCapture = ReceiptCapture(
+        { onInitialize() },
+        { onScan(it) },
+        { onAccount(it) },
+        { onError(it) }
+    )
+
+    companion object{
+        private lateinit var instance: ReceiptCapturePlugin
+
+        fun onInitialize() {
+            instance.notifyListeners("onInitialize", JSObject())
+        }
+        fun onScan(scan: ScanResults? = null) {
+            val data = if (scan != null) { JSObject.fromJSONObject(RspScan(scan).toJson()) } else { JSObject() }
+            instance.notifyListeners("onReceipt", data)
+        }
+
+        fun onAccount(account: Account? = null) {
+            val data = if (account != null) { JSObject.fromJSONObject(RspAccount(account).toJson()) } else { JSObject() }
+            instance.notifyListeners("onAccount", data)
+        }
+
+        fun onError(message: String) {
+            instance.notifyListeners("onError", JSObject(message))
+        }
+    }
 
     /**
      * Initializes the receipt capture functionality.
@@ -51,7 +76,14 @@ class ReceiptCapturePlugin : Plugin() {
      */
     @PluginMethod
     fun initialize(call: PluginCall) {
-        receiptCapture.initialize(call, activity)
+        try {
+            val reqInitialize = ReqInitialize(call.data)
+            receiptCapture.initialize(context, reqInitialize.licenseKey, reqInitialize.productKey)
+            instance = this
+        }catch (e: Exception){
+            call.reject(e.message)
+        }
+
     }
 
     /**
@@ -65,9 +97,28 @@ class ReceiptCapturePlugin : Plugin() {
      * @param call The Capacitor [PluginCall] instance.
      */
     @PluginMethod
-    fun login(call: PluginCall) = receiptCapture.login(call, activity){intent, reqCode ->
-        requestCode = reqCode
-        startActivityForResult(call, intent, "onLoginResult")
+    fun login(call: PluginCall) {
+        val username = call.data.getString("username")
+        val password = call.data.getString("password")
+        val source = call.data.getString("source")
+        if (source.isNullOrEmpty()) {
+            onError("Provide source in login request")
+            call.reject("Provide source in login request")
+        }else if (username.isNullOrEmpty()) {
+            onError("Provide username in login request")
+            call.reject("Provide username in login request")
+        }else if (password.isNullOrEmpty()) {
+            onError("Provide password in login request")
+            call.reject("Provide password in login request")
+        }else {
+            receiptCapture.login(
+                activity,
+                username,
+                password,
+                source
+            )
+            call.resolve()
+        }
     }
 
     /**
@@ -82,7 +133,11 @@ class ReceiptCapturePlugin : Plugin() {
      * @param call The Capacitor plugin call instance.
      */
     @PluginMethod
-    fun logout(call: PluginCall) = receiptCapture.logout(call, activity)
+    fun logout(call: PluginCall) {
+        receiptCapture.logout(activity, Account.fromReq(call.data)) {
+            call.resolve()
+        }
+    }
 
     /**
      * Fetches accounts associated.
@@ -93,7 +148,11 @@ class ReceiptCapturePlugin : Plugin() {
      * @param call The Capacitor plugin call instance.
      */
     @PluginMethod
-    fun accounts(call: PluginCall) = receiptCapture.accounts(call, activity)
+    fun accounts(call: PluginCall){
+        receiptCapture.accounts(context, AccountTypeEnum.RETAILER)
+        receiptCapture.accounts(context, AccountTypeEnum.EMAIL)
+        call.resolve()
+    }
 
     /**
      * Fetches all receipts on logged accounts or starts the physical receipt scan process.
@@ -106,57 +165,9 @@ class ReceiptCapturePlugin : Plugin() {
      * @param call The Capacitor plugin call instance.
      */
     @PluginMethod
-    fun scan(call: PluginCall) = receiptCapture.scan(this, call, activity) {
-        requestPermissionForAlias("camera", call, "onCameraPermission")
+    fun scan(call: PluginCall){
+        val dayCutOff = call.data.getInt("dayCutOff")
+        receiptCapture.scan(activity, dayCutOff)
     }
 
-    /**
-     * Callback invoked when the receipt capture activity returns a result.
-     *
-     * This callback is triggered when the receipt capture activity completes successfully or with an error.
-     * It provides the result of the capture operation, including scan data and media if successful.
-     *
-     * @param call The Capacitor plugin call instance.
-     * @param result The result of the receipt capture activity.
-     */
-    @ActivityCallback
-    private fun onScanResult(call: PluginCall, result: ActivityResult) = receiptCapture.physical.onResult(call, result)
-
-    /**
-     * Callback invoked when the gmail sing in activity returns a result.
-     *
-     * This callback is triggered when the gmail sing in activity completes successfully or with an error.
-     * It provides the result of the sing in if successful.
-     *
-     * @param call The Capacitor plugin call instance.
-     * @param result The result of the gmail sing in.
-     */
-    @ActivityCallback
-    private fun onLoginResult(call: PluginCall,  result: ActivityResult) {
-        receiptCapture.email.onLoginResult(call, requestCode, result.resultCode, result.data)
-    }
-
-    /**
-     * Callback invoked when the camera permission is requested.
-     *
-     * This callback is called when the plugin requests camera permission. If permission is granted, it will initiate
-     * the receipt capture process. If not, it will reject the call with a permission error message.
-     *
-     * @param call The Capacitor plugin call instance.
-     */
-    @PermissionCallback
-    private fun onCameraPermission(call: PluginCall) {
-        if (getPermissionState("camera") == PermissionState.GRANTED) {
-            receiptCapture.scan(this, call, activity) {
-                requestPermissionForAlias("camera", call, "onCameraPermission")
-            }
-        } else {
-            call.reject("Permission is required to capture a receipt")
-        }
-    }
-
-    fun onScan(receipt: RspReceipt? = null) {
-        val data = if (receipt != null) { JSObject.fromJSONObject(receipt.toJson()) } else { JSObject() }
-        notifyListeners("onReceipt", data)
-    }
 }
