@@ -4,11 +4,8 @@
  */
 
 import { WebPlugin } from '@capacitor/core';
-
-import type { Receipt } from './receipt';
 import type { ReceiptCapturePlugin } from './receipt-capture-plugin';
 import type { Account } from './account';
-import type { ScanType } from './receipt-capture-plugin';
 
 export class ReceiptCaptureWeb extends WebPlugin implements ReceiptCapturePlugin {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -29,7 +26,7 @@ export class ReceiptCaptureWeb extends WebPlugin implements ReceiptCapturePlugin
    * @param source - the source from that account, that can be an email service or a retailer service.
    * @returns - the Account interface with the logged in information.
    */
-  async login(): Promise<Account>{
+  async login(): Promise<void>{
     throw this.unimplemented('Mobile Only')
   }
 
@@ -40,7 +37,7 @@ export class ReceiptCaptureWeb extends WebPlugin implements ReceiptCapturePlugin
    * @param source - the source from that account, that can be an email service or a retailer service.
    * @returns - the Account that logged out
    */
-  async logout(): Promise<Account>{
+  async logout(): Promise<void>{
     throw this.unimplemented('Mobile Only')
   }
 
@@ -50,7 +47,7 @@ export class ReceiptCaptureWeb extends WebPlugin implements ReceiptCapturePlugin
    * @param account - The account that will be scanned for receipts.
    * @returns - The scanned Receipt and a boolean indicates the execution.
    */
-  async scan(_options:{scanType: ScanType | undefined, account?: Account}): Promise<{receipt: Receipt, isRunning: boolean, account?: Account}> {
+  async scan(_options:{}): Promise<void>{
     throw this.unimplemented('Mobile Only.');
   }
 
@@ -58,7 +55,7 @@ export class ReceiptCaptureWeb extends WebPlugin implements ReceiptCapturePlugin
    * Retrieves all saved accounts.
    * @returns - an array of Accounts.
    */
-  async accounts(): Promise<Account[]>{
+  async accounts(): Promise<void>{
     throw this.unimplemented('Mobile Only.');
   };
 }
