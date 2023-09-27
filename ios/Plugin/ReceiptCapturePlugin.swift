@@ -33,6 +33,6 @@ public class ReceiptCapturePlugin: CAPPlugin {
     }
     
     func onScan(_ scanResult: RspScan? = nil){
-        self.notifyListeners("onScan", data: scanResult?.toPluginCallResultData())
+        self.notifyListeners("onReceipt", data: scanResult?.toPluginCallResultData())
     }
 }
