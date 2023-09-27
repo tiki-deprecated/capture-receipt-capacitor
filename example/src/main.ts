@@ -1,8 +1,6 @@
 import './assets/main.css';
 import { createApp } from 'vue';
-import * as cap from '@mytiki/tiki-receipt-capacitor';
 import { registerPlugin } from '@capacitor/core';
-
 import App from '@/app.vue';
 import { ReceiptCapture } from '../../src/receipt-capture';
 import type { ReceiptCapturePlugin } from '../../src/receipt-capture-plugin';

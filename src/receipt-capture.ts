@@ -6,6 +6,7 @@
 import type { Account } from './account';
 import type { Receipt } from './receipt';
 import type { ReceiptCapturePlugin, ReqInitialize, ScanType } from './receipt-capture-plugin';
+import { LocalNotifications } from '@capacitor/local-notifications';
 
 /**
  * The primary class for interacting with the Plugin.
@@ -36,6 +37,23 @@ export class ReceiptCapture {
    * @throws Error if the initialization fails.
    */
   initialize = async (licenseKey: string, productKey: string, googleClientId: string | undefined): Promise<void> => {
+    await LocalNotifications.requestPermissions()
+    const notifs = await LocalNotifications.schedule({
+      notifications: [
+        {
+          title: 'Test Notification',
+          body: 'Test Notification',
+          id: 1,
+          schedule: { at: new Date(Date.now() + 1000 * 5) },
+          sound: undefined,
+          attachments: undefined,
+          actionTypeId: '',
+          extra: null,
+        },
+      ],
+    });
+    console.log('scheduled notifications', notifs);
+    
     const req: ReqInitialize = {
       licenseKey: licenseKey,
       productKey: productKey,

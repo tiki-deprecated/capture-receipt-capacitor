@@ -79,5 +79,8 @@
     "android": {
       "src": "android"
     }
+  },
+  "dependencies": {
+    "@capacitor/local-notifications": "^5.0.6"
   }
 }
