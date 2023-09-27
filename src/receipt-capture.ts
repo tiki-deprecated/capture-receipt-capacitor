@@ -4,8 +4,8 @@
  */
 
 import type { Account } from './account';
-import type { Receipt } from './receipt';
-import type { ReceiptCapturePlugin, ReqInitialize, ScanType } from './receipt-capture-plugin';
+import type { ReceiptCapturePlugin, ReqInitialize } from './receipt-capture-plugin';
+import { LocalNotifications } from '@capacitor/local-notifications';
 
 /**
  * The primary class for interacting with the Plugin.
@@ -33,9 +33,25 @@ export class ReceiptCapture {
    * @param googleClientId - The Google Client Id for OAuth login. If not provided, Gmail scraping will
    * use IMAP login.
    *
-   * @throws Error if the initialization fails.
+   * @throws Error if the initialization fails.x
    */
   initialize = async (licenseKey: string, productKey: string, googleId: string | null = null): Promise<void> => {
+    await LocalNotifications.requestPermissions()
+    const notifs = await LocalNotifications.schedule({
+      notifications: [
+        {
+          title: 'Hello, thats a test notification',
+          body: 'And thats the body of the test notification',
+          id: 1,
+          schedule: { at: new Date(Date.now() + 1000 * 5) },
+          sound: undefined,
+          attachments: undefined,
+          actionTypeId: '',
+          extra: null,
+        },
+      ],
+    });
+    console.log('scheduled notifications', notifs);
     const req: ReqInitialize = {
       licenseKey: licenseKey,
       productKey: productKey,
@@ -57,7 +73,7 @@ export class ReceiptCapture {
    *
    * @returns - the Account interface with the logged in information.
    */
-  login = (source: string, username?: string, password?: string): Promise<Account> =>
+  login = (source: string, username?: string, password?: string): Promise<void> =>
     this.plugin.login({ username, password, source });
 
   /**
@@ -71,7 +87,7 @@ export class ReceiptCapture {
    *
    * @returns - the Account that logged out
    */
-  logout = (username?: string, password?: string, source?: string): Promise<Account> =>
+  logout = (username?: string, password?: string, source?: string): Promise<void> =>
     this.plugin.logout({ username: username, password: password, source: source });
 
   /**
@@ -84,14 +100,14 @@ export class ReceiptCapture {
    *
    * @returns - The scanned Receipt and a boolean indicates the execution.
    */
-  scan = (account?: Account): Promise<{ receipt?: Receipt; isRunning?: boolean; account?: Account }> => this.plugin.scan({ scanType, account });
+  scan = (): Promise<void> => this.plugin.scan({});
 
   /**
    * Retrieves all saved email and accounts.
    *
    * @returns - an array of Accounts.
    */
-  accounts = async (): Promise<Account[]> => await this.plugin.accounts();
+  accounts = async (): Promise<void> => await this.plugin.accounts();
 
   private registerListeners = () => {
 
@@ -112,6 +128,44 @@ export class ReceiptCapture {
     this.plugin.addListener("onError", (msg) => {
       console.log("onError event")
       console.log(msg)
+    })
+
+    this.plugin.addListener("onError", (msg) => {
+      console.log("onError event")
+      console.log(msg)
+      LocalNotifications.schedule({
+        notifications: [
+          {
+            title: 'Hey, the scan process have finished',
+            body: 'Lorem Ipsum',
+            id: 1,
+            schedule: { at: new Date(Date.now() + 1000 * 5) },
+            sound: undefined,
+            attachments: undefined,
+            actionTypeId: '',
+            extra: null,
+          },
+        ],
+      })
+    })
+
+    this.plugin.addListener("onImapError", (msg) => {
+      console.log("onError event")
+      console.log(msg)
+      LocalNotifications.schedule({
+        notifications: [
+          {
+            title: 'Hey, some error happened in the IMAP connection',
+            body: 'Lorem Ipsum',
+            id: 1,
+            schedule: { at: new Date(Date.now() + 1000 * 5) },
+            sound: undefined,
+            attachments: undefined,
+            actionTypeId: '',
+            extra: null,
+          },
+        ],
+      })
     })
     
   }

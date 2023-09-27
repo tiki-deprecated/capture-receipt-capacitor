@@ -8,7 +8,7 @@ import type { ListenerCallback, PluginListenerHandle } from '@capacitor/core';
 
 export type ScanType = 'PHYSICAL' | 'EMAIL' | 'RETAILER' | 'ONLINE';
 
-export type ListenerEvent = 'onInitialize' | 'onReceipt' | 'onError' | 'onAccount'
+export type ListenerEvent = 'onInitialize' | 'onReceipt' | 'onError' | 'onAccount' | 'onImapError' | 'onScanComplete'
 export interface ReqAccount {
   username?: string;
   password?: string;

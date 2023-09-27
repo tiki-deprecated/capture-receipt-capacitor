@@ -3,7 +3,6 @@ import { createApp } from 'vue';
 import { ReceiptCapture } from '../../src/receipt-capture';
 import type { ReceiptCapturePlugin } from '@/receipt-capture-plugin';
 import { registerPlugin } from '@capacitor/core';
-
 import App from '@/app.vue';
 
 const plugin: ReceiptCapturePlugin = registerPlugin<ReceiptCapturePlugin>('ReceiptCapture', {
