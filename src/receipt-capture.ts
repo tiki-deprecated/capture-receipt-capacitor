@@ -84,10 +84,7 @@ export class ReceiptCapture {
    *
    * @returns - The scanned Receipt and a boolean indicates the execution.
    */
-  scan = (
-    scanType: ScanType | undefined,
-    account?: Account,
-  ): Promise<{ receipt?: Receipt; isRunning?: boolean; account?: Account }> => this.plugin.scan({ scanType, account });
+  scan = (account?: Account): Promise<{ receipt?: Receipt; isRunning?: boolean; account?: Account }> => this.plugin.scan({ scanType, account });
 
   /**
    * Retrieves all saved email and accounts.

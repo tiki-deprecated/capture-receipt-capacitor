@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { login, accounts, scanRetailer, logout, initialize, scanEmail } from './main';
+import { login, accounts, scan, logout, initialize } from './main';
 const username = ref<HTMLInputElement>()
 const password = ref<HTMLInputElement>()
 const source = ref<HTMLSelectElement>()
@@ -37,8 +37,7 @@ const source = ref<HTMLSelectElement>()
         <button @click="initialize()">initialize</button>
         <button @click="login(username?.value ?? '', password?.value ?? '', source?.value ?? '')">Login</button>
         <button @click="accounts()">Accounts</button>
-        <button @click="scanEmail()">Scan Email</button>
-        <button @click="scanRetailer()">Scan Retailer</button>
+        <button @click="scan()">Scan</button>
         <button @click="logout()">Logout</button>
       </div>
     </div>
