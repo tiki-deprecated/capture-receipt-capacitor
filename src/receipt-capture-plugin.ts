@@ -4,20 +4,21 @@
  */
 
 import type { Account } from './account';
-import type { Receipt } from './receipt';
+import type { ListenerCallback, PluginListenerHandle } from '@capacitor/core';
 
 export type ScanType = 'PHYSICAL' | 'EMAIL' | 'RETAILER' | 'ONLINE';
 
+export type ListenerEvent = 'onInitialize' | 'onReceipt' | 'onError' | 'onAccount' | 'onImapError' | 'onScanComplete'
 export interface ReqAccount {
-  username: string;
-  password: string;
-  source: string;
+  username?: string;
+  password?: string;
+  source?: string;
 }
 
 export interface ReqInitialize {
   licenseKey: string;
   productKey: string;
-  googleClientId: string | undefined;
+  googleId: string | null;
 }
 
 export interface ReceiptCapturePlugin {
@@ -36,7 +37,7 @@ export interface ReceiptCapturePlugin {
    * @param source - the source from that account, that can be an email service or a retailer service.
    * @returns - the Account interface with the logged in information.
    */
-  login(options: ReqAccount): Promise<Account>;
+  login(options: ReqAccount): Promise<void>;
 
   /**
    * Log out from one or all {@link Account}.
@@ -45,7 +46,7 @@ export interface ReceiptCapturePlugin {
    * @param source - the source from that account, that can be an email service or a retailer service.
    * @returns - the Account that logged out
    */
-  logout(options?: ReqAccount): Promise<Account>;
+  logout(options?: ReqAccount): Promise<void>;
 
   /**
    * Scan for receipts. That can be a physical one, the receipts from an email/retailer account, or all receipts.
@@ -53,14 +54,25 @@ export interface ReceiptCapturePlugin {
    * @param account - The account that will be scanned for receipts.
    * @returns - The scanned Receipt and a boolean indicates the execution.
    */
-  scan(_option: {
-    scanType: ScanType | undefined;
-    account?: Account;
-  }): Promise<{ receipt: Receipt; isRunning: boolean; account?: Account }>;
+  scan(_option: { dayCutOff?: number; }): Promise<void>;
 
   /**
    * Retrieves all saved accounts.
    * @returns - an array of Accounts.
    */
-  accounts(): Promise<Account[]>;
+  accounts(): Promise<void>;
+
+  /**
+   * Listen for the onInitialize event.
+   * 
+   * Android and iOS plugins will fire this event to send receipts from native code.
+   * 
+   * @param eventName 
+   * @param listenerFunc 
+   */
+  addListener(
+    eventName: ListenerEvent,
+    listenerFunc: ListenerCallback,
+  ): Promise<PluginListenerHandle> & PluginListenerHandle;
+
 }

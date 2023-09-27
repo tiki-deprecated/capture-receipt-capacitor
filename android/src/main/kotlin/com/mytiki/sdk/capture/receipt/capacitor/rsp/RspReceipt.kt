@@ -17,7 +17,7 @@ import org.json.JSONObject
  * @param scanResults The scan results containing the data to populate this receipt.
  */
 class RspReceipt(scanResults: ScanResults) : Rsp {
-    // Properties for various receipt data
+
     private val receiptDate: RspStringType?
     private val receiptTime: RspStringType?
     private val retailerId: RspRetailer

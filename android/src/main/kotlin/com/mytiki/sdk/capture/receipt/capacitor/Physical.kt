@@ -39,7 +39,7 @@ class Physical {
     fun initialize(
         req: ReqInitialize,
         context: Context,
-        onError: (msg: String?, data: JSObject) -> Unit,
+        onError: (msg: String?) -> Unit,
     ): CompletableDeferred<Unit> {
         val isInitialized = CompletableDeferred<Unit>()
         BlinkReceiptSdk.productIntelligenceKey(req.productKey)

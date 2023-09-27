@@ -1,6 +1,6 @@
 {
   "name": "@mytiki/tiki-capture-receipt-capacitor",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Capture receipts w/ TIKI!",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -79,5 +79,8 @@
     "android": {
       "src": "android"
     }
+  },
+  "dependencies": {
+    "@capacitor/local-notifications": "^5.0.6"
   }
 }

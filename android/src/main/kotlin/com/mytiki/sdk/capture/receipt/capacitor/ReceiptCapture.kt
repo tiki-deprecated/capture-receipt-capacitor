@@ -5,42 +5,42 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor
 
-import android.content.Intent
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import com.getcapacitor.JSObject
-import com.getcapacitor.Plugin
-import com.getcapacitor.PluginCall
-import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
-import com.mytiki.sdk.capture.receipt.capacitor.req.ReqScan
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspInitialized
+import com.microblink.core.ScanResults
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
-
+import kotlinx.coroutines.awaitAll
 
 /**
  * A plugin for capturing and processing receipts in a Capacitor-based Android application.
  */
-class ReceiptCapture {
-    val physical = Physical()
-    val email = Email()
-    val retailer = Retailer()
+class ReceiptCapture(
+    val onInitialize: (() -> Unit),
+    val onReceipt: ((receipt: ScanResults?) -> Unit),
+    val onAccount: ((account: Account?) -> Unit),
+    val onError: ((message: String) -> Unit),
+) {
+    private val email = Email()
+    private val retailer = Retailer()
 
     /**
      * Initialize the receipt capture plugin.
      *
-     * This function initializes the receipt capture plugin and its components (physical, email, and retailer).
-     *
-     * @param call The plugin call object.
-     * @param activity The Android application activity.
+     * @param context The Android application context.
+     * @param licenseKey The license key.
+     * @param productKey The product key.
      */
-    fun initialize(call: PluginCall, activity: AppCompatActivity) {
-        val req = ReqInitialize(call.data)
+    fun initialize(context: Context, licenseKey: String, productKey: String) {
+        val deferredEmailInit = email.initialize(context, licenseKey, productKey) { msg ->
+            onError(msg ?: "Email initialization error")
+        }
+        val deferredRetailInit = retailer.initialize(context, licenseKey, productKey) { msg ->
+            onError(msg ?: "Retailer initialization error")
+        }
         MainScope().async {
-            physical.initialize(req, activity) { msg, data -> call.reject(msg, data) }.await()
-            email.initialize(req, activity) { msg, data -> call.reject(msg, data) }.await()
-            retailer.initialize(req, activity) { msg, data -> call.reject(msg, data) }.await()
-            val rsp = RspInitialized(true)
-            call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+            awaitAll(deferredEmailInit, deferredRetailInit)
+            onInitialize()
         }
     }
 
@@ -49,33 +49,21 @@ class ReceiptCapture {
      *
      * This function allows users to log in with their email or retailer accounts.
      *
-     * @param call The plugin call object.
      * @param activity The Android application activity.
-     * @param gmailLoginCallback Callback function for handling login activities.
+     * @param username The username for login.
+     * @param password The password for login.
+     * @param source The source of the account (e.g., EmailEnum.GMAIL.toString() or an enum value from RetailerEnum).
      */
-    fun login(call: PluginCall, activity: AppCompatActivity, gmailLoginCallback: (Intent, Int) -> Unit) {
-        val source = call.data.getString("source")
-        val username = call.data.getString("username")
-        val password = call.data.getString("password")
-        if (source.isNullOrEmpty()) {
-            call.reject("Provide source in login request")
+    fun login(
+        activity: AppCompatActivity,
+        username: String,
+        password: String,
+        source: String
+    ) {
+        if (source == EmailEnum.GMAIL.toString()) {
+            email.login(username, password, source, activity.supportFragmentManager, onAccount, onError)
         } else {
-            if(source == EmailEnum.GMAIL.toString() && username.isNullOrEmpty()){
-                email.login(call, activity, gmailLoginCallback)
-            } else {
-                if (username.isNullOrEmpty()) {
-                    call.reject("Provide username in login request")
-                }
-                if (password.isNullOrEmpty()) {
-                    call.reject("Provide password in login request")
-                }
-
-                val account = Account.fromReq(call.data)
-                when (account.accountCommon.type) {
-                    AccountTypeEnum.EMAIL -> email.login(call, activity, account)
-                    AccountTypeEnum.RETAILER -> retailer.login(call, account, activity)
-                }
-            }
+            retailer.login(username, password, source, activity, onAccount, onError)
         }
     }
 
@@ -84,90 +72,51 @@ class ReceiptCapture {
      *
      * This function allows users to log out from specific accounts or all accounts.
      *
-     * @param call The plugin call object.
-     * @param activity The Android application activity.
+     * @param context The Android application context.
+     * @param account The account to log out (null for all accounts).
+     * @param onComplete Callback function to execute after logout.
      */
-    fun logout(call: PluginCall, activity: AppCompatActivity) {
-        val source = call.data.getString("source")
-        val username = call.data.getString("username")
-        val password = call.data.getString("password")
-        if(source.isNullOrEmpty() && username.isNullOrEmpty()){
-            retailer.flush(call)
-            email.flush(call)
-        } else if(!source.isNullOrEmpty() && !username.isNullOrEmpty()){
-            val account = Account.fromReq(call.data)
+    fun logout(context: Context, account: Account?, onComplete: () -> Unit) {
+        if (account == null) {
+            retailer.flush(context, onComplete, onError)
+            email.flush(context, onComplete, onError)
+        } else {
             when (account.accountCommon.type) {
                 AccountTypeEnum.EMAIL -> {
-                    if(password.isNullOrEmpty()){
-                        call.reject("Password is required for email logout.")
-                    }else {
-                        email.remove(call, account)
-                    }
+                    email.remove(context, account, onComplete, onError)
                 }
                 AccountTypeEnum.RETAILER -> {
-                    retailer.remove(call, account.accountCommon, activity)
+                    retailer.remove(context, account, onComplete, onError)
                 }
-            }
-        } else if(source.isNullOrEmpty() && !username.isNullOrEmpty()){
-            call.reject("Provide source in logout request.")
-        } else if(!source.isNullOrEmpty() && username.isNullOrEmpty()) {
-            val accountCommon = AccountCommon.fromString(source)
-            if (accountCommon.type == AccountTypeEnum.RETAILER) {
-                retailer.remove(call, accountCommon, activity)
-            } else {
-                call.reject("Provide username in email logout request.")
             }
         }
     }
 
     /**
-     * Get a list of accounts.
+     * Get a list of accounts of the specified type.
      *
-     * This function retrieves a list of email and retailer accounts.
+     * This function retrieves a list of email or retailer accounts.
      *
-     * @param call The plugin call object.
-     * @param activity The Android application activity.
+     * @param context The Android application context.
+     * @param accountType The type of accounts to retrieve (AccountTypeEnum.EMAIL or AccountTypeEnum.RETAILER).
      */
-    fun accounts(call: PluginCall, activity: AppCompatActivity) {
-        MainScope().async {
-            val list = mutableListOf<Account>()
-            val emails = email.accounts().await()
-            val retailers = retailer.accounts(activity).await()
-            emails.forEach {list.add(it)}
-            retailers.forEach {list.add(it)}
-            call.resolve(Account.toRspList(list))
+    fun accounts(context: Context, accountType: AccountTypeEnum) {
+        when (accountType) {
+            AccountTypeEnum.EMAIL -> email.accounts(context, onAccount, onError)
+            AccountTypeEnum.RETAILER -> retailer.accounts(context, onAccount, onError)
         }
     }
 
     /**
      * Perform a receipt scan operation.
      *
-     * This function performs a receipt scan operation based on the provided scan type and account.
+     * This function performs a receipt scan operation based on the provided day cutoff.
      *
-     * @param plugin The Capacitor plugin.
-     * @param call The plugin call object.
-     * @param activity The Android application activity.
-     * @param reqPermCallback Callback function for requesting permissions.
+     * @param context The Android application context.
+     * @param dayCutOff The day cutoff for scanning receipts (default is 7 days).
      */
-    fun scan(plugin: Plugin, call: PluginCall, activity: AppCompatActivity, reqPermCallback: () -> Unit) {
-        val req = ReqScan(call.data)
-
-        if(req.account == null) {
-            when (req.scanType) {
-                ScanTypeEnum.EMAIL -> email.scrape(call, activity)
-                ScanTypeEnum.RETAILER -> retailer.orders(call, activity)
-                ScanTypeEnum.PHYSICAL -> physical.scan(call, plugin, activity, reqPermCallback)
-                ScanTypeEnum.ONLINE -> {
-                    email.scrape(call, activity)
-                    retailer.orders(call, activity)
-                }
-            }
-        } else {
-            when (req.scanType) {
-                ScanTypeEnum.EMAIL -> email.scrape(call, req.account, activity)
-                ScanTypeEnum.RETAILER -> retailer.orders(call, req.account, activity)
-                else -> call.reject("invalid scan type for account")
-            }
-        }
+    fun scan(context: Context, dayCutOff: Int? = null) {
+        email.scrape(context, onReceipt, onError, dayCutOff ?: 7)
+        retailer.orders(context, onReceipt, onError, dayCutOff ?: 7)
     }
 }

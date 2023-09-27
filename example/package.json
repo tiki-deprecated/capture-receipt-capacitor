@@ -13,11 +13,12 @@
     "format": "prettier --write ../src"
   },
   "dependencies": {
-    "@mytiki/tiki-capture-receipt-capacitor": "file:..",
-    "@mytiki/tiki-receipt-capacitor": "file:../../apps-receipt-capacitor",
-    "@capacitor/ios": "^5.4.1",
     "@capacitor/android": "^5.4.1",
     "@capacitor/core": "^5.2.3",
+    "@capacitor/ios": "^5.4.1",
+    "@capacitor/local-notifications": "^5.0.6",
+    "@mytiki/tiki-capture-receipt-capacitor": "file:..",
+    "@mytiki/tiki-receipt-capacitor": "file:../../apps-receipt-capacitor",
     "vue": "^3.3.4"
   },
   "devDependencies": {

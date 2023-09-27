@@ -71,14 +71,14 @@ class AccountTest {
     @Test
     fun testFromRetailerAccount() {
         val account = Account.fromRetailerAccount(retailerAccount)
-        assert(account.accountCommon == AccountCommon.fromString(RetailerEnum.AMAZON.toString()))
+        assert(account.accountCommon == AccountCommon.fromSource(RetailerEnum.AMAZON.toString()))
         assert(account.username == "testUsername")
     }
 
     @Test
     fun testFromEmailAccount() {
         val account = Account.fromEmailAccount(emailAccount)
-        assert(account.accountCommon == AccountCommon.fromString(EmailEnum.GMAIL.toString()))
+        assert(account.accountCommon == AccountCommon.fromSource(EmailEnum.GMAIL.toString()))
         assert(account.username == "testUsername")
     }
 
