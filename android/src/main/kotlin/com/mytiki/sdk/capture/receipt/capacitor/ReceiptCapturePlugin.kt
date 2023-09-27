@@ -53,6 +53,7 @@ class ReceiptCapturePlugin : Plugin() {
     fun initialize(call: PluginCall) {
         receiptCapture.initialize(call, activity)
         onScan()
+        bridge.triggerJSEvent("onScan", "window")
     }
 
     /**
@@ -157,6 +158,7 @@ class ReceiptCapturePlugin : Plugin() {
     }
 
     fun onScan(receipt: RspReceipt? = null) {
-      notifyListeners("onScan", JSObject.fromJSONObject(receipt?.toJson()))
+        val data = if (receipt != null) { JSObject.fromJSONObject(receipt.toJson()) } else { JSObject() }
+        notifyListeners("onReceipt", data)
     }
 }

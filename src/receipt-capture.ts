@@ -41,9 +41,11 @@ export class ReceiptCapture {
       productKey: productKey,
       googleClientId: googleClientId,
     };
+    this.initOnReceiptListener()
     await this.plugin.initialize(req).catch((error) => {
       throw Error(error);
     });
+    
   };
 
   /**
@@ -93,4 +95,12 @@ export class ReceiptCapture {
    * @returns - an array of Accounts.
    */
   accounts = async (): Promise<Account[]> => await this.plugin.accounts();
+
+  private initOnReceiptListener = () => {
+    this.plugin.addListener("onReceipt", (receipt) => {
+      console.log("onReceipt event")
+      console.log(receipt)
+    })
+  }
+
 }
