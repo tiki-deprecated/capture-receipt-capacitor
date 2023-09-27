@@ -1,6 +1,6 @@
 /*
  * Copyright (c) TIKI Inc.
- * MIT license. See LICENSE file in root directory.
+ * MIT license. See LICENSE file in the root directory.
  */
 
 package com.mytiki.sdk.capture.receipt.capacitor
@@ -11,13 +11,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
 import com.microblink.core.ScanResults
 import com.microblink.linking.*
-import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-
 
 /**
  * This class represents the Retailer functionality for account linking and order retrieval.
@@ -27,8 +24,9 @@ class Retailer {
     /**
      * Initializes the Retailer SDK.
      *
-     * @param req The initialization request.
      * @param context The Android application context.
+     * @param licenseKey The license key.
+     * @param productKey The product key.
      * @param onError A callback to handle initialization errors.
      * @return A [CompletableDeferred] indicating whether the initialization was successful.
      */
@@ -48,10 +46,13 @@ class Retailer {
     /**
      * Logs in a user account.
      *
-     * @param call The plugin call.
-     * @param account The user's account.
-     * @param context The Android application context.
-    😂     */
+     * @param username The username.
+     * @param password The password.
+     * @param source The source (email provider).
+     * @param activity The [AppCompatActivity] where the login dialog will be displayed.
+     * @param onAccount Callback called when the login is completed successfully.
+     * @param onError Callback called when an error occurs during login.
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
     fun login(
         username: String,
@@ -71,16 +72,14 @@ class Retailer {
                 if (it) {
                     verify(mbAccount, activity, onAccount, onError)
                 } else {
-                    onError?.let { it("Login failed: account $username - $source") }
+                    onError?.invoke("Login failed: account $username - $source")
                     client.close()
                 }
             }
             .addOnFailureListener { ex ->
-                onError?.let {
-                    it(
-                        ex.message ?: "Unknown error on login: account $username - $source: $ex"
-                    )
-                }
+                onError?.invoke(
+                    ex.message ?: "Unknown error on login: account $username - $source: $ex"
+                )
                 client.close()
             }
     }
@@ -88,9 +87,10 @@ class Retailer {
     /**
      * Removes a user account.
      *
-     * @param call The plugin call.
-     * @param accountCommon The common account details.
      * @param context The Android application context.
+     * @param account The user's account information.
+     * @param onComplete Callback called when the account is successfully removed.
+     * @param onError Callback called when an error occurs during account removal.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     fun remove(
@@ -120,7 +120,9 @@ class Retailer {
     /**
      * Flushes the order history.
      *
-     * @param call The plugin call.
+     * @param context The Android application context.
+     * @param onComplete Callback called when the history is successfully flushed.
+     * @param onError Callback called when an error occurs during flushing.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     fun flush(context: Context, onComplete: () -> Unit, onError: (String) -> Unit) {
@@ -134,8 +136,10 @@ class Retailer {
     /**
      * Retrieves orders for all verified accounts.
      *
-     * @param call The plugin call.
      * @param context The Android application context.
+     * @param onReceipt Callback called for each collected receipt.
+     * @param onError Callback called when an error occurs during order retrieval.
+     * @param daysCutOff The day cutoff limit for order retrieval.
      */
     fun orders(
         context: Context,
@@ -156,9 +160,11 @@ class Retailer {
     /**
      * Retrieves orders for a specific user account.
      *
-     * @param call The plugin call.
-     * @param account The user's account.
      * @param context The Android application context.
+     * @param account The user's account information.
+     * @param onScan Callback called for each collected receipt.
+     * @param daysCutOff The day cutoff limit for order retrieval.
+     * @param onError Callback called when an error occurs during order retrieval.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     fun orders(
@@ -195,7 +201,9 @@ class Retailer {
      * Retrieves a list of user accounts from the Retailer SDK.
      *
      * @param context The Android application context.
-     * @return A [CompletableDeferred] containing the list of user accounts.
+     * @param onAccount Callback called for each collected user account.
+     * @param onError Callback called when an error occurs during account retrieval.
+     * @param onComplete Callback called when the retrieval is completed.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     fun accounts(
@@ -212,9 +220,7 @@ class Retailer {
                         val account = Account.fromRetailerAccount(retailerAccount)
                         onAccount(account)
                     }
-                    if (onComplete != null) {
-                        onComplete()
-                    }
+                    onComplete?.invoke()
                 } else {
                     onError("Error in retrieving accounts. Account list is null.")
                 }
@@ -228,9 +234,9 @@ class Retailer {
      * Verifies a user account.
      *
      * @param mbAccount The user's account in the Retailer SDK.
-     * @param context The Android application context.
-     * @param call The plugin call (optional).
-     * @return A [CompletableDeferred] indicating whether the account verification was successful.
+     * @param activity The [AppCompatActivity] where verification may occur.
+     * @param onVerify Callback called when the verification is successful.
+     * @param onError Callback called when an error occurs during verification.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun verify(
@@ -246,7 +252,7 @@ class Retailer {
             success = { isVerified: Boolean, _: String ->
                 if (isVerified) {
                     account.isVerified = true
-                    onVerify?.let { it(account) }
+                    onVerify?.invoke(account)
                     client.close()
                 } else {
                     client.unlink(mbAccount)
@@ -286,7 +292,7 @@ class Retailer {
      * Creates an instance of the AccountLinkingClient with optional configuration parameters.
      *
      * @param context The Android application context.
-     * @param dayCutoff The day cutoff for order retrieval (optional, default is 500).
+     * @param dayCutoff The day cutoff for order retrieval (optional, default is 7).
      * @param latestOrdersOnly Indicates whether to retrieve only the latest orders (optional, default is false).
      * @param countryCode The country code for order retrieval (optional, default is "US").
      * @return An instance of the [AccountLinkingClient].
@@ -305,4 +311,3 @@ class Retailer {
         return client
     }
 }
-

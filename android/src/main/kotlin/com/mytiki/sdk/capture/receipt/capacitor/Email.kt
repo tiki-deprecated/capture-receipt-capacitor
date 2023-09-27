@@ -6,7 +6,6 @@
 package com.mytiki.sdk.capture.receipt.capacitor
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.microblink.core.InitializeCallback
 import com.microblink.core.ScanResults
@@ -34,8 +33,9 @@ class Email {
     /**
      * Initializes [BlinkReceiptDigitalSdk] and instantiates [imapClient] and [gmailClient].
      *
-     * @param req Data received from the Capacitor plugin.
-     * @param context App [Context].
+     * @param context The application context.
+     * @param licenseKey The license key.
+     * @param productKey The product key.
      * @param onError Callback called when an error occurs.
      * @return A [CompletableDeferred] to indicate when the initialization is complete.
      */
@@ -58,9 +58,12 @@ class Email {
     /**
      * Logs in to the email provider using [ImapClient].
      *
-     * @param call Plugin call.
-     * @param account The email account information.
-     * @param activity The [AppCompatActivity] where the login dialog will be displayed.
+     * @param username The username.
+     * @param password The password.
+     * @param source The source (email provider).
+     * @param supportFragmentManager The fragment manager.
+     * @param onComplete Callback called when the login is completed successfully.
+     * @param onError Callback called when an error occurs during login.
      */
     fun login(
         username: String,
@@ -84,11 +87,11 @@ class Email {
                     val account = Account(
                         AccountCommon.fromSource(source), username, password, true
                     )
-                    onComplete?.let { it(account) }
+                    onComplete?.invoke(account)
                 }
 
                 else -> {
-                    onError?.let { it(it.toString()) }
+                    onError?.invoke(results.toString())
                 }
             }
             if (!supportFragmentManager.isDestroyed) {
@@ -104,8 +107,10 @@ class Email {
     /**
      * Scrapes emails from both IMAP and Gmail providers.
      *
-     * @param call Plugin call.
-     * @param activity The calling activity.
+     * @param context The application context.
+     * @param onReceipt Callback called for each collected receipt.
+     * @param onError Callback called when an error occurs during scraping.
+     * @param dayCutOff The day cutoff limit for scraping.
      */
     fun scrape(
         context: Context,
@@ -137,7 +142,9 @@ class Email {
     /**
      * Retrieves a list of email accounts.
      *
-     * @return A [CompletableDeferred] containing a list of email accounts.
+     * @param context The application context.
+     * @param onAccount Callback called for each retrieved email account.
+     * @param onError Callback called when an error occurs during account retrieval.
      */
     fun accounts(context: Context, onAccount: (Account) -> Unit, onError: (msg: String) -> Unit) {
         this.client(context, onError) { client ->
@@ -162,8 +169,10 @@ class Email {
      * it will be logged out from Gmail. For other email providers, it will be logged out from
      * the IMAP server.
      *
-     * @param call Plugin call.
+     * @param context The application context.
      * @param account The email account information to be removed.
+     * @param onRemove Callback called when the account is successfully removed.
+     * @param onError Callback called when an error occurs during account removal.
      */
     fun remove(
         context: Context,
@@ -192,7 +201,9 @@ class Email {
     /**
      * Logs out of all email accounts.
      *
-     * @param call Plugin call.
+     * @param context The application context.
+     * @param onComplete Callback called when the logout is completed successfully.
+     * @param onError Callback called when an error occurs during logout.
      */
     fun flush(context: Context, onComplete: () -> Unit, onError: (msg: String) -> Unit) {
         this.client(context, onError) { client ->
@@ -217,7 +228,7 @@ class Email {
                 }
 
                 override fun onException(ex: Throwable) {
-                    onError(ex.message ?: "Error in IMAP client initializaion: $ex")
+                    onError(ex.message ?: "Error in IMAP client initialization: $ex")
                 }
             }
         )
