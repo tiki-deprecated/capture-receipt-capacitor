@@ -10,15 +10,15 @@ import type { PluginListenerHandle } from '@capacitor/core';
 export type ScanType = 'PHYSICAL' | 'EMAIL' | 'RETAILER' | 'ONLINE';
 
 export interface ReqAccount {
-  username: string;
-  password: string;
-  source: string;
+  username?: string;
+  password?: string;
+  source?: string;
 }
 
 export interface ReqInitialize {
   licenseKey: string;
   productKey: string;
-  googleClientId: string | undefined;
+  googleId: string | null;
 }
 
 export interface ReceiptCapturePlugin {
