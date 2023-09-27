@@ -28,7 +28,7 @@ class ReqScan(data: JSObject) {
         // Initialize the account property based on the provided data.
         account = if (data.getString("username").isNullOrEmpty() == false && data.getString("source") != "") {
             Account(
-                AccountCommon.fromString(data.getString("source") ?: ""),
+                AccountCommon.fromSource(data.getString("source") ?: ""),
                 data.getString("username") ?: "",
                 data.getString("password"),
                 data.getBool("isVerified")

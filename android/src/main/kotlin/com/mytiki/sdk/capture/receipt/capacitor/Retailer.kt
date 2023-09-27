@@ -11,26 +11,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import com.getcapacitor.JSObject
-import com.getcapacitor.PluginCall
+import androidx.fragment.app.FragmentManager
 import com.microblink.core.ScanResults
 import com.microblink.linking.*
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspScan
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.async
 
 
 /**
  * This class represents the Retailer functionality for account linking and order retrieval.
  */
 class Retailer {
-    private val tag = "RetailerSetupDialogFragment"
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private lateinit var client: AccountLinkingClient
-    private lateinit var activity: AppCompatActivity
 
     /**
      * Initializes the Retailer SDK.
@@ -40,18 +32,16 @@ class Retailer {
      * @param onError A callback to handle initialization errors.
      * @return A [CompletableDeferred] indicating whether the initialization was successful.
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
     fun initialize(
-        req: ReqInitialize,
+        licenseKey: String,
+        productKey: String,
         activity: AppCompatActivity,
-        onError: (msg: String?, data: JSObject) -> Unit,
+        onError: (msg: String?) -> Unit,
     ): CompletableDeferred<Unit> {
         val isLinkInitialized = CompletableDeferred<Unit>()
-        BlinkReceiptLinkingSdk.licenseKey = req.licenseKey
-        BlinkReceiptLinkingSdk.productIntelligenceKey = req.productKey
+        BlinkReceiptLinkingSdk.licenseKey = licenseKey
+        BlinkReceiptLinkingSdk.productIntelligenceKey = productKey
         BlinkReceiptLinkingSdk.initialize(activity, OnInitialize(isLinkInitialized, onError))
-        client = client(activity)
-        this.activity = activity
         return isLinkInitialized
     }
 
@@ -61,24 +51,37 @@ class Retailer {
      * @param call The plugin call.
      * @param account The user's account.
      * @param context The Android application context.
-😂     */
+    😂     */
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun login(call: PluginCall, account: Account, activity: AppCompatActivity) {
+    fun login(
+        username: String,
+        password: String,
+        source: String,
+        activity: AppCompatActivity,
+        onAccount: ((Account) -> Void)? = null,
+        onError: ((String) -> Void)? = null
+    ) {
         val mbAccount = Account(
-            RetailerEnum.fromString(account.accountCommon.source).toMbInt(),
-            PasswordCredentials(account.username, account.password!!)
+            RetailerEnum.fromString(source).toMbInt(),
+            PasswordCredentials(username, password)
         )
         val client = client(activity)
         client.link(mbAccount)
             .addOnSuccessListener {
                 if (it) {
-                    verify(mbAccount, activity, call)
+                    verify(mbAccount, activity, onAccount, onError)
                 } else {
-                    call.reject("login failed")
+                    onError?.let { it("Login failed: account $username - $source") }
+                    client.close()
                 }
             }
-            .addOnFailureListener {
-                call.reject(it.message)
+            .addOnFailureListener { ex ->
+                onError?.let {
+                    it(
+                        ex.message ?: "Unknown error on login: account $username - $source: $ex"
+                    )
+                }
+                client.close()
             }
     }
 
@@ -90,20 +93,27 @@ class Retailer {
      * @param context The Android application context.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun remove(call: PluginCall, accountCommon: AccountCommon, context: Context) {
+    fun remove(
+        username: String,
+        source: String,
+        context: Context,
+        onComplete: () -> Void,
+        onError: (msg: String?) -> Unit
+    ) {
         val client = client(context)
         client.accounts().addOnSuccessListener { accounts ->
             val mbAccount = accounts?.firstOrNull {
-                it.retailerId == RetailerEnum.fromString(accountCommon.source).toMbInt()
+                it.retailerId == RetailerEnum.fromString(source).toMbInt() &&
+                        it.credentials.username() == username
             }
             if (mbAccount != null) {
                 client.unlink(mbAccount).addOnSuccessListener {
-                    call.resolve()
+                    onComplete()
                 }.addOnFailureListener {
-                    call.reject(it.message)
+                    onError(it.message)
                 }
             } else {
-                call.reject("Account not found")
+                onError("Error in logout: Account not found $source - $username")
             }
         }
     }
@@ -114,11 +124,11 @@ class Retailer {
      * @param call The plugin call.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun flush(call: PluginCall) {
-        client.resetHistory().addOnSuccessListener {
-            call.resolve()
-        }.addOnFailureListener {
-            call.reject(it.message)
+    fun flush(context: Context, onComplete: () -> Void, onError: ((msg: String?) -> Void)? = null) {
+        client(context).resetHistory().addOnSuccessListener {
+            onComplete()
+        }.addOnFailureListener { ex ->
+            onError?.let { it(ex.message) }
         }
     }
 
@@ -128,39 +138,20 @@ class Retailer {
      * @param call The plugin call.
      * @param context The Android application context.
      */
-    @OptIn(ExperimentalCoroutinesApi::class)
-    fun orders(call: PluginCall, context: Context) {
-        val client: AccountLinkingClient = client(context)
-        MainScope().async {
-            val accounts = accounts(context).await()
-            accounts.forEach {
-//                if (it.isVerified!!) {
-                    val retailer = RetailerEnum.fromString(it.accountCommon.source).toMbInt()
-                    val ordersSuccessCallback =
-                        { _: Int, results: ScanResults?, remaining: Int, _: String ->
-                            if (results != null) {
-                                if (remaining == 0) {
-                                    val rsp = RspScan(results, it, false)
-                                    call.resolve(JSObject(rsp.toJson().toString()))
-                                } else {
-                                    val rsp = RspScan(results, it)
-                                    call.resolve(JSObject(rsp.toJson().toString()))
-                                }
-                            } else {
-                                call.reject("no result")
-                            }
-                        }
-                    val ordersFailureCallback = { _: Int, exception: AccountLinkingException ->
-                        call.reject(exception.message)
-                    }
-                    client.orders(
-                        retailer,
-                        ordersSuccessCallback,
-                        ordersFailureCallback,
-                    )
-                }
-//            }
+    fun orders(
+        context: Context,
+        daysCutOff: Int,
+        onScan: (ScanResults) -> Void,
+        onError: (msg: String?) -> Void
+    ) {
+        val onAccount = { account: Account ->
+            this.orders(context, account, onScan, daysCutOff, onError)
         }
+        accounts(
+            context,
+            onAccount,
+            onError
+        )
     }
 
     /**
@@ -171,56 +162,34 @@ class Retailer {
      * @param context The Android application context.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun orders(call: PluginCall, account: Account, activity: AppCompatActivity) {
-        val client: AccountLinkingClient = client(activity)
-        MainScope().async {
-            val mbAccount = mbAccounts(activity).await().first {
-                account.username === it.credentials.username() && account.accountCommon.source === RetailerEnum.fromMbInt(
-                    it.retailerId
-                ).name
-            }
-            account.isVerified = verify(mbAccount, activity).await()
-            if (account.isVerified!!) {
-                val retailer = RetailerEnum.fromString(account.accountCommon.source).toMbInt()
-                val ordersSuccessCallback =
-                    { _: Int, results: ScanResults?, _: Int, _: String ->
-                        if (results != null) {
-                            val rsp = RspScan(results, account, false)
-                            call.resolve(JSObject(rsp.toJson().toString()))
-                        } else {
-                            call.reject("no result")
-                        }
-                    }
-                val ordersFailureCallback = { _: Int, exception: AccountLinkingException ->
-                    call.reject(exception.message)
+    fun orders(
+        context: Context,
+        account: Account,
+        onScan: (ScanResults) -> Void,
+        daysCutOff: Int?,
+        onError: (msg: String?) -> Void
+    ) {
+        val client: AccountLinkingClient = client(context, daysCutOff ?: 7)
+        val source = account.accountCommon.source
+        val username = account.username
+        val retailerId = RetailerEnum.fromString(source).toMbInt()
+        val ordersSuccessCallback: (Int, ScanResults?, Int, String) -> Unit =
+            { _: Int, results: ScanResults?, remaining: Int, _: String ->
+                if (results != null) {
+                    onScan(results)
+                } else {
+                    onError("Null ScanResult in $source - $username. Remaining $remaining")
                 }
-                client.orders(
-                    retailer,
-                    ordersSuccessCallback,
-                    ordersFailureCallback,
-                )
             }
+        val ordersFailureCallback: (Int, AccountLinkingException) -> Unit = { _: Int,
+                                                                              exception: AccountLinkingException ->
+            onError(exception.message)
         }
-    }
-
-    /**
-     * Retrieves a list of user accounts.
-     *
-     * @param context The Android application context.
-     * @return A [CompletableDeferred] containing the list of user accounts.
-     */
-    fun accounts(context: Context): CompletableDeferred<List<Account>> {
-        val accounts = CompletableDeferred<List<Account>>()
-        val list = mutableListOf<Account>()
-        MainScope().async {
-            mbAccounts(context).await().map { mbAccount ->
-                val account = Account.fromRetailerAccount(mbAccount)
-//                account.isVerified = verify(mbAccount, context).await()
-                list.add(account)
-            }
-            accounts.complete(list)
-        }
-        return accounts
+        client.orders(
+            retailerId,
+            ordersSuccessCallback,
+            ordersFailureCallback,
+        )
     }
 
     /**
@@ -230,23 +199,30 @@ class Retailer {
      * @return A [CompletableDeferred] containing the list of user accounts.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun mbAccounts(context: Context): CompletableDeferred<List<com.microblink.linking.Account>> {
+    fun accounts(
+        context: Context,
+        onAccount: (Account) -> Unit,
+        onError: ((msg: String) -> Void),
+        onComplete: (() -> Void)? = null
+    ) {
         val client: AccountLinkingClient = client(context)
-        val mbAccounts = CompletableDeferred<List<com.microblink.linking.Account>>()
         client.accounts()
             .addOnSuccessListener { mbAccountList ->
-                MainScope().async {
-                    if (mbAccountList != null) {
-                        mbAccounts.complete(mbAccountList)
-                    } else {
-                        mbAccounts.complete(mutableListOf())
+                if (mbAccountList != null) {
+                    mbAccountList.forEach { retailerAccount ->
+                        val account = Account.fromRetailerAccount(retailerAccount)
+                        onAccount(account)
                     }
+                    if (onComplete != null) {
+                        onComplete()
+                    }
+                } else {
+                    onError("Error in retrieving accounts. Account list is null.")
                 }
             }
             .addOnFailureListener {
-                mbAccounts.completeExceptionally(it)
+                onError(it.message ?: "Unknown Error in retrieving accounts. $it")
             }
-        return mbAccounts
     }
 
     /**
@@ -261,58 +237,50 @@ class Retailer {
     private fun verify(
         mbAccount: com.microblink.linking.Account,
         activity: AppCompatActivity,
-        call: PluginCall? = null
-    ): CompletableDeferred<Boolean> {
+        onVerify: ((Account) -> Void)?,
+        onError: ((msg: String) -> Void)?
+    ) {
         val client: AccountLinkingClient = client(activity)
-        val verifyCompletable = CompletableDeferred<Boolean>()
         val account = Account.fromRetailerAccount(mbAccount)
         client.verify(
             RetailerEnum.fromString(account.accountCommon.source).value,
             success = { isVerified: Boolean, _: String ->
                 if (isVerified) {
                     account.isVerified = true
-                    call?.resolve(account.toRsp())
-                    verifyCompletable.complete(true)
+                    onVerify?.let { it(account) }
+                    client.close()
                 } else {
                     client.unlink(mbAccount)
-                    call?.reject("login failed")
-                    verifyCompletable.complete(false)
+                    onError?.let {
+                        it("Please login. Account not verified ${account.username} - ${account.accountCommon.source}")
+                    }
+                    client.close()
                 }
             },
             failure = { exception ->
-                if (call == null) {
-                    verifyCompletable.complete(false)
-                    client.close()
-                } else if (exception.code == VERIFICATION_NEEDED && exception.view != null) {
+                if (exception.code == VERIFICATION_NEEDED && exception.view != null) {
                     exception.view!!.isFocusableInTouchMode = true
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         exception.view!!.focusable = View.FOCUSABLE
                     }
-
-                    activity.findViewById<FrameLayout>(R.id.webview_container)?.let{
+                    activity.findViewById<FrameLayout>(R.id.webview_container)?.let {
                         (it.parent as ViewGroup).removeView(it)
                     }
-                    val viewGroup = (activity.findViewById(android.R.id.content) as ViewGroup).getChildAt(0) as ViewGroup
+                    val viewGroup =
+                        (activity.findViewById(android.R.id.content) as ViewGroup).getChildAt(0) as ViewGroup
                     View.inflate(activity, R.layout.webview_container, viewGroup)
-                    val webViewContainer = activity.findViewById<FrameLayout>(R.id.webview_container)
+                    val webViewContainer =
+                        activity.findViewById<FrameLayout>(R.id.webview_container)
                     webViewContainer.addView(exception.view)
-
                 } else {
-                    when (exception.code) {
-                        INTERNAL_ERROR -> call.reject("Login failed: Internal Error")
-                        INVALID_CREDENTIALS -> call.reject("Login failed: Invalid Credentials")
-                        PARSING_FAILURE -> call.reject("Login failed: Parsing Failure")
-                        USER_INPUT_COMPLETED -> call.reject("Login failed: User Input Completed")
-                        JS_CORE_LOAD_FAILURE -> call.reject("Login failed: JS Core Load Failure")
-                        JS_INVALID_DATA -> call.reject("Login failed: JS Invalid Data")
-                        MISSING_CREDENTIALS -> call.reject("Login failed: Missing Credentials")
-                        else -> call.reject("Login failed: Unknown Error")
+                    onError?.let {
+                        it("Account not verified ${account.username} - ${account.accountCommon.source}: ${exception.message} - $exception")
                     }
                     client.unlink(mbAccount)
+                    client.close()
                 }
             }
         )
-        return verifyCompletable
     }
 
     /**
@@ -327,7 +295,7 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun client(
         context: Context,
-        dayCutoff: Int = 120,
+        dayCutoff: Int = 7,
         latestOrdersOnly: Boolean = false,
         countryCode: String = "US",
     ): AccountLinkingClient {
@@ -338,3 +306,4 @@ class Retailer {
         return client
     }
 }
+

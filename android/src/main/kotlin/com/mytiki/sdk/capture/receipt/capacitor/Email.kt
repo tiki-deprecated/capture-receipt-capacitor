@@ -5,17 +5,12 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import com.getcapacitor.JSObject
-import com.getcapacitor.PluginCall
+import androidx.fragment.app.FragmentManager
+import com.microblink.core.InitializeCallback
 import com.microblink.core.ScanResults
-import com.microblink.core.Timberland
 import com.microblink.digital.BlinkReceiptDigitalSdk
-import com.microblink.digital.GmailAuthException
-import com.microblink.digital.GmailClient
 import com.microblink.digital.ImapClient
 import com.microblink.digital.MessagesCallback
 import com.microblink.digital.PasswordCredentials
@@ -23,8 +18,6 @@ import com.microblink.digital.Provider
 import com.microblink.digital.ProviderSetupDialogFragment
 import com.microblink.digital.ProviderSetupOptions
 import com.microblink.digital.ProviderSetupResults
-import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspScan
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
@@ -37,8 +30,6 @@ import kotlinx.coroutines.tasks.await
  */
 class Email {
     private val tag = "ProviderSetupDialogFragment"
-    private lateinit var imapClient: ImapClient
-    private var gmailClient: GmailClient? = null
 
     /**
      * Initializes [BlinkReceiptDigitalSdk] and instantiates [imapClient] and [gmailClient].
@@ -48,30 +39,20 @@ class Email {
      * @param onError Callback called when an error occurs.
      * @return A [CompletableDeferred] to indicate when the initialization is complete.
      */
-    suspend fun initialize(
-        req: ReqInitialize,
+    fun initialize(
+        licenseKey: String,
+        productKey: String,
         context: Context,
-        onError: (msg: String?, data: JSObject?) -> Unit,
+        onError: (msg: String?) -> Unit,
     ): CompletableDeferred<Unit> {
-        val isDigitalInitialized = CompletableDeferred<Unit>()
-        BlinkReceiptDigitalSdk.productIntelligenceKey(req.productKey)
+        val isInitialized = CompletableDeferred<Unit>()
+        BlinkReceiptDigitalSdk.productIntelligenceKey(productKey)
         BlinkReceiptDigitalSdk.initialize(
             context,
-            req.licenseKey,
-            OnInitialize(isDigitalInitialized, onError)
+            licenseKey,
+            OnInitialize(isInitialized, onError)
         )
-        isDigitalInitialized.await()
-        if (req.googleId != null) {
-            try {
-                gmailClient = GmailClient(context, req.googleId)
-            } catch (err: Exception) {
-                onError(err.message, null)
-            }
-        }
-        val isImapInitialized = CompletableDeferred<Unit>()
-        imapClient =
-            ImapClient(context, OnInitialize(isImapInitialized, onError)).apply { dayCutoff(30) }
-        return isImapInitialized
+        return isInitialized
     }
 
     /**
@@ -81,87 +62,43 @@ class Email {
      * @param account The email account information.
      * @param activity The [AppCompatActivity] where the login dialog will be displayed.
      */
-    fun login(call: PluginCall, activity: AppCompatActivity, account: Account) {
+    fun login(
+        username: String,
+        password: String,
+        source: String,
+        supportFragmentManager: FragmentManager,
+        onComplete: ((Account) -> Void)? = null,
+        onError: ((String) -> Void)? = null
+    ) {
         ProviderSetupDialogFragment.newInstance(
             ProviderSetupOptions.newBuilder(
                 PasswordCredentials.newBuilder(
-                    Provider.valueOf(account.accountCommon.source),
-                    account.username,
-                    account.password!!
+                    Provider.valueOf(source),
+                    username,
+                    password
                 ).build()
             ).build()
-        ).callback {
-            when (it) {
-                ProviderSetupResults.BAD_PASSWORD -> call.reject("Bad Password")
-                ProviderSetupResults.BAD_EMAIL -> call.reject("Bad Email")
-                ProviderSetupResults.CREATED_APP_PASSWORD -> Timberland.d("CREATED_APP_PASSWORD")
-                ProviderSetupResults.NO_CREDENTIALS -> call.reject("No Credentials")
-                ProviderSetupResults.UNKNOWN -> call.reject("Unknown")
-                ProviderSetupResults.NO_APP_PASSWORD -> call.reject("No App Password")
-                ProviderSetupResults.LSA_ENABLED -> call.reject("LSA Enabled")
-                ProviderSetupResults.DUPLICATE_EMAIL -> call.reject("Duplicate Email")
-                else -> {}
+        ).callback { results ->
+            when (results) {
+                ProviderSetupResults.CREATED_APP_PASSWORD -> {
+                    val account = Account(
+                        AccountCommon.fromSource(source), username, password, true
+                    )
+                    onComplete?.let { it(account) }
+                }
+
+                else -> {
+                    onError?.let { it(it.toString()) }
+                }
             }
-            if (!activity.supportFragmentManager.isDestroyed) {
-                val dialog = activity.supportFragmentManager.findFragmentByTag(tag)
+            if (!supportFragmentManager.isDestroyed) {
+                val dialog = supportFragmentManager.findFragmentByTag(tag)
                         as ProviderSetupDialogFragment
                 if (dialog.isAdded) {
                     dialog.dismiss()
-                    MainScope().async {
-                         account.isVerified =imapClient.verify(PasswordCredentials.newBuilder(
-                            Provider.valueOf(account.accountCommon.source),
-                            account.username,
-                            account.password
-                        ).build()
-                        ).await()
-                        call.resolve(account.toRsp())
-                    }
                 }
             }
-        }.show(activity.supportFragmentManager, tag)
-    }
-
-    /**
-     * Logs in to the email provider using [GmailClient].
-     * Use this if you want to log in with google sing in.
-     *
-     * @param call Plugin call.
-     * @param activity The [AppCompatActivity] where the login dialog will be displayed.
-     * @param gmailLoginCallback callback that is executed when the google activity is closed
-     */
-    fun login(call: PluginCall, activity: Activity, gmailLoginCallback: (Intent, Int) -> Unit) {
-        if (gmailClient != null) {
-            gmailClient!!.login()
-                .addOnSuccessListener { gmailAccount ->
-                    call.resolve(Account.fromGmailAccount(gmailAccount).toRsp())
-                }.addOnFailureListener { error ->
-                    if (error is GmailAuthException) {
-                        gmailLoginCallback(error.signInIntent!!, error.requestCode)
-                    } else {
-                        call.reject(error.message)
-                    }
-                }
-        } else {
-            call.reject("Please define a googleId before the login")
-        }
-    }
-
-    /**
-     * Handles the result of the Gmail account authorization activity.
-     *
-     * @param call Plugin call.
-     * @param requestCode The request code passed to the activity.
-     * @param resultCode The result code indicating the result of the activity.
-     * @param data The data returned from the activity.
-     */
-    fun onLoginResult(call: PluginCall, requestCode: Int, resultCode: Int, data: Intent?) {
-        gmailClient!!
-            .onAccountAuthorizationActivityResult(requestCode, resultCode, data)
-            .addOnSuccessListener { signInAccount ->
-                call.resolve(Account.fromGmailAccount(signInAccount).toRsp())
-            }.addOnFailureListener {error ->
-                call.reject(error.message)
-            }
+        }.show(supportFragmentManager, tag)
     }
 
     /**
@@ -170,90 +107,31 @@ class Email {
      * @param call Plugin call.
      * @param activity The calling activity.
      */
-    fun scrape(call: PluginCall, activity: Activity) {
-        val imap = {
-            imapClient.messages(object : MessagesCallback {
+    fun scrape(
+        context: Context,
+        onReceipt: (receipt: ScanResults?) -> Void,
+        onError: (msg: String?) -> Unit,
+        dayCutOff: Int?
+    ) {
+        this.client(context, onError) { client ->
+            client.dayCutoff(dayCutOff ?: 7)
+            client.messages(object : MessagesCallback {
                 override fun onComplete(
                     credential: PasswordCredentials,
                     result: List<ScanResults>
                 ) {
                     result.forEach { receipt ->
-                        val rsp = RspScan(receipt, Account.fromEmailAccount(credential))
-                        call.resolve(JSObject.fromJSONObject(rsp.toJson()))
+                        onReceipt(receipt)
                     }
+                    client.close()
                 }
 
-                override fun onException(throwable: Throwable) = call.reject(throwable.message)
+                override fun onException(throwable: Throwable) {
+                    onError(throwable.message)
+                    client.close()
+                }
             })
         }
-        val gmail = {account: Account ->
-            gmailClient!!.messages(activity)
-                .addOnSuccessListener { result ->
-                    MainScope().async {
-                        result.forEach { receipt ->
-                            val rsp = RspScan(receipt, account)
-                            call.resolve(JSObject.fromJSONObject(rsp.toJson()))
-                        }
-                    }
-                }.addOnFailureListener { e ->
-                    call.reject(e.message)
-                }
-        }
-        MainScope().async {
-        if (gmailClient != null){
-            val accountGmail = accounts().await()
-                .firstOrNull { it.accountCommon.source == EmailEnum.GMAIL.toString() }
-            if (accountGmail != null) {
-                gmail(accountGmail)
-                imap()
-            } else {
-                imap()
-            }
-        } else {
-            imap()
-        }
-
-        }
-    }
-
-    /**
-     * Scrapes emails for a specific account from either IMAP or Gmail.
-     *
-     * @param call Plugin call.
-     * @param account The email account information.
-     * @param activity The calling activity.
-     */
-    fun scrape(call: PluginCall, account: Account, activity: Activity) {
-        if (account.accountCommon.source == EmailEnum.GMAIL.toString() && gmailClient != null){
-            gmailClient!!.messages(activity)
-                .addOnSuccessListener { result ->
-                    MainScope().async {
-                        result.forEach { receipt ->
-                            val rsp = RspScan(receipt, account)
-                            call.resolve(JSObject.fromJSONObject(rsp.toJson()))
-                        }
-                    }
-                }.addOnFailureListener { e ->
-                    call.reject(e.message)
-                }
-        }else{
-            imapClient.messages(object : MessagesCallback {
-                override fun onComplete(
-                    credential: PasswordCredentials,
-                    result: List<ScanResults>
-                ) {
-                    if (credential.provider() === EmailEnum.fromString(account.accountCommon.source).value) {
-                        result.forEach { receipt ->
-                            val rsp = RspScan(receipt, Account.fromEmailAccount(credential))
-                            call.resolve(JSObject.fromJSONObject(rsp.toJson()))
-                        }
-                    }
-                }
-
-                override fun onException(throwable: Throwable) = call.reject(throwable.message)
-            })
-        }
-
     }
 
     /**
@@ -261,49 +139,20 @@ class Email {
      *
      * @return A [CompletableDeferred] containing a list of email accounts.
      */
-    suspend fun accounts(): CompletableDeferred<List<Account>> {
-        val accounts = CompletableDeferred<List<Account>>()
-        val accountList = mutableListOf<Account>()
-
-        if (gmailClient != null) {
-            val getGmail = CompletableDeferred<Unit>()
-            gmailClient!!.account().addOnSuccessListener {
-                MainScope().async {
-                    val account = Account.fromGmailAccount(it)
-                    account.isVerified = gmailClient!!.verify().await()
-                    accountList.add(account)
-                    getGmail.complete(Unit)
+    fun accounts(context: Context, onAccount: (Account) -> Void, onError: (msg: String?) -> Unit) {
+        this.client(context, onError) { client ->
+            client.accounts().addOnSuccessListener { credentials ->
+                credentials?.forEach { credential ->
+                    val account = Account.fromEmailAccount(credential)
+                    MainScope().async {
+                        account.isVerified = client.verify(credential).await()
+                        onAccount(account)
+                    }
                 }
             }.addOnFailureListener {
-                getGmail.complete(Unit)
+                onError(it.message)
             }
-            getGmail.await()
         }
-
-        imapClient.accounts().addOnSuccessListener { credentials ->
-            if (credentials != null) {
-                MainScope().async {
-                    credentials.forEach { credential ->
-                        val account = Account.fromEmailAccount(credential)
-                        if (account.accountCommon.source == EmailEnum.GMAIL.toString()) {
-                            if (gmailClient == null) {
-                                account.isVerified = imapClient.verify(credential).await()
-                                accountList.add(account)
-                            }
-                        } else {
-                            account.isVerified = imapClient.verify(credential).await()
-                            accountList.add(account)
-                        }
-                    }
-                    accounts.complete(accountList)
-                }
-            } else {
-                accounts.complete(accountList)
-            }
-        }.addOnFailureListener {
-            accounts.complete(accountList)
-        }
-        return accounts
     }
 
     /**
@@ -316,24 +165,26 @@ class Email {
      * @param call Plugin call.
      * @param account The email account information to be removed.
      */
-    fun remove(call: PluginCall, account: Account) {
-        if (account.accountCommon.source == EmailEnum.GMAIL.toString() && gmailClient != null){
-            gmailClient!!.logout().addOnSuccessListener {
-                call.resolve(JSObject().put("success", it))
-            }.addOnFailureListener {
-                call.reject(it.message)
-            }
-        } else {
-            imapClient.logout(
+    fun remove(
+        context: Context,
+        account: Account,
+        onRemove: () -> Void,
+        onError: (String) -> Unit
+    ) {
+        this.client(context, onError) { client ->
+            client.logout(
                 PasswordCredentials.newBuilder(
                     Provider.valueOf(account.accountCommon.source),
                     account.username,
                     account.password!!
                 ).build()
             ).addOnSuccessListener {
-                call.resolve(JSObject().put("success", it))
+                onRemove()
             }.addOnFailureListener {
-                call.reject(it.message)
+                onError(
+                    it.message
+                        ?: "Unknown error when removing account ${account.username} from ${account.accountCommon.source}"
+                )
             }
         }
     }
@@ -343,23 +194,36 @@ class Email {
      *
      * @param call Plugin call.
      */
-    fun flush(call: PluginCall) {
-        val imap = {
-            imapClient.logout().addOnSuccessListener {
-                call.resolve(JSObject().put("success", it))
+    fun flush(context: Context, onComplete: () -> Void, onError: (msg: String?) -> Unit) {
+        this.client(context, onError) { client ->
+            client.logout().addOnSuccessListener {
+                onComplete()
             }.addOnFailureListener {
-                call.reject(it.message)
+                onError(it.message)
             }
         }
-        if (gmailClient != null) {
-            gmailClient!!.logout().addOnSuccessListener {
-                imap()
-            }.addOnFailureListener {
-                call.reject(it.message)
-            }
-        } else {
-            imap()
-        }
+    }
 
+    private fun client(
+        context: Context, onError: (String) -> Unit,
+        onClientReady: (ImapClient) -> Unit
+    ) {
+        val clientInitialization = CompletableDeferred<Unit>()
+        val imapClient = ImapClient(
+            context,
+            object : InitializeCallback {
+                override fun onComplete() {
+                    clientInitialization.complete(Unit)
+                }
+
+                override fun onException(ex: Throwable) {
+                    onError(ex.message ?: "Error in IMAP client initializaion: $ex")
+                }
+            }
+        )
+        MainScope().async {
+            clientInitialization.await()
+            onClientReady(imapClient)
+        }
     }
 }
