@@ -110,7 +110,7 @@ class Email {
     fun scrape(
         context: Context,
         onReceipt: (receipt: ScanResults?) -> Unit,
-        onError: (msg: String?) -> Unit,
+        onError: (msg: String) -> Unit,
         dayCutOff: Int
     ) {
         this.client(context, onError) { client ->
@@ -127,7 +127,7 @@ class Email {
                 }
 
                 override fun onException(throwable: Throwable) {
-                    onError(throwable.message)
+                    onError(throwable.message ?: throwable.toString())
                     client.close()
                 }
             })
@@ -139,7 +139,7 @@ class Email {
      *
      * @return A [CompletableDeferred] containing a list of email accounts.
      */
-    fun accounts(context: Context, onAccount: (Account) -> Unit, onError: (msg: String?) -> Unit) {
+    fun accounts(context: Context, onAccount: (Account) -> Unit, onError: (msg: String) -> Unit) {
         this.client(context, onError) { client ->
             client.accounts().addOnSuccessListener { credentials ->
                 credentials?.forEach { credential ->
@@ -150,7 +150,7 @@ class Email {
                     }
                 }
             }.addOnFailureListener {
-                onError(it.message)
+                onError(it.message ?: it.toString())
             }
         }
     }
@@ -194,12 +194,12 @@ class Email {
      *
      * @param call Plugin call.
      */
-    fun flush(context: Context, onComplete: () -> Unit, onError: (msg: String?) -> Unit) {
+    fun flush(context: Context, onComplete: () -> Unit, onError: (msg: String) -> Unit) {
         this.client(context, onError) { client ->
             client.logout().addOnSuccessListener {
                 onComplete()
             }.addOnFailureListener {
-                onError(it.message)
+                onError(it.message ?: it.toString())
             }
         }
     }

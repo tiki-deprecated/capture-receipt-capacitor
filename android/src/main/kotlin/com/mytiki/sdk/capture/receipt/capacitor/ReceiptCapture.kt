@@ -20,7 +20,7 @@ class ReceiptCapture(
     val onInitialize: (() -> Unit),
     val onReceipt: ((receipt: ScanResults?) -> Unit),
     val onAccount: ((account: Account?) -> Unit),
-    val onError: ((message: String?) -> Unit),
+    val onError: ((message: String) -> Unit),
 ){
     private val email = Email()
     private val retailer = Retailer()
@@ -32,8 +32,8 @@ class ReceiptCapture(
      * @param activity The Android application activity.
      */
     fun initialize(context: Context, licenseKey: String, productKey: String) {
-        val deferredEmailInit = email.initialize(context, licenseKey, productKey){ msg -> onError(msg) }
-        val deferredRetailInit = retailer.initialize(context, licenseKey, productKey){ msg -> onError(msg) }
+        val deferredEmailInit = email.initialize(context, licenseKey, productKey){ msg -> onError(msg ?: "Email initialization error") }
+        val deferredRetailInit = retailer.initialize(context, licenseKey, productKey){ msg -> onError(msg ?: "Email initialization error") }
         MainScope().async {
             awaitAll(deferredEmailInit, deferredRetailInit)
             onInitialize()

@@ -36,7 +36,7 @@ class Retailer {
         context: Context,
         licenseKey: String,
         productKey: String,
-        onError: (msg: String?) -> Unit,
+        onError: (msg: String) -> Unit,
     ): CompletableDeferred<Unit> {
         val isLinkInitialized = CompletableDeferred<Unit>()
         BlinkReceiptLinkingSdk.licenseKey = licenseKey
@@ -97,7 +97,7 @@ class Retailer {
         context: Context,
         account: Account,
         onComplete: () -> Unit,
-        onError: (msg: String?) -> Unit
+        onError: (msg: String) -> Unit
     ) {
         val client = client(context)
         client.accounts().addOnSuccessListener { accounts ->
@@ -109,7 +109,7 @@ class Retailer {
                 client.unlink(mbAccount).addOnSuccessListener {
                     onComplete()
                 }.addOnFailureListener {
-                    onError(it.message)
+                    onError(it.message ?: it.toString())
                 }
             } else {
                 onError("Error in logout: Account not found ${account.accountCommon.source} - ${account.username}")
@@ -123,11 +123,11 @@ class Retailer {
      * @param call The plugin call.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun flush(context: Context, onComplete: () -> Unit, onError: ((msg: String?) -> Unit)? = null) {
+    fun flush(context: Context, onComplete: () -> Unit, onError: (String) -> Unit) {
         client(context).resetHistory().addOnSuccessListener {
             onComplete()
         }.addOnFailureListener { ex ->
-            onError?.let { it(ex.message) }
+            onError?.let { it(ex.message ?: ex.toString()) }
         }
     }
 
@@ -140,7 +140,7 @@ class Retailer {
     fun orders(
         context: Context,
         onReceipt: (ScanResults) -> Unit,
-        onError: (msg: String?) -> Unit,
+        onError: (msg: String) -> Unit,
         daysCutOff: Int,
     ) {
         val onAccount = { account: Account ->
@@ -166,7 +166,7 @@ class Retailer {
         account: Account,
         onScan: (ScanResults) -> Unit,
         daysCutOff: Int?,
-        onError: (msg: String?) -> Unit
+        onError: (msg: String) -> Unit
     ) {
         val client: AccountLinkingClient = client(context, daysCutOff ?: 7)
         val source = account.accountCommon.source
@@ -182,7 +182,7 @@ class Retailer {
             }
         val ordersFailureCallback: (Int, AccountLinkingException) -> Unit = { _: Int,
                                                                               exception: AccountLinkingException ->
-            onError(exception.message)
+            onError(exception.message ?: exception.toString())
         }
         client.orders(
             retailerId,

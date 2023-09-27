@@ -16,7 +16,7 @@ import kotlinx.coroutines.CompletableDeferred
  */
 class OnInitialize(
     private val completable: CompletableDeferred<Unit>,
-    private val onError: (msg: String?) -> Unit,
+    private val onError: (msg: String) -> Unit,
 ) : InitializeCallback {
 
     /**
@@ -32,7 +32,7 @@ class OnInitialize(
      * @param throwable The exception that occurred during initialization.
      */
     override fun onException(throwable: Throwable) {
-        onError(throwable.message)
+        onError(throwable.message ?: "$throwable")
         completable.complete(Unit)
     }
 }
