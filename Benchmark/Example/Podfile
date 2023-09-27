@@ -1,0 +1,12 @@
+source 'https://github.com/BlinkReceipt/PodSpecRepo.git'
+source 'https://cdn.cocoapods.org/'
+
+platform :ios, '13.0'
+
+target 'Example' do
+  use_frameworks!
+  
+  pod 'BlinkReceipt', '~> 1.27'
+  pod 'BlinkEReceipt', '~> 2.0'
+ 
+end
