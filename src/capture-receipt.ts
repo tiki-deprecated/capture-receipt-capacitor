@@ -30,7 +30,6 @@ export class CaptureReceipt {
 
   /**
    * Initializes the SDK
-   *
    * @param licenseKey The license key of the package.
    * @param productKey The product intelligence key of the package.
    * @returns A Promise that resolves to void on completion
