@@ -4,14 +4,14 @@
  */
 
 import type { AccountType } from '../account-type';
-import ChewyIcon from '../images/chewy.png';
+import WalmartIcon from '../images/walmart.png';
 
 /**
- * Chewy account type.
+ * Walmart account type.
  */
-export const CHEWY: AccountType = {
+export const WALMART: AccountType = {
   type: 'RETAILER',
-  icon: ChewyIcon,
-  name: 'Chewy',
-  id: 'CHEWY',
+  icon: WalmartIcon,
+  name: 'Walmart',
+  id: 'WALMART',
 };

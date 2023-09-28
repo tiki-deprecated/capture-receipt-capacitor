@@ -11,8 +11,8 @@
  */
 import { registerPlugin } from '@capacitor/core';
 
-import { CaptureReceiptPlugin } from './plugin';
 import { CaptureReceipt } from './capture-receipt';
+import type { CaptureReceiptPlugin } from './plugin';
 
 /**
  * Registers the {@link CaptureReceiptPlugin} with Capacitor.

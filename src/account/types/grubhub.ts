@@ -4,14 +4,14 @@
  */
 
 import type { AccountType } from '../account-type';
-import ChewyIcon from '../images/chewy.png';
+import GrubHubIcon from '../images/grubhub.png';
 
 /**
- * Chewy account type.
+ * Grubhub account type.
  */
-export const CHEWY: AccountType = {
+export const GRUBHUB: AccountType = {
   type: 'RETAILER',
-  icon: ChewyIcon,
-  name: 'Chewy',
-  id: 'CHEWY',
+  icon: GrubHubIcon,
+  name: 'Grubhub',
+  id: 'GRUBHUB',
 };
