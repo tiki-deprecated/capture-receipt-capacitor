@@ -126,10 +126,14 @@ class Retailer {
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     fun flush(context: Context, onComplete: () -> Unit, onError: (String) -> Unit) {
-        client(context).resetHistory().addOnSuccessListener {
-            onComplete()
-        }.addOnFailureListener { ex ->
-            onError?.let { it(ex.message ?: ex.toString()) }
+        client(context).unlink().addOnSuccessListener {
+            client(context).resetHistory().addOnSuccessListener {
+                onComplete()
+            }.addOnFailureListener { ex ->
+                onError(ex.message ?: ex.toString())
+            }
+        }.addOnFailureListener{ex ->
+            onError(ex.message ?: ex.toString())
         }
     }
 
