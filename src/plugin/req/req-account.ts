@@ -22,6 +22,6 @@ export class ReqAccount implements Req {
     this.requestId = uuid.v4();
     this.username = account.username;
     this.password = account.password;
-    this.source = account.type.source;
+    this.source = account.type.id;
   }
 }
