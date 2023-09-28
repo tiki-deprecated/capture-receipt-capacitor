@@ -4,7 +4,7 @@
  */
 
 import type { FloatType } from './float-type';
-import type { StringType } from './string-type';
+import type { StringType } from '../string-type';
 
 /**
  * Represents a payment method along with relevant details.

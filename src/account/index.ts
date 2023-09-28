@@ -2,6 +2,7 @@
  * Copyright (c) TIKI Inc.
  * MIT license. See LICENSE file in root directory.
  */
+import AccountType from './account-type';
 
 /**
  * Represents a user's 3rd party account.
@@ -27,20 +28,3 @@ export interface Account {
    */
   isVerified?: boolean;
 }
-
-/**
- * Enumeration of possible account providers.
- */
-export interface AccountType {
-  type: 'EMAIL' | 'RETAILER',
-  name: string,
-  icon?: string,
-  key: string
-}
-
-// /**
-//  * A reverse lookup map to locate the {@link AccountProvider} by string value.
-//  */
-// export const providers: Map<string, AccountProvider> = new Map(
-//   Object.values(AccountProvider).map((value) => [`${value}`, value] as const),
-// );

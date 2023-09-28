@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import type { StringType } from './string-type';
+import type { StringType } from '../string-type';
 
 /**
  * Represents an additional line of text or information identified by its line number.
