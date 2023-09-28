@@ -11,8 +11,8 @@
  */
 import { registerPlugin } from '@capacitor/core';
 
-import { CaptureReceiptPlugin } from './plugin';
 import { CaptureReceipt } from './capture-receipt';
+import type { CaptureReceiptPlugin } from './plugin';
 
 /**
  * Registers the {@link CaptureReceiptPlugin} with Capacitor.
@@ -28,5 +28,8 @@ const plugin: CaptureReceiptPlugin = registerPlugin<CaptureReceiptPlugin>('Captu
 const instance: CaptureReceipt = new CaptureReceipt(plugin);
 
 export { instance };
+export * from './account/types';
+export * from './account/account-types';
+
 export type { CaptureReceipt };
 export type * from './types';

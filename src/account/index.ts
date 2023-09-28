@@ -2,7 +2,8 @@
  * Copyright (c) TIKI Inc.
  * MIT license. See LICENSE file in root directory.
  */
-import AccountType from './account-type';
+
+import type { AccountType } from './account-type';
 
 /**
  * Represents a user's 3rd party account.

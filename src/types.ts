@@ -1,1 +1,6 @@
-export type * from './account/types';
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
+
+export type * from './account';

@@ -4,14 +4,14 @@
  */
 
 import type { AccountType } from '../account-type';
-import ChewyIcon from '../images/chewy.png';
+import AcmeIcon from '../images/acme.png';
 
 /**
- * Chewy account type.
+ * ACME Markets account type
  */
-export const CHEWY: AccountType = {
+export const ACME_MARKETS: AccountType = {
   type: 'RETAILER',
-  icon: ChewyIcon,
-  name: 'Chewy',
-  id: 'CHEWY',
+  name: 'Acme',
+  icon: AcmeIcon,
+  id: 'ACME_MARKETS',
 };

@@ -4,14 +4,14 @@
  */
 
 import type { AccountType } from '../account-type';
-import ChewyIcon from '../images/chewy.png';
+import SproutsIcon from '../images/sprouts.png';
 
 /**
- * Chewy account type.
+ * Sprouts account type.
  */
-export const CHEWY: AccountType = {
+export const SPROUTS: AccountType = {
   type: 'RETAILER',
-  icon: ChewyIcon,
-  name: 'Chewy',
-  id: 'CHEWY',
+  icon: SproutsIcon,
+  name: 'Sprouts',
+  id: 'SPROUTS',
 };

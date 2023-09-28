@@ -4,14 +4,14 @@
  */
 
 import type { AccountType } from '../account-type';
-import ChewyIcon from '../images/chewy.png';
+import SephoraIcon from '../images/sephora.png';
 
 /**
- * Chewy account type.
+ * Sephora account type.
  */
-export const CHEWY: AccountType = {
+export const SEPHORA: AccountType = {
   type: 'RETAILER',
-  icon: ChewyIcon,
-  name: 'Chewy',
-  id: 'CHEWY',
+  icon: SephoraIcon,
+  name: 'Sephora',
+  id: 'SEPHORA',
 };
