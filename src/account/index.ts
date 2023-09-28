@@ -30,5 +30,5 @@ export interface Account {
   isVerified?: boolean;
 }
 
-export * from './types';
+export * from './defs';
 export * from './account-types';

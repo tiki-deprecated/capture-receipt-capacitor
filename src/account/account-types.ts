@@ -4,7 +4,7 @@
  */
 
 import type { AccountType } from './account-type';
-import * as Type from './types';
+import * as Type from './defs';
 
 class AccountTypes {
   private readonly index: Map<string, AccountType> = new Map([

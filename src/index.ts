@@ -29,4 +29,4 @@ const instance: CaptureReceipt = new CaptureReceipt(plugin);
 
 export { instance };
 export * from './account';
-export type { CaptureReceipt } from './capture-receipt';
+export type * from './types';
