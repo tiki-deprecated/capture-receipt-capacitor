@@ -18,7 +18,7 @@ import { CaptureReceipt } from './capture-receipt';
  * Registers the {@link CaptureReceiptPlugin} with Capacitor.
  */
 const plugin: CaptureReceiptPlugin = registerPlugin<CaptureReceiptPlugin>('CaptureReceipt', {
-  web: () => import('./plugin/plugin-web').then((m) => new m.CaptureReceiptWeb()),
+  web: () => import('./plugin/plugin-web').then((m) => new m.PluginWeb()),
 });
 
 /**
@@ -28,5 +28,4 @@ const plugin: CaptureReceiptPlugin = registerPlugin<CaptureReceiptPlugin>('Captu
 const instance: CaptureReceipt = new CaptureReceipt(plugin);
 
 export { instance };
-export type { CaptureReceipt };
 export type * from './types';

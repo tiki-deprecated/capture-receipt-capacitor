@@ -5,56 +5,26 @@
 
 import { WebPlugin } from '@capacitor/core';
 import type { CaptureReceiptPlugin } from '.';
-import type { Account } from './account';
+import type { Account } from '../account';
+import { ReqScan } from './req/req-scan';
 
-export class CaptureReceiptWeb extends WebPlugin implements CaptureReceiptPlugin {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  /**
-  * Initializes the receipt capture plugin with a license key and product intelligence key.
-  * @param licenseKey - The license key for your application.
-  * @param productKey - The optional product intelligence key for your application.
-  * @throws Error if the initialization fails.
-  */
+export class PluginWeb extends WebPlugin implements CaptureReceiptPlugin {
   async initialize() {
     throw this.unimplemented('Mobile Only.');
   }
-
-  /**
-  * Login into a retailer or email account to scan for receipts.
-  * @param username - the username of the account.
-  * @param password - the password of the account
-  * @param source - the source from that account, that can be an email service or a retailer service.
-  * @returns - the Account interface with the logged in information.
-  */
-  async login(): Promise<void> {
+  
+  async login(): Promise<Account> {
     throw this.unimplemented('Mobile Only')
   }
-
-  /**
-   * Log out from one or all {@link Account}.
-   * @param username - the username of the account that will be logged out.
-   * @param password - the password of the account that will be logged out
-   * @param source - the source from that account, that can be an email service or a retailer service.
-   * @returns - the Account that logged out
-   */
+  
   async logout(): Promise<void> {
     throw this.unimplemented('Mobile Only')
   }
 
-  /**
-  * Scan for receipts. That can be a physical one, the receipts from an email/retailer account, or all receipts.
-  * @param scanType - The type of the scan.
-  * @param account - The account that will be scanned for receipts.
-  * @returns - The scanned Receipt and a boolean indicates the execution.
-  */
-  async scan(_options: {}): Promise<void> {
+  async scan(_options: ReqScan): Promise<void> {
     throw this.unimplemented('Mobile Only.');
   }
 
-  /**
-   * Retrieves all saved accounts.
-   * @returns - an array of Accounts.
-   */
   async accounts(): Promise<void> {
     throw this.unimplemented('Mobile Only.');
   };

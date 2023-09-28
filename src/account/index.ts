@@ -21,7 +21,7 @@ export interface Account {
   /**
    * The provider of the account, if applicable.
    */
-  accountType: AccountType;
+  type: AccountType;
 
   /**
    * Indicates whether the account linkage has been verified.
