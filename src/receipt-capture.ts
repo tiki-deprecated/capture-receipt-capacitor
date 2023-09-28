@@ -36,7 +36,7 @@ export class ReceiptCapture {
    * @throws Error if the initialization fails.x
    */
   initialize = async (licenseKey: string, productKey: string, googleId: string | null = null): Promise<void> => {
-    await LocalNotifications.requestPermissions()
+    await LocalNotifications.requestPermissions();
     const notifs = await LocalNotifications.schedule({
       notifications: [
         {
@@ -57,11 +57,10 @@ export class ReceiptCapture {
       productKey: productKey,
       googleId: googleId,
     };
-    this.registerListeners()
+    this.registerListeners();
     await this.plugin.initialize(req).catch((error) => {
       throw Error(error);
     });
-    
   };
 
   /**
@@ -100,7 +99,7 @@ export class ReceiptCapture {
    *
    * @returns - The scanned Receipt and a boolean indicates the execution.
    */
-  scan = (): Promise<void> => this.plugin.scan({});
+  scan = (): Promise<void> => this.plugin.scan({ dayCutOff: 15 });
 
   /**
    * Retrieves all saved email and accounts.
@@ -110,29 +109,28 @@ export class ReceiptCapture {
   accounts = async (): Promise<void> => await this.plugin.accounts();
 
   private registerListeners = () => {
+    this.plugin.addListener('onInitialize', () => {
+      console.log('onInitialize event');
+    });
 
-    this.plugin.addListener("onInitialize", () => {
-      console.log("onInitialize event")
-    })
+    this.plugin.addListener('onReceipt', (receipt) => {
+      console.log('onReceipt event');
+      console.log(receipt);
+    });
 
-    this.plugin.addListener("onReceipt", (receipt) => {
-      console.log("onReceipt event")
-      console.log(receipt)
-    })
+    this.plugin.addListener('onAccount', (account) => {
+      console.log('onAccount event');
+      console.log(account);
+    });
 
-    this.plugin.addListener("onAccount", (account) => {
-      console.log("onAccount event")
-      console.log(account)
-    })
+    this.plugin.addListener('onError', (msg) => {
+      console.log('onError event');
+      console.log(msg);
+    });
 
-    this.plugin.addListener("onError", (msg) => {
-      console.log("onError event")
-      console.log(msg)
-    })
-
-    this.plugin.addListener("onError", (msg) => {
-      console.log("onError event")
-      console.log(msg)
+    this.plugin.addListener('onError', (msg) => {
+      console.log('onError event');
+      console.log(msg);
       LocalNotifications.schedule({
         notifications: [
           {
@@ -146,12 +144,12 @@ export class ReceiptCapture {
             extra: null,
           },
         ],
-      })
-    })
+      });
+    });
 
-    this.plugin.addListener("onImapError", (msg) => {
-      console.log("onError event")
-      console.log(msg)
+    this.plugin.addListener('onImapError', (msg) => {
+      console.log('onError event');
+      console.log(msg);
       LocalNotifications.schedule({
         notifications: [
           {
@@ -165,9 +163,7 @@ export class ReceiptCapture {
             extra: null,
           },
         ],
-      })
-    })
-    
-  }
-
+      });
+    });
+  };
 }

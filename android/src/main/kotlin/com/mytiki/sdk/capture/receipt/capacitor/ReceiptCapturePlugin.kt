@@ -149,8 +149,43 @@ class ReceiptCapturePlugin : Plugin() {
      */
     @PluginMethod
     fun logout(call: PluginCall) {
-        receiptCapture.logout(activity, Account.fromReq(call.data)) {
-            call.resolve()
+        val logoutAccount = {
+            receiptCapture.logout(activity, Account.fromReq(call.data)) {
+                call.resolve()
+            }
+        }
+
+        val source = call.data.getString("source")
+        val username = call.data.getString("username")
+        val password = call.data.getString("password")
+
+        if(source.isNullOrEmpty() && username.isNullOrEmpty()){
+            receiptCapture.logout(activity, null) {
+                call.resolve()
+            }
+        } else if(!source.isNullOrEmpty() && !username.isNullOrEmpty()){
+            val account = Account.fromReq(call.data)
+            when (account.accountCommon.type) {
+                AccountTypeEnum.EMAIL -> {
+                    if(password.isNullOrEmpty()){
+                        call.reject("Password is required for email logout.")
+                    }else {
+                        logoutAccount()
+                    }
+                }
+                AccountTypeEnum.RETAILER -> {
+                    logoutAccount()
+                }
+            }
+        } else if(source.isNullOrEmpty() && !username.isNullOrEmpty()){
+            call.reject("Provide source in logout request.")
+        } else if(!source.isNullOrEmpty() && username.isNullOrEmpty()) {
+            val accountCommon = AccountCommon.fromSource(source)
+            if (accountCommon.type == AccountTypeEnum.RETAILER) {
+                logoutAccount()
+            } else {
+                call.reject("Provide username in email logout request.")
+            }
         }
     }
 
@@ -181,7 +216,7 @@ class ReceiptCapturePlugin : Plugin() {
      */
     @PluginMethod
     fun scan(call: PluginCall) {
-        val dayCutOff = call.data.getInteger("dayCutOff", 7)
+        val dayCutOff = call.data.getInteger("dayCutOff") ?: 7
         receiptCapture.scan(activity, dayCutOff)
     }
 }
