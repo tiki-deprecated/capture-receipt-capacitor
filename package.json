@@ -2,17 +2,16 @@
   "name": "@mytiki/tiki-capture-receipt-capacitor",
   "version": "0.6.0",
   "description": "Capture receipts w/ TIKI!",
-  "main": "dist/tiki-receipt-capacitor.umd.js",
-  "module": "dist/tiki-receipt-capacitor.es.js",
+  "main": "dist/capture-receipt.umd.js",
+  "module": "dist/capture-receipt.es.js",
   "type": "module",
-  "types": "dist/esm/index.d.ts",
-  "unpkg": "dist/tiki-receipt-capacitor.umd.js",
+  "typings": "dist/types/index.d.ts",
+  "unpkg": "dist/capture-receipt.umd.js",
   "exports": {
     ".": {
-      "types": "./dist/types/main.d.ts",
-      "import": "./dist/tiki-receipt-capacitor.es.js"
-    },
-    "./dist/tiki-receipt-capacitor.css": "./dist/tiki-receipt-capacitor.css"
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/capture-receipt.es.js"
+    }
   },
   "files": [
     "android/src/main/",
