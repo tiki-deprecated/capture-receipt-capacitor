@@ -28,4 +28,4 @@ const plugin: CaptureReceiptPlugin = registerPlugin<CaptureReceiptPlugin>('Captu
 const instance: CaptureReceipt = new CaptureReceipt(plugin);
 
 export { instance };
-export type * from './types';
+export type { CaptureReceipt } from './capture-receipt';
