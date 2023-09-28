@@ -6,7 +6,7 @@
 /**
  * The representation of an Error that happened in the plugin.
  */
-export interface CallbackError{
-  message: string,
-  code?: number
+export interface CallbackError {
+  message: string;
+  code?: number;
 }

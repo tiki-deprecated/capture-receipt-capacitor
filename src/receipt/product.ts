@@ -3,8 +3,8 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import type { AdditionalLine } from './interfaces/additional-line';
 import type { FloatType } from './float-type';
+import type { AdditionalLine } from './interfaces/additional-line';
 import type { StringType } from './string-type';
 
 /**

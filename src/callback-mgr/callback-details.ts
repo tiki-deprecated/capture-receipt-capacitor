@@ -3,42 +3,43 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import { Account } from "../account";
-import { Receipt } from "../receipt";
-import { PluginEvent } from '../plugin/plugin-event'
-import { CallbackError } from "./callback-error";
-import { CallbackMgrCall } from "./callback-mgr-call";
+import type { Account } from '../account';
+import type { PluginEvent } from '../plugin/plugin-event';
+import type { Receipt } from '../receipt';
+
+import type { CallbackError } from './callback-error';
+import type { CallbackMgrCall } from './callback-mgr-call';
 
 /**
  * The details of the callback.
- * 
+ *
  * It is used to keep track of the registered callbacks for each request.
  */
 export class CallbackDetails {
   /**
    * A unique identifier of the {@link Req} to which this callback should listen.
    */
-  requestId: string
+  requestId: string;
   /**
    * The {@link PluginEvent} that triggered the callback.
    */
-  event: PluginEvent
+  event: PluginEvent;
 
   /**
    * The actual callback function. Should be undefined on plugin responses.
    */
-  callback: CallbackMgrCall | undefined
+  callback: CallbackMgrCall | undefined;
 
   /**
    * The payload returned. Should be undefined on plugin requests.
    */
-  payload: CallbackError | Account | Receipt | undefined
+  payload: CallbackError | Account | Receipt | undefined;
 
   /**
    * The unique id of the callback.
    */
-  get id() {
-    return `${this.event.toString}:${this.requestId}`
+  get id(): string {
+    return `${this.event.toString}:${this.requestId}`;
   }
 
   constructor(
@@ -46,11 +47,10 @@ export class CallbackDetails {
     event: PluginEvent,
     callback: CallbackMgrCall | undefined = undefined,
     payload: CallbackError | Account | Receipt | undefined = undefined,
-  ){
-    this.requestId = requestId
-    this.event = event
-    this.callback = callback
-    this.payload = payload
+  ) {
+    this.requestId = requestId;
+    this.event = event;
+    this.callback = callback;
+    this.payload = payload;
   }
 }
-

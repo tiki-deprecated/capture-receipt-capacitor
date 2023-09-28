@@ -7,7 +7,5 @@
  * The base Request interface.
  */
 export interface Req {
-  requestId: string
+  requestId: string;
 }
-
-
