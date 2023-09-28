@@ -3,18 +3,19 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import { Account } from '../account';
-import { ReqAccount } from '../plugin/req/req-account' 
-import { ReqScan } from './req/req-scan' 
 import type { ListenerCallback, PluginListenerHandle } from '@capacitor/core';
-import { ReqInitialize } from './req/req-initialize';
-import { Req } from './req/req';
+
+import type { Account } from '../account';
+import type { ReqAccount } from '../plugin/req/req-account';
+
+import type { Req } from './req/req';
+import type { ReqInitialize } from './req/req-initialize';
+import type { ReqScan } from './req/req-scan';
 
 export interface CaptureReceiptPlugin {
-
   /**
    * Initializes the receipt capture plugin with a license key and product intelligence key.
-   * 
+   *
    * @param options {@link ReqInitialize}
    * @throws Error if the initialization fails.
    */
@@ -22,13 +23,13 @@ export interface CaptureReceiptPlugin {
 
   /**
    * Login into a retailer or email account to scan for receipts.
-   * @param options 
+   * @param options
    */
   login(options: ReqAccount): Promise<Account>;
- 
+
   /**
    * Log out from one or all {@link Account}.
-   * 
+   *
    * @param options ReqAccount
    */
   logout(options?: ReqAccount): Promise<void>;
@@ -46,17 +47,15 @@ export interface CaptureReceiptPlugin {
 
   /**
    * Listen for a JS event.
-   * 
+   *
    * Android and iOS plugins will fire this event to send receipts from native code.
    * The CallbackManager will handle the callbacks.
-   * 
-   * @param eventName 
-   * @param listenerFunc 
+   *
+   * @param eventName
+   * @param listenerFunc
    */
   addListener(
-    eventName: "onCapturePluginResult",
+    eventName: 'onCapturePluginResult',
     listenerFunc: ListenerCallback,
   ): Promise<PluginListenerHandle> & PluginListenerHandle;
-
 }
-

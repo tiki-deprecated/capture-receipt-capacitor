@@ -3,9 +3,11 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import { Account } from '../../account';
-import { Req } from './req'
 import * as uuid from 'uuid';
+
+import type { Account } from '../../account';
+
+import type { Req } from './req';
 
 /**
  * Am account request sent to the plugin.
@@ -16,10 +18,10 @@ export class ReqAccount implements Req {
   password?: string;
   source?: string;
 
-  constructor( account: Account ){
-    this.requestId = uuid.v4()
-    this.username = account.username
-    this.password = account.password
-    this.source = account.type.source
+  constructor(account: Account) {
+    this.requestId = uuid.v4();
+    this.username = account.username;
+    this.password = account.password;
+    this.source = account.type.id;
   }
 }

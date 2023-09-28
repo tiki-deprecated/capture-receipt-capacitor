@@ -11,11 +11,11 @@ const plugin: ReceiptCapturePlugin = registerPlugin<ReceiptCapturePlugin>('Recei
 
 const instance: ReceiptCapture = new ReceiptCapture(plugin);
 
-export const login = async (username: string, password: string, source: string) => 
-   await instance.login(source, username, password).catch((error) => console.log(error));
+export const login = async (username: string, password: string, source: string) =>
+  await instance.login(source, username, password).catch((error) => console.log(error));
 
-export const accounts = async () => instance.accounts()
-export const scan = async () => instance.scan()
+export const accounts = async () => instance.accounts();
+export const scan = async () => instance.scan();
 export const logout = async () => instance.logout();
 export const initialize = async () => {
   await instance.initialize(

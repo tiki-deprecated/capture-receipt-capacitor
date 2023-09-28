@@ -3,14 +3,14 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import { defineConfig } from "vite";
-import * as path from "path";
+import { defineConfig } from 'vite';
+import * as path from 'path';
 
 module.exports = defineConfig({
   build: {
     lib: {
-      entry: path.resolve(__dirname, "src/index.ts"),
-      name: "capture-receipt",
+      entry: path.resolve(__dirname, 'src/index.ts'),
+      name: 'capture-receipt',
       fileName: (format) => `capture-receipt.${format}.js`,
     },
     rollupOptions: {
@@ -33,7 +33,7 @@ module.exports = defineConfig({
           sourcemap: true,
           inlineDynamicImports: true,
         },
-      ]
+      ],
     },
     emptyOutDir: false,
   },

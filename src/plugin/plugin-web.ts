@@ -4,28 +4,29 @@
  */
 
 import { WebPlugin } from '@capacitor/core';
-import type { CaptureReceiptPlugin } from '.';
+
 import type { Account } from '../account';
-import { ReqScan } from './req/req-scan';
+
+import type { CaptureReceiptPlugin } from '.';
 
 export class PluginWeb extends WebPlugin implements CaptureReceiptPlugin {
-  async initialize() {
+  async initialize(): Promise<void> {
     throw this.unimplemented('Mobile Only.');
   }
-  
+
   async login(): Promise<Account> {
-    throw this.unimplemented('Mobile Only')
-  }
-  
-  async logout(): Promise<void> {
-    throw this.unimplemented('Mobile Only')
+    throw this.unimplemented('Mobile Only');
   }
 
-  async scan(_options: ReqScan): Promise<void> {
+  async logout(): Promise<void> {
+    throw this.unimplemented('Mobile Only');
+  }
+
+  async scan(): Promise<void> {
     throw this.unimplemented('Mobile Only.');
   }
 
   async accounts(): Promise<void> {
     throw this.unimplemented('Mobile Only.');
-  };
+  }
 }

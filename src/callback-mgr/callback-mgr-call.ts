@@ -3,8 +3,9 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import { Account } from "../account";
-import { Receipt } from "../receipt";
-import { CallbackError } from "./callback-error";
+import type { Account } from '../account';
+import type { Receipt } from '../receipt';
 
-export type CallbackMgrCall = (payload: CallbackError | Account | Receipt | undefined) => void
+import type { CallbackError } from './callback-error';
+
+export type CallbackMgrCall = (payload: CallbackError | Account | Receipt | undefined) => void;
