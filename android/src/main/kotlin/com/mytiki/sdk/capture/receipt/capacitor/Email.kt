@@ -124,7 +124,8 @@ class Email {
         context: Context,
         onReceipt: (receipt: ScanResults?) -> Unit,
         onError: (msg: String) -> Unit,
-        dayCutOff: Int
+        dayCutOff: Int,
+        onComplete: () -> Unit
     ) {
         this.client(context, onError) { client ->
             client.dayCutoff(dayCutOff)

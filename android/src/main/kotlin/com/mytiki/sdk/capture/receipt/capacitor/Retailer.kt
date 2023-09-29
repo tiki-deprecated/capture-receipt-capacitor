@@ -16,6 +16,7 @@ import com.microblink.core.ScanResults
 import com.microblink.linking.*
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.MainScope
 
 /**
  * This class represents the Retailer functionality for account linking and order retrieval.
@@ -155,6 +156,7 @@ class Retailer {
      * @param onError Callback called when an error occurs during order retrieval.
      * @param daysCutOff The day cutoff limit for order retrieval.
      */
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun orders(
         context: Context,
         onReceipt: (ScanResults) -> Unit,
@@ -162,17 +164,29 @@ class Retailer {
         daysCutOff: Int,
         onComplete: () -> Unit
     ) {
-        var accountsNumber = 0
+        val client: AccountLinkingClient = client(context)
+
         val onAccount = { account: Account ->
-            accountsNumber++
-            this.orders(context, account, onReceipt, daysCutOff, onError, onComplete )
+            this.orders(context, account, onReceipt, daysCutOff, onError )
         }
-        accounts(
-            context,
-            onAccount,
-            onError,
-            onComplete
-        )
+
+        client.accounts()
+            .addOnSuccessListener { mbAccountList ->
+                if (mbAccountList != null) {
+                    for ((index, retailerAccount) in mbAccountList.withIndex()) {
+                        val account = Account.fromRetailerAccount(retailerAccount)
+                        onAccount(account)
+                        if (mbAccountList.size - 1 == index) onComplete.invoke()
+                    }
+                } else {
+                    onError("Error in retrieving accounts. Account list is null.")
+                    onComplete.invoke()
+                }
+            }
+            .addOnFailureListener {
+                onError(it.message ?: "Unknown Error in retrieving accounts. $it")
+                onComplete.invoke()
+            }
     }
 
     /**
@@ -191,7 +205,7 @@ class Retailer {
         onScan: (ScanResults) -> Unit,
         daysCutOff: Int?,
         onError: (msg: String) -> Unit,
-        onComplete: () -> Unit
+        onComplete: (() -> Unit)? = null
     ) {
         val client: AccountLinkingClient = client(context, daysCutOff ?: 7)
         val source = account.accountCommon.source
@@ -204,6 +218,7 @@ class Retailer {
                 } else {
                     onError("Null ScanResult in $source - $username. Remaining $remaining")
                 }
+                if (remaining == 0) onComplete?.invoke()
             }
         val ordersFailureCallback: (Int, AccountLinkingException) -> Unit = { _: Int,
                                                                               exception: AccountLinkingException ->
@@ -215,6 +230,8 @@ class Retailer {
             ordersFailureCallback,
         )
     }
+
+
 
     /**
      * Retrieves a list of user accounts from the Retailer SDK.
