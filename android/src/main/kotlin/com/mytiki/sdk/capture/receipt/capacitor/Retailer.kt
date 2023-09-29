@@ -160,14 +160,18 @@ class Retailer {
         onReceipt: (ScanResults) -> Unit,
         onError: (msg: String) -> Unit,
         daysCutOff: Int,
+        onComplete: () -> Unit
     ) {
+        var accountsNumber = 0
         val onAccount = { account: Account ->
-            this.orders(context, account, onReceipt, daysCutOff, onError)
+            accountsNumber++
+            this.orders(context, account, onReceipt, daysCutOff, onError, onComplete )
         }
         accounts(
             context,
             onAccount,
-            onError
+            onError,
+            onComplete
         )
     }
 
@@ -186,7 +190,8 @@ class Retailer {
         account: Account,
         onScan: (ScanResults) -> Unit,
         daysCutOff: Int?,
-        onError: (msg: String) -> Unit
+        onError: (msg: String) -> Unit,
+        onComplete: () -> Unit
     ) {
         val client: AccountLinkingClient = client(context, daysCutOff ?: 7)
         val source = account.accountCommon.source
