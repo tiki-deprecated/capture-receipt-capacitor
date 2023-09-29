@@ -6,9 +6,9 @@
 import type { ListenerCallback, PluginListenerHandle } from '@capacitor/core';
 
 import type { Account } from '../account';
-import type { ReqAccount } from '../plugin/req/req-account';
 
 import type { Req } from './req/req';
+import type { ReqAccount } from './req/req-account';
 import type { ReqInitialize } from './req/req-initialize';
 import type { ReqScan } from './req/req-scan';
 

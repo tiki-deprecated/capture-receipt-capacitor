@@ -2,17 +2,11 @@
   "name": "@mytiki/tiki-capture-receipt-capacitor",
   "version": "0.6.0",
   "description": "Capture receipts w/ TIKI!",
-  "main": "dist/capture-receipt.umd.js",
-  "module": "dist/capture-receipt.es.js",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.es.js",
   "type": "module",
   "typings": "dist/types/index.d.ts",
-  "unpkg": "dist/capture-receipt.umd.js",
-  "exports": {
-    ".": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/capture-receipt.es.js"
-    }
-  },
+  "unpkg": "dist/index.es.js",
   "files": [
     "android/src/main/",
     "android/build.gradle",
@@ -51,12 +45,12 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@capacitor/cli": "^5.4.1",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@babel/types": "^7.23.0",
     "@capacitor/android": "^5.4.1",
+    "@capacitor/cli": "^5.4.1",
     "@capacitor/core": "^5.4.1",
     "@capacitor/docgen": "^0.2.1",
     "@capacitor/ios": "^5.4.1",

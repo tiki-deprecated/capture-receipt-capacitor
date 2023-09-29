@@ -10,14 +10,20 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
-      name: 'capture-receipt',
-      fileName: (format) => `capture-receipt.${format}.js`,
+      name: 'index',
+      formats: ['es', 'cjs'],
+      fileName: (format) => `index.${format}.js`,
     },
     rollupOptions: {
-      external: ['@capacitor/core', '@capacitor/ios', '@capacitor/android'],
+      external: ['@capacitor/core'],
       output: {
         assetFileNames: (assetInfo): string => assetInfo.name!,
         exports: 'named',
+        globals: {
+          '@capacitor/core': 'capacitorExports',
+        },
+        sourcemap: true,
+        inlineDynamicImports: true,
       },
     },
     emptyOutDir: false,
