@@ -237,10 +237,12 @@ class Retailer {
                     onComplete?.invoke()
                 } else {
                     onError("Error in retrieving accounts. Account list is null.")
+                    onComplete?.invoke()
                 }
             }
             .addOnFailureListener {
                 onError(it.message ?: "Unknown Error in retrieving accounts. $it")
+                onComplete?.invoke()
             }
     }
 

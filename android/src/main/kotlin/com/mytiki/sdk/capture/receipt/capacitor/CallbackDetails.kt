@@ -25,10 +25,3 @@ class CallbackDetails(
             .put("payload", payload)
     }
 }
-
-enum class PluginEvent{
-    onAccount,
-    onComplete,
-    onReceipt,
-    onError,
-}

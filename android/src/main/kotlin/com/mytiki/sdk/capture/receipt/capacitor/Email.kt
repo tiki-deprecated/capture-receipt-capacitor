@@ -157,8 +157,8 @@ class Email {
      * @param onAccount Callback called for each retrieved email account.
      * @param onError Callback called when an error occurs during account retrieval.
      */
-    fun accounts(context: Context, onAccount: (Account) -> Unit, onError: (msg: String) -> Unit) {
-        this.client(context, onError) { client ->
+    fun accounts(context: Context, onAccount: OnAccountCallback, onError: OnErrorCallback?, onComplete: OnCompleteCallback?) {
+        this.client(context, onError ?: {}) { client ->
             client.accounts().addOnSuccessListener { credentials ->
                 credentials?.forEach { credential ->
                     val account = Account.fromEmailAccount(credential)
@@ -167,8 +167,10 @@ class Email {
                         onAccount(account)
                     }
                 }
+                onComplete?.invoke()
             }.addOnFailureListener {
-                onError(it.message ?: it.toString())
+                onError?.invoke(it.message ?: it.toString())
+                onComplete?.invoke()
             }
         }
     }

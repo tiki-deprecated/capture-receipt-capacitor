@@ -98,6 +98,6 @@ export class CaptureReceipt {
     this.callbackMgr.add(new CallbackDetails(req.requestId, PluginEvent.onAccount, onAccount));
     this.callbackMgr.add(new CallbackDetails(req.requestId, PluginEvent.onComplete, onComplete));
     this.callbackMgr.add(new CallbackDetails(req.requestId, PluginEvent.onError, onError));
-    this.plugin.scan(req);
+    this.plugin.accounts(req);
   }
 }

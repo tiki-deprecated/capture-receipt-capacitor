@@ -8,6 +8,7 @@ package com.mytiki.sdk.capture.receipt.capacitor
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import com.microblink.core.ScanResults
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -121,9 +122,15 @@ class ReceiptCapture {
      * @param context The Android application context.
      * @param accountType The type of accounts to retrieve (AccountTypeEnum.EMAIL or AccountTypeEnum.RETAILER).
      */
-    fun accounts(context: Context, onAccount: OnAccountCallback, onError: OnErrorCallback) {
-        email.accounts(context, onAccount, onError)
-        retailer.accounts(context, onAccount, onError)
+    fun accounts(context: Context, onAccount: OnAccountCallback, onError: OnErrorCallback, onComplete: OnCompleteCallback?) {
+        val emailFinished = CompletableDeferred<Unit>()
+        val retailerFinished = CompletableDeferred<Unit>()
+        MainScope().async {
+            email.accounts(context, onAccount, onError) { emailFinished.complete(Unit) }
+            retailer.accounts(context, onAccount, onError) { retailerFinished.complete(Unit) }
+            awaitAll(emailFinished, retailerFinished)
+            onComplete?.invoke()
+        }
     }
 
     /**
