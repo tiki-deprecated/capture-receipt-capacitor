@@ -4,6 +4,3 @@ project(':capacitor-android').projectDir = new File('../node_modules/@capacitor/
 
 include ':capacitor-local-notifications'
 project(':capacitor-local-notifications').projectDir = new File('../node_modules/@capacitor/local-notifications/android')
-
-include ':mytiki-tiki-capture-receipt-capacitor'
-project(':mytiki-tiki-capture-receipt-capacitor').projectDir = new File('../../android')

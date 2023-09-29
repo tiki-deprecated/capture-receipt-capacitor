@@ -1,21 +1,27 @@
 import './assets/main.css';
 import { createApp } from 'vue';
-import { ReceiptCapture } from '../../src/receipt-capture';
-import type { ReceiptCapturePlugin } from '@/receipt-capture-plugin';
+import { CaptureReceipt } from '../../src/capture-receipt';
+import { type Account , aXXOUNRbUEW } from '../../src/account'
+import type { CaptureReceiptPlugin } from '../../src/plugin';
 import { registerPlugin } from '@capacitor/core';
 import App from '@/app.vue';
+import { accountTypes } from 'dist/types';
 
-const plugin: ReceiptCapturePlugin = registerPlugin<ReceiptCapturePlugin>('ReceiptCapture', {
+const plugin: CaptureReceiptPlugin = registerPlugin<CaptureReceipt>('ReceiptCapture', {
   web: () => import('../../src/receipt-capture-web').then((m) => new m.ReceiptCaptureWeb()),
 });
 
-const instance: ReceiptCapture = new ReceiptCapture(plugin);
+const instance: CaptureReceipt = new CaptureReceipt(plugin);
 
-export const login = async (username: string, password: string, source: string) =>
-  await instance.login(source, username, password).catch((error) => console.log(error));
+export const login = async (username: string, password: string, source: string) => {
+  const account: Account = {
+    username, password, type: accountTypes.from(source)!!
+  }
+  await instance.login(account).catch((error) => console.log(error));
+}
 
-export const accounts = async () => instance.accounts();
-export const scan = async () => instance.scan();
+export const accounts = async () => instance.accounts(onAccount => console.log(onAccount));
+export const scan = async () => instance.scan((onAccount => console.log(onAccount)));
 export const logout = async () => instance.logout();
 export const initialize = async () => {
   await instance.initialize(
