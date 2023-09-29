@@ -3,10 +3,11 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import type { ListenerCallback, PluginListenerHandle } from '@capacitor/core';
+import type { PluginListenerHandle } from '@capacitor/core';
 
 import type { Account } from '../account';
 
+import type { PluginListener } from './plugin-listener';
 import type { Req } from './req/req';
 import type { ReqAccount } from './req/req-account';
 import type { ReqInitialize } from './req/req-initialize';
@@ -56,6 +57,8 @@ export interface CaptureReceiptPlugin {
    */
   addListener(
     eventName: 'onCapturePluginResult',
-    listenerFunc: ListenerCallback,
+    listenerFunc: PluginListener,
   ): Promise<PluginListenerHandle> & PluginListenerHandle;
 }
+
+
