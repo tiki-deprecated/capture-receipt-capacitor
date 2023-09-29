@@ -49,17 +49,19 @@ public class Email {
     /// - Parameters:
     ///   - account: An instance of the Account struct containing user and account information.
     ///   - pluginCall: The CAPPluginCall object representing the plugin call.
-    public func login(_ account: Account, _ pluginCall: CAPPluginCall) {
+    public func login(_ account: Account, onError: @escaping (String) -> Void, onComplete: @escaping () -> Void) {
         let email = BRIMAPAccount(provider: .gmailIMAP, email: account.user, password: account.password!)
-        let rootVc = UIApplication.shared.windows.first?.rootViewController
-        Task(priority: .high) {
-            await BREReceiptManager.shared().setupIMAP(for: email, viewController: rootVc!, withCompletion: { result in
+        DispatchQueue.main.async {
+            let rootVc = UIApplication.shared.windows.first?.rootViewController
+            BREReceiptManager.shared().setupIMAP(for: email, viewController: rootVc!, withCompletion: { result in
             })
+        }
+        Task(priority: .high) {
             await BREReceiptManager.shared().verifyImapAccount(email, withCompletion: { success, error in
-                if success {
-                    pluginCall.resolve()
+                if !success {
+                    onComplete()
                 } else {
-                    pluginCall.reject(error.debugDescription)
+                    onError(error.debugDescription)
                 }
             })
     }
@@ -70,22 +72,22 @@ public class Email {
     /// - Parameters:
     ///   - pluginCall: The CAPPluginCall object representing the plugin call.
     ///   - account: An optional instance of the Account struct containing user and account information.
-    public func logout(_ pluginCall: CAPPluginCall, _ account: Account?){
-        if(account != nil ){
-            let email = BRIMAPAccount(provider: .gmailIMAP, email: account?.user ?? "", password: account?.password ?? "")
+    public func logout(reqAccount: ReqAccount,  onError: @escaping (String) -> Void, onComplete: @escaping () -> Void){
+        if(reqAccount.accountCommon.source != ""){
+            let email = BRIMAPAccount(provider: .gmailIMAP, email: reqAccount.username, password: reqAccount.password ?? "")
             BREReceiptManager.shared().signOut(from: email) { error in
                 if(error != nil){
-                    pluginCall.reject(error?.localizedDescription ?? "Email logout error.")
+                    onError(error?.localizedDescription ?? "Email logout error.")
                 }else{
-                    pluginCall.resolve()
+                    onComplete()
                 }
             }
         }else{
             BREReceiptManager.shared().signOut(completion: { error in
                 if(error == nil){
-                    pluginCall.reject(error?.localizedDescription ?? "Email logout error.")
+                    onError(error?.localizedDescription ?? "Email logout error.")
                 }else{
-                    pluginCall.resolve()
+                    onComplete()
                 }
             })
         }

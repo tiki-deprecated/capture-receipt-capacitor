@@ -12,15 +12,22 @@ public class ReceiptCapturePlugin: CAPPlugin {
     private let receiptCapture = ReceiptCapture()
     
     @objc public func initialize(_ call: CAPPluginCall) {
-        receiptCapture.initialize(call)
+        if(call.getString("productKey") == "" || call.getString("licenseKey") == ""){
+            call.reject("Please, provide an valid LicenseKey and ProductKey")
+        }else{
+            let reqInitialize = ReqInitialize(licenseKey: call.getString("productKey")!, productKey: call.getString("licenseKey")!)
+            receiptCapture.initialize(reqInitialize: reqInitialize)
+            call.resolve()
+        }
     }
     
     @objc public func login(_ call: CAPPluginCall) {
-        receiptCapture.login(call)
+        let reqLogin = ReqLogin(data: call)
+        receiptCapture.login(reqLogin: reqLogin, onError: { error in call.reject(error)} ,onComplete: { account in call.resolve(RspAccount(account: account!).toResultData()) })
     }
 
     @objc func logout(_ call: CAPPluginCall) {
-        receiptCapture.logout(call)
+        receiptCapture.logout(reqAccount: ReqAccount(data: call), onError: { error in call.reject(error)} ,onComplete: { call.resolve() })
     }
 
     @objc func accounts(_ call: CAPPluginCall){

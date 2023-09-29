@@ -34,16 +34,16 @@ public class Retailer : CAPPlugin{
     /// - Parameters:
     ///   - account: An instance of the Account struct containing user and account information.
     ///   - call: The CAPPluginCall object representing the plugin call.
-    public func login(_ account: Account, _ call: CAPPluginCall){
-        let dayCutoff: Int = 15
+    public func login(_ account: Account, onError: @escaping (String) -> Void, onComplete: @escaping (Account) -> Void) {
+        let dayCutoff: Int = 7
         let username: String = account.user
         guard let retailer: BRAccountLinkingRetailer =
                 RetailerEnum(rawValue: account.accountType.source)?.toBRAccountLinkingRetailer() else {
-            call.reject("Unsuported retailer \(account.accountType.source)")
+            onError("Unsuported retailer \(account.accountType.source)")
             return
         }
         guard let password: String = account.password else {
-            call.reject("Password is required for login")
+            onError("Password is required for login")
             return
         }
         let connection = BRAccountLinkingConnection( retailer: retailer, username: username,
@@ -57,12 +57,11 @@ public class Retailer : CAPPlugin{
             Task(priority: .high){
                 await BRAccountLinkingManager.shared().verifyRetailer(with: connection, withCompletion: {
                     error, viewController, sessionId in
-                    self.verifyRetailerCallback(error,viewController, connection, call, account)
+                    self.verifyRetailerCallback(error,viewController, connection, { error in onError(error) }, {account in onComplete(account)}, account)
                 })
-                call.resolve(account.toResultData())
             }
         }else {
-            call.reject("Login Error")
+            onError("Login Error")
         }
     }
     /// Logs out a user account.
@@ -70,22 +69,22 @@ public class Retailer : CAPPlugin{
      /// - Parameters:
      ///   - call: The CAPPluginCall object representing the plugin call.
      ///   - account: An instance of the Account struct containing user and account information.
-    public func logout(_ call: CAPPluginCall, _ account: Account) {
-        if (account.user == "" && account.accountType.source == "") {
+    public func logout(reqAccount: ReqAccount, onError: @escaping (String) -> Void, onComplete: @escaping () -> Void) {
+        if (reqAccount.username == "" && reqAccount.accountCommon.source == "") {
             BRAccountLinkingManager.shared().unlinkAllAccounts {
-                call.resolve()
+                onComplete()
             }
             return
         }
         
         guard let retailer: BRAccountLinkingRetailer = RetailerEnum(
-            rawValue: account.accountType.source)?.toBRAccountLinkingRetailer() else {
-            call.reject("Unsuported retailer \(account.accountType.source)")
+            rawValue: reqAccount.accountCommon.source)?.toBRAccountLinkingRetailer() else {
+            onError("Unsuported retailer \(reqAccount.accountCommon.source)")
             return
         }
-        if (account.accountType.source != "") {
+        if (reqAccount.accountCommon.source != "") {
             BRAccountLinkingManager.shared().unlinkAccount(for: retailer) {
-                call.resolve()
+                onComplete()
             }
         }
     }
@@ -166,7 +165,8 @@ public class Retailer : CAPPlugin{
         _ error: BRAccountLinkingError,
         _ viewController: UIViewController?,
         _ connection: BRAccountLinkingConnection,
-        _ call: CAPPluginCall,
+        _ onError: (String) -> Void,
+        _ onComplete: (Account) -> Void,
         _ account: Account)
     {
         switch error {
@@ -179,25 +179,27 @@ public class Retailer : CAPPlugin{
             rootVc!.dismiss(animated: true)
             break
         case .noCredentials :
-            call.reject("Credentials have not been provided")
+            onError("Credentials have not been provided")
             break
         case .internal :
-            call.reject("Unexpected error: internal")
+            onError("Unexpected error: internal")
             break
         case .parsingFail :
-            call.reject("General Error: parsing fail")
+            onError("General Error: parsing fail")
             break
         case .invalidCredentials :
-            call.reject("Invalid credentials. Please verify provided username and password.")
+            onError("Invalid credentials. Please verify provided username and password.")
             break
         case .cancelled :
             viewController?.dismiss(animated: true)
-            call.reject("Account login canceled.")
+            onError("Account login canceled.")
             break
         default :
             BRAccountLinkingManager.shared().linkRetailer(with: connection)
             account.isVerified = true
-            call.resolve(RspAccount(account: account).toResultData())
+            onComplete(account)
+//            onComplete(RspAccount(account: account).toResultData())
+
         }
     }
 }

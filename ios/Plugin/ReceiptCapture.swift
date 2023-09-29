@@ -21,89 +21,85 @@ public class ReceiptCapture: NSObject {
     /// Initializes the ReceiptCapture class.
     ///
     /// - Parameter call: The CAPPluginCall representing the initialization request.
-    public func initialize(_ call: CAPPluginCall) {
-        let reqInit = ReqInitialize(call)
-        let licenseKey = reqInit.licenseKey
-        let productKey = reqInit.productKey
-        let googleClientId = reqInit.googleClientId
+    public func initialize(reqInitialize: ReqInitialize) {
+        let licenseKey = reqInitialize.licenseKey
+        let productKey = reqInitialize.productKey
         let scanManager = BRScanManager.shared()
         scanManager.licenseKey = licenseKey
         scanManager.prodIntelKey = productKey
         physical = Physical()
-        email = Email(licenseKey, productKey, googleClientId)
+        email = Email(licenseKey, productKey)
         retailer = Retailer(licenseKey, productKey)
     }
     
     /// Handles user login for receipt management.
     ///
     /// - Parameter call: The CAPPluginCall representing the login request.
-   public func login(_ call: CAPPluginCall) {
-        let reqLogin = ReqLogin(data: call)
+    public func login(reqLogin: ReqLogin, onError: @escaping (String) -> Void, onComplete: @escaping (Account?) -> Void) {
         guard let accountType = AccountCommon.defaults[reqLogin.source] else {
-            call.reject("Invalid source: \(reqLogin.source)")
+            onError("Invalid source: \(reqLogin.source)")
             return
         }
         let account = Account.init(accountType: accountType, user: reqLogin.username, password: reqLogin.password, isVerified: false)
         switch account.accountType.type {
         case .email :
             guard let email = email else {
-                call.reject("Email not initialized. Did you call .initialize()?")
+                onError("Email not initialized. Did you call .initialize()?")
                 return
             }
-            email.login(account, call)
+            email.login(account, onError: {error in onError(error)}, onComplete: {onComplete(account)})
             break
         case .retailer :
             guard let retailer = retailer else {
-                call.reject("Retailer not initialized. Did you call .initialize()?")
+                onError("Retailer not initialized. Did you call .initialize()?")
                 return
             }
-            retailer.login(account, call)
+            retailer.login(account, onError: {error in onError(error)}, onComplete: {account in onComplete(account)})
             break
         }
     }
     /// Handles user logout from receipt management.
     ///
     /// - Parameter call: The CAPPluginCall representing the logout request.
-    public func logout(_ call: CAPPluginCall) {
-        let reqLogout = ReqLogin(data: call)
-        if(reqLogout.source == ""){
-            if(reqLogout.username != "" || reqLogout.password != ""){
-                call.reject("Error: Invalid logout arguments. If you want delete all accounts, don't send username of password")
+    public func logout(reqAccount: ReqAccount, onError: @escaping (String) -> Void, onComplete: @escaping () -> Void) {
+        if(reqAccount.accountCommon.source == ""){
+            if(reqAccount.username != "" || reqAccount.password != ""){
+                onError("Error: Invalid logout arguments. If you want delete all accounts, don't send username of password")
                 return
             }else{
                 guard let retailer = retailer else {
-                    call.reject("Retailer not initialized. Did you call .initialize()?")
+                    onError("Retailer not initialized. Did you call .initialize()?")
                     return
                 }
                 guard let email = email else {
-                    call.reject("Email not initialized. Did you call .initialize()?")
+                    onError("Email not initialized. Did you call .initialize()?")
                     return
                 }
-                email.logout(call, nil)
-                retailer.logout(call,  Account(retailer: "", username: "", password: ""))
+                email.logout(reqAccount: reqAccount, onError: {error in onError(error)}, onComplete: {onComplete()})
+                retailer.logout(reqAccount: reqAccount, onError: {error in onError(error)}, onComplete: {onComplete()})
                 return
             }
 
         }
-        guard let accountType = AccountCommon.defaults[reqLogout.source] else {
-            call.reject("Invalid source: \(reqLogout.source)")
+        guard let accountType = AccountCommon.defaults[reqAccount.accountCommon.source] else {
+            onError("Invalid source: \(reqAccount.accountCommon.source)")
             return
         }
-        let account = Account.init(accountType: AccountCommon.defaults[reqLogout.source]!, user: reqLogout.username, password: reqLogout.password, isVerified: false)
+        let account = Account.init(accountType: AccountCommon.defaults[reqAccount.accountCommon.source]!, user: reqAccount.username, password: reqAccount.password, isVerified: false)
         switch account.accountType.type {
         case .email :
             guard let email = email else {
-                call.reject("Email not initialized. Did you call .initialize()?")
+                onError("Email not initialized. Did you call .initialize()?")
                 return
             }
-            email.logout(call, account)
+            email.logout(reqAccount: reqAccount, onError: {error in onError(error)}, onComplete: {onComplete()})
             break
         case .retailer :
             guard let retailer = retailer else {
-                call.reject("Retailer not initialized. Did you call .initialize()?")
+                onError("Retailer not initialized. Did you call .initialize()?")
                 return
             }
-            retailer.logout(call, account)
+            retailer.logout(reqAccount: reqAccount, onError: {error in onError(error)}, onComplete: {onComplete()})
             break
         }
     }

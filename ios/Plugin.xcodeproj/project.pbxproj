@@ -10,6 +10,7 @@
 		50ADFF92201F53D600D50D53 /* Plugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ADFF88201F53D600D50D53 /* Plugin.framework */; };
 		50ADFFA42020D75100D50D53 /* Capacitor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ADFFA52020D75100D50D53 /* Capacitor.framework */; };
 		86963BF58A4F7A8881391C34 /* Pods_Plugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01CCC5A7344AC2EDCF34BB1F /* Pods_Plugin.framework */; };
+		88C4620E2AC76B61006B21AF /* ReqAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C4620D2AC76B61006B21AF /* ReqAccount.swift */; };
 		88F1E8422AC1C30A00180ECB /* RspPossibleProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F1E8412AC1C30A00180ECB /* RspPossibleProduct.swift */; };
 		8C06235F2AB2F9AE00CABC17 /* AccountCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623392AB2F9AE00CABC17 /* AccountCommon.swift */; };
 		8C0623602AB2F9AE00CABC17 /* Email.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06233A2AB2F9AE00CABC17 /* Email.swift */; };
@@ -67,6 +68,7 @@
 		50ADFFA52020D75100D50D53 /* Capacitor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Capacitor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5188EACB9E20B6A019E55043 /* Pods_PluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		871ED285029DF8C9DF7AAC89 /* Pods-Plugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plugin.release.xcconfig"; path = "Target Support Files/Pods-Plugin/Pods-Plugin.release.xcconfig"; sourceTree = "<group>"; };
+		88C4620D2AC76B61006B21AF /* ReqAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReqAccount.swift; sourceTree = "<group>"; };
 		88F1E8412AC1C30A00180ECB /* RspPossibleProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspPossibleProduct.swift; sourceTree = "<group>"; };
 		8C0623392AB2F9AE00CABC17 /* AccountCommon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountCommon.swift; sourceTree = "<group>"; };
 		8C06233A2AB2F9AE00CABC17 /* Email.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Email.swift; sourceTree = "<group>"; };
@@ -216,6 +218,7 @@
 		8C0623532AB2F9AE00CABC17 /* Req */ = {
 			isa = PBXGroup;
 			children = (
+				88C4620D2AC76B61006B21AF /* ReqAccount.swift */,
 				8C0623542AB2F9AE00CABC17 /* ReqInitialize‎.swift */,
 				8C0623552AB2F9AE00CABC17 /* ReqScan.swift */,
 				8C0623562AB2F9AE00CABC17 /* ReqRetailerLogin.swift */,
@@ -463,6 +466,7 @@
 				8C0623682AB2F9AE00CABC17 /* RspProduct.swift in Sources */,
 				8C0623752AB2F9AE00CABC17 /* Rsp.swift in Sources */,
 				8C0623712AB2F9AE00CABC17 /* RspSurveyAnswer.swift in Sources */,
+				88C4620E2AC76B61006B21AF /* ReqAccount.swift in Sources */,
 				8C0623602AB2F9AE00CABC17 /* Email.swift in Sources */,
 				8C06238D2AB2FC7800CABC17 /* ScanTypeEnum.swift in Sources */,
 				8C0623762AB2F9AE00CABC17 /* RspReceipt.swift in Sources */,
