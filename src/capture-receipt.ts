@@ -41,7 +41,7 @@ export class CaptureReceipt {
 
   /**
    * Connects a Retailer or Gmail account
-   * @param account - the credentials of the account and the Account Type, that identifies 
+   * @param account - the credentials of the account and the Account Type, that identifies
    * if it is Gmail or Retailer and which Retailer is.
    * @returns {@link Account} with isVerified .
    */
@@ -62,7 +62,6 @@ export class CaptureReceipt {
     this.plugin.logout(reqAccount);
   }
 
-
   /**
    * Scan an Gmail/Retailer account for receipts
    * @param onReceipt - A callback that will be fired when the plugin returns a Receipts
@@ -70,17 +69,17 @@ export class CaptureReceipt {
    * @param onComplete - A callback that will be called when the process finish
    * @param onError - A callback that will be fired when an error happen
    */
-  scan(
+  async scan(
     onReceipt: CallbackMgrCall,
     daysCutOff: number | undefined = 7,
     onComplete: CallbackMgrCall | undefined = undefined,
     onError: CallbackMgrCall | undefined = undefined,
-  ): void {
+  ): Promise<void> {
     const req = new ReqScan(daysCutOff);
     this.callbackMgr.add(new CallbackDetails(req.requestId, PluginEvent.onReceipt, onReceipt));
     this.callbackMgr.add(new CallbackDetails(req.requestId, PluginEvent.onComplete, onComplete));
     this.callbackMgr.add(new CallbackDetails(req.requestId, PluginEvent.onError, onError));
-    this.plugin.scan(req);
+    await this.plugin.scan(req);
   }
   /**
    * Gets all the connected accounts
@@ -88,16 +87,16 @@ export class CaptureReceipt {
    * @param onComplete - A callback called after the search for account is finished.
    * @param onError - A callback that will be fired when an error occurs.
    */
-  accounts(
+  async accounts(
     onAccount: CallbackMgrCall,
     onComplete: CallbackMgrCall | undefined = undefined,
     onError: CallbackMgrCall | undefined = undefined,
-  ): void {
+  ): Promise<void> {
     const requestId = uuid.v4();
     const req = { requestId };
     this.callbackMgr.add(new CallbackDetails(req.requestId, PluginEvent.onAccount, onAccount));
     this.callbackMgr.add(new CallbackDetails(req.requestId, PluginEvent.onComplete, onComplete));
     this.callbackMgr.add(new CallbackDetails(req.requestId, PluginEvent.onError, onError));
-    this.plugin.accounts(req);
+    await this.plugin.accounts(req);
   }
 }
