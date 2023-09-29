@@ -5,6 +5,7 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
+import com.getcapacitor.JSObject
 import com.microblink.core.StringType
 import org.json.JSONObject
 
@@ -34,8 +35,8 @@ class RspStringType(stringType: StringType) : Rsp {
      *
      * @return A [JSONObject] containing the confidence and value of the recognized string.
      */
-    override fun toJson(): JSONObject =
-        JSONObject()
+    override fun toJS(): JSObject =
+        JSObject()
             .put("confidence", confidence)
             .put("value", value)
 

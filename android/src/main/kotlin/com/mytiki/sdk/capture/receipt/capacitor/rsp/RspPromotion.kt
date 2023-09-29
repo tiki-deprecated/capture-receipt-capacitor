@@ -5,6 +5,7 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
+import com.getcapacitor.JSObject
 import com.microblink.core.Promotion
 import org.json.JSONArray
 import org.json.JSONObject
@@ -40,8 +41,8 @@ class RspPromotion(promotion: Promotion) : Rsp {
      *
      * @return A [JSONObject] containing the JSON representation of the RspPromotion.
      */
-    override fun toJson(): JSONObject =
-        JSONObject()
+    override fun toJS(): JSObject =
+        JSObject()
             .put("id", id)
             .put("slug", slug)
             .put("reward", reward)

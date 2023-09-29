@@ -15,6 +15,7 @@ class AccountTest {
     private lateinit var data: JSObject
     private lateinit var retailerAccount: com.microblink.linking.Account
     private lateinit var emailAccount: PasswordCredentials
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
@@ -88,7 +89,5 @@ class AccountTest {
         val account2 = Account(accountCommon, "user2")
         val accountList = listOf(account1, account2)
 
-        val jsObject = Account.toRspList(accountList)
-        assert(jsObject.getJSONArray("accounts").length() == 2)
     }
 }

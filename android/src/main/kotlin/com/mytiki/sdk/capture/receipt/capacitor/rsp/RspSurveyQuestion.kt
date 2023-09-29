@@ -5,6 +5,7 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
+import com.getcapacitor.JSObject
 import com.microblink.core.SurveyQuestion
 import org.json.JSONArray
 import org.json.JSONObject
@@ -42,15 +43,15 @@ class RspSurveyQuestion(surveyQuestion: SurveyQuestion) : Rsp {
      *
      * @return A [JSONObject] representing the RspSurveyQuestion.
      */
-    override fun toJson(): JSONObject =
-        JSONObject()
+    override fun toJS(): JSObject =
+        JSObject()
             .put("myIndex", myIndex)
             .put("lastQuestion", lastQuestion)
             .put("nextQuestionIndex", nextQuestionIndex)
             .put("serverId", serverId)
             .put("text", text)
             .put("type", type)
-            .put("answers", JSONArray(answers.map { answer -> answer.toJson() }))
+            .put("answers", JSONArray(answers.map { answer -> answer.toJS() }))
             .put("multipleAnswers", multipleAnswers)
             .put("totalNumberOfQuestions", totalNumberOfQuestions)
 

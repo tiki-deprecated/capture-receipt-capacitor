@@ -11,6 +11,7 @@ import com.getcapacitor.PluginCall
 import com.getcapacitor.PluginMethod
 import com.getcapacitor.annotation.CapacitorPlugin
 import com.microblink.core.ScanResults
+import com.mytiki.sdk.capture.receipt.capacitor.req.ReqAccount
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqInitialize
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspAccount
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspScan
@@ -29,35 +30,28 @@ import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspScan
     name = "ReceiptCapture"
 )
 class ReceiptCapturePlugin : Plugin() {
-    private val receiptCapture = ReceiptCapture(
-        { onInitialize() },
-        { onScan(it) },
-        { onAccount(it) },
-        { onError(it) }
-    )
+    private val receiptCapture = ReceiptCapture()
 
     companion object {
         private lateinit var instance: ReceiptCapturePlugin
-
-        /**
-         * Callback for initialization.
-         */
-        fun onInitialize() {
-            instance.notifyListeners("onInitialize", JSObject())
-        }
 
         /**
          * Callback for receipt scanning.
          *
          * @param scan The scanned results.
          */
-        fun onScan(scan: ScanResults? = null) {
-            val data = if (scan != null) {
-                JSObject.fromJSONObject(RspScan(scan).toJson())
+        fun onReceipt(requestId: String, scan: ScanResults? = null) {
+            val payload = if (scan != null) {
+                RspScan(scan).toJS()
             } else {
                 JSObject()
             }
-            instance.notifyListeners("onReceipt", data)
+            val data = CallbackDetails(
+                requestId,
+                PluginEvent.onReceipt,
+                payload
+            )
+            instance.notifyListeners("onReceipt", data.toJS())
         }
 
         /**
@@ -65,13 +59,27 @@ class ReceiptCapturePlugin : Plugin() {
          *
          * @param account The account information.
          */
-        fun onAccount(account: Account? = null) {
-            val data = if (account != null) {
-                JSObject.fromJSONObject(RspAccount(account).toJson())
+        fun onAccount(requestId: String, account: Account? = null) {
+            val payload = if (account != null) {
+                JSObject.fromJSONObject(RspAccount(account).toJS())
             } else {
                 JSObject()
             }
-            instance.notifyListeners("onAccount", data)
+            val data = CallbackDetails(
+                requestId,
+                PluginEvent.onAccount,
+                payload
+            )
+            instance.notifyListeners("onCapturePluginResult", data.toJS())
+        }
+
+        fun onComplete(requestId: String, ) {
+            val data = CallbackDetails(
+                requestId,
+                PluginEvent.onAccount,
+                JSObject()
+            )
+            instance.notifyListeners("onCapturePluginResult", data.toJS())
         }
 
         /**
@@ -79,7 +87,7 @@ class ReceiptCapturePlugin : Plugin() {
          *
          * @param message The error message.
          */
-        fun onError(message: String) {
+        fun onError(requestId: String, message: String) {
             instance.notifyListeners("onError", JSObject().put("message", message))
         }
     }
@@ -96,7 +104,9 @@ class ReceiptCapturePlugin : Plugin() {
     fun initialize(call: PluginCall) {
         try {
             val reqInitialize = ReqInitialize(call.data)
-            receiptCapture.initialize(context, reqInitialize.licenseKey, reqInitialize.productKey)
+            receiptCapture.initialize(context, reqInitialize.licenseKey, reqInitialize.productKey, {
+                call.resolve()
+            }, { error -> call.reject(error) })
             instance = this
         } catch (e: Exception) {
             call.reject(e.message)
@@ -113,26 +123,26 @@ class ReceiptCapturePlugin : Plugin() {
      */
     @PluginMethod
     fun login(call: PluginCall) {
-        val username = call.data.getString("username")
-        val password = call.data.getString("password")
-        val source = call.data.getString("source")
+        val req = ReqAccount(call.data)
+        val username = req.username
+        val password = req.password
+        val source = req.accountCommon.source
         if (source.isNullOrEmpty()) {
-            onError("Provide source in login request")
             call.reject("Provide source in login request")
         } else if (username.isNullOrEmpty()) {
-            onError("Provide username in login request")
             call.reject("Provide username in login request")
         } else if (password.isNullOrEmpty()) {
-            onError("Provide password in login request")
             call.reject("Provide password in login request")
         } else {
             receiptCapture.login(
                 activity,
                 username,
                 password,
-                source
+                source,
+                { account -> call.resolve(JSObject.fromJSONObject(RspAccount(account).toJS())) },
+                { msg -> call.reject(msg) }
             )
-            call.resolve()
+
         }
     }
 
@@ -149,9 +159,10 @@ class ReceiptCapturePlugin : Plugin() {
      */
     @PluginMethod
     fun logout(call: PluginCall) {
-        receiptCapture.logout(activity, Account.fromReq(call.data)) {
+        receiptCapture.logout(activity, Account.fromReq(call.data), {
             call.resolve()
-        }
+        },
+            { error -> call.reject(error) })
     }
 
     /**
@@ -164,9 +175,12 @@ class ReceiptCapturePlugin : Plugin() {
      */
     @PluginMethod
     fun accounts(call: PluginCall) {
-        receiptCapture.accounts(context, AccountTypeEnum.RETAILER)
-        receiptCapture.accounts(context, AccountTypeEnum.EMAIL)
-        call.resolve()
+        val reqId = call.getString("requestId")
+        if(reqId != null) {
+            receiptCapture.accounts(context, { account: Account -> onAccount(reqId, account) }) { error ->
+                onError(reqId, error)
+            }
+        }
     }
 
     /**
@@ -182,6 +196,13 @@ class ReceiptCapturePlugin : Plugin() {
     @PluginMethod
     fun scan(call: PluginCall) {
         val dayCutOff = call.data.getInteger("dayCutOff", 7)
-        receiptCapture.scan(activity, dayCutOff)
+        val reqId = call.getString("requestId")
+        if (reqId != null) {
+            receiptCapture.scan(activity, dayCutOff,
+                onComplete = { onComplete(reqId) },
+                onError = { msg -> onError(reqId, msg) },
+                onReceipt = { receipt -> onReceipt(reqId, receipt) }
+            )
+        }
     }
 }

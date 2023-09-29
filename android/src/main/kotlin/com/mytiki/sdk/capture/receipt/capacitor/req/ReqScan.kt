@@ -1,6 +1,5 @@
 package com.mytiki.sdk.capture.receipt.capacitor.req
 
-import com.mytiki.sdk.capture.receipt.capacitor.ScanTypeEnum
 import com.getcapacitor.JSObject
 import com.mytiki.sdk.capture.receipt.capacitor.Account
 import com.mytiki.sdk.capture.receipt.capacitor.AccountCommon
@@ -10,11 +9,11 @@ import com.mytiki.sdk.capture.receipt.capacitor.AccountCommon
  *
  * @param data The [JSObject] containing the scan request data.
  */
-class ReqScan(data: JSObject) {
+class ReqScan(data: JSObject) : Req(data.getString("requestId") ?: "") {
     /**
      * The type of scan to perform, as specified by [ScanTypeEnum].
      */
-    val scanType: ScanTypeEnum
+    val dayCutOff: Int
 
     /**
      * The optional [Account] associated with the scan request, or `null` if not provided.
@@ -22,19 +21,17 @@ class ReqScan(data: JSObject) {
     val account: Account?
 
     init {
-        // Initialize the scanType property by parsing the "scanType" field from the JSObject.
-        scanType = ScanTypeEnum.fromString(data.getString("scanType") ?: "")
-
-        // Initialize the account property based on the provided data.
-        account = if (data.getString("username").isNullOrEmpty() == false && data.getString("source") != "") {
-            Account(
-                AccountCommon.fromSource(data.getString("source") ?: ""),
-                data.getString("username") ?: "",
-                data.getString("password"),
-                data.getBool("isVerified")
-            )
-        } else {
-            null
-        }
+        dayCutOff = data.getInteger("dayCutOff", 7)!!
+        account =
+            if (!data.getString("username").isNullOrEmpty() && data.getString("source") != "") {
+                Account(
+                    AccountCommon.fromSource(data.getString("source") ?: ""),
+                    data.getString("username") ?: "",
+                    data.getString("password"),
+                    data.getBool("isVerified")
+                )
+            } else {
+                null
+            }
     }
 }

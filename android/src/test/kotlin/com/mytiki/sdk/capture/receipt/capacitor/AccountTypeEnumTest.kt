@@ -1,4 +1,5 @@
 package com.mytiki.sdk.capture.receipt.capacitor
+
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -25,7 +26,7 @@ class AccountTypeEnumTest {
         lateinit var error: Exception
         try {
             AccountTypeEnum.fromString("NOT_EXISTING_VALUE")
-        } catch (err: Exception){
+        } catch (err: Exception) {
             error = err
         }
         assert(!error.message.isNullOrEmpty())

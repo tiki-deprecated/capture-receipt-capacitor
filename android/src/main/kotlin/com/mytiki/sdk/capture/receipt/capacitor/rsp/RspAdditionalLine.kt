@@ -5,8 +5,8 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
+import com.getcapacitor.JSObject
 import com.microblink.core.AdditionalLine
-import org.json.JSONObject
 
 /**
  * Represents a parsed additional line from a receipt. This class is part of the TIKI Inc.
@@ -16,7 +16,7 @@ import org.json.JSONObject
  * @property text The text content of the additional line.
  * @property lineNumber The line number of the additional line within the receipt.
  */
-class RspAdditionalLine(private val additionalLine: AdditionalLine) : Rsp {
+class RspAdditionalLine(additionalLine: AdditionalLine) {
     private val type: RspStringType? = RspStringType.opt(additionalLine.type())
     private val text: RspStringType? = RspStringType.opt(additionalLine.text())
     private val lineNumber: Int = additionalLine.lineNumber()
@@ -26,10 +26,10 @@ class RspAdditionalLine(private val additionalLine: AdditionalLine) : Rsp {
      *
      * @return A `JSONObject` representing the additional line.
      */
-    override fun toJson(): JSONObject =
-        JSONObject()
-            .put("type", type?.toJson())
-            .put("text", text?.toJson())
+    fun toJS(): JSObject =
+        JSObject()
+            .put("type", type?.toJS())
+            .put("text", text?.toJS())
             .put("lineNumber", lineNumber)
 
     companion object {

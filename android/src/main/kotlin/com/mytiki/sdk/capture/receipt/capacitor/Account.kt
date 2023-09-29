@@ -1,11 +1,9 @@
 package com.mytiki.sdk.capture.receipt.capacitor
 
 import com.getcapacitor.JSObject
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.microblink.digital.PasswordCredentials
 import com.mytiki.sdk.capture.receipt.capacitor.req.ReqAccount
 import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspAccount
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspAccountList
 
 /**
  * Represents information about an account.
@@ -32,7 +30,7 @@ class Account(
      *
      * @return JSObject representation of the Account.
      */
-    fun toRsp(): JSObject = JSObject.fromJSONObject(RspAccount(this).toJson())
+    fun toRsp(): JSObject = JSObject.fromJSONObject(RspAccount(this).toJS())
 
     companion object {
         /**
@@ -53,7 +51,9 @@ class Account(
          * @return Account object.
          */
         fun fromRetailerAccount(retailerAccount: com.microblink.linking.Account): Account {
-            val accountType = AccountCommon.fromSource(RetailerEnum.fromMbInt(retailerAccount.retailerId).toString())
+            val accountType = AccountCommon.fromSource(
+                RetailerEnum.fromMbInt(retailerAccount.retailerId).toString()
+            )
             val username = retailerAccount.credentials.username()
             return Account(accountType, username)
         }
@@ -64,34 +64,11 @@ class Account(
          * @param emailAccount [PasswordCredentials] object.
          * @return Account object.
          */
-        fun fromEmailAccount(emailAccount:  PasswordCredentials): Account {
+        fun fromEmailAccount(emailAccount: PasswordCredentials): Account {
             val accountType = AccountCommon.fromSource(emailAccount.provider().name)
             val username = emailAccount.username()
             return Account(accountType, username)
         }
 
-        /**
-         * Converts a [GoogleSignInAccount] into an [Account] object.
-         *
-         * @param gmailAccount [GoogleSignInAccount] object.
-         * @return Account object.
-         */
-        fun fromGmailAccount(gmailAccount: GoogleSignInAccount): Account {
-            val accountType = AccountCommon.GMAIL
-            val username = gmailAccount.email!!
-            return Account(accountType, username)
-        }
-
-        /**
-         * Converts a [List]<[Account]> to a [JSObject] array.
-         *
-         * The [JSObject] array is used to pass data to a Capacitor plugin.
-         *
-         * @param list List of [Account].
-         * @param error Errors encountered while getting the [List]<[Account]>.
-         * @return JSObject representation of the Account list.
-         */
-        fun toRspList(list: List<Account>, error: Exception? = null): JSObject =
-            JSObject.fromJSONObject(RspAccountList(list.toMutableList(), error).toJson())
     }
 }

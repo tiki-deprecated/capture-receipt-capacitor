@@ -50,7 +50,15 @@ class Email {
         BlinkReceiptDigitalSdk.initialize(
             context,
             licenseKey,
-            OnInitialize(isInitialized, onError)
+            object : InitializeCallback {
+                override fun onComplete() {
+                    isInitialized.complete(Unit)
+                }
+
+                override fun onException(ex: Throwable) {
+                    onError(ex.message)
+                }
+            }
         )
         return isInitialized
     }
@@ -125,7 +133,7 @@ class Email {
                     credential: PasswordCredentials,
                     result: List<ScanResults>
                 ) {
-                    if(result.isEmpty()){
+                    if (result.isEmpty()) {
                         onError("No results for ${credential.username()} - ${credential.provider()}")
                     }
                     result.forEach { receipt ->

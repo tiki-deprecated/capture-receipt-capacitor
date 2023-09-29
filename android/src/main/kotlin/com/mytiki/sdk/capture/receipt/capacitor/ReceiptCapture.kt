@@ -12,15 +12,15 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 
+typealias OnErrorCallback = ((message: String) -> Unit)
+typealias OnAccountCallback = ((account: Account) -> Unit)
+typealias OnReceiptCallback = ((receipt: ScanResults?) -> Unit)
+typealias OnCompleteCallback = (() -> Unit)
+
 /**
  * A plugin for capturing and processing receipts in a Capacitor-based Android application.
  */
-class ReceiptCapture(
-    val onInitialize: (() -> Unit),
-    val onReceipt: ((receipt: ScanResults?) -> Unit),
-    val onAccount: ((account: Account?) -> Unit),
-    val onError: ((message: String) -> Unit),
-) {
+class ReceiptCapture {
     private val email = Email()
     private val retailer = Retailer()
 
@@ -31,12 +31,18 @@ class ReceiptCapture(
      * @param licenseKey The license key.
      * @param productKey The product key.
      */
-    fun initialize(context: Context, licenseKey: String, productKey: String) {
+    fun initialize(
+        context: Context,
+        licenseKey: String,
+        productKey: String,
+        onInitialize: OnCompleteCallback,
+        onError: OnErrorCallback
+    ) {
         val deferredEmailInit = email.initialize(context, licenseKey, productKey) { msg ->
             onError(msg ?: "Email initialization error")
         }
         val deferredRetailInit = retailer.initialize(context, licenseKey, productKey) { msg ->
-            onError(msg ?: "Retailer initialization error")
+            onError(msg)
         }
         MainScope().async {
             awaitAll(deferredEmailInit, deferredRetailInit)
@@ -58,12 +64,21 @@ class ReceiptCapture(
         activity: AppCompatActivity,
         username: String,
         password: String,
-        source: String
+        source: String,
+        onLogin: OnAccountCallback,
+        onError: OnErrorCallback
     ) {
         if (source == EmailEnum.GMAIL.toString()) {
-            email.login(username, password, source, activity.supportFragmentManager, onAccount, onError)
+            email.login(
+                username,
+                password,
+                source,
+                activity.supportFragmentManager,
+                onLogin,
+                onError
+            )
         } else {
-            retailer.login(username, password, source, activity, onAccount, onError)
+            retailer.login(username, password, source, activity, onLogin, onError)
         }
     }
 
@@ -76,7 +91,12 @@ class ReceiptCapture(
      * @param account The account to log out (null for all accounts).
      * @param onComplete Callback function to execute after logout.
      */
-    fun logout(context: Context, account: Account?, onComplete: () -> Unit) {
+    fun logout(
+        context: Context,
+        account: Account?,
+        onComplete: OnCompleteCallback,
+        onError: OnErrorCallback
+    ) {
         if (account == null) {
             retailer.flush(context, onComplete, onError)
             email.flush(context, onComplete, onError)
@@ -85,6 +105,7 @@ class ReceiptCapture(
                 AccountTypeEnum.EMAIL -> {
                     email.remove(context, account, onComplete, onError)
                 }
+
                 AccountTypeEnum.RETAILER -> {
                     retailer.remove(context, account, onComplete, onError)
                 }
@@ -100,11 +121,9 @@ class ReceiptCapture(
      * @param context The Android application context.
      * @param accountType The type of accounts to retrieve (AccountTypeEnum.EMAIL or AccountTypeEnum.RETAILER).
      */
-    fun accounts(context: Context, accountType: AccountTypeEnum) {
-        when (accountType) {
-            AccountTypeEnum.EMAIL -> email.accounts(context, onAccount, onError)
-            AccountTypeEnum.RETAILER -> retailer.accounts(context, onAccount, onError)
-        }
+    fun accounts(context: Context, onAccount: OnAccountCallback, onError: OnErrorCallback) {
+        email.accounts(context, onAccount, onError)
+        retailer.accounts(context, onAccount, onError)
     }
 
     /**
@@ -115,7 +134,13 @@ class ReceiptCapture(
      * @param context The Android application context.
      * @param dayCutOff The day cutoff for scanning receipts (default is 7 days).
      */
-    fun scan(context: Context, dayCutOff: Int? = null) {
+    fun scan(
+        context: Context,
+        dayCutOff: Int? = null,
+        onReceipt: OnReceiptCallback,
+        onComplete: OnCompleteCallback,
+        onError: OnErrorCallback
+    ) {
         email.scrape(context, onReceipt, onError, dayCutOff ?: 7)
         retailer.orders(context, onReceipt, onError, dayCutOff ?: 7)
     }

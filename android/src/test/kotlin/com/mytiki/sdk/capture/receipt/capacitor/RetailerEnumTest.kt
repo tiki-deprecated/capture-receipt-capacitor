@@ -27,7 +27,7 @@ class RetailerEnumTest {
         lateinit var error: Exception
         try {
             RetailerEnum.fromMbInt(987346938)
-        } catch (err: Exception){
+        } catch (err: Exception) {
             error = err
         }
         assert(!error.message.isNullOrEmpty())
@@ -41,7 +41,7 @@ class RetailerEnumTest {
         lateinit var error: Exception
         try {
             RetailerEnum.fromString("INVALID")
-        } catch (err: Exception){
+        } catch (err: Exception) {
             error = err
         }
         assert(!error.message.isNullOrEmpty())

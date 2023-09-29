@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import com.microblink.core.InitializeCallback
 import com.microblink.core.ScanResults
 import com.microblink.linking.*
 import kotlinx.coroutines.CompletableDeferred
@@ -39,7 +40,16 @@ class Retailer {
         val isLinkInitialized = CompletableDeferred<Unit>()
         BlinkReceiptLinkingSdk.licenseKey = licenseKey
         BlinkReceiptLinkingSdk.productIntelligenceKey = productKey
-        BlinkReceiptLinkingSdk.initialize(context, OnInitialize(isLinkInitialized, onError))
+        BlinkReceiptLinkingSdk.initialize(context, object : InitializeCallback {
+            override fun onComplete() {
+                isLinkInitialized.complete(Unit)
+            }
+
+            override fun onException(ex: Throwable) {
+                onError(ex.message ?: "Retailer initialization error. $ex")
+            }
+
+        })
         return isLinkInitialized
     }
 
@@ -129,7 +139,7 @@ class Retailer {
         client(context).resetHistory().addOnSuccessListener {
             onComplete()
         }.addOnFailureListener { ex ->
-            onError?.let { it(ex.message ?: ex.toString()) }
+            onError.let { it(ex.message ?: ex.toString()) }
         }
     }
 

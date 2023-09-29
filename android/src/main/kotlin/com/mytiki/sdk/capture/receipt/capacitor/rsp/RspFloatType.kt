@@ -5,8 +5,8 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
+import com.getcapacitor.JSObject
 import com.microblink.core.FloatType
-import org.json.JSONObject
 
 /**
  * Represents a response (Rsp) for a floating-point value extracted from a receipt.
@@ -23,8 +23,8 @@ class RspFloatType(private val floatType: FloatType) : Rsp {
      *
      * @return A JSONObject containing the confidence and value of the floating-point type.
      */
-    override fun toJson(): JSONObject =
-        JSONObject()
+    override fun toJS(): JSObject =
+        JSObject()
             .put("confidence", confidence)
             .put("value", value)
 

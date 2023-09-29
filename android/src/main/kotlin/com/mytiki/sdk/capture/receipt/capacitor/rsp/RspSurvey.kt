@@ -5,9 +5,11 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
+import com.getcapacitor.JSObject
 import com.microblink.core.Survey
 import org.json.JSONArray
 import org.json.JSONObject
+
 /**
  * Represents a survey response for the TIKI SDK.
  *
@@ -66,15 +68,15 @@ class RspSurvey(survey: Survey) : Rsp {
      *
      * @return A [JSONObject] containing the survey response data.
      */
-    override fun toJson(): JSONObject =
-        JSONObject()
+    override fun toJS(): JSObject =
+        JSObject()
             .put("clientUserId", clientUserId)
             .put("serverId", serverId)
             .put("slug", slug)
             .put("rewardValue", rewardValue)
             .put("startDate", startDate)
             .put("endDate", endDate)
-            .put("questions", JSONArray(questions.map { question -> question.toJson() }))
+            .put("questions", JSONArray(questions.map { question -> question.toJS() }))
 
     companion object {
 

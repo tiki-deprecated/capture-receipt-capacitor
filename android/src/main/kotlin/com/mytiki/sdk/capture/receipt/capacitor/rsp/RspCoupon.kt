@@ -5,6 +5,7 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
+import com.getcapacitor.JSObject
 import com.microblink.core.Coupon
 import org.json.JSONObject
 
@@ -33,12 +34,12 @@ class RspCoupon(coupon: Coupon) : Rsp {
      *
      * @return A [JSONObject] containing the coupon information.
      */
-    override fun toJson(): JSONObject =
-        JSONObject()
+    override fun toJS(): JSObject =
+        JSObject()
             .put("type", type)
-            .put("amount", amount?.toJson())
-            .put("sku", sku?.toJson())
-            .put("description", description?.toJson())
+            .put("amount", amount?.toJS() ?: JSObject())
+            .put("sku", sku?.toJS())
+            .put("description", description?.toJS())
             .put("relatedProductIndex", relatedProductIndex)
 
     companion object {

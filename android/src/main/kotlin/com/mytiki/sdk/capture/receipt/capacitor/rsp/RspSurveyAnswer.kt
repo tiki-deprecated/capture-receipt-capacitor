@@ -5,8 +5,8 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
+import com.getcapacitor.JSObject
 import com.microblink.core.SurveyAnswer
-import org.json.JSONObject
 
 /**
  * Represents a response (RSP) for a survey answer.
@@ -29,8 +29,8 @@ class RspSurveyAnswer(surveyAnswer: SurveyAnswer) : Rsp {
      *
      * @return The JSON representation of the RSP survey answer.
      */
-    override fun toJson(): JSONObject =
-        JSONObject()
+    override fun toJS(): JSObject =
+        JSObject()
             .put("id", id)
             .put("text", text)
             .put("nextQuestionIndex", nextQuestionIndex)
