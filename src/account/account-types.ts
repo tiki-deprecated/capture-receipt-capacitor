@@ -7,7 +7,7 @@ import type { AccountType } from './account-type';
 import * as Type from './defs';
 
 class AccountTypes {
-  private readonly index: Map<string, AccountType> = new Map([
+  readonly index: Map<string, AccountType> = new Map([
     [Type.ACME_MARKETS.id, Type.ACME_MARKETS],
     [Type.ALBERTSONS.id, Type.ALBERTSONS],
     [Type.AMAZON.id, Type.AMAZON],

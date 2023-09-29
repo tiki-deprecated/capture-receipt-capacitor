@@ -39,7 +39,7 @@ export class CallbackDetails {
    * The unique id of the callback.
    */
   get id(): string {
-    return `${this.event.toString}:${this.requestId}`;
+    return `${this.event.toString()}:${this.requestId}`;
   }
 
   constructor(
