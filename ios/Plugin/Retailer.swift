@@ -65,10 +65,10 @@ public class Retailer : CAPPlugin{
         }
     }
     /// Logs out a user account.
-     ///
-     /// - Parameters:
-     ///   - call: The CAPPluginCall object representing the plugin call.
-     ///   - account: An instance of the Account struct containing user and account information.
+    ///
+    /// - Parameters:
+    ///   - call: The CAPPluginCall object representing the plugin call.
+    ///   - account: An instance of the Account struct containing user and account information.
     public func logout(reqAccount: ReqAccount, onError: @escaping (String) -> Void, onComplete: @escaping () -> Void) {
         if (reqAccount.username == "" && reqAccount.accountCommon.source == "") {
             BRAccountLinkingManager.shared().unlinkAllAccounts {
@@ -93,20 +93,20 @@ public class Retailer : CAPPlugin{
     /// - Parameters:
     ///   - account: An optional instance of the Account struct containing user and account information.
     ///   - call: The CAPPluginCall object representing the plugin call.
-    public func orders(_ account: Account?, _ call: CAPPluginCall){
-        if(account == nil){
-            allAccountsOrders(call)
+    public func orders(reqScan: ReqScan, onError: @escaping (String) -> Void, onComplete: @escaping (RspReceipt) -> Void, onKeepAlive: @escaping (Bool) -> Void){
+        if(reqScan.account == nil){
+            allAccountsOrders(reqScan: reqScan, onError: {error in onError(error)}, onComplete: {rspReceipt in onComplete(rspReceipt)}, onKeepAlive: {keepAlive in onKeepAlive(keepAlive)})
             return
         }
         guard let retailer: BRAccountLinkingRetailer = RetailerEnum(
-            rawValue: account!.accountType.source)!.toBRAccountLinkingRetailer() else {
-            call.reject("Unsuported retailer \(account!.accountType.source)")
+            rawValue: reqScan.account!.accountType.source)!.toBRAccountLinkingRetailer() else {
+            onError("Unsuported retailer \(reqScan.account!.accountType.source)")
             return
         }
         
-        BRAccountLinkingManager.shared().grabNewOrders(for: .walmart) { retailer, order, remaining, viewController, errorCode, sessionId in
+        BRAccountLinkingManager.shared().grabNewOrders(for: retailer) { retailer, order, remaining, viewController, errorCode, sessionId in
             if(errorCode == .none && order != nil){
-                call.resolve(RspReceipt(scanResults: order!).toPluginCallResultData())
+                onComplete(RspReceipt(scanResults: order!))
             }
         }
     }
@@ -115,8 +115,8 @@ public class Retailer : CAPPlugin{
     ///
     /// - Parameters:
     ///   - call: The CAPPluginCall object representing the plugin call.
-    public func allAccountsOrders(_ call: CAPPluginCall){
-        call.keepAlive = true
+    public func allAccountsOrders(reqScan: ReqScan, onError: @escaping (String) -> Void, onComplete: @escaping (RspReceipt) -> Void, onKeepAlive: @escaping (Bool) -> Void) {
+        onKeepAlive(true)
         var returnedAccounts = 0
         Task(priority: .high) {
             let retailers = await BRAccountLinkingManager.shared().getLinkedRetailers()
@@ -124,11 +124,11 @@ public class Retailer : CAPPlugin{
                 DispatchQueue.main.async {
                     BRAccountLinkingManager.shared().grabNewOrders( for: .amazonBeta) { retailer, order, remaining, viewController, errorCode, sessionId in
                         if(errorCode == .none && order != nil){
-                            call.resolve(RspReceipt(scanResults: order!).toPluginCallResultData())
+                            onComplete(RspReceipt(scanResults: order!))
                             returnedAccounts+=1
                             if (returnedAccounts >= retailers.count){
-                                call.keepAlive = false
-                                call.resolve()
+                                onKeepAlive(false)
+                                onComplete(RspReceipt(scanResults: order!))
                             }
                         }
                     }
@@ -136,12 +136,12 @@ public class Retailer : CAPPlugin{
             }
         }
     }
-    
-    /// Retrieves a list of linked accounts.
-    ///
-    /// - Returns: An array of Account objects representing linked accounts.
-    public func accounts () -> [Account] {
-        var accountsList = [Account]()
+        
+        /// Retrieves a list of linked accounts.
+        ///
+        /// - Returns: An array of Account objects representing linked accounts.
+        public func accounts () -> [Account] {
+            var accountsList = [Account]()
             let retailers = BRAccountLinkingManager.shared().getLinkedRetailers()
             for ret in retailers {
                 let connection =  BRAccountLinkingManager.shared().getLinkedRetailerConnection(BRAccountLinkingRetailer(rawValue: ret.uintValue)!)
@@ -150,57 +150,57 @@ public class Retailer : CAPPlugin{
                 let account = Account(accountType: accountCommon, user: connection!.username!, password: connection!.password!, isVerified: isVerified)
                 accountsList.append(account)
             }
-        return accountsList
-
-    }
-    /// Handles the callback after attempting to verify a retailer account.
-    ///
-    /// - Parameters:
-    ///   - error: The BRAccountLinkingError code indicating the result of the verification.
-    ///   - viewController: The UIViewController to present for verification if needed.
-    ///   - connection: The BRAccountLinkingConnection object representing the user's account connection.
-    ///   - call: The CAPPluginCall object representing the plugin call.
-    ///   - account: An instance of the Account struct containing user and account information.
-    private func verifyRetailerCallback(
-        _ error: BRAccountLinkingError,
-        _ viewController: UIViewController?,
-        _ connection: BRAccountLinkingConnection,
-        _ onError: (String) -> Void,
-        _ onComplete: (Account) -> Void,
-        _ account: Account)
-    {
-        switch error {
-        case .verificationNeeded :
-            let rootVc = UIApplication.shared.windows.first?.rootViewController
-            rootVc!.present(viewController!, animated: true, completion: nil)
-            break
-        case .verificationCompleted :
-            let rootVc = UIApplication.shared.windows.first?.rootViewController
-            rootVc!.dismiss(animated: true)
-            break
-        case .noCredentials :
-            onError("Credentials have not been provided")
-            break
-        case .internal :
-            onError("Unexpected error: internal")
-            break
-        case .parsingFail :
-            onError("General Error: parsing fail")
-            break
-        case .invalidCredentials :
-            onError("Invalid credentials. Please verify provided username and password.")
-            break
-        case .cancelled :
-            viewController?.dismiss(animated: true)
-            onError("Account login canceled.")
-            break
-        default :
-            BRAccountLinkingManager.shared().linkRetailer(with: connection)
-            account.isVerified = true
-            onComplete(account)
-//            onComplete(RspAccount(account: account).toResultData())
-
+            return accountsList
+            
+        }
+        /// Handles the callback after attempting to verify a retailer account.
+        ///
+        /// - Parameters:
+        ///   - error: The BRAccountLinkingError code indicating the result of the verification.
+        ///   - viewController: The UIViewController to present for verification if needed.
+        ///   - connection: The BRAccountLinkingConnection object representing the user's account connection.
+        ///   - call: The CAPPluginCall object representing the plugin call.
+        ///   - account: An instance of the Account struct containing user and account information.
+        private func verifyRetailerCallback(
+            _ error: BRAccountLinkingError,
+            _ viewController: UIViewController?,
+            _ connection: BRAccountLinkingConnection,
+            _ onError: (String) -> Void,
+            _ onComplete: (Account) -> Void,
+            _ account: Account)
+        {
+            switch error {
+            case .verificationNeeded :
+                let rootVc = UIApplication.shared.windows.first?.rootViewController
+                rootVc!.present(viewController!, animated: true, completion: nil)
+                break
+            case .verificationCompleted :
+                let rootVc = UIApplication.shared.windows.first?.rootViewController
+                rootVc!.dismiss(animated: true)
+                break
+            case .noCredentials :
+                onError("Credentials have not been provided")
+                break
+            case .internal :
+                onError("Unexpected error: internal")
+                break
+            case .parsingFail :
+                onError("General Error: parsing fail")
+                break
+            case .invalidCredentials :
+                onError("Invalid credentials. Please verify provided username and password.")
+                break
+            case .cancelled :
+                viewController?.dismiss(animated: true)
+                onError("Account login canceled.")
+                break
+            default :
+                BRAccountLinkingManager.shared().linkRetailer(with: connection)
+                account.isVerified = true
+                onComplete(account)
+                
+            }
         }
     }
-}
+    
 

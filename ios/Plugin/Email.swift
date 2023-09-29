@@ -98,22 +98,18 @@ public class Email {
     /// - Parameters:
     ///   - pluginCall: The CAPPluginCall object representing the plugin call.
     ///   - account: An optional instance of the Account struct containing user and account information.
-    public func scan(_ pluginCall: CAPPluginCall, _ account: Account?, _ dayCutOff: Int?){
-        BREReceiptManager.shared().dayCutoff = dayCutOff ?? 7
-        if(account != nil){
-            let provider = EmailEnum(rawValue:  account!.accountType.source)?.toBREReceiptProvider()
-            let email = BRIMAPAccount(provider: provider!, email: account!.user, password: account!.password!)
+    public func scan(reqScan: ReqScan, onError: @escaping (String) -> Void, onComplete: @escaping (RspReceipt) -> Void){
+        BREReceiptManager.shared().dayCutoff = reqScan.daysCutOff ?? 7
+        if(reqScan.account != nil){
+            let provider = EmailEnum(rawValue:  reqScan.account!.accountType.source)?.toBREReceiptProvider()
+            let email = BRIMAPAccount(provider: provider!, email: reqScan.account?.user ?? "", password: reqScan.account?.password ?? "")
             BREReceiptManager.shared().getEReceipts(for: email){scanResults, emailAccount, error in
                 if(scanResults != nil){
                     scanResults?.forEach{scanResults in
-                        pluginCall.resolve(
-                            RspScan(scan: RspReceipt(scanResults: scanResults),
-                                    account: Account(provider: emailAccount!.provider, email: emailAccount!.email))
-                            .toPluginCallResultData()
-                        )
+                        onComplete(RspReceipt(scanResults: scanResults))
                     }
                 }else{
-                    pluginCall.reject(error?.localizedDescription ?? "No receipts.")
+                    onError(error?.localizedDescription ?? "No receipts.")
                 }
             }
         }else{
@@ -121,14 +117,10 @@ public class Email {
                 BREReceiptManager.shared().getEReceipts(){scanResults, emailAccount, error in
                     if(scanResults != nil){
                         scanResults?.forEach{scanResults in
-                            pluginCall.resolve(
-                                RspScan(scan: RspReceipt(scanResults: scanResults),
-                                        account: Account(provider: emailAccount!.provider, email: emailAccount!.email))
-                                .toPluginCallResultData()
-                            )
+                            onComplete(RspReceipt(scanResults: scanResults))
                         }
                     }else{
-                        pluginCall.reject(error?.localizedDescription ?? "No receipts.")
+                        onError(error?.localizedDescription ?? "No receipts.")
                     }
                 }
             }

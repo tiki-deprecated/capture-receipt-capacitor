@@ -3,7 +3,7 @@
  
  This struct is used to encapsulate a list of accounts and an optional error message in response to plugin calls that retrieve account information.
  */
-struct RspAccountList: Rsp {
+public struct RspAccountList: Rsp {
     /// An array of `Account` objects representing the list of accounts.
     let accounts: [Account]
     

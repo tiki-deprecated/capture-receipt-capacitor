@@ -13,19 +13,25 @@ public struct ReqScan {
     // The optional [Account] associated with the scan request, or `null` if not provided.
     let account: Account?
     
+    let daysCutOff: Int?
+    
     init(data: CAPPluginCall) {
         guard let scanType = ScanTypeEnum.allCases.first(where: { value in value.rawValue == data.getString("scanType")}) else {
             data.reject("Invalid ScanType")
             self.account = nil
             self.scanType = nil
+            self.daysCutOff = 7
             return
             }
         self.scanType = scanType
         guard let source = data.getString("source") else {
             self.account = nil
+            self.daysCutOff = 7
             return
         }
         self.account = Account(accountType: AccountCommon.defaults[source]!, user: data.getString("user") ?? "", password: data.getString("password"), isVerified: data.getBool("isVerified"))
+        
+        self.daysCutOff = data.getInt("dayCutOff")
         
     }
 }

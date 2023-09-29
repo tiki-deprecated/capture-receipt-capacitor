@@ -31,10 +31,10 @@ public class ReceiptCapturePlugin: CAPPlugin {
     }
 
     @objc func accounts(_ call: CAPPluginCall){
-        receiptCapture.accounts(call)
+        receiptCapture.accounts(onError: {error in call.reject(error)}, onComplete: {rspAccount in call.resolve(rspAccount.toPluginCallResultData())})
     }
     
     @objc func scan(_ call: CAPPluginCall) {
-        receiptCapture.scan(call)
+        receiptCapture.scan(call: call, reqScan: ReqScan(data: call), onError: {error in call.reject(error)}, onComplete: {rspReceipt in call.resolve(rspReceipt.toPluginCallResultData())}, onKeepAlive: {keepAlive in call.keepAlive = keepAlive })
     }
 }
