@@ -12,6 +12,8 @@ import App from './app.vue';
 import type { CallbackError } from 'dist/types/callback-mgr/callback-error';
 import type { Receipt } from 'dist/types';
 
+  type PayloadTypes = Account | CallbackError | Receipt | undefined
+
 export const login = async (username: string, password: string, source: string) => {
   const account: Account = {
     username,
@@ -21,8 +23,16 @@ export const login = async (username: string, password: string, source: string) 
   await instance.login(account).catch((error: CallbackError) => console.log(error));
 };
 
-export const accounts = async (): Promise<void> => instance.accounts((account: Account | CallbackError | Receipt | undefined) => console.log(account));
-export const scan = async (): Promise<void> => instance.scan((receipt: Account | CallbackError | Receipt | undefined) => console.log(receipt));
+export const accounts = async (): Promise<void> => instance.accounts(
+  (account: PayloadTypes) => console.log(account),
+  () => console.log("complete"),
+  (err: PayloadTypes) => console.log("error", err),
+);
+export const scan = async (): Promise<void> => instance.scan(
+  (receipt: PayloadTypes) => console.log(receipt),
+  () => console.log("complete"),
+  (err: PayloadTypes) => console.log("error", err),
+);
 export const logout = async (): Promise<void> => instance.logout();
 export const initialize = async (): Promise<void> => {
   await instance.initialize(
