@@ -4,8 +4,8 @@
  */
 
 import './assets/main.css';
-import type { Account } from '@mytiki/tiki-capture-receipt-capacitor';
-import { accountTypes, instance } from '@mytiki/tiki-capture-receipt-capacitor';
+import type { Account } from '@mytiki/capture-receipt-capacitor';
+import { accountTypes, instance } from '@mytiki/capture-receipt-capacitor';
 import { createApp } from 'vue';
 
 import App from './app.vue';
