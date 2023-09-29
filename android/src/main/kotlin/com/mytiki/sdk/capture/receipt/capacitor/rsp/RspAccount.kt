@@ -5,6 +5,7 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
+import com.getcapacitor.JSObject
 import com.mytiki.sdk.capture.receipt.capacitor.Account
 import org.json.JSONObject
 
@@ -22,8 +23,8 @@ class RspAccount(
      *
      * @return A [JSONObject] representing the RSP account.
      */
-    override fun toJson(): JSONObject =
-        JSONObject()
+    override fun toJS(): JSObject =
+        JSObject()
             .put("username", account.username)
             .put("source", account.accountCommon.source)
             .put("type", account.accountCommon.type.name)

@@ -1,23 +1,30 @@
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
+
 import './assets/main.css';
+import type { Account } from '@mytiki/capture-receipt-capacitor';
+import { accountTypes, instance } from '@mytiki/capture-receipt-capacitor';
 import { createApp } from 'vue';
-import { ReceiptCapture } from '../../src/receipt-capture';
-import type { ReceiptCapturePlugin } from '@/receipt-capture-plugin';
-import { registerPlugin } from '@capacitor/core';
-import App from '@/app.vue';
 
-const plugin: ReceiptCapturePlugin = registerPlugin<ReceiptCapturePlugin>('ReceiptCapture', {
-  web: () => import('../../src/receipt-capture-web').then((m) => new m.ReceiptCaptureWeb()),
-});
+import App from './app.vue';
+import type { CallbackError } from 'dist/types/callback-mgr/callback-error';
+import type { Receipt } from 'dist/types';
 
-const instance: ReceiptCapture = new ReceiptCapture(plugin);
+export const login = async (username: string, password: string, source: string) => {
+  const account: Account = {
+    username,
+    password,
+    type: accountTypes.from(source)!,
+  };
+  await instance.login(account).catch((error: CallbackError) => console.log(error));
+};
 
-export const login = async (username: string, password: string, source: string) => 
-   await instance.login(source, username, password).catch((error) => console.log(error));
-
-export const accounts = async () => instance.accounts()
-export const scan = async () => instance.scan()
-export const logout = async () => instance.logout();
-export const initialize = async () => {
+export const accounts = async (): Promise<void> => instance.accounts((account: Account | CallbackError | Receipt | undefined) => console.log(account));
+export const scan = async (): Promise<void> => instance.scan((receipt: Account | CallbackError | Receipt | undefined) => console.log(receipt));
+export const logout = async (): Promise<void> => instance.logout();
+export const initialize = async (): Promise<void> => {
   await instance.initialize(
     'sRwAAAAoY29tLm15dGlraS5zZGsuY2FwdHVyZS5yZWNlaXB0LmNhcGFjaXRvcgY6SQlVDCCrMOCc/jLI1A3BmOhqNvtZLzShMcb3/OLQLiqgWjuHuFiqGfg4fnAiPtRcc5uRJ6bCBRkg8EsKabMQkEsMOuVjvEOejVD497WkMgobMbk/X+bdfhPPGdcAHWn5Vnz86SmGdHX5xs6RgYe5jmJCSLiPmB7cjWmxY5ihkCG12Q==',
     'wSNX3mu+YGc/2I1DDd0NmrYHS6zS1BQt2geMUH7DDowER43JGeJRUErOHVwU2tz6xHDXia8BuvXQI3j37I0uYw==',

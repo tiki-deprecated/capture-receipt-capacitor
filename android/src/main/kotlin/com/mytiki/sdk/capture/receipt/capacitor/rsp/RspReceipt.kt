@@ -5,6 +5,7 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
+import com.getcapacitor.JSObject
 import com.microblink.core.ScanResults
 import org.json.JSONArray
 import org.json.JSONObject
@@ -150,13 +151,13 @@ class RspReceipt(scanResults: ScanResults) : Rsp {
         unqualifiedPromotions =
             scanResults.unqualified()?.map { promotion -> RspPromotion(promotion) } ?: emptyList()
         extendedFields = if (scanResults.extendedFields() != null) {
-            val extendedFields = JSONObject()
+            val extendedFields = JSObject()
             scanResults.extendedFields()
                 ?.forEach { entry -> extendedFields.put(entry.key, entry.value) }
             extendedFields
         } else null
         eReceiptAdditionalFees = if (scanResults.eReceiptAdditionalFees() != null) {
-            val additionalFees = JSONObject()
+            val additionalFees = JSObject()
             scanResults.eReceiptAdditionalFees()
                 ?.forEach { entry -> additionalFees.put(entry.key, entry.value) }
             additionalFees
@@ -189,33 +190,33 @@ class RspReceipt(scanResults: ScanResults) : Rsp {
      *
      * @return A JSONObject containing the RSP receipt data.
      */
-    override fun toJson(): JSONObject =
-        JSONObject()
-            .put("receiptDate", receiptDate?.toJson())
-            .put("receiptTime", receiptTime?.toJson())
-            .put("retailerId", retailerId.toJson())
-            .put("products", JSONArray(products.map { prd -> prd.toJson() }))
-            .put("coupons", JSONArray(coupons.map { coupon -> coupon.toJson() }))
-            .put("total", total?.toJson())
-            .put("tip", tip?.toJson())
-            .put("subtotal", subtotal?.toJson())
-            .put("taxes", taxes?.toJson())
-            .put("storeNumber", storeNumber?.toJson())
-            .put("merchantName", merchantName?.toJson())
-            .put("storeAddress", storeAddress?.toJson())
-            .put("storeCity", storeCity?.toJson())
+    override fun toJS(): JSObject =
+        JSObject()
+            .put("receiptDate", receiptDate?.toJS())
+            .put("receiptTime", receiptTime?.toJS())
+            .put("retailerId", retailerId)
+            .put("products", JSONArray(products.map { prd -> prd.toJS() }))
+            .put("coupons", JSONArray(coupons.map { coupon -> coupon.toJS() }))
+            .put("total", total?.toJS())
+            .put("tip", tip?.toJS())
+            .put("subtotal", subtotal?.toJS())
+            .put("taxes", taxes?.toJS())
+            .put("storeNumber", storeNumber?.toJS())
+            .put("merchantName", merchantName?.toJS())
+            .put("storeAddress", storeAddress?.toJS())
+            .put("storeCity", storeCity?.toJS())
             .put("blinkReceiptId", blinkReceiptId)
-            .put("storeState", storeState?.toJson())
-            .put("storeZip", storeZip?.toJson())
-            .put("storeCountry", storeCountry?.toJson())
-            .put("storePhone", storePhone?.toJson())
-            .put("cashierId", cashierId?.toJson())
-            .put("transactionId", transactionId?.toJson())
-            .put("registerId", registerId?.toJson())
-            .put("paymentMethods", JSONArray(paymentMethods.map { method -> method.toJson() }))
-            .put("taxId", taxId?.toJson())
-            .put("mallName", mallName?.toJson())
-            .put("last4cc", last4cc?.toJson())
+            .put("storeState", storeState?.toJS())
+            .put("storeZip", storeZip?.toJS())
+            .put("storeCountry", storeCountry?.toJS())
+            .put("storePhone", storePhone?.toJS())
+            .put("cashierId", cashierId?.toJS())
+            .put("transactionId", transactionId?.toJS())
+            .put("registerId", registerId?.toJS())
+            .put("paymentMethods", JSONArray(paymentMethods.map { method -> method.toJS() }))
+            .put("taxId", taxId?.toJS())
+            .put("mallName", mallName?.toJS())
+            .put("last4cc", last4cc?.toJS())
             .put("ocrConfidence", ocrConfidence)
             .put("merchantSource", merchantSource)
             .put("foundTopEdge", foundTopEdge)
@@ -224,8 +225,8 @@ class RspReceipt(scanResults: ScanResults) : Rsp {
             .put("eReceiptOrderStatus", eReceiptOrderStatus)
             .put("eReceiptRawHtml", eReceiptRawHtml)
             .put("eReceiptShippingAddress", eReceiptShippingAddress)
-            .put("shipments", JSONArray(shipments.map { shipment -> shipment.toJson() }))
-            .put("longTransactionId", longTransactionId?.toJson())
+            .put("shipments", JSONArray(shipments.map { shipment -> shipment.toJS() }))
+            .put("longTransactionId", longTransactionId?.toJS())
             .put("subtotalMatches", subtotalMatches)
             .put("eReceiptEmailProvider", eReceiptEmailProvider)
             .put("eReceiptEmailId", eReceiptEmailId)
@@ -234,27 +235,27 @@ class RspReceipt(scanResults: ScanResults) : Rsp {
             .put("eReceipt", eReceipt)
             .put(
                 "eReceiptComponentEmails",
-                JSONArray(eReceiptComponentEmails.map { email -> email.toJson() })
+                JSONArray(eReceiptComponentEmails.map { email -> email.toJS() })
             )
             .put("duplicate", duplicate)
             .put("fraudulent", fraudulent)
             .put("receiptDateTime", receiptDateTime)
             .put("duplicateBlinkReceiptIds", JSONArray(duplicateBlinkReceiptIds))
-            .put("merchantMatchGuess", merchantMatchGuess?.toJson())
+            .put("merchantMatchGuess", merchantMatchGuess?.toJS())
             .put("productsPendingLookup", productsPendingLookup)
             .put(
                 "qualifiedPromotions",
-                JSONArray(qualifiedPromotions.map { promo -> promo.toJson() })
+                JSONArray(qualifiedPromotions.map { promo -> promo.toJS() })
             )
             .put(
                 "unqualifiedPromotions",
-                JSONArray(unqualifiedPromotions.map { promo -> promo.toJson() })
+                JSONArray(unqualifiedPromotions.map { promo -> promo.toJS() })
             )
             .put("extendedFields", extendedFields)
             .put("eReceiptAdditionalFees", eReceiptAdditionalFees)
-            .put("purchaseType", purchaseType?.toJson())
+            .put("purchaseType", purchaseType?.toJS())
             .put("loyaltyForBanner", loyaltyForBanner)
-            .put("channel", channel?.toJson())
+            .put("channel", channel?.toJS())
             .put("submissionDate", submissionDate)
             .put("eReceiptFulfilledBy", eReceiptFulfilledBy)
             .put("eReceiptShippingStatus", eReceiptShippingStatus)
@@ -262,7 +263,7 @@ class RspReceipt(scanResults: ScanResults) : Rsp {
             .put("eReceiptSubMerchant", eReceiptSubMerchant)
             .put(
                 "qualifiedSurveys",
-                JSONArray(qualifiedSurveys.map { survey -> survey.toJson() })
+                qualifiedSurveys.map { survey -> survey.toJS() }
             )
             .put("barcode", barcode)
             .put("eReceiptMerchantEmail", eReceiptMerchantEmail)
@@ -272,9 +273,9 @@ class RspReceipt(scanResults: ScanResults) : Rsp {
             .put("clientMerchantName", clientMerchantName)
             .put("loyaltyProgram", loyaltyProgram)
             .put("merchantSources", JSONArray(merchantSources))
-            .put("paymentTerminalId", paymentTerminalId?.toJson())
-            .put("paymentTransactionId", paymentTransactionId?.toJson())
-            .put("combinedRawText", combinedRawText?.toJson())
+            .put("paymentTerminalId", paymentTerminalId?.toJS())
+            .put("paymentTransactionId", paymentTransactionId?.toJS())
+            .put("combinedRawText", combinedRawText?.toJS())
 
     companion object {
         /**

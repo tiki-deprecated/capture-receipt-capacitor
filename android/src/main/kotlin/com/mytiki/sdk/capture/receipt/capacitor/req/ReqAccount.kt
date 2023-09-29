@@ -13,7 +13,7 @@ import com.mytiki.sdk.capture.receipt.capacitor.AccountCommon
  *
  * @param data A [JSObject] containing the data for the account request.
  */
-class ReqAccount(data: JSObject) {
+class ReqAccount(data: JSObject) : Req(data.getString("requestId") ?: "") {
     /**
      * The [AccountCommon] object associated with this account request.
      */

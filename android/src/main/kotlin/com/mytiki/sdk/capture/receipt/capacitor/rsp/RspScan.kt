@@ -1,5 +1,6 @@
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
+import com.getcapacitor.JSObject
 import com.microblink.core.ScanResults
 import com.mytiki.sdk.capture.receipt.capacitor.Account
 import org.json.JSONObject
@@ -25,9 +26,9 @@ class RspScan(
      *
      * @return A [JSONObject] containing the JSON representation of this [RspScan] object.
      */
-    override fun toJson(): JSONObject =
-        JSONObject()
-            .put("account", if (_account != null) RspAccount(_account).toJson() else null)
-            .put("receipt", _scan?.toJson())
+    override fun toJS(): JSObject =
+        JSObject()
+            .put("account", if (_account != null) RspAccount(_account).toJS() else null)
+            .put("receipt", _scan?.toJS())
             .put("isRunning", _isRunning)
 }

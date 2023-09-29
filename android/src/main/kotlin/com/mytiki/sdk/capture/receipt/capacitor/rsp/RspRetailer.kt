@@ -5,8 +5,8 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
+import com.getcapacitor.JSObject
 import com.microblink.core.Retailer
-import org.json.JSONObject
 
 /**
  * Represents a Retailer for the Receipt Scanning Plugin (RSP).
@@ -27,8 +27,8 @@ class RspRetailer(retailer: Retailer) : Rsp {
      *
      * @return A JSON object representing the RspRetailer.
      */
-    override fun toJson(): JSONObject =
-        JSONObject()
+    override fun toJS(): JSObject =
+        JSObject()
             .put("id", id)
             .put("bannerId", bannerId)
 

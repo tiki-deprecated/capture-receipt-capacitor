@@ -50,7 +50,15 @@ class Email {
         BlinkReceiptDigitalSdk.initialize(
             context,
             licenseKey,
-            OnInitialize(isInitialized, onError)
+            object : InitializeCallback {
+                override fun onComplete() {
+                    isInitialized.complete(Unit)
+                }
+
+                override fun onException(ex: Throwable) {
+                    onError(ex.message)
+                }
+            }
         )
         return isInitialized
     }
@@ -125,7 +133,7 @@ class Email {
                     credential: PasswordCredentials,
                     result: List<ScanResults>
                 ) {
-                    if(result.isEmpty()){
+                    if (result.isEmpty()) {
                         onError("No results for ${credential.username()} - ${credential.provider()}")
                     }
                     result.forEach { receipt ->
@@ -149,8 +157,8 @@ class Email {
      * @param onAccount Callback called for each retrieved email account.
      * @param onError Callback called when an error occurs during account retrieval.
      */
-    fun accounts(context: Context, onAccount: (Account) -> Unit, onError: (msg: String) -> Unit) {
-        this.client(context, onError) { client ->
+    fun accounts(context: Context, onAccount: OnAccountCallback, onError: OnErrorCallback?, onComplete: OnCompleteCallback?) {
+        this.client(context, onError ?: {}) { client ->
             client.accounts().addOnSuccessListener { credentials ->
                 credentials?.forEach { credential ->
                     val account = Account.fromEmailAccount(credential)
@@ -159,8 +167,10 @@ class Email {
                         onAccount(account)
                     }
                 }
+                onComplete?.invoke()
             }.addOnFailureListener {
-                onError(it.message ?: it.toString())
+                onError?.invoke(it.message ?: it.toString())
+                onComplete?.invoke()
             }
         }
     }

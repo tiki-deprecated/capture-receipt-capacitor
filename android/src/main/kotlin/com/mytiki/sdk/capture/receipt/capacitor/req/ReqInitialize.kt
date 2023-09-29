@@ -17,7 +17,7 @@ import com.getcapacitor.JSObject
  *
  * @param data A [JSObject] containing the initialization data.
  */
-class ReqInitialize(data: JSObject) {
+class ReqInitialize(data: JSObject) : Req(data.getString("requestId") ?: "") {
     val licenseKey: String
     val productKey: String
 
@@ -30,10 +30,10 @@ class ReqInitialize(data: JSObject) {
     init {
         val licenseKey = data.getString("licenseKey")
         val productKey = data.getString("productKey")
-        if (licenseKey == null){
+        if (licenseKey == null) {
             throw Error("Provide a License Key for initialization.")
         }
-        if (productKey == null){
+        if (productKey == null) {
             throw Error("Provide a Product Intelligence Key for initialization.")
         }
         this.productKey = productKey

@@ -5,6 +5,7 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
+import com.getcapacitor.JSObject
 import com.microblink.core.PaymentMethod
 import org.json.JSONObject
 
@@ -35,12 +36,12 @@ class RspPaymentMethod(paymentMethod: PaymentMethod) : Rsp {
      *
      * @return A [JSONObject] containing the payment method information.
      */
-    override fun toJson(): JSONObject =
-        JSONObject()
-            .put("paymentMethod", paymentMethod?.toJson())
-            .put("cardType", cardType?.toJson())
-            .put("cardIssuer", cardIssuer?.toJson())
-            .put("amount", amount?.toJson())
+    override fun toJS(): JSObject =
+        JSObject()
+            .put("paymentMethod", paymentMethod?.toJS())
+            .put("cardType", cardType?.toJS())
+            .put("cardIssuer", cardIssuer?.toJS())
+            .put("amount", amount?.toJS())
 
     companion object {
         /**

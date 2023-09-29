@@ -5,6 +5,7 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.rsp
 
+import com.getcapacitor.JSObject
 import com.microblink.core.Product
 import org.json.JSONArray
 import org.json.JSONObject
@@ -134,14 +135,14 @@ class RspProduct(product: Product) : Rsp {
         subCategory = product.subCategory()
         itemType = product.itemType()
         extendedFields = if (product.extendedFields() != null) {
-            val extendedFields = JSONObject()
+            val extendedFields = JSObject()
             product.extendedFields()
                 ?.forEach { entry -> extendedFields.put(entry.key, entry.value) }
             extendedFields
         } else null
         attributes = if (product.attributes() != null) {
             product.attributes()!!.map { attr ->
-                val json = JSONObject()
+                val json = JSObject()
                 attr.forEach { entry -> json.put(entry.key, entry.value) }
                 json
             }
@@ -153,14 +154,14 @@ class RspProduct(product: Product) : Rsp {
      *
      * @return A JSON object representing the RSP product.
      */
-    override fun toJson(): JSONObject =
-        JSONObject()
-            .put("productNumber", productNumber?.toJson())
-            .put("description", description?.toJson())
-            .put("quantity", quantity?.toJson())
-            .put("unitPrice", unitPrice?.toJson())
-            .put("unitOfMeasure", unitOfMeasure?.toJson())
-            .put("totalPrice", totalPrice?.toJson())
+    override fun toJS(): JSObject =
+        JSObject()
+            .put("productNumber", productNumber?.toJS())
+            .put("description", description?.toJS())
+            .put("quantity", quantity?.toJS())
+            .put("unitPrice", unitPrice?.toJS())
+            .put("unitOfMeasure", unitOfMeasure?.toJS())
+            .put("totalPrice", totalPrice?.toJS())
             .put("fullPrice", fullPrice)
             .put("line", line)
             .put("productName", productName)
@@ -172,22 +173,22 @@ class RspProduct(product: Product) : Rsp {
             .put("upc", upc)
             .put("imageUrl", imageUrl)
             .put("shippingStatus", shippingStatus)
-            .put("additionalLines", JSONArray(additionalLines.map { line -> line.toJson() }))
-            .put("priceAfterCoupons", priceAfterCoupons?.toJson())
+            .put("additionalLines", JSONArray(additionalLines.map { line -> line.toJS() }))
+            .put("priceAfterCoupons", priceAfterCoupons?.toJS())
             .put("voided", voided)
             .put("probability", probability)
             .put("sensitive", sensitive)
-            .put("possibleProducts", JSONArray(possibleProducts.map { prd -> prd.toJson() }))
-            .put("subProducts", JSONArray(subProducts.map { prd -> prd.toJson() }))
+            .put("possibleProducts", JSONArray(possibleProducts.map { prd -> prd.toJS() }))
+            .put("subProducts", JSONArray(subProducts.map { prd -> prd.toJS() }))
             .put("added", added)
             .put("blinkReceiptBrand", blinkReceiptBrand)
             .put("blinkReceiptCategory", blinkReceiptCategory)
             .put("extendedFields", extendedFields)
             .put("fuelType", fuelType)
-            .put("descriptionPrefix", descriptionPrefix?.toJson())
-            .put("descriptionPostfix", descriptionPostfix?.toJson())
-            .put("skuPrefix", skuPrefix?.toJson())
-            .put("skuPostfix", skuPostfix?.toJson())
+            .put("descriptionPrefix", descriptionPrefix?.toJS())
+            .put("descriptionPostfix", descriptionPostfix?.toJS())
+            .put("skuPrefix", skuPrefix?.toJS())
+            .put("skuPostfix", skuPostfix?.toJS())
             .put("attributes", JSONArray(attributes))
             .put("sector", sector)
             .put("department", department)

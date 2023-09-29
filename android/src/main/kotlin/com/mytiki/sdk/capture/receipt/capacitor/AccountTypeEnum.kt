@@ -35,6 +35,7 @@ enum class AccountTypeEnum {
          * @return The [AccountTypeEnum] matching the provided [stringValue].
          * @throws NoSuchElementException If no matching [AccountTypeEnum] is found.
          */
-        fun fromString(stringValue: String) = AccountTypeEnum.values().first { it.name == stringValue }
+        fun fromString(stringValue: String) =
+            AccountTypeEnum.values().first { it.name == stringValue }
     }
 }

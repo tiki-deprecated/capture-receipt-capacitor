@@ -19,7 +19,7 @@ class AccountCommonTest {
         lateinit var error: Exception
         try {
             AccountCommon.fromSource("NOT_EXISTING_VALUE")
-        } catch (err: Exception){
+        } catch (err: Exception) {
             error = err
         }
         assert(!error.message.isNullOrEmpty())
