@@ -1,13 +1,13 @@
 import './assets/main.css';
 import { createApp } from 'vue';
 import { CaptureReceipt } from '../../src/capture-receipt';
-import { type Account , aXXOUNRbUEW } from '../../src/account'
+import { type Account } from '../../src/account'
 import type { CaptureReceiptPlugin } from '../../src/plugin';
 import { registerPlugin } from '@capacitor/core';
 import App from '@/app.vue';
 import { accountTypes } from 'dist/types';
 
-const plugin: CaptureReceiptPlugin = registerPlugin<CaptureReceipt>('ReceiptCapture', {
+const plugin: CaptureReceiptPlugin = registerPlugin<CaptureReceipt>('CaptureReceipt', {
   web: () => import('../../src/receipt-capture-web').then((m) => new m.ReceiptCaptureWeb()),
 });
 

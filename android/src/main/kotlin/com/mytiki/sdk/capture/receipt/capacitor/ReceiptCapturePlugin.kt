@@ -27,7 +27,7 @@ import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspScan
  * @version 1.0.0
  */
 @CapacitorPlugin(
-    name = "ReceiptCapture"
+    name = "CaptureReceipt"
 )
 class ReceiptCapturePlugin : Plugin() {
     private val receiptCapture = ReceiptCapture()

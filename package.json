@@ -51,6 +51,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
+    "@capacitor/cli": "^5.4.1",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
