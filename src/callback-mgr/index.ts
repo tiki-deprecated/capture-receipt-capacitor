@@ -3,7 +3,9 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import type { CallbackDetails } from './callback-details';
+import { toPluginEvent } from '../plugin/plugin-event';
+
+import { CallbackDetails } from './callback-details';
 /**
  * The class responsible for handling the asynchronous callbacks between
  * the plugin and the Capacitor code.
@@ -32,16 +34,20 @@ export class CallbackManager {
    *
    * @param cbDetails
    */
-  fire = (cbDetails: CallbackDetails): void => {
-    const eventId = cbDetails.id;
-    const cb = this.callbacks.get(eventId);
-    if (cb) {
-      const call = cb.callback;
-      const payload = cbDetails.payload;
-      if (call) {
-        call(payload);
+  fire = (err: any, ..._args: any[]): void => {
+    const event = toPluginEvent(err.event);
+    if (event === undefined) {
+      console.debug(`Invalid event. Skipping callback: ${JSON.stringify(err)}`);
+      return;
+    } else {
+      const details = new CallbackDetails(err.requestId, event);
+      const cb = this.callbacks.get(details.id);
+      if (cb) {
+        const call = cb.callback;
+        const payload = details.payload;
+        if (call) call(payload);
+        this.remove(details);
       }
-      this.remove(cbDetails);
     }
   };
 
