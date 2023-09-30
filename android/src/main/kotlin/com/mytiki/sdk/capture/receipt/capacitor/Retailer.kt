@@ -165,9 +165,10 @@ class Retailer {
         onComplete: () -> Unit
     ) {
         val client: AccountLinkingClient = client(context)
+        var count = 0
 
-        val onAccount = { account: Account ->
-            this.orders(context, account, onReceipt, daysCutOff, onError )
+        val onCompleteAccounts ={size: Int ->
+            if (count == size) onComplete()
         }
 
         client.accounts()
@@ -175,9 +176,9 @@ class Retailer {
                 if (mbAccountList != null) {
                     for ((index, retailerAccount) in mbAccountList.withIndex()) {
                         val account = Account.fromRetailerAccount(retailerAccount)
-                        onAccount(account)
-                        if (mbAccountList.size - 1 == index) onComplete.invoke()
+                        this.orders(context, account, onReceipt, daysCutOff, onError ){onCompleteAccounts(mbAccountList.size)}
                     }
+
                 } else {
                     onError("Error in retrieving accounts. Account list is null.")
                     onComplete.invoke()

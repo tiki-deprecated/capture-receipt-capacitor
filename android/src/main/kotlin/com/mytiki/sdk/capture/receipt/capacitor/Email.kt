@@ -140,6 +140,7 @@ class Email {
                     result.forEach { receipt ->
                         onReceipt(receipt)
                     }
+                    onComplete()
                     client.close()
                 }
 
@@ -158,19 +159,24 @@ class Email {
      * @param onAccount Callback called for each retrieved email account.
      * @param onError Callback called when an error occurs during account retrieval.
      */
-    fun accounts(context: Context, onAccount: OnAccountCallback, onError: OnErrorCallback?, onComplete: OnCompleteCallback?) {
+    fun accounts(context: Context, onAccount: OnAccountCallback, onError: ((msg: String) -> Unit), onComplete: OnCompleteCallback?) {
         this.client(context, onError ?: {}) { client ->
             client.accounts().addOnSuccessListener { credentials ->
-                credentials?.forEach { credential ->
-                    val account = Account.fromEmailAccount(credential)
-                    MainScope().async {
-                        account.isVerified = client.verify(credential).await()
-                        onAccount(account)
+                if (credentials != null) {
+                    for ((index, credential) in credentials?.withIndex()!!) {
+                        val account = Account.fromEmailAccount(credential)
+                        MainScope().async {
+                            account.isVerified = client.verify(credential).await()
+                            onAccount(account)
+                            if (credentials.size == (index + 1)) onComplete?.invoke()
+                        }
                     }
+                } else {
+                    onError("Error in retrieving accounts. Account list is null.")
+                    onComplete?.invoke()
                 }
-                onComplete?.invoke()
             }.addOnFailureListener {
-                onError?.invoke(it.message ?: it.toString())
+                onError(it.message ?: it.toString())
                 onComplete?.invoke()
             }
         }
