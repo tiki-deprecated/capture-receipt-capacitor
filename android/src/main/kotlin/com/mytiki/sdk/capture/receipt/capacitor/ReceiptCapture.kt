@@ -148,7 +148,9 @@ class ReceiptCapture {
         onComplete: OnCompleteCallback,
         onError: OnErrorCallback
     ) {
-        email.scrape(context, onReceipt, onError, dayCutOff ?: 7)
-        retailer.orders(context, onReceipt, onError, dayCutOff ?: 7)
+        val emailFinished = CompletableDeferred<Unit>()
+        val retailerFinished = CompletableDeferred<Unit>()
+        email.scrape(context, onReceipt, onError, dayCutOff ?: 7) { emailFinished.complete(Unit) }
+        retailer.orders(context, onReceipt, onError, dayCutOff ?: 7) { retailerFinished.complete(Unit) }
     }
 }
