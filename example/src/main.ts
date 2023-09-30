@@ -9,10 +9,10 @@ import { accountTypes, instance } from '@mytiki/capture-receipt-capacitor';
 import { createApp } from 'vue';
 
 import App from './app.vue';
-import type { CallbackError } from 'dist/types/callback-mgr/callback-error';
 import type { Receipt } from 'dist/types';
+import type { CallbackDataErrorInterface } from '@/types';
 
-  type PayloadTypes = Account | CallbackError | Receipt | undefined
+  type PayloadTypes = Account | CallbackDataErrorInterface | Receipt | undefined
 
 export const login = async (username: string, password: string, source: string) => {
   const account: Account = {
@@ -20,7 +20,7 @@ export const login = async (username: string, password: string, source: string) 
     password,
     type: accountTypes.from(source)!,
   };
-  await instance.login(account).catch((error: CallbackError) => console.log(error));
+  await instance.login(account).catch((error: CallbackDataErrorInterface) => console.log(error));
 };
 
 export const accounts = async (): Promise<void> => instance.accounts(
@@ -30,6 +30,7 @@ export const accounts = async (): Promise<void> => instance.accounts(
 );
 export const scan = async (): Promise<void> => instance.scan(
   (receipt: PayloadTypes) => console.log(receipt),
+  7,
   () => console.log("complete"),
   (err: PayloadTypes) => console.log("error", err),
 );

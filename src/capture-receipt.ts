@@ -7,8 +7,7 @@ import * as uuid from 'uuid';
 
 import type { Account } from './account';
 import { CallbackManager } from './callback-mgr';
-import { CallbackData } from './callback-mgr/callback-data';
-import type { CallbackMgrCall } from './callback-mgr/callback-mgr-call';
+import type { Callback } from './callback-mgr/callback';
 import type { CaptureReceiptPlugin } from './plugin';
 import { PluginEvent } from './plugin/plugin-event';
 import { ReqAccount } from './plugin/req/req-account';
@@ -70,15 +69,15 @@ export class CaptureReceipt {
    * @param onError - A callback that will be fired when an error happen
    */
   async scan(
-    onReceipt: CallbackMgrCall,
+    onReceipt: Callback,
     daysCutOff: number | undefined = 7,
-    onComplete: CallbackMgrCall | undefined = undefined,
-    onError: CallbackMgrCall | undefined = undefined,
+    onComplete?: Callback,
+    onError?: Callback,
   ): Promise<void> {
     const req = new ReqScan(daysCutOff);
-    this.callbackMgr.add(req.requestId, PluginEvent.onReceipt, onReceipt);
-    this.callbackMgr.add(req.requestId, PluginEvent.onComplete, onComplete);
-    this.callbackMgr.add(req.requestId, PluginEvent.onError, onError);
+    this.callbackMgr.add(PluginEvent.onReceipt, req.requestId, onReceipt);
+    if(onComplete) this.callbackMgr.add(PluginEvent.onComplete, req.requestId, onComplete);
+    if(onError) this.callbackMgr.add(PluginEvent.onError, req.requestId, onError);
     await this.plugin.scan(req);
   }
   /**
@@ -88,15 +87,15 @@ export class CaptureReceipt {
    * @param onError - A callback that will be fired when an error occurs.
    */
   async accounts(
-    onAccount: CallbackMgrCall,
-    onComplete: CallbackMgrCall | undefined = undefined,
-    onError: CallbackMgrCall | undefined = undefined,
+    onAccount: Callback,
+    onComplete?: Callback,
+    onError?: Callback,
   ): Promise<void> {
     const requestId = uuid.v4();
     const req = { requestId };
-    this.callbackMgr.add(req.requestId, PluginEvent.onAccount, onAccount);
-    this.callbackMgr.add(req.requestId, PluginEvent.onComplete, onComplete);
-    this.callbackMgr.add(req.requestId, PluginEvent.onError, onError);
+    this.callbackMgr.add(PluginEvent.onAccount, req.requestId, onAccount);
+    if(onComplete) this.callbackMgr.add(PluginEvent.onComplete, req.requestId, onComplete);
+    if(onError) this.callbackMgr.add(PluginEvent.onError, req.requestId, onError);
     await this.plugin.accounts(req);
   }
 }
