@@ -31,67 +31,69 @@ import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspScan
 )
 class ReceiptCapturePlugin : Plugin() {
     private val receiptCapture = ReceiptCapture()
+    private lateinit var instance: ReceiptCapturePlugin
 
-    companion object {
-        private lateinit var instance: ReceiptCapturePlugin
-
-        /**
-         * Callback for receipt scanning.
-         *
-         * @param scan The scanned results.
-         */
-        fun onReceipt(requestId: String, scan: ScanResults? = null) {
-            val payload = if (scan != null) {
-                RspScan(requestId, scan).toJS()
-            } else {
-                JSObject()
-            }
-            val data = CallbackDetails(
-                requestId,
-                PluginEvent.onReceipt,
-                payload
-            )
-            instance.notifyListeners("onCapturePluginResult", data.toJS())
+    /**
+     * Callback for receipt scanning.
+     *
+     * @param scan The scanned results.
+     */
+    private fun onReceipt(requestId: String, scan: ScanResults? = null) {
+        val payload = if (scan != null) {
+            RspScan(scan).toJS()
+        } else {
+            JSObject()
         }
-
-        /**
-         * Callback for account information.
-         *
-         * @param account The account information.
-         */
-        fun onAccount(requestId: String, account: Account? = null) {
-            val payload = account?.toRsp(requestId) ?: JSObject()
-            val data = CallbackDetails(
-                requestId,
-                PluginEvent.onAccount,
-                payload
-            )
-            instance.notifyListeners("onCapturePluginResult", data.toJS())
-        }
-
-        fun onComplete(requestId: String, ) {
-            val data = CallbackDetails(
-                requestId,
-                PluginEvent.onComplete,
-                JSObject()
-            )
-            instance.notifyListeners("onCapturePluginResult", data.toJS())
-        }
-
-        /**
-         * Callback for error handling.
-         *
-         * @param message The error message.
-         */
-        fun onError(requestId: String, message: String) {
-            val data = CallbackDetails(
-                requestId,
-                PluginEvent.onError,
-                JSObject().put("message", message)
-            )
-            instance.notifyListeners("onCapturePluginResult", data.toJS())
-        }
+        val data = CallbackDetails(
+            requestId,
+            PluginEvent.onReceipt,
+            payload
+        )
+        instance.notifyListeners("onCapturePluginResult", data.toJS())
     }
+
+    /**
+     * Callback for account information.
+     *
+     * @param account The account information.
+     */
+    private fun onAccount(requestId: String, account: Account? = null) {
+        val payload = if (account != null) {
+            JSObject.fromJSONObject(RspAccount(account).toJS())
+        } else {
+            JSObject()
+        }
+        val data = CallbackDetails(
+            requestId,
+            PluginEvent.onAccount,
+            payload
+        )
+        instance.notifyListeners("onCapturePluginResult", data.toJS())
+    }
+
+    private fun onComplete(requestId: String, ) {
+        val data = CallbackDetails(
+            requestId,
+            PluginEvent.onComplete,
+            JSObject()
+        )
+        instance.notifyListeners("onCapturePluginResult", data.toJS())
+    }
+
+    /**
+     * Callback for error handling.
+     *
+     * @param message The error message.
+     */
+    private fun onError(requestId: String, message: String) {
+        val data = CallbackDetails(
+            requestId,
+            PluginEvent.onError,
+            JSObject().put("message", message)
+        )
+        instance.notifyListeners("onCapturePluginResult", data.toJS())
+    }
+
 
     /**
      * Initializes the receipt capture functionality.
