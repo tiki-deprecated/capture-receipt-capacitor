@@ -7,7 +7,7 @@ import * as uuid from 'uuid';
 
 import type { Account } from './account';
 import { CallbackManager } from './callback-mgr';
-import { CallbackDetails } from './callback-mgr/callback-details';
+import { CallbackData } from './callback-mgr/callback-data';
 import type { CallbackMgrCall } from './callback-mgr/callback-mgr-call';
 import type { CaptureReceiptPlugin } from './plugin';
 import { PluginEvent } from './plugin/plugin-event';
@@ -76,9 +76,9 @@ export class CaptureReceipt {
     onError: CallbackMgrCall | undefined = undefined,
   ): Promise<void> {
     const req = new ReqScan(daysCutOff);
-    this.callbackMgr.add(new CallbackDetails(req.requestId, PluginEvent.onReceipt, onReceipt));
-    this.callbackMgr.add(new CallbackDetails(req.requestId, PluginEvent.onComplete, onComplete));
-    this.callbackMgr.add(new CallbackDetails(req.requestId, PluginEvent.onError, onError));
+    this.callbackMgr.add(req.requestId, PluginEvent.onReceipt, onReceipt);
+    this.callbackMgr.add(req.requestId, PluginEvent.onComplete, onComplete);
+    this.callbackMgr.add(req.requestId, PluginEvent.onError, onError);
     await this.plugin.scan(req);
   }
   /**
@@ -94,9 +94,9 @@ export class CaptureReceipt {
   ): Promise<void> {
     const requestId = uuid.v4();
     const req = { requestId };
-    this.callbackMgr.add(new CallbackDetails(req.requestId, PluginEvent.onAccount, onAccount));
-    this.callbackMgr.add(new CallbackDetails(req.requestId, PluginEvent.onComplete, onComplete));
-    this.callbackMgr.add(new CallbackDetails(req.requestId, PluginEvent.onError, onError));
+    this.callbackMgr.add(req.requestId, PluginEvent.onAccount, onAccount);
+    this.callbackMgr.add(req.requestId, PluginEvent.onComplete, onComplete);
+    this.callbackMgr.add(req.requestId, PluginEvent.onError, onError);
     await this.plugin.accounts(req);
   }
 }

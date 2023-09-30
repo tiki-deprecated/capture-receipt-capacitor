@@ -3,21 +3,26 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import { toPluginEvent } from '../plugin/plugin-event';
+import type { Callback } from './callback';
+import { CallbackData } from './callback-data';
 
-import { CallbackDetails } from './callback-details';
+import type { PluginEvent } from 'src/plugin/plugin-event';
+import type { PluginResponse } from 'src/plugin/plugin-response';
+
 /**
  * The class responsible for handling the asynchronous callbacks between
  * the plugin and the Capacitor code.
  */
 export class CallbackManager {
+
   /**
    * Adds a new callback
    *
    * @param cbDetails Determines the details of the callback
    */
-  add = (cbDetails: CallbackDetails): void => {
-    this.callbacks.set(cbDetails.id, cbDetails);
+  add(event: PluginEvent, requestId: string, callback: Callback): void {
+    const id = CallbackData.genId(event, requestId)
+    this.callbacks.set(id, callback);
   };
 
   /**
@@ -25,31 +30,34 @@ export class CallbackManager {
    *
    * @param cbDetails Determines the details of the callback
    */
-  remove = (cbDetails: CallbackDetails): void => {
-    this.callbacks.delete(cbDetails.id);
+  remove(id: string): void {
+    this.callbacks.delete(id);
   };
 
   /**
-   * Executes a callback
+   * Executes a callback based on Plugin Response
    *
    * @param cbDetails
    */
-  fire = (err: any, ..._args: any[]): void => {
-    const event = toPluginEvent(err.event);
-    if (event === undefined) {
-      console.debug(`Invalid event. Skipping callback: ${JSON.stringify(err)}`);
-      return;
-    } else {
-      const details = new CallbackDetails(err.requestId, event);
-      const cb = this.callbacks.get(details.id);
-      if (cb) {
-        const call = cb.callback;
-        const payload = details.payload;
-        if (call) call(payload);
-        this.remove(details);
+  fire(rsp: PluginResponse): void {
+    //eslint-disable-next-line
+    debugger
+
+    const callbackData = CallbackData.fromPluginRsp(rsp)
+    if(!callbackData){
+      console.debug(`Invalid Plugin Response data. Skipping callback: ${JSON.stringify(rsp)}`);
+      return
+    }else{
+      const callback = this.callbacks.get(callbackData.id);
+      if (!callback) {
+        console.debug(`No callback found for: ${JSON.stringify(rsp)}`);
+        return
+      }else{
+        callback.call(callbackData.payload)
+        this.remove(callbackData.id);
       }
     }
-  };
+  }
 
-  private callbacks = new Map<string, CallbackDetails>();
+  private callbacks = new Map<string, Callback>();
 }
