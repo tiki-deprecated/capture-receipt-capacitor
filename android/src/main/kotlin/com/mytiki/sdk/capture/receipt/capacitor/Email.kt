@@ -194,20 +194,18 @@ class Email {
         onError: (String) -> Unit
     ) {
         this.client(context, onError) { client ->
-            client.logout(
-                PasswordCredentials.newBuilder(
-                    Provider.valueOf(account.accountCommon.id),
-                    account.username,
-                    account.password!!
-                ).build()
-            ).addOnSuccessListener {
-                onRemove()
-            }.addOnFailureListener {
-                onError(
-                    it.message
-                        ?: "Unknown error when removing account ${account.username} from ${account.accountCommon.id}"
-                )
+            client.accounts().addOnSuccessListener {list ->
+                val passwordCredentials = list.first{it.username() == account.username && it.provider() == EmailEnum.fromString(account.accountCommon.source).value}
+                client.logout(passwordCredentials).addOnSuccessListener {
+                    onRemove()
+                }.addOnFailureListener {
+                    onError(
+                        it.message
+                            ?: "Unknown error when removing account ${account.username} from ${account.accountCommon.source}"
+                    )
+                }
             }
+
         }
     }
 

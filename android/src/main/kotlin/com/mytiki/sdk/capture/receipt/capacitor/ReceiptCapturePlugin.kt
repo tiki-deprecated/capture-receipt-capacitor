@@ -157,13 +157,29 @@ class ReceiptCapturePlugin : Plugin() {
      */
     @PluginMethod
     fun logout(call: PluginCall) {
-        receiptCapture.logout(activity, Account.fromReq(call.data),
-            onError = {
-                call.reject(it)
-            },
-            onComplete = {
-                call.resolve()
-            })
+        val source = call.data.getString("source")
+        val username = call.data.getString("username")
+        if(source.isNullOrEmpty() && username.isNullOrEmpty()){
+            receiptCapture.logout(activity, null,
+                onError = {
+                    call.reject(it)
+                },
+                onComplete = {
+                    call.resolve()
+                })
+        } else if (!source.isNullOrEmpty() && !username.isNullOrEmpty()){
+            receiptCapture.logout(activity, Account.fromReq(call.data),
+                onError = {
+                    call.reject(it)
+                },
+                onComplete = {
+                    call.resolve()
+                })
+        } else if(source.isNullOrEmpty() && !username.isNullOrEmpty()){
+            call.reject("Source is required for specific account logout.")
+        } else if(!source.isNullOrEmpty() && username.isNullOrEmpty()) {
+            call.reject("Username is required for specific account logout.")
+        }
     }
 
     /**
