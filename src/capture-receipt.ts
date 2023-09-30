@@ -19,11 +19,10 @@ import { ReqScan } from './plugin/req/req-scan';
  */
 export class CaptureReceipt {
   private plugin: CaptureReceiptPlugin;
-  private callbackMgr: CallbackManager;
+  private callbackMgr: CallbackManager = new CallbackManager();;
 
   constructor(plugin: CaptureReceiptPlugin) {
     this.plugin = plugin;
-    this.callbackMgr = new CallbackManager();
     this.plugin.addListener('onCapturePluginResult', this.callbackMgr.fire);
   }
 

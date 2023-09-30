@@ -13,12 +13,13 @@ import org.json.JSONObject
  * @property _isRunning Indicates whether the scanning process is still running.
  */
 class RspScan(
+    requestId: String,
     scan: ScanResults?,
     account: Account? = null,
     isRunning: Boolean = true
-) : Rsp {
+) : Rsp(requestId) {
     private val _account: Account? = account
-    private val _scan: RspReceipt? = RspReceipt.opt(scan)
+    private val _scan: RspReceipt? = RspReceipt.opt(requestId, scan)
     private val _isRunning: Boolean = isRunning
 
     /**
@@ -28,7 +29,7 @@ class RspScan(
      */
     override fun toJS(): JSObject =
         JSObject()
-            .put("account", if (_account != null) RspAccount(_account).toJS() else null)
+            .put("account", if (_account != null) RspAccount(this.requestId, _account).toJS() else null)
             .put("receipt", _scan?.toJS())
             .put("isRunning", _isRunning)
 }

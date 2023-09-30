@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in the root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.rsp
+package com.mytiki.sdk.capture.receipt.capacitor.js
 
 import com.getcapacitor.JSObject
 import com.microblink.core.Promotion
@@ -13,9 +13,9 @@ import org.json.JSONObject
 /**
  * Represents a promotional item as a response in the TIKI SDK.
  *
- * @property promotion The [Promotion] object to convert into an RspPromotion.
+ * @property promotion The [Promotion] object to convert into an JSPromotion.
  */
-class RspPromotion(promotion: Promotion) : Rsp {
+class JSPromotion(promotion: Promotion) {
     private val id: Long
     private val slug: String?
     private val reward: String?
@@ -37,11 +37,11 @@ class RspPromotion(promotion: Promotion) : Rsp {
     }
 
     /**
-     * Converts the RspPromotion object into a JSON representation.
+     * Converts the JSPromotion object into a JSON representation.
      *
-     * @return A [JSONObject] containing the JSON representation of the RspPromotion.
+     * @return A [JSONObject] containing the JSON representation of the JSPromotion.
      */
-    override fun toJS(): JSObject =
+    fun toJS(): JSObject =
         JSObject()
             .put("id", id)
             .put("slug", slug)
@@ -54,12 +54,12 @@ class RspPromotion(promotion: Promotion) : Rsp {
 
     companion object {
         /**
-         * Converts a [Promotion] object into an [RspPromotion] object.
+         * Converts a [Promotion] object into an [JSPromotion] object.
          *
          * @param promotion The [Promotion] object to convert.
-         * @return An [RspPromotion] object or null if the input is null.
+         * @return An [JSPromotion] object or null if the input is null.
          */
-        fun opt(promotion: Promotion?): RspPromotion? =
-            if (promotion != null) RspPromotion(promotion) else null
+        fun opt(promotion: Promotion?): JSPromotion? =
+            if (promotion != null) JSPromotion(promotion) else null
     }
 }

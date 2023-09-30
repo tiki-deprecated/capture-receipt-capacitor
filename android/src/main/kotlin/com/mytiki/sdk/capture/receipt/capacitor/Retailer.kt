@@ -58,7 +58,7 @@ class Retailer {
      *
      * @param username The username.
      * @param password The password.
-     * @param source The source (email provider).
+     * @param id The source (email provider).
      * @param activity The [AppCompatActivity] where the login dialog will be displayed.
      * @param onAccount Callback called when the login is completed successfully.
      * @param onError Callback called when an error occurs during login.
@@ -67,13 +67,13 @@ class Retailer {
     fun login(
         username: String,
         password: String,
-        source: String,
+        id: String,
         activity: AppCompatActivity,
         onAccount: ((Account) -> Unit)? = null,
         onError: ((String) -> Unit)? = null
     ) {
         val mbAccount = Account(
-            RetailerEnum.fromString(source).toMbInt(),
+            RetailerEnum.fromString(id).toMbInt(),
             PasswordCredentials(username, password)
         )
         val client = client(activity)
@@ -82,13 +82,13 @@ class Retailer {
                 if (it) {
                     verify(mbAccount, activity, onAccount, onError)
                 } else {
-                    onError?.invoke("Login failed: account $username - $source")
+                    onError?.invoke("Login failed: account $username - $id")
                     client.close()
                 }
             }
             .addOnFailureListener { ex ->
                 onError?.invoke(
-                    ex.message ?: "Unknown error on login: account $username - $source: $ex"
+                    ex.message ?: "Unknown error on login: account $username - $id: $ex"
                 )
                 client.close()
             }
@@ -112,7 +112,7 @@ class Retailer {
         val client = client(context)
         client.accounts().addOnSuccessListener { accounts ->
             val mbAccount = accounts?.firstOrNull {
-                it.retailerId == RetailerEnum.fromString(account.accountCommon.source).toMbInt() &&
+                it.retailerId == RetailerEnum.fromString(account.accountCommon.id).toMbInt() &&
                         it.credentials.username() == account.username
             }
             if (mbAccount != null) {
@@ -122,7 +122,7 @@ class Retailer {
                     onError(it.message ?: it.toString())
                 }
             } else {
-                onError("Error in logout: Account not found ${account.accountCommon.source} - ${account.username}")
+                onError("Error in logout: Account not found ${account.accountCommon.id} - ${account.username}")
             }
         }
     }
@@ -189,15 +189,15 @@ class Retailer {
         onError: (msg: String) -> Unit
     ) {
         val client: AccountLinkingClient = client(context, daysCutOff ?: 7)
-        val source = account.accountCommon.source
+        val id = account.accountCommon.id
         val username = account.username
-        val retailerId = RetailerEnum.fromString(source).toMbInt()
+        val retailerId = RetailerEnum.fromString(id).toMbInt()
         val ordersSuccessCallback: (Int, ScanResults?, Int, String) -> Unit =
             { _: Int, results: ScanResults?, remaining: Int, _: String ->
                 if (results != null) {
                     onScan(results)
                 } else {
-                    onError("Null ScanResult in $source - $username. Remaining $remaining")
+                    onError("Null ScanResult in $id - $username. Remaining $remaining")
                 }
             }
         val ordersFailureCallback: (Int, AccountLinkingException) -> Unit = { _: Int,
@@ -264,7 +264,7 @@ class Retailer {
         val client: AccountLinkingClient = client(activity)
         val account = Account.fromRetailerAccount(mbAccount)
         client.verify(
-            RetailerEnum.fromString(account.accountCommon.source).value,
+            RetailerEnum.fromString(account.accountCommon.id).value,
             success = { isVerified: Boolean, _: String ->
                 if (isVerified) {
                     account.isVerified = true
@@ -273,7 +273,7 @@ class Retailer {
                 } else {
                     client.unlink(mbAccount)
                     onError?.let {
-                        it("Please login. Account not verified ${account.username} - ${account.accountCommon.source}")
+                        it("Please login. Account not verified ${account.username} - ${account.accountCommon.id}")
                     }
                     client.close()
                 }
@@ -295,7 +295,7 @@ class Retailer {
                     webViewContainer.addView(exception.view)
                 } else {
                     onError?.let {
-                        it("Account not verified ${account.username} - ${account.accountCommon.source}: ${exception.message} - $exception")
+                        it("Account not verified ${account.username} - ${account.accountCommon.id}: ${exception.message} - $exception")
                     }
                     client.unlink(mbAccount)
                     client.close()

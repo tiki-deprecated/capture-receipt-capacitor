@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.rsp
+package com.mytiki.sdk.capture.receipt.capacitor.js
 
 import com.getcapacitor.JSObject
 import com.microblink.core.PaymentMethod
@@ -18,25 +18,25 @@ import org.json.JSONObject
  *
  * @param paymentMethod The [PaymentMethod] instance to be wrapped.
  */
-class RspPaymentMethod(paymentMethod: PaymentMethod) : Rsp {
-    private val paymentMethod: RspStringType?
-    private val cardType: RspStringType?
-    private val cardIssuer: RspStringType?
-    private val amount: RspFloatType?
+class JSPaymentMethod(paymentMethod: PaymentMethod) {
+    private val paymentMethod: JSStringType?
+    private val cardType: JSStringType?
+    private val cardIssuer: JSStringType?
+    private val amount: JSFloatType?
 
     init {
-        this.paymentMethod = RspStringType.opt(paymentMethod.paymentMethod())
-        cardType = RspStringType.opt(paymentMethod.cardType())
-        cardIssuer = RspStringType.opt(paymentMethod.cardIssuer())
-        amount = RspFloatType.opt(paymentMethod.amount())
+        this.paymentMethod = JSStringType.opt(paymentMethod.paymentMethod())
+        cardType = JSStringType.opt(paymentMethod.cardType())
+        cardIssuer = JSStringType.opt(paymentMethod.cardIssuer())
+        amount = JSFloatType.opt(paymentMethod.amount())
     }
 
     /**
-     * Converts the [RspPaymentMethod] instance to a JSON representation.
+     * Converts the [JSPaymentMethod] instance to a JSON representation.
      *
      * @return A [JSONObject] containing the payment method information.
      */
-    override fun toJS(): JSObject =
+    fun toJS(): JSObject =
         JSObject()
             .put("paymentMethod", paymentMethod?.toJS())
             .put("cardType", cardType?.toJS())
@@ -45,13 +45,13 @@ class RspPaymentMethod(paymentMethod: PaymentMethod) : Rsp {
 
     companion object {
         /**
-         * Creates an [RspPaymentMethod] instance from a [PaymentMethod] instance,
+         * Creates an [JSPaymentMethod] instance from a [PaymentMethod] instance,
          * or returns null if the input is null.
          *
          * @param paymentMethod The [PaymentMethod] instance to be converted.
-         * @return An [RspPaymentMethod] instance if [paymentMethod] is not null; otherwise, null.
+         * @return An [JSPaymentMethod] instance if [paymentMethod] is not null; otherwise, null.
          */
-        fun opt(paymentMethod: PaymentMethod?): RspPaymentMethod? =
-            if (paymentMethod != null) RspPaymentMethod(paymentMethod) else null
+        fun opt(paymentMethod: PaymentMethod?): JSPaymentMethod? =
+            if (paymentMethod != null) JSPaymentMethod(paymentMethod) else null
     }
 }

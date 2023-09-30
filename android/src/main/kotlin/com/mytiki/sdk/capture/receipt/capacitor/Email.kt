@@ -68,7 +68,7 @@ class Email {
      *
      * @param username The username.
      * @param password The password.
-     * @param source The source (email provider).
+     * @param id The source (email provider).
      * @param supportFragmentManager The fragment manager.
      * @param onComplete Callback called when the login is completed successfully.
      * @param onError Callback called when an error occurs during login.
@@ -76,7 +76,7 @@ class Email {
     fun login(
         username: String,
         password: String,
-        source: String,
+        id: String,
         supportFragmentManager: FragmentManager,
         onComplete: ((Account) -> Unit)? = null,
         onError: ((String) -> Unit)? = null
@@ -84,7 +84,7 @@ class Email {
         ProviderSetupDialogFragment.newInstance(
             ProviderSetupOptions.newBuilder(
                 PasswordCredentials.newBuilder(
-                    Provider.valueOf(source),
+                    Provider.valueOf(id),
                     username,
                     password
                 ).build()
@@ -93,7 +93,7 @@ class Email {
             when (results) {
                 ProviderSetupResults.CREATED_APP_PASSWORD -> {
                     val account = Account(
-                        AccountCommon.fromSource(source), username, password, true
+                        AccountCommon.fromSource(id), username, password, true
                     )
                     onComplete?.invoke(account)
                 }
@@ -196,7 +196,7 @@ class Email {
         this.client(context, onError) { client ->
             client.logout(
                 PasswordCredentials.newBuilder(
-                    Provider.valueOf(account.accountCommon.source),
+                    Provider.valueOf(account.accountCommon.id),
                     account.username,
                     account.password!!
                 ).build()
@@ -205,7 +205,7 @@ class Email {
             }.addOnFailureListener {
                 onError(
                     it.message
-                        ?: "Unknown error when removing account ${account.username} from ${account.accountCommon.source}"
+                        ?: "Unknown error when removing account ${account.username} from ${account.accountCommon.id}"
                 )
             }
         }

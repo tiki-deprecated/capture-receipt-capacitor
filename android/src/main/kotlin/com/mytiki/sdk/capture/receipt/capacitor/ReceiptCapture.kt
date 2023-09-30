@@ -59,27 +59,27 @@ class ReceiptCapture {
      * @param activity The Android application activity.
      * @param username The username for login.
      * @param password The password for login.
-     * @param source The source of the account (e.g., EmailEnum.GMAIL.toString() or an enum value from RetailerEnum).
+     * @param id The source of the account (e.g., EmailEnum.GMAIL.toString() or an enum value from RetailerEnum).
      */
     fun login(
         activity: AppCompatActivity,
         username: String,
         password: String,
-        source: String,
+        id: String,
         onLogin: OnAccountCallback,
         onError: OnErrorCallback
     ) {
-        if (source == EmailEnum.GMAIL.toString()) {
+        if (id == EmailEnum.GMAIL.toString()) {
             email.login(
                 username,
                 password,
-                source,
+                id,
                 activity.supportFragmentManager,
                 onLogin,
                 onError
             )
         } else {
-            retailer.login(username, password, source, activity, onLogin, onError)
+            retailer.login(username, password, id, activity, onLogin, onError)
         }
     }
 

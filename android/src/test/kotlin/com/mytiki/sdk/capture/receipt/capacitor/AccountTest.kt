@@ -23,7 +23,7 @@ class AccountTest {
 //        AccountCommon mock
         accountCommon = mockk()
         every { accountCommon.type.name } returns "testType"
-        every { accountCommon.source } returns "testSource"
+        every { accountCommon.id } returns "testSource"
 
 //       JSObject mock
         data = mockk()

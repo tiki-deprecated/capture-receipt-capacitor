@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.rsp
+package com.mytiki.sdk.capture.receipt.capacitor.js
 
 import com.getcapacitor.JSObject
 import com.microblink.core.Product
@@ -53,13 +53,13 @@ import org.json.JSONObject
  * @property subCategory The sub-category of the product, if available.
  * @property itemType The item type of the product, if available.
  */
-class RspProduct(product: Product) : Rsp {
-    private val productNumber: RspStringType?
-    private val description: RspStringType?
-    private val quantity: RspFloatType?
-    private val unitPrice: RspFloatType?
-    private val unitOfMeasure: RspStringType?
-    private val totalPrice: RspFloatType?
+class JSProduct(product: Product) {
+    private val productNumber: JSStringType?
+    private val description: JSStringType?
+    private val quantity: JSFloatType?
+    private val unitPrice: JSFloatType?
+    private val unitOfMeasure: JSStringType?
+    private val totalPrice: JSFloatType?
     private val fullPrice: Float
     private val line: Int
     private val productName: String?
@@ -71,22 +71,22 @@ class RspProduct(product: Product) : Rsp {
     private val upc: String?
     private val imageUrl: String?
     private val shippingStatus: String?
-    private val additionalLines: List<RspAdditionalLine>
-    private val priceAfterCoupons: RspFloatType?
+    private val additionalLines: List<JSAdditionalLine>
+    private val priceAfterCoupons: JSFloatType?
     private val voided: Boolean
     private val probability: Double
     private val sensitive: Boolean
-    private val possibleProducts: List<RspProduct>
-    private val subProducts: List<RspProduct>
+    private val possibleProducts: List<JSProduct>
+    private val subProducts: List<JSProduct>
     private val added: Boolean
     private val blinkReceiptBrand: String?
     private val blinkReceiptCategory: String?
     private val extendedFields: JSONObject?
     private val fuelType: String?
-    private val descriptionPrefix: RspStringType?
-    private val descriptionPostfix: RspStringType?
-    private val skuPrefix: RspStringType?
-    private val skuPostfix: RspStringType?
+    private val descriptionPrefix: JSStringType?
+    private val descriptionPostfix: JSStringType?
+    private val skuPrefix: JSStringType?
+    private val skuPostfix: JSStringType?
     private val attributes: List<JSONObject>
     private val sector: String?
     private val department: String?
@@ -95,12 +95,12 @@ class RspProduct(product: Product) : Rsp {
     private val itemType: String?
 
     init {
-        productNumber = RspStringType.opt(product.productNumber())
-        this.description = RspStringType.opt(product.description())
-        this.quantity = RspFloatType.opt(product.quantity())
-        this.unitPrice = RspFloatType.opt(product.unitPrice())
-        this.unitOfMeasure = RspStringType.opt(product.unitOfMeasure())
-        this.totalPrice = RspFloatType.opt(product.totalPrice())
+        productNumber = JSStringType.opt(product.productNumber())
+        this.description = JSStringType.opt(product.description())
+        this.quantity = JSFloatType.opt(product.quantity())
+        this.unitPrice = JSFloatType.opt(product.unitPrice())
+        this.unitOfMeasure = JSStringType.opt(product.unitOfMeasure())
+        this.totalPrice = JSFloatType.opt(product.totalPrice())
         fullPrice = product.fullPrice()
         line = product.line()
         productName = product.productName()
@@ -113,22 +113,22 @@ class RspProduct(product: Product) : Rsp {
         imageUrl = product.imageUrl()
         shippingStatus = product.shippingStatus()
         additionalLines =
-            product.additionalLines()?.map { additionalLine -> RspAdditionalLine(additionalLine) }
+            product.additionalLines()?.map { additionalLine -> JSAdditionalLine(additionalLine) }
                 ?: emptyList()
-        priceAfterCoupons = RspFloatType.opt(product.priceAfterCoupons())
+        priceAfterCoupons = JSFloatType.opt(product.priceAfterCoupons())
         voided = product.voided()
         probability = product.probability()
         sensitive = product.sensitive()
-        possibleProducts = product.possibleProducts()?.map { prd -> RspProduct(prd) } ?: emptyList()
-        subProducts = product.subProducts()?.map { prd -> RspProduct(prd) } ?: emptyList()
+        possibleProducts = product.possibleProducts()?.map { prd -> JSProduct(prd) } ?: emptyList()
+        subProducts = product.subProducts()?.map { prd -> JSProduct(prd) } ?: emptyList()
         added = product.added()
         blinkReceiptBrand = product.blinkReceiptBrand()
         blinkReceiptCategory = product.blinkReceiptCategory()
         fuelType = product.fuelType()
-        descriptionPrefix = RspStringType.opt(product.descriptionPrefix())
-        descriptionPostfix = RspStringType.opt(product.skuPostfix())
-        skuPrefix = RspStringType.opt(product.skuPrefix())
-        skuPostfix = RspStringType.opt(product.skuPostfix())
+        descriptionPrefix = JSStringType.opt(product.descriptionPrefix())
+        descriptionPostfix = JSStringType.opt(product.skuPostfix())
+        skuPrefix = JSStringType.opt(product.skuPrefix())
+        skuPostfix = JSStringType.opt(product.skuPostfix())
         sector = product.sector()
         department = product.department()
         majorCategory = product.majorCategory()
@@ -154,7 +154,7 @@ class RspProduct(product: Product) : Rsp {
      *
      * @return A JSON object representing the RSP product.
      */
-    override fun toJS(): JSObject =
+    fun toJS(): JSObject =
         JSObject()
             .put("productNumber", productNumber?.toJS())
             .put("description", description?.toJS())
@@ -198,12 +198,12 @@ class RspProduct(product: Product) : Rsp {
 
     companion object {
         /**
-         * Creates an optional [RspProduct] from a [Product] instance.
+         * Creates an optional [JSProduct] from a [Product] instance.
          *
-         * @param product The [Product] instance to create an [RspProduct] from.
-         * @return An [RspProduct] instance or null if the input is null.
+         * @param product The [Product] instance to create an [JSProduct] from.
+         * @return An [JSProduct] instance or null if the input is null.
          */
-        fun opt(product: Product?): RspProduct? =
-            if (product != null) RspProduct(product) else null
+        fun opt(product: Product?): JSProduct? =
+            if (product != null) JSProduct(product) else null
     }
 }

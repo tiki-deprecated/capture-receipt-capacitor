@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in the root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.rsp
+package com.mytiki.sdk.capture.receipt.capacitor.js
 
 import com.getcapacitor.JSObject
 import com.microblink.core.Coupon
@@ -14,27 +14,27 @@ import org.json.JSONObject
  *
  * @property coupon The [Coupon] object containing coupon information.
  */
-class RspCoupon(coupon: Coupon) : Rsp {
+class JSCoupon(coupon: Coupon) {
     private val type: String?
-    private val amount: RspFloatType?
-    private val sku: RspStringType?
-    private val description: RspStringType?
+    private val amount: JSFloatType?
+    private val sku: JSStringType?
+    private val description: JSStringType?
     private val relatedProductIndex: Int
 
     init {
         type = coupon.typeToString()
-        amount = RspFloatType.opt(coupon.amount())
-        sku = RspStringType.opt(coupon.sku())
-        description = RspStringType.opt(coupon.description())
+        amount = JSFloatType.opt(coupon.amount())
+        sku = JSStringType.opt(coupon.sku())
+        description = JSStringType.opt(coupon.description())
         relatedProductIndex = coupon.relatedProductIndex()
     }
 
     /**
-     * Converts the [RspCoupon] object to a JSON representation.
+     * Converts the [JSCoupon] object to a JSON representation.
      *
      * @return A [JSONObject] containing the coupon information.
      */
-    override fun toJS(): JSObject =
+    fun toJS(): JSObject =
         JSObject()
             .put("type", type)
             .put("amount", amount?.toJS() ?: JSObject())
@@ -44,12 +44,12 @@ class RspCoupon(coupon: Coupon) : Rsp {
 
     companion object {
         /**
-         * Creates an optional [RspCoupon] object from a [Coupon].
+         * Creates an optional [JSCoupon] object from a [Coupon].
          *
          * @param coupon The [Coupon] object to convert.
-         * @return An [RspCoupon] object if [coupon] is not null, otherwise null.
+         * @return An [JSCoupon] object if [coupon] is not null, otherwise null.
          */
-        fun opt(coupon: Coupon?): RspCoupon? =
-            if (coupon != null) RspCoupon(coupon) else null
+        fun opt(coupon: Coupon?): JSCoupon? =
+            if (coupon != null) JSCoupon(coupon) else null
     }
 }

@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in the root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.rsp
+package com.mytiki.sdk.capture.receipt.capacitor.js
 
 import com.getcapacitor.JSObject
 import com.microblink.core.StringType
@@ -14,7 +14,7 @@ import org.json.JSONObject
  *
  * @param stringType The [StringType] recognized by the TIKI SDK.
  */
-class RspStringType(stringType: StringType) : Rsp {
+class JSStringType(stringType: StringType)  {
     /**
      * The confidence score of the recognized string.
      */
@@ -31,23 +31,23 @@ class RspStringType(stringType: StringType) : Rsp {
     }
 
     /**
-     * Converts the [RspStringType] object to a JSON representation.
+     * Converts the [JSStringType] object to a JSON representation.
      *
      * @return A [JSONObject] containing the confidence and value of the recognized string.
      */
-    override fun toJS(): JSObject =
+    fun toJS(): JSObject =
         JSObject()
             .put("confidence", confidence)
             .put("value", value)
 
     companion object {
         /**
-         * Creates an [RspStringType] object from the provided [StringType].
+         * Creates an [JSStringType] object from the provided [StringType].
          *
          * @param stringType The [StringType] to convert.
-         * @return An [RspStringType] object representing the provided [StringType], or null if the input is null.
+         * @return An [JSStringType] object representing the provided [StringType], or null if the input is null.
          */
-        fun opt(stringType: StringType?): RspStringType? =
-            if (stringType != null) RspStringType(stringType) else null
+        fun opt(stringType: StringType?): JSStringType? =
+            if (stringType != null) JSStringType(stringType) else null
     }
 }

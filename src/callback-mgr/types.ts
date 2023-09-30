@@ -4,4 +4,4 @@
  */
 
 export type * from './callback-data';
-export type * from './callback-data-error-if';
+export type * from './callback-data-error';

@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.rsp
+package com.mytiki.sdk.capture.receipt.capacitor.js
 
 import com.getcapacitor.JSObject
 import com.microblink.core.AdditionalLine
@@ -16,13 +16,13 @@ import com.microblink.core.AdditionalLine
  * @property text The text content of the additional line.
  * @property lineNumber The line number of the additional line within the receipt.
  */
-class RspAdditionalLine(additionalLine: AdditionalLine) {
-    private val type: RspStringType? = RspStringType.opt(additionalLine.type())
-    private val text: RspStringType? = RspStringType.opt(additionalLine.text())
+class JSAdditionalLine(additionalLine: AdditionalLine) {
+    private val type: JSStringType? = JSStringType.opt(additionalLine.type())
+    private val text: JSStringType? = JSStringType.opt(additionalLine.text())
     private val lineNumber: Int = additionalLine.lineNumber()
 
     /**
-     * Converts this `RspAdditionalLine` object to a JSON representation.
+     * Converts this `JSAdditionalLine` object to a JSON representation.
      *
      * @return A `JSONObject` representing the additional line.
      */
@@ -34,12 +34,12 @@ class RspAdditionalLine(additionalLine: AdditionalLine) {
 
     companion object {
         /**
-         * Creates an `RspAdditionalLine` object from an `AdditionalLine` if the input is not null.
+         * Creates an `JSAdditionalLine` object from an `AdditionalLine` if the input is not null.
          *
          * @param additionalLine The `AdditionalLine` to convert.
-         * @return An `RspAdditionalLine` object, or null if the input is null.
+         * @return An `JSAdditionalLine` object, or null if the input is null.
          */
-        fun opt(additionalLine: AdditionalLine?): RspAdditionalLine? =
-            if (additionalLine != null) RspAdditionalLine(additionalLine) else null
+        fun opt(additionalLine: AdditionalLine?): JSAdditionalLine? =
+            if (additionalLine != null) JSAdditionalLine(additionalLine) else null
     }
 }

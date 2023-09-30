@@ -30,7 +30,7 @@ class Account(
      *
      * @return JSObject representation of the Account.
      */
-    fun toRsp(): JSObject = JSObject.fromJSONObject(RspAccount(this).toJS())
+    fun toRsp(requestId: String): JSObject = RspAccount(requestId, this).toJS()
 
     companion object {
         /**

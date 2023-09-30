@@ -42,7 +42,7 @@ class ReceiptCapturePlugin : Plugin() {
          */
         fun onReceipt(requestId: String, scan: ScanResults? = null) {
             val payload = if (scan != null) {
-                RspScan(scan).toJS()
+                RspScan(requestId, scan).toJS()
             } else {
                 JSObject()
             }
@@ -60,11 +60,7 @@ class ReceiptCapturePlugin : Plugin() {
          * @param account The account information.
          */
         fun onAccount(requestId: String, account: Account? = null) {
-            val payload = if (account != null) {
-                JSObject.fromJSONObject(RspAccount(account).toJS())
-            } else {
-                JSObject()
-            }
+            val payload = account?.toRsp(requestId) ?: JSObject()
             val data = CallbackDetails(
                 requestId,
                 PluginEvent.onAccount,
@@ -131,9 +127,9 @@ class ReceiptCapturePlugin : Plugin() {
         val req = ReqAccount(call.data)
         val username = req.username
         val password = req.password
-        val source = req.accountCommon.source
-        if (source.isNullOrEmpty()) {
-            call.reject("Provide source in login request")
+        val id = req.accountCommon.id
+        if (id.isNullOrEmpty()) {
+            call.reject("Provide id in login request")
         } else if (username.isNullOrEmpty()) {
             call.reject("Provide username in login request")
         } else if (password.isNullOrEmpty()) {
@@ -143,8 +139,8 @@ class ReceiptCapturePlugin : Plugin() {
                 activity,
                 username,
                 password,
-                source,
-                { account -> call.resolve(JSObject.fromJSONObject(RspAccount(account).toJS())) },
+                id,
+                { account -> call.resolve(account.toRsp("ignored-req-id")) },
                 { msg -> call.reject(msg) }
             )
 
@@ -156,9 +152,6 @@ class ReceiptCapturePlugin : Plugin() {
      *
      * This method allows users to logout their email or retailer (amazon, wallmart, gmail...) account.
      * It can be used to end the session and secure user data.
-     * To logout from a retailer account the [JSObject] from [PluginCall.data] sent through call must have a source property.
-     * To logout from an email account the [JSObject] from [PluginCall.data] sent through call must have source and source, username, and password properties.
-     * To logout from all retailer and email accounts the [JSObject] from [PluginCall.data] sent through call must be empty.
      *
      * @param call The Capacitor plugin call instance.
      */

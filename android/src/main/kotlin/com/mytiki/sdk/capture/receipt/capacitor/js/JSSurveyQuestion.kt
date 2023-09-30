@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.rsp
+package com.mytiki.sdk.capture.receipt.capacitor.js
 
 import com.getcapacitor.JSObject
 import com.microblink.core.SurveyQuestion
@@ -15,14 +15,14 @@ import org.json.JSONObject
  *
  * @param surveyQuestion The [SurveyQuestion] object from the Microblink SDK.
  */
-class RspSurveyQuestion(surveyQuestion: SurveyQuestion) : Rsp {
+class JSSurveyQuestion(surveyQuestion: SurveyQuestion) {
     private val myIndex: Int
     private val lastQuestion: Boolean
     private val nextQuestionIndex: Int
     private val serverId: Int
     private val text: String?
     private val type: String?
-    private val answers: List<RspSurveyAnswer>
+    private val answers: List<JSSurveyAnswer>
     private val multipleAnswers: Boolean
     private val totalNumberOfQuestions: Int
 
@@ -33,17 +33,17 @@ class RspSurveyQuestion(surveyQuestion: SurveyQuestion) : Rsp {
         serverId = surveyQuestion.serverId()
         text = surveyQuestion.text()
         type = surveyQuestion.type()?.a
-        answers = surveyQuestion.answers()?.map { answer -> RspSurveyAnswer(answer) } ?: emptyList()
+        answers = surveyQuestion.answers()?.map { answer -> JSSurveyAnswer(answer) } ?: emptyList()
         multipleAnswers = surveyQuestion.multipleAnswers()
         totalNumberOfQuestions = surveyQuestion.totalNumberOfQuestions()
     }
 
     /**
-     * Converts the RspSurveyQuestion object to a JSON representation.
+     * Converts the JSSurveyQuestion object to a JSON representation.
      *
-     * @return A [JSONObject] representing the RspSurveyQuestion.
+     * @return A [JSONObject] representing the JSSurveyQuestion.
      */
-    override fun toJS(): JSObject =
+    fun toJS(): JSObject =
         JSObject()
             .put("myIndex", myIndex)
             .put("lastQuestion", lastQuestion)
@@ -57,12 +57,12 @@ class RspSurveyQuestion(surveyQuestion: SurveyQuestion) : Rsp {
 
     companion object {
         /**
-         * Creates an RspSurveyQuestion instance from a [SurveyQuestion] object.
+         * Creates an JSSurveyQuestion instance from a [SurveyQuestion] object.
          *
          * @param surveyQuestion The [SurveyQuestion] object to convert.
-         * @return An [RspSurveyQuestion] instance or null if the input is null.
+         * @return An [JSSurveyQuestion] instance or null if the input is null.
          */
-        fun opt(surveyQuestion: SurveyQuestion?): RspSurveyQuestion? =
-            if (surveyQuestion != null) RspSurveyQuestion(surveyQuestion) else null
+        fun opt(surveyQuestion: SurveyQuestion?): JSSurveyQuestion? =
+            if (surveyQuestion != null) JSSurveyQuestion(surveyQuestion) else null
     }
 }

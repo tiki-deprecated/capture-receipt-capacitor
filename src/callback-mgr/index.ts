@@ -15,6 +15,10 @@ import type { PluginResponse } from 'src/plugin/plugin-response';
  */
 export class CallbackManager {
 
+  constructor(){
+    console.log("build cbmanager")
+  }
+
   /**
    * Adds a new callback
    *
@@ -44,17 +48,18 @@ export class CallbackManager {
     debugger
 
     const callbackData = CallbackData.fromPluginRsp(rsp)
-    if(!callbackData){
+    if (!callbackData) {
       console.debug(`Invalid Plugin Response data. Skipping callback: ${JSON.stringify(rsp)}`);
       return
-    }else{
-      const callback = this.callbacks.get(callbackData.id);
+    } else {
+      const id = CallbackData.genId(callbackData.event, callbackData.requestId)
+      const callback = this.callbacks.get(id);
       if (!callback) {
         console.debug(`No callback found for: ${JSON.stringify(rsp)}`);
         return
-      }else{
+      } else {
         callback.call(callbackData.payload)
-        this.remove(callbackData.id);
+        this.remove(id);
       }
     }
   }

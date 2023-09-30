@@ -1,19 +1,12 @@
-import { CallbackData } from "./callback-data"
-import type { CallbackDataErrorInterface } from "./callback-data-error-if"
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
 
-import type { PluginEvent } from "src/plugin/plugin-event"
-
-export class CallbackDataError extends CallbackData {
-
-  constructor(
-    requestId: string,
-    event: PluginEvent,
-    payload: CallbackDataErrorInterface,
-  ) {
-    super(
-      requestId,
-      event,
-      payload,
-    )
-  }
+/**
+ * The representation of an Error that happened in the plugin.
+ */
+export interface CallbackDataError {
+  message: string;
+  code?: number;
 }

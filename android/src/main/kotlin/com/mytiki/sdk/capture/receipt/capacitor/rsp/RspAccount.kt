@@ -15,8 +15,9 @@ import org.json.JSONObject
  * @property account The [Account] associated with this RSP account.
  */
 class RspAccount(
+    requestId: String,
     private val account: Account
-) : Rsp {
+) : Rsp(requestId) {
 
     /**
      * Converts the RSP account data to a JSON object.
@@ -26,7 +27,7 @@ class RspAccount(
     override fun toJS(): JSObject =
         JSObject()
             .put("username", account.username)
-            .put("source", account.accountCommon.source)
+            .put("id", account.accountCommon.id)
             .put("type", account.accountCommon.type.name)
             .put("isVerified", account.isVerified)
 }

@@ -35,7 +35,7 @@ class ReqAccount(data: JSObject) : Req(data.getString("requestId") ?: "") {
     val isVerified: Boolean?
 
     init {
-        accountCommon = AccountCommon.fromSource(data.getString("source") ?: "")
+        accountCommon = AccountCommon.fromSource(data.getString("id") ?: "")
         username = data.getString("username") ?: ""
         password = data.getString("password")
         isVerified = data.getBool("isVerified")

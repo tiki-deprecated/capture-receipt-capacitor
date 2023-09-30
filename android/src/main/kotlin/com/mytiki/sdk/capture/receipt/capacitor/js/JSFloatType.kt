@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in the root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.rsp
+package com.mytiki.sdk.capture.receipt.capacitor.js
 
 import com.getcapacitor.JSObject
 import com.microblink.core.FloatType
@@ -14,28 +14,28 @@ import com.microblink.core.FloatType
  * @property confidence The confidence level of the extracted floating-point value.
  * @property value The extracted floating-point value.
  */
-class RspFloatType(private val floatType: FloatType) : Rsp {
+class JSFloatType(private val floatType: FloatType) {
     private val confidence: Float = floatType.confidence()
     private val value: Float = floatType.value()
 
     /**
-     * Converts the RspFloatType object to a JSON representation.
+     * Converts the JSFloatType object to a JSON representation.
      *
      * @return A JSONObject containing the confidence and value of the floating-point type.
      */
-    override fun toJS(): JSObject =
+    fun toJS(): JSObject =
         JSObject()
             .put("confidence", confidence)
             .put("value", value)
 
     companion object {
         /**
-         * Creates an RspFloatType instance from a FloatType object, if it is not null.
+         * Creates an JSFloatType instance from a FloatType object, if it is not null.
          *
-         * @param floatType The FloatType object to convert to RspFloatType.
-         * @return An RspFloatType instance or null if the input floatType is null.
+         * @param floatType The FloatType object to convert to JSFloatType.
+         * @return An JSFloatType instance or null if the input floatType is null.
          */
-        fun opt(floatType: FloatType?): RspFloatType? =
-            if (floatType != null) RspFloatType(floatType) else null
+        fun opt(floatType: FloatType?): JSFloatType? =
+            if (floatType != null) JSFloatType(floatType) else null
     }
 }

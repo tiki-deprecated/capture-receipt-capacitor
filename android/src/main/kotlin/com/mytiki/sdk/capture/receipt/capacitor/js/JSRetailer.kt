@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in the root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.rsp
+package com.mytiki.sdk.capture.receipt.capacitor.js
 
 import com.getcapacitor.JSObject
 import com.microblink.core.Retailer
@@ -11,9 +11,9 @@ import com.microblink.core.Retailer
 /**
  * Represents a Retailer for the Receipt Scanning Plugin (RSP).
  *
- * @param retailer The retailer object to be wrapped by RspRetailer.
+ * @param retailer The retailer object to be wrapped by JSRetailer.
  */
-class RspRetailer(retailer: Retailer) : Rsp {
+class JSRetailer(retailer: Retailer){
     private val id: Int
     private val bannerId: Int
 
@@ -23,23 +23,23 @@ class RspRetailer(retailer: Retailer) : Rsp {
     }
 
     /**
-     * Converts the RspRetailer object to a JSON representation.
+     * Converts the JSRetailer object to a JSON representation.
      *
-     * @return A JSON object representing the RspRetailer.
+     * @return A JSON object representing the JSRetailer.
      */
-    override fun toJS(): JSObject =
+    fun toJS(): JSObject =
         JSObject()
             .put("id", id)
             .put("bannerId", bannerId)
 
     companion object {
         /**
-         * Create an optional RspRetailer object from a Retailer object.
+         * Create an optional JSRetailer object from a Retailer object.
          *
          * @param retailer The Retailer object to be converted.
-         * @return An RspRetailer object if the input Retailer is not null, otherwise null.
+         * @return An JSRetailer object if the input Retailer is not null, otherwise null.
          */
-        fun opt(retailer: Retailer?): RspRetailer? =
-            if (retailer != null) RspRetailer(retailer) else null
+        fun opt(retailer: Retailer?): JSRetailer? =
+            if (retailer != null) JSRetailer(retailer) else null
     }
 }

@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.rsp
+package com.mytiki.sdk.capture.receipt.capacitor.js
 
 import com.getcapacitor.JSObject
 import com.microblink.core.Survey
@@ -15,7 +15,7 @@ import org.json.JSONObject
  *
  * @param survey The [Survey] object containing survey data.
  */
-class RspSurvey(survey: Survey) : Rsp {
+class JSSurvey(survey: Survey)  {
 
     /**
      * The client's user ID for the survey.
@@ -50,7 +50,7 @@ class RspSurvey(survey: Survey) : Rsp {
     /**
      * The list of survey questions.
      */
-    private val questions: List<RspSurveyQuestion>
+    private val questions: List<JSSurveyQuestion>
 
     init {
         clientUserId = survey.clientUserId()
@@ -60,7 +60,7 @@ class RspSurvey(survey: Survey) : Rsp {
         startDate = survey.startDate()
         endDate = survey.endDate()
         questions =
-            survey.questions()?.map { question -> RspSurveyQuestion(question) } ?: emptyList()
+            survey.questions()?.map { question -> JSSurveyQuestion(question) } ?: emptyList()
     }
 
     /**
@@ -68,7 +68,7 @@ class RspSurvey(survey: Survey) : Rsp {
      *
      * @return A [JSONObject] containing the survey response data.
      */
-    override fun toJS(): JSObject =
+    fun toJS(): JSObject =
         JSObject()
             .put("clientUserId", clientUserId)
             .put("serverId", serverId)
@@ -81,12 +81,12 @@ class RspSurvey(survey: Survey) : Rsp {
     companion object {
 
         /**
-         * Creates an instance of [RspSurvey] from a [Survey] object.
+         * Creates an instance of [JSSurvey] from a [Survey] object.
          *
          * @param survey The [Survey] object to convert.
-         * @return An [RspSurvey] object representing the survey response, or `null` if the input is `null`.
+         * @return An [JSSurvey] object representing the survey response, or `null` if the input is `null`.
          */
-        fun opt(survey: Survey?): RspSurvey? =
-            if (survey != null) RspSurvey(survey) else null
+        fun opt(survey: Survey?): JSSurvey? =
+            if (survey != null) JSSurvey(survey) else null
     }
 }

@@ -23,9 +23,9 @@ class ReqScan(data: JSObject) : Req(data.getString("requestId") ?: "") {
     init {
         dayCutOff = data.getInteger("dayCutOff", 7)!!
         account =
-            if (!data.getString("username").isNullOrEmpty() && data.getString("source") != "") {
+            if (!data.getString("username").isNullOrEmpty() && data.getString("id") != "") {
                 Account(
-                    AccountCommon.fromSource(data.getString("source") ?: ""),
+                    AccountCommon.fromSource(data.getString("id") ?: ""),
                     data.getString("username") ?: "",
                     data.getString("password"),
                     data.getBool("isVerified")

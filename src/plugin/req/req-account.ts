@@ -16,12 +16,12 @@ export class ReqAccount implements Req {
   requestId: string;
   username?: string;
   password?: string;
-  source?: string;
+  id?: string;
 
   constructor(account: Account) {
     this.requestId = uuid.v4();
     this.username = account.username;
     this.password = account.password;
-    this.source = account.type.id;
+    this.id = account.type.id;
   }
 }

@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in the root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.rsp
+package com.mytiki.sdk.capture.receipt.capacitor.js
 
 import com.getcapacitor.JSObject
 import com.microblink.core.SurveyAnswer
@@ -13,7 +13,7 @@ import com.microblink.core.SurveyAnswer
  *
  * @property surveyAnswer The underlying survey answer to be represented.
  */
-class RspSurveyAnswer(surveyAnswer: SurveyAnswer) : Rsp {
+class JSSurveyAnswer(surveyAnswer: SurveyAnswer)  {
     private val id: Int
     private val text: String?
     private val nextQuestionIndex: Int?
@@ -29,7 +29,7 @@ class RspSurveyAnswer(surveyAnswer: SurveyAnswer) : Rsp {
      *
      * @return The JSON representation of the RSP survey answer.
      */
-    override fun toJS(): JSObject =
+    fun toJS(): JSObject =
         JSObject()
             .put("id", id)
             .put("text", text)
@@ -42,7 +42,7 @@ class RspSurveyAnswer(surveyAnswer: SurveyAnswer) : Rsp {
          * @param surveyAnswer The survey answer to create an RSP survey answer from.
          * @return An optional RSP survey answer, or null if the input is null.
          */
-        fun opt(surveyAnswer: SurveyAnswer?): RspSurveyAnswer? =
-            if (surveyAnswer != null) RspSurveyAnswer(surveyAnswer) else null
+        fun opt(surveyAnswer: SurveyAnswer?): JSSurveyAnswer? =
+            if (surveyAnswer != null) JSSurveyAnswer(surveyAnswer) else null
     }
 }

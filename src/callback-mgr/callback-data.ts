@@ -7,10 +7,7 @@ import type { Account } from '../account';
 import { PluginEvent } from '../plugin/plugin-event';
 import type { Receipt } from '../receipt';
 
-import { CallbackDataAccount } from './callback-data-account';
-import { CallbackDataError } from './callback-data-error';
-import type { CallbackDataErrorInterface } from './callback-data-error-if';
-import { CallbackReceipt } from './callback-receipt';
+import type { CallbackDataError } from './callback-data-error';
 
 import type { PluginResponse } from 'src/plugin/plugin-response';
 
@@ -33,7 +30,7 @@ export class CallbackData {
   /**
    * The payload returned. Should be undefined on plugin requests.
    */
-  payload: CallbackDataErrorInterface | Account | Receipt | undefined;
+  payload: CallbackDataError | Account | Receipt | undefined;
 
   /**
    * The unique id of the callback.
@@ -45,25 +42,25 @@ export class CallbackData {
   constructor(
     requestId: string,
     event: PluginEvent,
-    payload?: CallbackDataErrorInterface | Account | Receipt,
+    payload?: CallbackDataError | Account | Receipt,
   ) {
     this.requestId = requestId;
     this.event = event;
     this.payload = payload;
   }
 
-  public static fromPluginRsp(rsp: PluginResponse): CallbackDataAccount | CallbackReceipt | CallbackData | CallbackDataError| undefined {
-    try{
+  public static fromPluginRsp(rsp: PluginResponse): CallbackData | undefined {
+    try {
       const event = rsp.event
       switch (event) {
         case PluginEvent.onAccount:
-          return new CallbackDataAccount(
+          return new CallbackData(
             rsp.requestId,
             rsp.event,
             rsp.payload as Account
           )
         case PluginEvent.onReceipt:
-          return new CallbackReceipt(
+          return new CallbackData(
             rsp.requestId,
             rsp.event,
             rsp.payload as Receipt
@@ -74,15 +71,15 @@ export class CallbackData {
             rsp.event,
           )
         case PluginEvent.onError:
-          return new CallbackDataError(
+          return new CallbackData(
             rsp.requestId,
             rsp.event,
-            rsp.payload as CallbackDataErrorInterface
+            rsp.payload as CallbackDataError
           )
         default:
           return undefined
       }
-    }catch(e){
+    } catch (e) {
       return undefined
     }
   }
