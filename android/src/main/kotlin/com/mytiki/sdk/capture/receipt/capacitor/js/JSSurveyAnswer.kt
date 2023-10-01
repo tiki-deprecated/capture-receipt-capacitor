@@ -11,9 +11,9 @@ import com.microblink.core.SurveyAnswer
 /**
  * Represents a response (RSP) for a survey answer.
  *
- * @property surveyAnswer The underlying survey answer to be represented.
+ * @property SurveyAnswer The underlying survey answer to be represented.
  */
-class JSSurveyAnswer(surveyAnswer: SurveyAnswer)  {
+class JSSurveyAnswer(surveyAnswer: SurveyAnswer) {
     private val id: Int
     private val text: String?
     private val nextQuestionIndex: Int?

@@ -1,9 +1,11 @@
-package com.mytiki.sdk.capture.receipt.capacitor
+package com.mytiki.sdk.capture.receipt.capacitor.account
 
 import com.getcapacitor.JSObject
+import com.getcapacitor.PluginCall
 import com.microblink.digital.PasswordCredentials
-import com.mytiki.sdk.capture.receipt.capacitor.req.ReqAccount
-import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspAccount
+import com.mytiki.sdk.capture.receipt.capacitor.retailer.RetailerEnum
+import com.mytiki.sdk.capture.receipt.capacitor.plugin.req.ReqAccount
+import com.mytiki.sdk.capture.receipt.capacitor.plugin.rsp.RspAccount
 
 /**
  * Represents information about an account.
@@ -11,7 +13,7 @@ import com.mytiki.sdk.capture.receipt.capacitor.rsp.RspAccount
  * This class defines the properties of an Account, including common account details,
  * username, password, and verification status.
  *
- * @property accountCommon The source of the account. See [AccountCommon]
+ * @property accountCommon The id of the account. See [AccountCommon]
  * @property username The username associated with the account.
  * @property password The password associated with the account. (Optional)
  * @property isVerified Indicates whether the account is verified or not. (Optional)
@@ -39,7 +41,7 @@ class Account(
          * @param data Data received from a Capacitor plugin.
          * @return Account object.
          */
-        fun fromReq(data: JSObject): Account {
+        fun fromReq(data: PluginCall): Account {
             val req = ReqAccount(data)
             return Account(req.accountCommon, req.username, req.password, req.isVerified)
         }

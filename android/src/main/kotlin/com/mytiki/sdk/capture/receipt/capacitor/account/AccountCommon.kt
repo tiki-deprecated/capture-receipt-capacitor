@@ -1,4 +1,7 @@
-package com.mytiki.sdk.capture.receipt.capacitor
+package com.mytiki.sdk.capture.receipt.capacitor.account
+
+import com.mytiki.sdk.capture.receipt.capacitor.email.EmailEnum
+import com.mytiki.sdk.capture.receipt.capacitor.retailer.RetailerEnum
 
 /**
  * Enum of all account providers.
@@ -6,7 +9,7 @@ package com.mytiki.sdk.capture.receipt.capacitor
  * This enum lists all the account providers supported by the system.
  *
  * @property type The type of the provider, which can be either Email or Retailer.
- * @property id The source of the provider.
+ * @property id The id of the provider.
  * @constructor Creates an empty [AccountCommon] enum entry.
  */
 enum class AccountCommon(val type: AccountTypeEnum, val id: String) {

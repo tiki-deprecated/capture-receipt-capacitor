@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in the root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor
+package com.mytiki.sdk.capture.receipt.capacitor.retailer
 
 import android.content.Context
 import android.os.Build
@@ -14,9 +14,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.microblink.core.InitializeCallback
 import com.microblink.core.ScanResults
 import com.microblink.linking.*
+import com.mytiki.sdk.capture.receipt.capacitor.R
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.MainScope
+
+typealias OnReceiptCallback = ((receipt: ScanResults?) -> Unit)
 
 /**
  * This class represents the Retailer functionality for account linking and order retrieval.
@@ -59,7 +61,7 @@ class Retailer {
      *
      * @param username The username.
      * @param password The password.
-     * @param id The source (email provider).
+     * @param id The id (email provider).
      * @param activity The [AppCompatActivity] where the login dialog will be displayed.
      * @param onAccount Callback called when the login is completed successfully.
      * @param onError Callback called when an error occurs during login.
@@ -70,7 +72,7 @@ class Retailer {
         password: String,
         id: String,
         activity: AppCompatActivity,
-        onAccount: ((Account) -> Unit)? = null,
+        onAccount: ((com.mytiki.sdk.capture.receipt.capacitor.account.Account) -> Unit)? = null,
         onError: ((String) -> Unit)? = null
     ) {
         val mbAccount = Account(
@@ -106,7 +108,7 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun remove(
         context: Context,
-        account: Account,
+        account: com.mytiki.sdk.capture.receipt.capacitor.account.Account,
         onComplete: () -> Unit,
         onError: (msg: String) -> Unit
     ) {
@@ -143,7 +145,7 @@ class Retailer {
             }.addOnFailureListener { ex ->
                 onError(ex.message ?: ex.toString())
             }
-        }.addOnFailureListener{ex ->
+        }.addOnFailureListener { ex ->
             onError(ex.message ?: ex.toString())
         }
     }
@@ -167,7 +169,7 @@ class Retailer {
         val client: AccountLinkingClient = client(context)
         var count = 0
 
-        val onCompleteAccounts ={size: Int ->
+        val onCompleteAccounts = { size: Int ->
             if (count == size) onComplete()
         }
 
@@ -175,8 +177,14 @@ class Retailer {
             .addOnSuccessListener { mbAccountList ->
                 if (mbAccountList != null) {
                     for ((index, retailerAccount) in mbAccountList.withIndex()) {
-                        val account = Account.fromRetailerAccount(retailerAccount)
-                        this.orders(context, account, onReceipt, daysCutOff, onError ){onCompleteAccounts(mbAccountList.size)}
+                        val account = com.mytiki.sdk.capture.receipt.capacitor.account.Account.fromRetailerAccount(retailerAccount)
+                        this.orders(
+                            context,
+                            account,
+                            onReceipt,
+                            daysCutOff,
+                            onError
+                        ) { onCompleteAccounts(mbAccountList.size) }
                     }
 
                 } else {
@@ -202,7 +210,7 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun orders(
         context: Context,
-        account: Account,
+        account: com.mytiki.sdk.capture.receipt.capacitor.account.Account,
         onScan: (ScanResults) -> Unit,
         daysCutOff: Int?,
         onError: (msg: String) -> Unit,
@@ -233,7 +241,6 @@ class Retailer {
     }
 
 
-
     /**
      * Retrieves a list of user accounts from the Retailer SDK.
      *
@@ -245,7 +252,7 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun accounts(
         context: Context,
-        onAccount: (Account) -> Unit,
+        onAccount: (com.mytiki.sdk.capture.receipt.capacitor.account.Account) -> Unit,
         onError: ((msg: String) -> Unit),
         onComplete: (() -> Unit)? = null
     ) {
@@ -254,7 +261,7 @@ class Retailer {
             .addOnSuccessListener { mbAccountList ->
                 if (mbAccountList != null) {
                     mbAccountList.forEach { retailerAccount ->
-                        val account = Account.fromRetailerAccount(retailerAccount)
+                        val account = com.mytiki.sdk.capture.receipt.capacitor.account.Account.fromRetailerAccount(retailerAccount)
                         onAccount(account)
                     }
                     onComplete?.invoke()
@@ -281,11 +288,11 @@ class Retailer {
     private fun verify(
         mbAccount: com.microblink.linking.Account,
         activity: AppCompatActivity,
-        onVerify: ((Account) -> Unit)?,
+        onVerify: ((com.mytiki.sdk.capture.receipt.capacitor.account.Account) -> Unit)?,
         onError: ((msg: String) -> Unit)?
     ) {
         val client: AccountLinkingClient = client(activity)
-        val account = Account.fromRetailerAccount(mbAccount)
+        val account = com.mytiki.sdk.capture.receipt.capacitor.account.Account.fromRetailerAccount(mbAccount)
         client.verify(
             RetailerEnum.fromString(account.accountCommon.id).value,
             success = { isVerified: Boolean, _: String ->

@@ -1,4 +1,4 @@
-package com.mytiki.sdk.capture.receipt.capacitor
+package com.mytiki.sdk.capture.receipt.capacitor.account
 
 /**
  * Enum with all possible account types.

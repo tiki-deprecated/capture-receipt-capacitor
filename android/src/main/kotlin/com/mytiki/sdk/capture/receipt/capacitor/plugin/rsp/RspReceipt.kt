@@ -3,10 +3,11 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.rsp
+package com.mytiki.sdk.capture.receipt.capacitor.plugin.rsp
 
 import com.getcapacitor.JSObject
 import com.microblink.core.ScanResults
+import com.mytiki.sdk.capture.receipt.capacitor.plugin.PluginEvent
 import com.mytiki.sdk.capture.receipt.capacitor.js.JSCoupon
 import com.mytiki.sdk.capture.receipt.capacitor.js.JSFloatType
 import com.mytiki.sdk.capture.receipt.capacitor.js.JSPaymentMethod
@@ -26,7 +27,7 @@ import org.json.JSONObject
  *
  * @param scanResults The scan results containing the data to populate this receipt.
  */
-class RspReceipt(requestId: String, scanResults: ScanResults): Rsp(requestId){
+class RspReceipt(requestId: String, scanResults: ScanResults) : Rsp(requestId, PluginEvent.onReceipt) {
 
     private val receiptDate: JSStringType?
     private val receiptTime: JSStringType?
@@ -148,7 +149,8 @@ class RspReceipt(requestId: String, scanResults: ScanResults): Rsp(requestId){
         instacartShopper = scanResults.isInstacartShopper
         eReceipt = scanResults.eReceipt()
         eReceiptComponentEmails =
-            scanResults.eReceiptComponentEmails()?.map { res -> RspReceipt(requestId, res) } ?: emptyList()
+            scanResults.eReceiptComponentEmails()?.map { res -> RspReceipt(requestId, res) }
+                ?: emptyList()
         duplicate = scanResults.duplicate()
         fraudulent = scanResults.fraudulent()
         receiptDateTime = scanResults.receiptDateTime()?.time
@@ -199,8 +201,7 @@ class RspReceipt(requestId: String, scanResults: ScanResults): Rsp(requestId){
      *
      * @return A JSONObject containing the RSP receipt data.
      */
-    override fun toJS(): JSObject =
-        JSObject()
+    override fun toJS(): JSObject = super.toJS()
             .put("receiptDate", receiptDate?.toJS())
             .put("receiptTime", receiptTime?.toJS())
             .put("retailerId", retailerId)
@@ -293,7 +294,7 @@ class RspReceipt(requestId: String, scanResults: ScanResults): Rsp(requestId){
          * @param scanResults The scan results to create an RSP receipt from.
          * @return An optional RSPReceipt instance, or null if scanResults is null.
          */
-        fun opt(requestId:String, scanResults: ScanResults?): RspReceipt? =
+        fun opt(requestId: String, scanResults: ScanResults?): RspReceipt? =
             if (scanResults != null) RspReceipt(requestId, scanResults) else null
     }
 }

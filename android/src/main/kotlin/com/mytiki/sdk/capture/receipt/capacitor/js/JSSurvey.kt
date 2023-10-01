@@ -15,7 +15,7 @@ import org.json.JSONObject
  *
  * @param survey The [Survey] object containing survey data.
  */
-class JSSurvey(survey: Survey)  {
+class JSSurvey(survey: Survey) {
 
     /**
      * The client's user ID for the survey.

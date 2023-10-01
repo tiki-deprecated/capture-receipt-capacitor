@@ -3,17 +3,18 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.req
+package com.mytiki.sdk.capture.receipt.capacitor.plugin.req
 
 import com.getcapacitor.JSObject
-import com.mytiki.sdk.capture.receipt.capacitor.AccountCommon
+import com.getcapacitor.PluginCall
+import com.mytiki.sdk.capture.receipt.capacitor.account.AccountCommon
 
 /**
  * Represents a request object for account-related operations in the TIKI SDK.
  *
  * @param data A [JSObject] containing the data for the account request.
  */
-class ReqAccount(data: JSObject) : Req(data.getString("requestId") ?: "") {
+class ReqAccount(call: PluginCall) : Req(call) {
     /**
      * The [AccountCommon] object associated with this account request.
      */
@@ -35,9 +36,9 @@ class ReqAccount(data: JSObject) : Req(data.getString("requestId") ?: "") {
     val isVerified: Boolean?
 
     init {
-        accountCommon = AccountCommon.fromSource(data.getString("id") ?: "")
-        username = data.getString("username") ?: ""
-        password = data.getString("password")
-        isVerified = data.getBool("isVerified")
+        accountCommon = AccountCommon.fromSource(call.getString("id") ?: "")
+        username = call.getString("username") ?: ""
+        password = call.getString("password")
+        isVerified = call.getBoolean("isVerified")
     }
 }

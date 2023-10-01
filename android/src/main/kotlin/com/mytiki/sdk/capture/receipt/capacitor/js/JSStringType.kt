@@ -14,7 +14,7 @@ import org.json.JSONObject
  *
  * @param stringType The [StringType] recognized by the TIKI SDK.
  */
-class JSStringType(stringType: StringType)  {
+class JSStringType(stringType: StringType) {
     /**
      * The confidence score of the recognized string.
      */

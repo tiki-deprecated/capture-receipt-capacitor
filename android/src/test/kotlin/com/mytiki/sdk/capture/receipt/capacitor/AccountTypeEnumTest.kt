@@ -1,5 +1,6 @@
 package com.mytiki.sdk.capture.receipt.capacitor
 
+import com.mytiki.sdk.capture.receipt.capacitor.account.AccountTypeEnum
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

@@ -3,9 +3,10 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.req
+package com.mytiki.sdk.capture.receipt.capacitor.plugin.req
 
 import com.getcapacitor.JSObject
+import com.getcapacitor.PluginCall
 
 /**
  * Represents a request to initialize the TIKI SDK for capturing receipts using Capacitor.
@@ -17,7 +18,7 @@ import com.getcapacitor.JSObject
  *
  * @param data A [JSObject] containing the initialization data.
  */
-class ReqInitialize(data: JSObject) : Req(data.getString("requestId") ?: "") {
+class ReqInitialize(call: PluginCall) : Req(call) {
     val licenseKey: String
     val productKey: String
 
@@ -28,12 +29,14 @@ class ReqInitialize(data: JSObject) : Req(data.getString("requestId") ?: "") {
      * @param data A [JSObject] containing the initialization data.
      */
     init {
-        val licenseKey = data.getString("licenseKey")
-        val productKey = data.getString("productKey")
+        val licenseKey = call.getString("licenseKey")
+        val productKey = call.getString("productKey")
         if (licenseKey == null) {
+            call.reject("Provide a License Key for initialization.")
             throw Error("Provide a License Key for initialization.")
         }
         if (productKey == null) {
+            call.reject("Provide a Product Intelligence Key for initialization.")
             throw Error("Provide a Product Intelligence Key for initialization.")
         }
         this.productKey = productKey

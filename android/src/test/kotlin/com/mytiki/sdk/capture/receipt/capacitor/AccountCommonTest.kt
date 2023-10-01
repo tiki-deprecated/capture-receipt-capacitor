@@ -1,5 +1,6 @@
 package com.mytiki.sdk.capture.receipt.capacitor
 
+import com.mytiki.sdk.capture.receipt.capacitor.account.AccountCommon
 import junit.framework.TestCase
 import org.junit.Test
 

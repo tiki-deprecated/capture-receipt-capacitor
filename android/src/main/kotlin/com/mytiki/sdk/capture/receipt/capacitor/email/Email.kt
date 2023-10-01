@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in the root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor
+package com.mytiki.sdk.capture.receipt.capacitor.email
 
 import android.content.Context
 import androidx.fragment.app.FragmentManager
@@ -17,10 +17,16 @@ import com.microblink.digital.Provider
 import com.microblink.digital.ProviderSetupDialogFragment
 import com.microblink.digital.ProviderSetupOptions
 import com.microblink.digital.ProviderSetupResults
+import com.mytiki.sdk.capture.receipt.capacitor.OnAccountCallback
+import com.mytiki.sdk.capture.receipt.capacitor.OnCompleteCallback
+import com.mytiki.sdk.capture.receipt.capacitor.account.Account
+import com.mytiki.sdk.capture.receipt.capacitor.account.AccountCommon
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.tasks.await
+
+typealias OnReceiptCallback = ((receipt: ScanResults?) -> Unit)
 
 /**
  * Class that handles all email-related logic.
@@ -68,7 +74,7 @@ class Email {
      *
      * @param username The username.
      * @param password The password.
-     * @param id The source (email provider).
+     * @param id The id (email provider).
      * @param supportFragmentManager The fragment manager.
      * @param onComplete Callback called when the login is completed successfully.
      * @param onError Callback called when an error occurs during login.
@@ -159,11 +165,16 @@ class Email {
      * @param onAccount Callback called for each retrieved email account.
      * @param onError Callback called when an error occurs during account retrieval.
      */
-    fun accounts(context: Context, onAccount: OnAccountCallback, onError: ((msg: String) -> Unit), onComplete: OnCompleteCallback?) {
-        this.client(context, onError ?: {}) { client ->
+    fun accounts(
+        context: Context,
+        onAccount: OnAccountCallback,
+        onError: ((msg: String) -> Unit),
+        onComplete: OnCompleteCallback?
+    ) {
+        this.client(context, onError) { client ->
             client.accounts().addOnSuccessListener { credentials ->
                 if (credentials != null) {
-                    for ((index, credential) in credentials?.withIndex()!!) {
+                    for ((index, credential) in credentials.withIndex()) {
                         val account = Account.fromEmailAccount(credential)
                         MainScope().async {
                             account.isVerified = client.verify(credential).await()
@@ -201,14 +212,18 @@ class Email {
         onError: (String) -> Unit
     ) {
         this.client(context, onError) { client ->
-            client.accounts().addOnSuccessListener {list ->
-                val passwordCredentials = list.first{it.username() == account.username && it.provider() == EmailEnum.fromString(account.accountCommon.source).value}
+            client.accounts().addOnSuccessListener { list ->
+                val passwordCredentials = list.first {
+                    it.username() == account.username && it.provider() == EmailEnum.fromString(
+                        account.accountCommon.id
+                    ).value
+                }
                 client.logout(passwordCredentials).addOnSuccessListener {
                     onRemove()
                 }.addOnFailureListener {
                     onError(
                         it.message
-                            ?: "Unknown error when removing account ${account.username} from ${account.accountCommon.source}"
+                            ?: "Unknown error when removing account ${account.username} from ${account.accountCommon.id}"
                     )
                 }
             }

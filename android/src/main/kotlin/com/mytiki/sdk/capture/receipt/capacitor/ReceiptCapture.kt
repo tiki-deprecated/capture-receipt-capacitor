@@ -7,15 +7,21 @@ package com.mytiki.sdk.capture.receipt.capacitor
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
-import com.microblink.core.ScanResults
+
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 
+import com.mytiki.sdk.capture.receipt.capacitor.account.Account
+import com.mytiki.sdk.capture.receipt.capacitor.account.AccountTypeEnum
+import com.mytiki.sdk.capture.receipt.capacitor.email.Email
+import com.mytiki.sdk.capture.receipt.capacitor.email.EmailEnum
+import com.mytiki.sdk.capture.receipt.capacitor.retailer.OnReceiptCallback
+import com.mytiki.sdk.capture.receipt.capacitor.retailer.Retailer
+
 typealias OnErrorCallback = ((message: String) -> Unit)
 typealias OnAccountCallback = ((account: Account) -> Unit)
-typealias OnReceiptCallback = ((receipt: ScanResults?) -> Unit)
 typealias OnCompleteCallback = (() -> Unit)
 
 /**
@@ -59,7 +65,7 @@ class ReceiptCapture {
      * @param activity The Android application activity.
      * @param username The username for login.
      * @param password The password for login.
-     * @param id The source of the account (e.g., EmailEnum.GMAIL.toString() or an enum value from RetailerEnum).
+     * @param id The id of the account (e.g., EmailEnum.GMAIL.toString() or an enum value from RetailerEnum).
      */
     fun login(
         activity: AppCompatActivity,
@@ -122,7 +128,12 @@ class ReceiptCapture {
      * @param context The Android application context.
      * @param accountType The type of accounts to retrieve (AccountTypeEnum.EMAIL or AccountTypeEnum.RETAILER).
      */
-    fun accounts(context: Context, onAccount: OnAccountCallback, onError: OnErrorCallback, onComplete: OnCompleteCallback) {
+    fun accounts(
+        context: Context,
+        onAccount: OnAccountCallback,
+        onError: OnErrorCallback,
+        onComplete: OnCompleteCallback
+    ) {
         val emailFinished = CompletableDeferred<Unit>()
         val retailerFinished = CompletableDeferred<Unit>()
         MainScope().async {
@@ -151,6 +162,10 @@ class ReceiptCapture {
         val emailFinished = CompletableDeferred<Unit>()
         val retailerFinished = CompletableDeferred<Unit>()
         email.scrape(context, onReceipt, onError, dayCutOff ?: 7) { emailFinished.complete(Unit) }
-        retailer.orders(context, onReceipt, onError, dayCutOff ?: 7) { retailerFinished.complete(Unit) }
+        retailer.orders(context, onReceipt, onError, dayCutOff ?: 7) {
+            retailerFinished.complete(
+                Unit
+            )
+        }
     }
 }

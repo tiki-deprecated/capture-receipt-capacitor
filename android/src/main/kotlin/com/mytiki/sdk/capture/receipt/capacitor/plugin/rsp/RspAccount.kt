@@ -3,10 +3,11 @@
  * MIT license. See LICENSE file in the root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.rsp
+package com.mytiki.sdk.capture.receipt.capacitor.plugin.rsp
 
 import com.getcapacitor.JSObject
-import com.mytiki.sdk.capture.receipt.capacitor.Account
+import com.mytiki.sdk.capture.receipt.capacitor.account.Account
+import com.mytiki.sdk.capture.receipt.capacitor.plugin.PluginEvent
 import org.json.JSONObject
 
 /**
@@ -17,7 +18,7 @@ import org.json.JSONObject
 class RspAccount(
     requestId: String,
     private val account: Account
-) : Rsp(requestId) {
+) : Rsp(requestId, PluginEvent.onAccount) {
 
     /**
      * Converts the RSP account data to a JSON object.
@@ -25,7 +26,7 @@ class RspAccount(
      * @return A [JSONObject] representing the RSP account.
      */
     override fun toJS(): JSObject =
-        JSObject()
+        super.toJS()
             .put("username", account.username)
             .put("id", account.accountCommon.id)
             .put("type", account.accountCommon.type.name)

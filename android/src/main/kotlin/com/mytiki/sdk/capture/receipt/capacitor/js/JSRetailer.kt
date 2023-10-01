@@ -13,7 +13,7 @@ import com.microblink.core.Retailer
  *
  * @param retailer The retailer object to be wrapped by JSRetailer.
  */
-class JSRetailer(retailer: Retailer){
+class JSRetailer(retailer: Retailer) {
     private val id: Int
     private val bannerId: Int
 

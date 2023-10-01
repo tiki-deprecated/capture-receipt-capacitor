@@ -2,6 +2,7 @@ package com.mytiki.sdk.capture.receipt.capacitor
 
 import com.microblink.linking.AMAZON_BETA
 import com.microblink.linking.BESTBUY
+import com.mytiki.sdk.capture.receipt.capacitor.retailer.RetailerEnum
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
