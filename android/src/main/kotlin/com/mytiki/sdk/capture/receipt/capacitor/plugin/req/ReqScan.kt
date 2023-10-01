@@ -17,27 +17,7 @@ class ReqScan(call: PluginCall) : Req(call) {
      */
     val dayCutOff: Int
 
-    /**
-     * The optional [Account] associated with the scan request, or `null` if not provided.
-     */
-    val account: Account?
-
     init {
         dayCutOff = call.getInt("dayCutOff", 7)!!
-        account =
-            if (call.getString("username").isNullOrBlank() ){
-               call.reject("Provide a username in the plugin call.")
-               throw(Exception("Provide a username in the plugin call."))
-            } else if (call.getString("id").isNullOrBlank()) {
-                call.reject("Provide an id in the plugin call to identify the Account Type.")
-                throw(Exception("Provide an id in the plugin call to identify the Account Type."))
-            } else {
-                Account(
-                    AccountCommon.fromSource(call.getString("id")!!),
-                    call.getString("username")!!,
-                    call.getString("password"),
-                    call.getBoolean("isVerified")
-                )
-            }
     }
 }

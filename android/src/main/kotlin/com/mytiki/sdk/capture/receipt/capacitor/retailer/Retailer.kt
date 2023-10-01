@@ -80,7 +80,7 @@ class Retailer {
         password: String,
         id: String,
         activity: AppCompatActivity,
-        onAccount: ((com.mytiki.sdk.capture.receipt.capacitor.account.Account) -> Unit)? = null,
+        onAccount: ((Account) -> Unit)? = null,
         onError: ((String) -> Unit)? = null
     ) {
         val mbAccount = MbAccount(
@@ -175,29 +175,27 @@ class Retailer {
         onComplete: () -> Unit
     ) {
         val client: AccountLinkingClient = client(context)
-        var count = 0
-
-        val onCompleteAccounts = { size: Int ->
-            if (count == size) onComplete()
-        }
-
-        client.accounts()
-            .addOnSuccessListener { mbAccountList ->
-                if (mbAccountList != null) {
-                    for ((index, retailerAccount) in mbAccountList.withIndex()) {
-                        val account = com.mytiki.sdk.capture.receipt.capacitor.account.Account.fromRetailerAccount(retailerAccount)
+        var fetchedAccounts = 0
+        client.accounts().addOnSuccessListener { mbAccountList ->
+                if (mbAccountList.isNullOrEmpty()) {
+                    onComplete()
+                    client.close()
+                }else {
+                    for (retailerAccount in mbAccountList) {
+                        val account = Account.fromRetailerAccount(retailerAccount)
                         this.orders(
                             context,
                             account,
                             onReceipt,
                             daysCutOff,
                             onError
-                        ) { onCompleteAccounts(mbAccountList.size) }
+                        ) {
+                            fetchedAccounts++
+                            if (fetchedAccounts == mbAccountList.size) {
+                                onComplete()
+                            }
+                        }
                     }
-
-                } else {
-                    onError("Error in retrieving accounts. Account list is null.")
-                    onComplete.invoke()
                 }
             }
             .addOnFailureListener {

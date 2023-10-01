@@ -152,6 +152,7 @@ class Email {
 
                 override fun onException(throwable: Throwable) {
                     onError(throwable.message ?: throwable.toString())
+                    onComplete()
                     client.close()
                 }
             })

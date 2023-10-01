@@ -161,11 +161,21 @@ class CaptureReceipt {
     ) {
         val emailFinished = CompletableDeferred<Unit>()
         val retailerFinished = CompletableDeferred<Unit>()
-        email.scrape(context, onReceipt, onError, dayCutOff ?: 7) { emailFinished.complete(Unit) }
-        retailer.orders(context, onReceipt, onError, dayCutOff ?: 7) {
-            retailerFinished.complete(
-                Unit
-            )
+        MainScope().async {
+            email.scrape(
+                context,
+                onReceipt,
+                onError,
+                dayCutOff ?: 7
+            ) { emailFinished.complete(Unit) }
+            retailer.orders(
+                context,
+                onReceipt,
+                onError,
+                dayCutOff ?: 7
+            ) { retailerFinished.complete(Unit) }
+            awaitAll(emailFinished, retailerFinished)
+            onComplete.invoke()
         }
     }
 }
