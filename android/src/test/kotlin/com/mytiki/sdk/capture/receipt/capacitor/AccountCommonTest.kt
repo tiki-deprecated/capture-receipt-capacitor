@@ -1,5 +1,6 @@
 package com.mytiki.sdk.capture.receipt.capacitor
 
+import com.mytiki.sdk.capture.receipt.capacitor.account.AccountCommon
 import junit.framework.TestCase
 import org.junit.Test
 
@@ -14,12 +15,12 @@ class AccountCommonTest {
 
     @Test
     fun testFromString() {
-        val firstResult = AccountCommon.fromString("AMAZON")
+        val firstResult = AccountCommon.fromSource("AMAZON")
         TestCase.assertEquals(AccountCommon.AMAZON, firstResult)
         lateinit var error: Exception
         try {
-            AccountCommon.fromString("NOT_EXISTING_VALUE")
-        } catch (err: Exception){
+            AccountCommon.fromSource("NOT_EXISTING_VALUE")
+        } catch (err: Exception) {
             error = err
         }
         assert(!error.message.isNullOrEmpty())

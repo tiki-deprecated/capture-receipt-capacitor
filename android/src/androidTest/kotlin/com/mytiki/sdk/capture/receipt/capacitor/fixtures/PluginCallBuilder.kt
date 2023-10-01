@@ -22,7 +22,7 @@ class PluginCallBuilder(val req: JSONObject? = null) {
                 val err: PluginResult? = call.invocation.args[2] as PluginResult?
                 if (res != null) complete.complete(JSONObject(res.toString()))
                 else if (err != null) complete.complete(JSONObject(err.toString()))
-                else complete.complete(JSONObject())
+                else complete.complete(JSObject())
             }
         return PluginCall(
             handler,
@@ -30,6 +30,6 @@ class PluginCallBuilder(val req: JSONObject? = null) {
             UUID.randomUUID().toString(),
             UUID.randomUUID().toString(),
             if (req != null) JSObject.fromJSONObject(req) else JSObject()
-        );
+        )
     }
 }

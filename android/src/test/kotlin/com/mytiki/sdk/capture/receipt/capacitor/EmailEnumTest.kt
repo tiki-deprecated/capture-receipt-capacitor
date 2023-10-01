@@ -1,4 +1,6 @@
 package com.mytiki.sdk.capture.receipt.capacitor
+
+import com.mytiki.sdk.capture.receipt.capacitor.email.EmailEnum
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -19,7 +21,7 @@ class EmailEnumTest {
         lateinit var error: Exception
         try {
             EmailEnum.fromString("NOT_EXISTING_VALUE")
-        } catch (err: Exception){
+        } catch (err: Exception) {
             error = err
         }
         assert(!error.message.isNullOrEmpty())

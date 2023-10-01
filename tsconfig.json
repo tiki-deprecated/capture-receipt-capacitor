@@ -1,22 +1,37 @@
 {
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+  ],
+  "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
-    "allowUnreachableCode": false,
-    "declaration": true,
+    "target": "ESNext",
+    "sourceMap": true,
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "strict": true,
+    "jsx": "preserve",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
     "esModuleInterop": true,
-    "inlineSources": true,
-    "lib": ["dom", "es2017"],
-    "module": "esnext",
-    "moduleResolution": "node",
+    "lib": ["ESNext", "DOM"],
+    "skipLibCheck": true,
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
+    "declaration": true,
+    "outDir": "dist",
+    "emitDeclarationOnly": true,
+    "declarationDir": "./dist/types",
+    "baseUrl": ".",
+    "allowUnreachableCode": false,
+    "inlineSources": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "outDir": "dist/esm",
     "pretty": true,
-    "sourceMap": true,
-    "strict": true,
-    "target": "es2017"
-  },
-  "files": [
-    "./src/index.ts"
-  ]
+    "types": [ "vite/client" ]
+  }
 }

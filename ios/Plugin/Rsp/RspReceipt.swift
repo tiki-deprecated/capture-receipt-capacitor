@@ -83,7 +83,7 @@ public struct RspReceipt: Rsp {
     /// The email provider associated with the eReceipt, if available.
     private let eReceiptEmailProvider: String?
     /// The email identifier associated with the eReceipt, if available.
-//    private let eReceiptEmailId: String?
+    private let eReceiptEmailId: String?
     /// Indicates if the eReceipt was successfully authenticated.
     private let eReceiptAuthenticated: Bool?
     /// Indicates if the shopper is an Instacart shopper.

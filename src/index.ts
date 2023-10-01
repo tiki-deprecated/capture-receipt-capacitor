@@ -11,50 +11,23 @@
  */
 import { registerPlugin } from '@capacitor/core';
 
-import type { Account } from './account';
-import type { AdditionalLine } from './additional-line';
-import type { Coupon } from './coupon';
-import type { FloatType } from './float-type';
-import type { PaymentMethod } from './payment-method';
-import type { Product } from './product';
-import type { Promotion } from './promotion';
-import type { Receipt } from './receipt';
-import { ReceiptCapture } from './receipt-capture';
-import type { ReceiptCapturePlugin } from './receipt-capture-plugin';
-import type { Retailer } from './retailer';
-import type { Shipment } from './shipment';
-import type { StringType } from './string-type';
-import type { Survey } from './survey';
-import type { SurveyAnswer } from './survey-answer';
-import type { SurveyQuestion } from './survey-question';
+import { CaptureReceipt } from './capture-receipt';
+import type { CaptureReceiptPlugin } from './plugin';
 
 /**
- * Registers the {@link ReceiptCapturePlugin} with Capacitor.
+ * Registers the {@link CaptureReceiptPlugin} with Capacitor.
  */
-const plugin: ReceiptCapturePlugin = registerPlugin<ReceiptCapturePlugin>('ReceiptCapture', {
-  web: () => import('./receipt-capture-web').then((m) => new m.ReceiptCaptureWeb()),
+const plugin: CaptureReceiptPlugin = registerPlugin<CaptureReceiptPlugin>('CaptureReceipt', {
+  web: () => import('./plugin/plugin-web').then((m) => new m.PluginWeb()),
 });
+
 /**
- * Creates a singleton instance of the {@link ReceiptCapture} using the registered
+ * Creates a singleton instance of the {@link CaptureReceipt} using the registered
  * plugin.
  */
-const instance: ReceiptCapture = new ReceiptCapture(plugin);
+const instance: CaptureReceipt = new CaptureReceipt(plugin);
 
 export { instance };
-export type {
-  AdditionalLine,
-  Coupon,
-  StringType,
-  FloatType,
-  Product,
-  Promotion,
-  PaymentMethod,
-  Survey,
-  SurveyAnswer,
-  SurveyQuestion,
-  Shipment,
-  Receipt,
-  Retailer,
-  ReceiptCapture,
-  Account,
-};
+export * from './account';
+export * from './callback';
+export type * from './types';

@@ -1,18 +1,18 @@
 {
-  "name": "@mytiki/tiki-capture-receipt-capacitor",
-  "version": "0.5.0",
+  "name": "@mytiki/capture-receipt-capacitor",
+  "version": "0.6.0",
   "description": "Capture receipts w/ TIKI!",
-  "main": "dist/plugin.cjs.js",
-  "module": "dist/esm/index.js",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.es.js",
   "type": "module",
-  "types": "dist/esm/index.d.ts",
-  "unpkg": "dist/plugin.js",
+  "typings": "dist/types/index.d.ts",
+  "unpkg": "dist/index.es.js",
   "files": [
     "android/src/main/",
     "android/build.gradle",
     "dist/",
     "ios/Plugin/",
-    "MytikiTikiCaptureReceiptCapacitor.podspec"
+    "MytikiCaptureReceiptCapacitor.podspec"
   ],
   "author": "Tiki inc.",
   "license": "MIT",
@@ -36,42 +36,49 @@
     "verify:web": "npm run build",
     "lint": "npm run eslint && npm run prettier -- --check && npm run swiftlint -- lint",
     "fmt": "npm run eslint -- --fix && npm run prettier -- --write && npm run swiftlint -- --fix --format",
-    "eslint": "eslint plugin --ext ts",
-    "prettier": "prettier \"**/*.{css,html,ts,js,java}\"",
+    "eslint": "eslint \"src/**/*.{ts,js}\"",
+    "prettier": "prettier \"src/**/*.{css,html,ts,js,java}\"",
     "swiftlint": "node-swiftlint",
-    "build": "npm run clean && tsc && rollup -c rollup.config.js",
+    "build": "npm run clean && tsc && vite build",
     "clean": "rimraf ./dist",
     "watch": "tsc --watch",
     "prepublishOnly": "npm run build"
   },
+  "dependencies": {
+    "uuid": "^9.0.1"
+  },
   "devDependencies": {
-    "@capacitor/android": "^5.2.2",
-    "@capacitor/core": "^5.2.2",
+    "@babel/types": "^7.23.0",
+    "@capacitor/android": "^5.4.1",
+    "@capacitor/cli": "^5.4.1",
+    "@capacitor/core": "^5.4.1",
     "@capacitor/docgen": "^0.2.1",
-    "@capacitor/ios": "^5.3.0",
-    "@ionic/eslint-config": "^0.3.0",
+    "@capacitor/ios": "^5.4.1",
     "@ionic/prettier-config": "^4.0.0",
     "@ionic/swiftlint-config": "^1.1.2",
-    "@typescript-eslint/eslint-plugin": "^6.4.1",
-    "eslint": "^8.47.0",
-    "prettier": "^3.0.1",
-    "prettier-plugin-java": "^2.2.0",
-    "rimraf": "^5.0.1",
-    "rollup": "^3.28.0",
+    "@types/node": "^20.7.1",
+    "@types/uuid": "^9.0.4",
+    "@typescript-eslint/eslint-plugin": "^6.7.3",
+    "@typescript-eslint/parser": "^6.7.3",
+    "eslint": "^8.50.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.28.1",
+    "prettier": "^3.0.3",
+    "rimraf": "^5.0.5",
+    "rollup-plugin-typescript2": "^0.35.0",
     "swiftlint": "^1.0.2",
-    "typescript": "^5.1.6"
-  },
-  "overrides": {
-    "eslint": "$eslint"
+    "typescript": "^5.2.2",
+    "vite": "^4.4.9",
+    "vite-plugin-dts": "^3.5.2"
   },
   "peerDependencies": {
-    "@capacitor/core": "^5.0.0"
+    "@capacitor/android": "^5.4.1",
+    "@capacitor/core": "^5.4.1",
+    "@capacitor/ios": "^5.4.1"
   },
   "prettier": "@ionic/prettier-config",
   "swiftlint": "@ionic/swiftlint-config",
-  "eslintConfig": {
-    "extends": "@ionic/eslint-config/recommended"
-  },
   "capacitor": {
     "ios": {
       "src": "ios"
