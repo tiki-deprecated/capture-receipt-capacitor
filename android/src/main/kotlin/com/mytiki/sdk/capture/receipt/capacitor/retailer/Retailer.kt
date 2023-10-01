@@ -13,10 +13,18 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.microblink.core.InitializeCallback
 import com.microblink.core.ScanResults
-import com.microblink.linking.*
+import com.microblink.linking.AccountLinkingClient
+import com.microblink.linking.AccountLinkingException
+import com.microblink.linking.BlinkReceiptLinkingSdk
+import com.microblink.linking.PasswordCredentials
+import com.microblink.linking.VERIFICATION_NEEDED
+import com.microblink.linking.Account as MbAccount
 import com.mytiki.sdk.capture.receipt.capacitor.R
+import com.mytiki.sdk.capture.receipt.capacitor.account.Account
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
 
 typealias OnReceiptCallback = ((receipt: ScanResults?) -> Unit)
 
@@ -75,7 +83,7 @@ class Retailer {
         onAccount: ((com.mytiki.sdk.capture.receipt.capacitor.account.Account) -> Unit)? = null,
         onError: ((String) -> Unit)? = null
     ) {
-        val mbAccount = Account(
+        val mbAccount = MbAccount(
             RetailerEnum.fromString(id).toMbInt(),
             PasswordCredentials(username, password)
         )
@@ -252,27 +260,51 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun accounts(
         context: Context,
-        onAccount: (com.mytiki.sdk.capture.receipt.capacitor.account.Account) -> Unit,
+        onAccount: (Account) -> Unit,
         onError: ((msg: String) -> Unit),
         onComplete: (() -> Unit)? = null
     ) {
         val client: AccountLinkingClient = client(context)
         client.accounts()
             .addOnSuccessListener { mbAccountList ->
-                if (mbAccountList != null) {
-                    mbAccountList.forEach { retailerAccount ->
-                        val account = com.mytiki.sdk.capture.receipt.capacitor.account.Account.fromRetailerAccount(retailerAccount)
-                        onAccount(account)
+                MainScope().async {
+                    if (mbAccountList != null) {
+                        var counter = 0
+                        mbAccountList.forEach { retailerAccount ->
+                            client.verify( retailerAccount.retailerId,
+                                success = { isVerified: Boolean, _: String ->
+                                    val account = Account.fromRetailerAccount(retailerAccount)
+                                    account.isVerified = isVerified
+                                    onAccount.invoke(account)
+                                    counter++
+                                    if(counter == mbAccountList.size){
+                                        onComplete?.invoke()
+                                        client.close()
+                                    }
+                                },
+                                failure = {
+                                    val account = Account.fromRetailerAccount(retailerAccount)
+                                    account.isVerified = false
+                                    onAccount.invoke(account)
+                                    counter++
+                                    if(counter == mbAccountList.size){
+                                        onComplete?.invoke()
+                                        client.close()
+                                    }
+                                }
+                            )
+                        }
+                    } else {
+                        onError("Error in retrieving accounts. Account list is null.")
+                        onComplete?.invoke()
+                        client.close()
                     }
-                    onComplete?.invoke()
-                } else {
-                    onError("Error in retrieving accounts. Account list is null.")
-                    onComplete?.invoke()
                 }
             }
             .addOnFailureListener {
                 onError(it.message ?: "Unknown Error in retrieving accounts. $it")
                 onComplete?.invoke()
+                client.close()
             }
     }
 
@@ -286,7 +318,7 @@ class Retailer {
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun verify(
-        mbAccount: com.microblink.linking.Account,
+        mbAccount: MbAccount,
         activity: AppCompatActivity,
         onVerify: ((com.mytiki.sdk.capture.receipt.capacitor.account.Account) -> Unit)?,
         onError: ((msg: String) -> Unit)?
