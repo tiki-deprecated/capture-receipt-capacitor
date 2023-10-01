@@ -173,18 +173,23 @@ class Email {
     ) {
         this.client(context, onError) { client ->
             client.accounts().addOnSuccessListener { credentials ->
-                if (credentials != null) {
-                    for ((index, credential) in credentials.withIndex()) {
-                        val account = Account.fromEmailAccount(credential)
-                        MainScope().async {
+                MainScope().async {
+                    var returnedAccounts = 0
+                    if (credentials != null) {
+                        for (credential in credentials) {
+                            val account = Account.fromEmailAccount(credential)
+
                             account.isVerified = client.verify(credential).await()
                             onAccount(account)
-                            if (credentials.size == (index + 1)) onComplete?.invoke()
+                            returnedAccounts++
+                            if (returnedAccounts == credentials.size) {
+                                onComplete?.invoke()
+                            }
                         }
+                    } else {
+                        onError("Error in retrieving accounts. Account list is null.")
+                        onComplete?.invoke()
                     }
-                } else {
-                    onError("Error in retrieving accounts. Account list is null.")
-                    onComplete?.invoke()
                 }
             }.addOnFailureListener {
                 onError(it.message ?: it.toString())
