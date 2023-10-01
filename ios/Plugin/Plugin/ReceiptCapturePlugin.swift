@@ -13,7 +13,7 @@ public class ReceiptCapturePlugin: CAPPlugin {
     
     @objc public func initialize(_ call: CAPPluginCall) {
         if(call.getString("productKey") == "" || call.getString("licenseKey") == ""){
-            call.reject("Please, provide an valid LicenseKey and ProductKey")
+            call.reject("Please, provide a valid LicenseKey and ProductKey")
         }else{
             let reqInitialize = ReqInitialize(licenseKey: call.getString("productKey")!, productKey: call.getString("licenseKey")!)
             receiptCapture.initialize(reqInitialize: reqInitialize)
