@@ -15,19 +15,20 @@ export interface Account {
   username: string;
 
   /**
-   * The password associated with the account.
-   */
-  password?: string;
-
-  /**
    * The provider of the account, if applicable.
    */
   type: AccountType;
 
   /**
+   * The password associated with the account.
+   */
+  password?: string;
+
+  /**
    * Indicates whether the account linkage has been verified.
    */
   isVerified?: boolean;
+
 }
 
 export * from './defs';

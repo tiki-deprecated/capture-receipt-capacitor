@@ -4,13 +4,11 @@
  */
 
 import './assets/main.css';
-import type { Account } from '@mytiki/capture-receipt-capacitor';
+import type { Account, CallbackError, Receipt } from '@mytiki/capture-receipt-capacitor';
 import { accountTypes, instance } from '@mytiki/capture-receipt-capacitor';
 import { createApp } from 'vue';
 
 import App from './app.vue';
-import type { CallbackError } from 'dist/types/callback-mgr/callback-error';
-import type { Receipt } from 'dist/types';
 
 export const login = async (username: string, password: string, source: string) => {
   const account: Account = {
@@ -18,11 +16,20 @@ export const login = async (username: string, password: string, source: string) 
     password,
     type: accountTypes.from(source)!,
   };
-  await instance.login(account).catch((error: CallbackError) => console.log(error));
+  await instance.login(account).catch((error: ErrorCallback) => console.log(error));
 };
 
-export const accounts = async (): Promise<void> => instance.accounts((account: Account | CallbackError | Receipt | undefined) => console.log(account));
-export const scan = async (): Promise<void> => instance.scan((receipt: Account | CallbackError | Receipt | undefined) => console.log(receipt));
+export const accounts = async (): Promise<void> => instance.accounts(
+  (account: Account) => console.log(account),
+  () => console.log("complete"),
+  (payload: CallbackError) => console.log("error", JSON.stringify(payload)),
+);
+export const scan = async (): Promise<void> => instance.scan(
+  (receipt: Receipt) => console.log(receipt),
+  7,
+  () => console.log("complete"),
+  (payload: CallbackError) => console.log("error", JSON.stringify(payload)),
+);
 export const logout = async (): Promise<void> => instance.logout();
 export const initialize = async (): Promise<void> => {
   await instance.initialize(

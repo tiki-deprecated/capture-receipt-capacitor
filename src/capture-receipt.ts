@@ -6,11 +6,11 @@
 import * as uuid from 'uuid';
 
 import type { Account } from './account';
-import { CallbackManager } from './callback-mgr';
-import { CallbackDetails } from './callback-mgr/callback-details';
-import type { CallbackMgrCall } from './callback-mgr/callback-mgr-call';
+import { CallbackDetails } from './callback/callback-details';
+import { CallbackEvent } from './callback/callback-event';
+import { CallbackManager } from './callback/callback-mgr';
+import type { AccountCallback, CompleteCallback, ErrorCallback, ReceiptCallback } from './callback/types';
 import type { CaptureReceiptPlugin } from './plugin';
-import { PluginEvent } from './plugin/plugin-event';
 import { ReqAccount } from './plugin/req/req-account';
 import { ReqInitialize } from './plugin/req/req-initialize';
 import { ReqScan } from './plugin/req/req-scan';
@@ -20,12 +20,13 @@ import { ReqScan } from './plugin/req/req-scan';
  */
 export class CaptureReceipt {
   private plugin: CaptureReceiptPlugin;
-  private callbackMgr: CallbackManager;
+  private callbackMgr: CallbackManager = new CallbackManager();
 
   constructor(plugin: CaptureReceiptPlugin) {
     this.plugin = plugin;
-    this.callbackMgr = new CallbackManager();
-    this.plugin.addListener('onCapturePluginResult', this.callbackMgr.fire);
+    this.plugin.addListener('onCapturePluginResult', (err: any, ..._args: any[]) => {
+      this.callbackMgr.fire(err);
+    });
   }
 
   /**
@@ -59,7 +60,7 @@ export class CaptureReceipt {
    */
   async logout(account: Account | undefined = undefined): Promise<void> {
     const reqAccount = account != undefined ? new ReqAccount(account) : undefined;
-    this.plugin.logout(reqAccount);
+    await this.plugin.logout(reqAccount);
   }
 
   /**
@@ -70,15 +71,15 @@ export class CaptureReceipt {
    * @param onError - A callback that will be fired when an error happen
    */
   async scan(
-    onReceipt: CallbackMgrCall,
+    onReceipt: ReceiptCallback,
     daysCutOff: number | undefined = 7,
-    onComplete: CallbackMgrCall | undefined = undefined,
-    onError: CallbackMgrCall | undefined = undefined,
+    onComplete?: CompleteCallback,
+    onError?: ErrorCallback,
   ): Promise<void> {
     const req = new ReqScan(daysCutOff);
-    this.callbackMgr.add(new CallbackDetails(req.requestId, PluginEvent.onReceipt, onReceipt));
-    this.callbackMgr.add(new CallbackDetails(req.requestId, PluginEvent.onComplete, onComplete));
-    this.callbackMgr.add(new CallbackDetails(req.requestId, PluginEvent.onError, onError));
+    this.callbackMgr.add(new CallbackDetails(req.requestId, CallbackEvent.onReceipt, onReceipt));
+    if (onComplete) this.callbackMgr.add(new CallbackDetails(req.requestId, CallbackEvent.onComplete, onComplete));
+    if (onError) this.callbackMgr.add(new CallbackDetails(req.requestId, CallbackEvent.onError, onError));
     await this.plugin.scan(req);
   }
   /**
@@ -87,16 +88,12 @@ export class CaptureReceipt {
    * @param onComplete - A callback called after the search for account is finished.
    * @param onError - A callback that will be fired when an error occurs.
    */
-  async accounts(
-    onAccount: CallbackMgrCall,
-    onComplete: CallbackMgrCall | undefined = undefined,
-    onError: CallbackMgrCall | undefined = undefined,
-  ): Promise<void> {
+  async accounts(onAccount: AccountCallback, onComplete?: CompleteCallback, onError?: ErrorCallback): Promise<void> {
     const requestId = uuid.v4();
     const req = { requestId };
-    this.callbackMgr.add(new CallbackDetails(req.requestId, PluginEvent.onAccount, onAccount));
-    this.callbackMgr.add(new CallbackDetails(req.requestId, PluginEvent.onComplete, onComplete));
-    this.callbackMgr.add(new CallbackDetails(req.requestId, PluginEvent.onError, onError));
+    this.callbackMgr.add(new CallbackDetails(req.requestId, CallbackEvent.onAccount, onAccount));
+    if (onComplete) this.callbackMgr.add(new CallbackDetails(req.requestId, CallbackEvent.onComplete, onComplete));
+    if (onError) this.callbackMgr.add(new CallbackDetails(req.requestId, CallbackEvent.onError, onError));
     await this.plugin.accounts(req);
   }
 }
