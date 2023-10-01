@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.js
+package com.mytiki.sdk.capture.receipt.capacitor.plugin.js
 
 import com.getcapacitor.JSObject
 import com.microblink.core.Product

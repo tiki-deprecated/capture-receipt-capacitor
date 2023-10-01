@@ -27,8 +27,10 @@ class RspAccount(
      */
     override fun toJS(): JSObject =
         super.toJS()
-            .put("username", account.username)
-            .put("id", account.accountCommon.id)
-            .put("type", account.accountCommon.type.name)
-            .put("isVerified", account.isVerified)
+            .put("payload", JSObject()
+                .put("username", account.username)
+                .put("id", account.accountCommon.id)
+                .put("type", account.accountCommon.type.name)
+                .put("isVerified", account.isVerified)
+            )
 }

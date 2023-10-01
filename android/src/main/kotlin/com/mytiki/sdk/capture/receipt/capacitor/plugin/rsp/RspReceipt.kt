@@ -8,15 +8,15 @@ package com.mytiki.sdk.capture.receipt.capacitor.plugin.rsp
 import com.getcapacitor.JSObject
 import com.microblink.core.ScanResults
 import com.mytiki.sdk.capture.receipt.capacitor.plugin.PluginEvent
-import com.mytiki.sdk.capture.receipt.capacitor.js.JSCoupon
-import com.mytiki.sdk.capture.receipt.capacitor.js.JSFloatType
-import com.mytiki.sdk.capture.receipt.capacitor.js.JSPaymentMethod
-import com.mytiki.sdk.capture.receipt.capacitor.js.JSProduct
-import com.mytiki.sdk.capture.receipt.capacitor.js.JSPromotion
-import com.mytiki.sdk.capture.receipt.capacitor.js.JSRetailer
-import com.mytiki.sdk.capture.receipt.capacitor.js.JSShipment
-import com.mytiki.sdk.capture.receipt.capacitor.js.JSStringType
-import com.mytiki.sdk.capture.receipt.capacitor.js.JSSurvey
+import com.mytiki.sdk.capture.receipt.capacitor.plugin.js.JSCoupon
+import com.mytiki.sdk.capture.receipt.capacitor.plugin.js.JSFloatType
+import com.mytiki.sdk.capture.receipt.capacitor.plugin.js.JSPaymentMethod
+import com.mytiki.sdk.capture.receipt.capacitor.plugin.js.JSProduct
+import com.mytiki.sdk.capture.receipt.capacitor.plugin.js.JSPromotion
+import com.mytiki.sdk.capture.receipt.capacitor.plugin.js.JSRetailer
+import com.mytiki.sdk.capture.receipt.capacitor.plugin.js.JSShipment
+import com.mytiki.sdk.capture.receipt.capacitor.plugin.js.JSStringType
+import com.mytiki.sdk.capture.receipt.capacitor.plugin.js.JSSurvey
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -202,6 +202,7 @@ class RspReceipt(requestId: String, scanResults: ScanResults) : Rsp(requestId, P
      * @return A JSONObject containing the RSP receipt data.
      */
     override fun toJS(): JSObject = super.toJS()
+        .put("payload", JSObject()
             .put("receiptDate", receiptDate?.toJS())
             .put("receiptTime", receiptTime?.toJS())
             .put("retailerId", retailerId)
@@ -285,7 +286,7 @@ class RspReceipt(requestId: String, scanResults: ScanResults) : Rsp(requestId, P
             .put("merchantSources", JSONArray(merchantSources))
             .put("paymentTerminalId", paymentTerminalId?.toJS())
             .put("paymentTransactionId", paymentTransactionId?.toJS())
-            .put("combinedRawText", combinedRawText?.toJS())
+            .put("combinedRawText", combinedRawText?.toJS()))
 
     companion object {
         /**

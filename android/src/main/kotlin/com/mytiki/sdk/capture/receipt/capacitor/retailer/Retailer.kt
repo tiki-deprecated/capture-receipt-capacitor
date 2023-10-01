@@ -267,17 +267,19 @@ class Retailer {
         val client: AccountLinkingClient = client(context)
         client.accounts()
             .addOnSuccessListener { mbAccountList ->
-                MainScope().async {
-                    if (mbAccountList != null) {
+                if (mbAccountList.isNullOrEmpty()){
+                    onComplete?.invoke()
+                }else {
+                    MainScope().async {
                         var counter = 0
                         mbAccountList.forEach { retailerAccount ->
-                            client.verify( retailerAccount.retailerId,
+                            client.verify(retailerAccount.retailerId,
                                 success = { isVerified: Boolean, _: String ->
                                     val account = Account.fromRetailerAccount(retailerAccount)
                                     account.isVerified = isVerified
                                     onAccount.invoke(account)
                                     counter++
-                                    if(counter == mbAccountList.size){
+                                    if (counter == mbAccountList.size) {
                                         onComplete?.invoke()
                                         client.close()
                                     }
@@ -287,17 +289,13 @@ class Retailer {
                                     account.isVerified = false
                                     onAccount.invoke(account)
                                     counter++
-                                    if(counter == mbAccountList.size){
+                                    if (counter == mbAccountList.size) {
                                         onComplete?.invoke()
                                         client.close()
                                     }
                                 }
                             )
                         }
-                    } else {
-                        onError("Error in retrieving accounts. Account list is null.")
-                        onComplete?.invoke()
-                        client.close()
                     }
                 }
             }

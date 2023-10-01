@@ -16,6 +16,8 @@ class RspError(
      * @return A [JSONObject] representing the RSP account.
      */
     override fun toJS(): JSObject = super.toJS()
+        .put("payload", JSObject()
             .put("message", this.message)
             .put("code", this.code)
+        )
 }
