@@ -176,7 +176,10 @@ class Email {
             client.accounts().addOnSuccessListener { credentials ->
                 MainScope().async {
                     var returnedAccounts = 0
-                    if (credentials != null) {
+                    if (credentials.isNullOrEmpty()) {
+                        onComplete?.invoke()
+                        client.close()
+                    } else {
                         for (credential in credentials) {
                             val account = Account.fromEmailAccount(credential)
 
@@ -187,9 +190,6 @@ class Email {
                                 onComplete?.invoke()
                             }
                         }
-                    } else {
-                        onError("Error in retrieving accounts. Account list is null.")
-                        onComplete?.invoke()
                     }
                 }
             }.addOnFailureListener {

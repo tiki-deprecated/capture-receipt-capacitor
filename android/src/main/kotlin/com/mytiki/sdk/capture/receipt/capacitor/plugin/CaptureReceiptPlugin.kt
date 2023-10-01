@@ -110,7 +110,7 @@ class CaptureReceiptPlugin : Plugin() {
                 })
         }
         if (id.isNullOrBlank() && !username.isNullOrBlank()) {
-            call.reject("Account tyoe id is required for specific account logout.")
+            call.reject("Account type id is required for specific account logout.")
         } else if (!id.isNullOrBlank() && username.isNullOrBlank()) {
             call.reject("Username is required for specific account logout.")
         }

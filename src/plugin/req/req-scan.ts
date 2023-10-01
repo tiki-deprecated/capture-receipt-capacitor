@@ -15,11 +15,9 @@ import type { Req } from './req';
 export class ReqScan implements Req {
   requestId: string;
   dayCutOff?: number;
-  account?: Account | undefined;
 
-  constructor(dayCutOff?: number, account?: Account | undefined) {
+  constructor(dayCutOff?: number) {
     this.requestId = uuid.v4();
     this.dayCutOff = dayCutOff;
-    this.account = account;
   }
 }
