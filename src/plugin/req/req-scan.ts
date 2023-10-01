@@ -5,8 +5,6 @@
 
 import * as uuid from 'uuid';
 
-import type { Account } from '../../account';
-
 import type { Req } from './req';
 
 /**
