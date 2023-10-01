@@ -11,7 +11,7 @@ import com.getcapacitor.PluginCall
 import com.getcapacitor.PluginMethod
 import com.getcapacitor.annotation.CapacitorPlugin
 import com.microblink.core.ScanResults
-import com.mytiki.sdk.capture.receipt.capacitor.ReceiptCapture
+import com.mytiki.sdk.capture.receipt.capacitor.CaptureReceipt
 import com.mytiki.sdk.capture.receipt.capacitor.account.Account
 import com.mytiki.sdk.capture.receipt.capacitor.plugin.req.Req
 import com.mytiki.sdk.capture.receipt.capacitor.plugin.req.ReqAccount
@@ -35,8 +35,8 @@ import com.mytiki.sdk.capture.receipt.capacitor.plugin.rsp.RspReceipt
 @CapacitorPlugin(
     name = "CaptureReceipt"
 )
-class ReceiptCapturePlugin : Plugin() {
-    private val receiptCapture = ReceiptCapture()
+class CaptureReceiptPlugin : Plugin() {
+    private val captureReceipt = CaptureReceipt()
 
     /**
      * Initializes the receipt capture functionality.
@@ -49,7 +49,7 @@ class ReceiptCapturePlugin : Plugin() {
     @PluginMethod
     fun initialize(call: PluginCall) {
         val request = ReqInitialize(call)
-        receiptCapture.initialize(context, request.licenseKey, request.productKey, {
+        captureReceipt.initialize(context, request.licenseKey, request.productKey, {
             call.resolve()
         }, { error -> call.reject(error) })
     }
@@ -68,7 +68,7 @@ class ReceiptCapturePlugin : Plugin() {
         if (req.password.isNullOrBlank()) {
             call.reject("Provide password in login request")
         } else {
-            receiptCapture.login(
+            captureReceipt.login(
                 activity,
                 req.username,
                 req.password,
@@ -93,7 +93,7 @@ class ReceiptCapturePlugin : Plugin() {
         val id = call.data.getString("id")
         val username = call.data.getString("username")
         if (id.isNullOrBlank() && username.isNullOrBlank()) {
-            receiptCapture.logout(activity, null,
+            captureReceipt.logout(activity, null,
                 onError = {
                     call.reject(it)
                 },
@@ -101,7 +101,7 @@ class ReceiptCapturePlugin : Plugin() {
                     call.resolve()
                 })
         }else if (!id.isNullOrBlank() && !username.isNullOrBlank()) {
-            receiptCapture.logout(activity, Account.fromReq(call),
+            captureReceipt.logout(activity, Account.fromReq(call),
                 onError = {
                     call.reject(it)
                 },
@@ -127,7 +127,7 @@ class ReceiptCapturePlugin : Plugin() {
     @PluginMethod
     fun accounts(call: PluginCall) {
         val req = Req(call)
-        receiptCapture.accounts(
+        captureReceipt.accounts(
             context,
             { account: Account -> onAccount(req.requestId, account) },
             { error -> onError(req.requestId, error) },
@@ -148,7 +148,7 @@ class ReceiptCapturePlugin : Plugin() {
     @PluginMethod
     fun scan(call: PluginCall) {
         val req = ReqScan(call)
-        receiptCapture.scan(activity, req.dayCutOff,
+        captureReceipt.scan(activity, req.dayCutOff,
             onComplete = { onComplete(req.requestId) },
             onError = { msg -> onError(req.requestId, msg) },
             onReceipt = { receipt -> onReceipt(req.requestId, receipt) }

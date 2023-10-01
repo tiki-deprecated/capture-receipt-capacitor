@@ -27,7 +27,7 @@ typealias OnCompleteCallback = (() -> Unit)
 /**
  * A plugin for capturing and processing receipts in a Capacitor-based Android application.
  */
-class ReceiptCapture {
+class CaptureReceipt {
     private val email = Email()
     private val retailer = Retailer()
 
