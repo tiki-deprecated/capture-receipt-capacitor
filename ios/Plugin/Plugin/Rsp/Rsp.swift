@@ -9,6 +9,8 @@ import Capacitor
 
 /// A protocol defining a common interface for response objects in the ReceiptCapture plugin.
 protocol Rsp {
+    let requestId: String
+    let event: PluginEvent
     
     /// Converts the response object into a `PluginCallResultData` dictionary for sending back to the Capacitor plugin.
     ///

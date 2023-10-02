@@ -10,6 +10,7 @@
 		50ADFF92201F53D600D50D53 /* Plugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ADFF88201F53D600D50D53 /* Plugin.framework */; };
 		50ADFFA42020D75100D50D53 /* Capacitor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ADFFA52020D75100D50D53 /* Capacitor.framework */; };
 		8C0623642AB2F9AE00CABC17 /* ReceiptCapturePlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C06233E2AB2F9AE00CABC17 /* ReceiptCapturePlugin.h */; };
+		8C502ECE2ACAFE8F009A26C5 /* PluginEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C502ECD2ACAFE8F009A26C5 /* PluginEvent.swift */; };
 		8CFF1FA12ACA1EA800F0E853 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8CFF1FA02ACA1EA800F0E853 /* Info.plist */; };
 		8CFF1FA22ACA1F8A00F0E853 /* ReceiptCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235A2AB2F9AE00CABC17 /* ReceiptCapture.swift */; };
 		8CFF1FA32ACA1F9100F0E853 /* Retailer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235E2AB2F9AE00CABC17 /* Retailer.swift */; };
@@ -43,7 +44,7 @@
 		8CFF1FBF2ACA1FAB00F0E853 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235D2AB2F9AE00CABC17 /* Account.swift */; };
 		8CFF1FC02ACA1FAB00F0E853 /* AccountTypeEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235B2AB2F9AE00CABC17 /* AccountTypeEnum.swift */; };
 		8CFF1FC12ACA1FAB00F0E853 /* AccountCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623392AB2F9AE00CABC17 /* AccountCommon.swift */; };
-		B7AB3BC37ECA3B920D1ED1B2 /* BuildFile in Frameworks */ = {isa = PBXBuildFile; };
+		B7AB3BC37ECA3B920D1ED1B2 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		BF253E26DF79DE6DA572F9B5 /* Pods_Plugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 910B72BD70E81B39FE84D250 /* Pods_Plugin.framework */; };
 		CBCF9B9D053D57F4636A9BD5 /* Pods_PluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4411A121C6318C27F4380923 /* Pods_PluginTests.framework */; };
 /* End PBXBuildFile section */
@@ -100,6 +101,7 @@
 		8C0623832AB2FA2400CABC17 /* BlinkReceiptStatic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BlinkReceiptStatic.framework; path = ../microblink/ios/BlinkReceiptStatic.framework; sourceTree = "<group>"; };
 		8C06238E2AB2FE9400CABC17 /* BlinkReceiptStatic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BlinkReceiptStatic.framework; path = Plugin/microblink/BlinkReceiptStatic.framework; sourceTree = "<group>"; };
 		8C0623902AB3074D00CABC17 /* RspAccountList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspAccountList.swift; sourceTree = "<group>"; };
+		8C502ECD2ACAFE8F009A26C5 /* PluginEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginEvent.swift; sourceTree = "<group>"; };
 		8CFF1F9D2AC94D1B00F0E853 /* Req.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Req.swift; sourceTree = "<group>"; };
 		8CFF1FA02ACA1EA800F0E853 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		910B72BD70E81B39FE84D250 /* Pods_Plugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Plugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -112,7 +114,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				50ADFFA42020D75100D50D53 /* Capacitor.framework in Frameworks */,
-				B7AB3BC37ECA3B920D1ED1B2 /* BuildFile in Frameworks */,
+				B7AB3BC37ECA3B920D1ED1B2 /* (null) in Frameworks */,
 				BF253E26DF79DE6DA572F9B5 /* Pods_Plugin.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -236,6 +238,7 @@
 				8C06233E2AB2F9AE00CABC17 /* ReceiptCapturePlugin.h */,
 				8C06235C2AB2F9AE00CABC17 /* ReceiptCapturePlugin.m */,
 				8C06233D2AB2F9AE00CABC17 /* ReceiptCapturePlugin.swift */,
+				8C502ECD2ACAFE8F009A26C5 /* PluginEvent.swift */,
 			);
 			path = Plugin;
 			sourceTree = "<group>";
@@ -509,6 +512,7 @@
 				8CFF1FAC2ACA1FA100F0E853 /* RspReceipt.swift in Sources */,
 				8CFF1FBC2ACA1FA100F0E853 /* RspAccount.swift in Sources */,
 				8CFF1FAD2ACA1FA100F0E853 /* RspCoupon.swift in Sources */,
+				8C502ECE2ACAFE8F009A26C5 /* PluginEvent.swift in Sources */,
 				8CFF1FBD2ACA1FA700F0E853 /* EmailEnum.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

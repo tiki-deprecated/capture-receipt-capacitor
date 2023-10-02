@@ -243,7 +243,7 @@ public struct RspReceipt: Rsp {
      - Returns: A dictionary containing receipt information in a format suitable for a Capacitor plugin call result.
      */
     func toPluginCallResultData() -> Capacitor.PluginCallResultData {
-        var ret = JSObject()
+        var payload = JSObject()
         // Mapping struct properties to dictionary values.
         ret["receiptDate"] = receiptDate
         ret["receiptTime"] = receiptTime 
@@ -308,6 +308,11 @@ public struct RspReceipt: Rsp {
         ret["paymentTerminalId"] = paymentTerminalId
         ret["paymentTransactionId"] = paymentTransactionId
         ret["combinedRawText"] = combinedRawText
+        let ret = [
+            "requestId" : requestId,
+            "event" : event,
+            "payload": payload
+        ]
         return ret
     }
 }

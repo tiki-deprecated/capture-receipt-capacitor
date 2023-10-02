@@ -31,14 +31,22 @@ public class ReceiptCapturePlugin: CAPPlugin {
     }
 
     @objc func accounts(_ call: CAPPluginCall){
-        receiptCapture.accounts(onError: {error in call.reject(error)}, onComplete: {rspAccount in call.resolve(rspAccount.toPluginCallResultData())})
+        receiptCapture.accounts(
+            onError: {error in call.reject(error)},
+            onComplete: {rspAccount in call.resolve(rspAccount.toPluginCallResultData())})
     }
     
     @objc func scan(_ call: CAPPluginCall) {
         receiptCapture.scan(call: call, reqScan: ReqScan(data: call), onError: {error in call.reject(error)}, onComplete: {rspReceipt in call.resolve(rspReceipt.toPluginCallResultData())}, onKeepAlive: {keepAlive in call.keepAlive = keepAlive })
     }
     
-    func onScan(_ scanResult: RspScan? = nil){
+    func onScan(_ requestId: String, _ scanResult: RspScan? = nil){
+        let rsp = RspReceipt(scanResults: scanResult).toPluginCallResultData()
+        self.notifyListeners("onReceipt", data: scanResult?.toPluginCallResultData())
+    }
+    
+    private func onComplete(requestId: String){
+        let rsp = Rsp(requestId, .onComplete).toPluginCallResultData()
         self.notifyListeners("onReceipt", data: scanResult?.toPluginCallResultData())
     }
 }
