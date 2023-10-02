@@ -12,23 +12,6 @@ import Capacitor
 /// A Swift class representing an email plugin for handling e-receipts and email account management.
 public class Email {
     
-    /// Initializes the Email plugin with license and product keys and optional Google Client ID.
-    ///
-    /// - Parameters:
-    ///   - licenseKey: The license key for the plugin.
-    ///   - productKey: The product key for the plugin.
-    ///   - googleClientId: The Google Client ID for OAuth authentication (optional).
-    public init(_ licenseKey: String, _ productKey: String, _ googleClientId: String?)  {
-        DispatchQueue.main.async {
-            BRScanManager.shared().licenseKey = licenseKey
-            BRScanManager.shared().prodIntelKey = productKey
-            BREReceiptManager.shared().googleClientId = googleClientId
-            BRScanManager.shared().daysToStoreReceiptData =  30
-            BRAccountLinkingManager.shared()
-        }
-        
-    }
-    
     /// Initializes the Email plugin with license and product keys.
     ///
     /// - Parameters:
@@ -49,14 +32,12 @@ public class Email {
     /// - Parameters:
     ///   - account: An instance of the Account struct containing user and account information.
     ///   - pluginCall: The CAPPluginCall object representing the plugin call.
-    public func login(_ account: Account, onError: @escaping (String) -> Void, onComplete: @escaping () -> Void) {
-        let email = BRIMAPAccount(provider: .gmailIMAP, email: account.user, password: account.password!)
-        DispatchQueue.main.async {
+    public func login(_ account: Account, onError: @escaping (String) -> Void, onComplete: @escaping () -> Void) async {
+        await DispatchQueue.main.async {
+            print("start login")
             let rootVc = UIApplication.shared.windows.first?.rootViewController
             BREReceiptManager.shared().setupIMAP(for: email, viewController: rootVc!, withCompletion: { result in
             })
-        }
-        Task(priority: .high) {
             await BREReceiptManager.shared().verifyImapAccount(email, withCompletion: { success, error in
                 if !success {
                     onComplete()
@@ -64,7 +45,8 @@ public class Email {
                     onError(error.debugDescription)
                 }
             })
-    }
+        }
+        print("end login")
     }
     
     /// Logs out a user account or signs out of all accounts.

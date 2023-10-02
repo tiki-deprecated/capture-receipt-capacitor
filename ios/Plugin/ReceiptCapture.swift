@@ -27,7 +27,6 @@ public class ReceiptCapture: NSObject {
         let scanManager = BRScanManager.shared()
         scanManager.licenseKey = licenseKey
         scanManager.prodIntelKey = productKey
-        physical = Physical()
         email = Email(licenseKey, productKey)
         retailer = Retailer(licenseKey, productKey)
     }
