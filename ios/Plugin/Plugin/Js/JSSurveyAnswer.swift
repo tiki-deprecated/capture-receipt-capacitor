@@ -14,7 +14,7 @@ import Capacitor
 
  This struct is used to convey survey answer details including text and description.
  */
-struct RspSurveyAnswer: Rsp {
+struct JSSurveyAnswer {
     /// The text of the survey answer.
     private let text: String?
     /// The description of the survey answer.

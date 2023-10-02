@@ -9,8 +9,8 @@
 import Foundation
 
 public enum PluginEvent: String{
-    case onAccount,
-    case onComplete,
-    case onError,
+    case onAccount
+    case onComplete
+    case onError
     case onReceipt
 }

@@ -12,7 +12,9 @@ import Capacitor
 
  This struct is used to convey details about a scan, including the scanned receipt, whether the scan is running, and additional account information if available.
  */
-public struct RspScan: Rsp {
+public struct RspScan{
+    var requestId: String 
+    var event: PluginEvent
     /// The scanned receipt information.
     let scan: RspReceipt
     /// Indicates whether the scan is currently running.
@@ -27,9 +29,11 @@ public struct RspScan: Rsp {
         - scan: The scanned receipt information.
         - account: Additional account information (optional, default is `nil`).
      */
-    public init(scan: RspReceipt, account: Account? = nil) {
+    public init(requestId: String, event: PluginEvent, scan: RspReceipt, account: Account? = nil) {
         self.scan = scan
         self.account = account
+        self.requestId = requestId
+        self.event = event
     }
     /**
      Converts the `RspScan` struct into a dictionary suitable for use in plugin response data.

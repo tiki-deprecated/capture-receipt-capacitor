@@ -12,7 +12,7 @@ import Capacitor
 
  This struct is used to convey payment method details, such as payment method type, card type, card issuer, and amount.
  */
-public struct RspPaymentMethod: Rsp {
+public struct JSPaymentMethod {
     /// The payment method, if available.
     private let paymentMethod: String?
     /// The card type, if available.

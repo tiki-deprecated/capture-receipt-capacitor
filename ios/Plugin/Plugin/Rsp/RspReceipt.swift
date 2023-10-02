@@ -13,7 +13,9 @@ import Capacitor
 
  This struct is used to convey details about a receipt, including various receipt fields, such as date, time, products, coupons, totals, and more.
  */
-public struct RspReceipt: Rsp {
+public struct RspReceipt{
+    var requestId: String
+    var event: PluginEvent
     /// The date of the receipt, if available.
     private let receiptDate: String?
     /// The time of the receipt, if available.
@@ -21,9 +23,9 @@ public struct RspReceipt: Rsp {
     /// The retailer's identifier.
     private let retailerId: UInt
     /// An array of products associated with the receipt.
-    private let products: [RspProduct]
+    private let products: [JSProduct]
     /// An array of coupons associated with the receipt.
-    private let coupons: [RspCoupon]
+    private let coupons: [JSCoupon]
     /// The total amount of the receipt, if available.
     private let total: Float?
     /// The tip amount, if available.
@@ -55,7 +57,7 @@ public struct RspReceipt: Rsp {
     /// The register identifier, if available.
     private let registerId: String?
     /// An array of payment methods used for the receipt.
-    private let paymentMethods: [RspPaymentMethod]
+    private let paymentMethods: [JSPaymentMethod]
     /// The tax identifier, if available.
     private let taxId: String?
     /// The mall name, if available.
@@ -75,15 +77,13 @@ public struct RspReceipt: Rsp {
     /// The raw HTML content of the eReceipt, if available.
     private let eReceiptRawHtml: String?
     /// An array of shipment information associated with the receipt.
-    private let shipments: [RspShipment]
+    private let shipments: [JSShipment]
     /// The long transaction identifier, if available.
     private let longTransactionId: String?
     /// Indicates if the subtotal matches expectations.
     private let subtotalMatches: Bool?
     /// The email provider associated with the eReceipt, if available.
     private let eReceiptEmailProvider: String?
-    /// The email identifier associated with the eReceipt, if available.
-    private let eReceiptEmailId: String?
     /// Indicates if the eReceipt was successfully authenticated.
     private let eReceiptAuthenticated: Bool?
     /// Indicates if the shopper is an Instacart shopper.
@@ -101,9 +101,9 @@ public struct RspReceipt: Rsp {
     /// The number of products pending lookup.
     private let productsPendingLookup: Int?
     /// An array of qualified promotions associated with the receipt.
-    private let qualifiedPromotions: [RspPromotion]
+    private let qualifiedPromotions: [JSPromotion]
     /// An array of unqualified promotions associated with the receipt.
-    private let unqualifiedPromotions: [RspPromotion]
+    private let unqualifiedPromotions: [JSPromotion]
     /// Extended fields of the receipt, if available.
     private let extendedFields: JSObject?
     /// Additional fees associated with the eReceipt, if available.
@@ -147,13 +147,13 @@ public struct RspReceipt: Rsp {
      - Parameters:
         - scanResults: The `BRScanResults` object containing receipt information.
      */
-    init(scanResults: BRScanResults) {
+    init(requestId: String, scanResults: BRScanResults) {
         // Initialization logic to map values from BRScanResults to struct properties.
         receiptDate = scanResults.receiptDate?.value
         receiptTime = scanResults.receiptTime?.value
         retailerId = scanResults.retailerId.rawValue
-        products = scanResults.products?.map { product in RspProduct(product: product) } ?? []
-        coupons = scanResults.coupons?.map { coupon in RspCoupon(coupon: coupon) } ?? []
+        products = scanResults.products?.map { product in JSProduct(product: product) } ?? []
+        coupons = scanResults.coupons?.map { coupon in JSCoupon(coupon: coupon) } ?? []
         total = scanResults.total?.value
         tip = scanResults.tip?.value
         subtotal = scanResults.subtotal?.value
@@ -169,7 +169,7 @@ public struct RspReceipt: Rsp {
         cashierId = scanResults.cashierId?.value
         transactionId = scanResults.transactionId?.value
         registerId = scanResults.registerId?.value
-        paymentMethods = scanResults.paymentMethods?.map { payment in RspPaymentMethod(paymentMethod: payment.method?.value, cardType: payment.cardType?.value, cardIssuer: payment.cardIssuer?.value, amount: payment.amount.value) } ?? []
+        paymentMethods = scanResults.paymentMethods?.map { payment in JSPaymentMethod(paymentMethod: payment.method?.value, cardType: payment.cardType?.value, cardIssuer: payment.cardIssuer?.value, amount: payment.amount.value) } ?? []
         taxId = scanResults.taxId?.value
         mallName = scanResults.mallName?.value
         last4cc = scanResults.last4CC?.value
@@ -180,16 +180,15 @@ public struct RspReceipt: Rsp {
         eReceiptOrderNumber = scanResults.ereceiptOrderNumber
         eReceiptOrderStatus = scanResults.ereceiptOrderStatus
         eReceiptRawHtml = scanResults.ereceiptRawHTML
-        shipments = scanResults.shipments?.map { shipment in RspShipment(shipment: shipment) } ?? []
+        shipments = scanResults.shipments?.map { shipment in JSShipment(shipment: shipment) } ?? []
         longTransactionId = scanResults.longTransactionId?.value
         subtotalMatches = scanResults.subtotalMatches
         eReceiptEmailProvider = scanResults.ereceiptEmailProvider
-//        eReceiptEmailId = scanResults.ereceiptEmailId
         eReceiptAuthenticated = scanResults.ereceiptAuthenticated
         instacartShopper = scanResults.isInstacartShopper
         if(scanResults.ereceiptComponentEmails != nil){
             eReceiptComponentEmails = scanResults.ereceiptComponentEmails?.map{ results in
-                RspReceipt(scanResults: results)
+                RspReceipt(requestId: requestId, scanResults: results)
             } ?? []
         }else {
             eReceiptComponentEmails = []
@@ -199,8 +198,8 @@ public struct RspReceipt: Rsp {
         duplicateBlinkReceiptIds = scanResults.duplicateBlinkReceiptIds ?? []
         merchantMatchGuess = scanResults.merchantGuess
         productsPendingLookup = scanResults.productsPendingLookup
-        qualifiedPromotions = scanResults.qualifiedPromotions?.map { promotion in RspPromotion(promotion: promotion) } ?? []
-        unqualifiedPromotions = scanResults.unqualifiedPromotions?.map { promotion in RspPromotion(promotion: promotion) } ?? []
+        qualifiedPromotions = scanResults.qualifiedPromotions?.map { promotion in JSPromotion(promotion: promotion) } ?? []
+        unqualifiedPromotions = scanResults.unqualifiedPromotions?.map { promotion in JSPromotion(promotion: promotion) } ?? []
         if let extendedFields = scanResults.extendedFields {
             var extendedFieldsDictionary = JSObject()
             for entry in extendedFields {
@@ -234,6 +233,8 @@ public struct RspReceipt: Rsp {
         paymentTerminalId = scanResults.paymentTerminalId?.value
         paymentTransactionId = scanResults.paymentTransactionId?.value
         combinedRawText = scanResults.combinedRawText
+        self.requestId = requestId
+        self.event = .onReceipt
     }
 
     
@@ -245,74 +246,73 @@ public struct RspReceipt: Rsp {
     func toPluginCallResultData() -> Capacitor.PluginCallResultData {
         var payload = JSObject()
         // Mapping struct properties to dictionary values.
-        ret["receiptDate"] = receiptDate
-        ret["receiptTime"] = receiptTime 
-        ret["retailerId"] = Int(retailerId)
-        ret["products"] = JSArray(arrayLiteral: products.map { prd in prd.toPluginCallResultData() } )
-        ret["coupons"] = JSArray(arrayLiteral: products.map { prd in prd.toPluginCallResultData() } )
-        ret["total"] = total
-        ret["tip"] = tip
-        ret["subtotal"] = subtotal
-        ret["taxes"] = taxes
-        ret["storeNumber"] = storeNumber
-        ret["merchantName"] = merchantName
-        ret["storeAddress"] = storeAddress
-        ret["storeCity"] = storeCity
-        ret["blinkReceiptId"] = blinkReceiptId
-        ret["storeState"] = storeState
-        ret["storeZip"] = storeZip
-        ret["storePhone"] = storePhone
-        ret["cashierId"] = cashierId
-        ret["transactionId"] = transactionId
-        ret["registerId"] = registerId
-        ret["paymentMethods"] = JSArray(arrayLiteral: paymentMethods.map { method in method.toPluginCallResultData() })
-        ret["taxId"] = taxId
-        ret["mallName"] = mallName
-        ret["last4cc"] = last4cc
-        ret["ocrConfidence"] = ocrConfidence
-        ret["foundTopEdge"] = foundTopEdge
-        ret["foundBottomEdge"] = foundBottomEdge
-        ret["eReceiptOrderNumber"] = eReceiptOrderNumber
-        ret["eReceiptOrderStatus"] = eReceiptOrderStatus
-        ret["eReceiptRawHtml"] = eReceiptRawHtml
-        ret["shipments"] = JSArray(arrayLiteral: shipments.map { shipment in shipment.toPluginCallResultData() })
-        ret["longTransactionId"] = longTransactionId
-        ret["subtotalMatches"] = subtotalMatches
-        ret["eReceiptEmailProvider"] = eReceiptEmailProvider
-//        ret["eReceiptEmailId"] = eReceiptEmailId
-        ret["eReceiptAuthenticated"] = eReceiptAuthenticated
-        ret["instacartShopper"] = instacartShopper
-        ret["eReceiptComponentEmails"] = JSArray(arrayLiteral: eReceiptComponentEmails.map { email in email.toPluginCallResultData()} )
-        ret["duplicate"] = duplicate
-        ret["fraudulent"] = fraudulent
-        ret["duplicateBlinkReceiptIds"] = JSArray(duplicateBlinkReceiptIds )
-        ret["merchantMatchGuess"] = merchantMatchGuess
-        ret["productsPendingLookup"] = productsPendingLookup
-        ret["qualifiedPromotions"] = JSArray(arrayLiteral: qualifiedPromotions.map { promo in promo.toPluginCallResultData() } )
-        ret["unqualifiedPromotions"] = JSArray(arrayLiteral: unqualifiedPromotions.map { promo in promo.toPluginCallResultData() } )
-        ret["extendedFields"] = extendedFields
-        ret["eReceiptAdditionalFees"] = eReceiptAdditionalFees
-        ret["purchaseType"] = purchaseType
-        ret["channel"] = channel
-        ret["eReceiptFulfilledBy"] = eReceiptFulfilledBy
-        ret["eReceiptPOSSystem"] = eReceiptPOSSystem
-        ret["eReceiptSubMerchant"] = eReceiptSubMerchant
-        ret["barcode"] = barcode
-        ret["eReceiptMerchantEmail"] = eReceiptMerchantEmail
-        ret["eReceiptEmailSubject"] = eReceiptEmailSubject
-        ret["eReceiptShippingCosts"] = eReceiptShippingCosts
-        ret["currencyCode"] = currencyCode
-        ret["clientMerchantName"] = clientMerchantName
-        ret["loyaltyProgram"] = loyaltyProgram
-        ret["merchantSources"] = JSArray(merchantSources )
-        ret["paymentTerminalId"] = paymentTerminalId
-        ret["paymentTransactionId"] = paymentTransactionId
-        ret["combinedRawText"] = combinedRawText
+        payload["receiptDate"] = receiptDate
+        payload["receiptTime"] = receiptTime
+        payload["retailerId"] = Int(retailerId)
+        payload["products"] = JSArray(arrayLiteral: products.map { prd in prd.toPluginCallResultData() } )
+        payload["coupons"] = JSArray(arrayLiteral: products.map { prd in prd.toPluginCallResultData() } )
+        payload["total"] = total
+        payload["tip"] = tip
+        payload["subtotal"] = subtotal
+        payload["taxes"] = taxes
+        payload["storeNumber"] = storeNumber
+        payload["merchantName"] = merchantName
+        payload["storeAddress"] = storeAddress
+        payload["storeCity"] = storeCity
+        payload["blinkReceiptId"] = blinkReceiptId
+        payload["storeState"] = storeState
+        payload["storeZip"] = storeZip
+        payload["storePhone"] = storePhone
+        payload["cashierId"] = cashierId
+        payload["transactionId"] = transactionId
+        payload["registerId"] = registerId
+        payload["paymentMethods"] = JSArray(arrayLiteral: paymentMethods.map { method in method.toPluginCallResultData() })
+        payload["taxId"] = taxId
+        payload["mallName"] = mallName
+        payload["last4cc"] = last4cc
+        payload["ocrConfidence"] = ocrConfidence
+        payload["foundTopEdge"] = foundTopEdge
+        payload["foundBottomEdge"] = foundBottomEdge
+        payload["eReceiptOrderNumber"] = eReceiptOrderNumber
+        payload["eReceiptOrderStatus"] = eReceiptOrderStatus
+        payload["eReceiptRawHtml"] = eReceiptRawHtml
+        payload["shipments"] = JSArray(arrayLiteral: shipments.map { shipment in shipment.toPluginCallResultData() })
+        payload["longTransactionId"] = longTransactionId
+        payload["subtotalMatches"] = subtotalMatches
+        payload["eReceiptEmailProvider"] = eReceiptEmailProvider
+        payload["eReceiptAuthenticated"] = eReceiptAuthenticated
+        payload["instacartShopper"] = instacartShopper
+        payload["eReceiptComponentEmails"] = JSArray(arrayLiteral: eReceiptComponentEmails.map { email in email.toPluginCallResultData()} )
+        payload["duplicate"] = duplicate
+        payload["fraudulent"] = fraudulent
+        payload["duplicateBlinkReceiptIds"] = JSArray(duplicateBlinkReceiptIds )
+        payload["merchantMatchGuess"] = merchantMatchGuess
+        payload["productsPendingLookup"] = productsPendingLookup
+        payload["qualifiedPromotions"] = JSArray(arrayLiteral: qualifiedPromotions.map { promo in promo.toPluginCallResultData() } )
+        payload["unqualifiedPromotions"] = JSArray(arrayLiteral: unqualifiedPromotions.map { promo in promo.toPluginCallResultData() } )
+        payload["extendedFields"] = extendedFields
+        payload["eReceiptAdditionalFees"] = eReceiptAdditionalFees
+        payload["purchaseType"] = purchaseType
+        payload["channel"] = channel
+        payload["eReceiptFulfilledBy"] = eReceiptFulfilledBy
+        payload["eReceiptPOSSystem"] = eReceiptPOSSystem
+        payload["eReceiptSubMerchant"] = eReceiptSubMerchant
+        payload["barcode"] = barcode
+        payload["eReceiptMerchantEmail"] = eReceiptMerchantEmail
+        payload["eReceiptEmailSubject"] = eReceiptEmailSubject
+        payload["eReceiptShippingCosts"] = eReceiptShippingCosts
+        payload["currencyCode"] = currencyCode
+        payload["clientMerchantName"] = clientMerchantName
+        payload["loyaltyProgram"] = loyaltyProgram
+        payload["merchantSources"] = JSArray(merchantSources )
+        payload["paymentTerminalId"] = paymentTerminalId
+        payload["paymentTransactionId"] = paymentTransactionId
+        payload["combinedRawText"] = combinedRawText
         let ret = [
             "requestId" : requestId,
             "event" : event,
             "payload": payload
-        ]
+        ] as [String : Any]
         return ret
     }
 }

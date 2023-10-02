@@ -14,11 +14,11 @@ import Capacitor
 
  This struct is used to convey details about a shipment, including its status and the list of products within the shipment.
  */
-struct RspShipment: Rsp {
+struct JSShipment {
     /// The status of the shipment.
     private let status: String
     /// The list of products within the shipment.
-    private let products: [RspProduct]
+    private let products: [JSProduct]
 
     /**
      Initializes an `RspShipment` struct.
@@ -28,7 +28,7 @@ struct RspShipment: Rsp {
      */
     init(shipment: BRShipment) {
         status = shipment.status
-        products = shipment.products.map { product in RspProduct(product: product) }
+        products = shipment.products.map { product in JSProduct(product: product) }
     }
 
     /**

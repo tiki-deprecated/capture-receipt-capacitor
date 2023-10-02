@@ -15,7 +15,7 @@ import BlinkEReceipt
 
  This struct is used to convey survey response details including selected answers and free text comments.
  */
-struct RspSurveyResponse: Rsp {
+struct JSSurveyResponse {
     /// The indices of selected answers in the survey.
     let answersSelected: [Int]
     /// Free-text comments provided as part of the survey response.

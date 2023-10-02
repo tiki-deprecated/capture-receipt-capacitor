@@ -14,7 +14,7 @@ import Capacitor
 
  This struct is used to convey product details, including product number, description, quantity, pricing, brand, category, and more.
  */
-struct RspPossibleProduct: Rsp {
+struct JSProduct {
     /// The product number, if available.
     private let productNumber: String?
     /// The product description, if available.
@@ -35,10 +35,14 @@ struct RspPossibleProduct: Rsp {
     private let brand: String?
     /// The category of the product, if available.
     private let category: String?
+    /// The size of the product, if available.
+    private let size: String?
+    /// The URL of the product image, if available.
+    private let imageUrl: String?
     /// The shipping status of the product, if available.
     private let shippingStatus: String?
     /// Additional lines associated with the product.
-    private let additionalLines: [RspAdditionalLine]?
+    private let additionalLines: [JSAdditionalLine]?
     /// The price of the product after applying coupons, if available.
     private let priceAfterCoupons: Float?
     /// Indicates if the product is voided.
@@ -48,9 +52,9 @@ struct RspPossibleProduct: Rsp {
     /// Indicates if the product is sensitive.
     private let sensitive: Bool?
     /// Possible sub-products associated with the product.
-    private let possibleProducts: [RspProduct]?
+    private let possibleProducts: [JSPossibleProduct]?
     /// Sub-products of the product.
-    private let subProducts: [RspProduct]?
+    private let subProducts: [JSProduct]?
     /// Indicates if the product is user-added.
     private let added: Bool?
     /// The brand according to BlinkReceipt.
@@ -95,14 +99,16 @@ struct RspPossibleProduct: Rsp {
         productName = product.productName
         brand = product.brand
         category = product.category
+        size = product.size
+        imageUrl = product.imgUrl
         shippingStatus = product.shippingStatus
-        additionalLines = product.additionalLines?.map { additionalLine in RspAdditionalLine(additionalLine: additionalLine) } ?? []
+        additionalLines = product.additionalLines?.map { additionalLine in JSAdditionalLine(additionalLine: additionalLine) } ?? []
         priceAfterCoupons = product.priceAfterCoupons?.value
         voided = product.isVoided
         probability = product.probability
         sensitive = product.isSensitive
-        possibleProducts = product.possibleProducts?.map { prd in RspProduct(product: prd) } ?? []
-        subProducts = product.subProducts?.map { prd in RspProduct(product: prd) } ?? []
+        possibleProducts = product.possibleProducts?.map { prd in JSPossibleProduct(product: prd) } ?? []
+        subProducts = product.subProducts?.map { prd in JSProduct(product: prd) } ?? []
         added = product.userAdded
         blinkReceiptBrand = product.brand
         blinkReceiptCategory = product.category
@@ -135,8 +141,8 @@ struct RspPossibleProduct: Rsp {
         ret["productName"] = productName
         ret["brand"] = brand
         ret["category"] = category
-//        ret["size"] = size
-//        ret["imageUrl"] = imageUrl
+        ret["size"] = size
+        ret["imageUrl"] = imageUrl
         ret["shippingStatus"] = shippingStatus
         ret["additionalLines"] = additionalLines
         ret["priceAfterCoupons"] = priceAfterCoupons

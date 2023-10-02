@@ -14,7 +14,7 @@ import BlinkEReceipt
 
  This struct is used to encapsulate coupon details, including its type, amount, SKU, description, and related product index, in response to plugin calls.
  */
-struct RspCoupon: Rsp {
+struct JSCoupon {
     /// The type of the coupon.
     private let type: UInt?
     

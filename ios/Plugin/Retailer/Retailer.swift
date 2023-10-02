@@ -93,64 +93,36 @@ public class Retailer : CAPPlugin{
     /// - Parameters:
     ///   - account: An optional instance of the Account struct containing user and account information.
     ///   - call: The CAPPluginCall object representing the plugin call.
-    public func orders(reqScan: ReqScan, onError: @escaping (String) -> Void, onComplete: @escaping (RspReceipt) -> Void, onKeepAlive: @escaping (Bool) -> Void){
-        if(reqScan.account == nil){
-            allAccountsOrders(reqScan: reqScan, onError: {error in onError(error)}, onComplete: {rspReceipt in onComplete(rspReceipt)}, onKeepAlive: {keepAlive in onKeepAlive(keepAlive)})
-            return
-        }
-        guard let retailer: BRAccountLinkingRetailer = RetailerEnum(
-            rawValue: reqScan.account!.accountType.source)!.toBRAccountLinkingRetailer() else {
-            onError("Unsuported retailer \(reqScan.account!.accountType.source)")
-            return
-        }
-        
-        BRAccountLinkingManager.shared().grabNewOrders(for: retailer) { retailer, order, remaining, viewController, errorCode, sessionId in
-            if(errorCode == .none && order != nil){
-                onComplete(RspReceipt(scanResults: order!))
-            }
-        }
-    }
-    
-    /// Retrieves orders for all linked accounts.
-    ///
-    /// - Parameters:
-    ///   - call: The CAPPluginCall object representing the plugin call.
-    public func allAccountsOrders(reqScan: ReqScan, onError: @escaping (String) -> Void, onComplete: @escaping (RspReceipt) -> Void, onKeepAlive: @escaping (Bool) -> Void) {
-        onKeepAlive(true)
-        var returnedAccounts = 0
+    public func orders(reqScan: ReqScan, onError: @escaping (String) -> Void, onReceipt: @escaping(RspReceipt) -> Void, onComplete: @escaping () -> Void){
         Task(priority: .high) {
             let retailers = await BRAccountLinkingManager.shared().getLinkedRetailers()
             for ret in  retailers {
                 DispatchQueue.main.async {
                     BRAccountLinkingManager.shared().grabNewOrders( for: .amazonBeta) { retailer, order, remaining, viewController, errorCode, sessionId in
                         if(errorCode == .none && order != nil){
-                            onComplete(RspReceipt(scanResults: order!))
-                            returnedAccounts+=1
-                            if (returnedAccounts >= retailers.count){
-                                onKeepAlive(false)
-                                onComplete(RspReceipt(scanResults: order!))
-                            }
+                            onReceipt(RspReceipt(requestId: reqScan.requestId, scanResults: order!))
                         }
                     }
                 }
             }
+            onComplete()
         }
     }
+    
+
         
         /// Retrieves a list of linked accounts.
         ///
         /// - Returns: An array of Account objects representing linked accounts.
-        public func accounts () -> [Account] {
-            var accountsList = [Account]()
+        public func accounts (onError: (String) -> Void, onAccount: (Account) -> Void,  onComplete: () -> Void) {
             let retailers = BRAccountLinkingManager.shared().getLinkedRetailers()
             for ret in retailers {
                 let connection =  BRAccountLinkingManager.shared().getLinkedRetailerConnection(BRAccountLinkingRetailer(rawValue: ret.uintValue)!)
-                let isVerified =  false
                 let accountCommon = AccountCommon.init(type: .retailer, source: RetailerEnum.fromBRAccountLinkingRetailer(BRAccountLinkingRetailer(rawValue: ret.uintValue)!).toString()!)
-                let account = Account(accountType: accountCommon, user: connection!.username!, password: connection!.password!, isVerified: isVerified)
-                accountsList.append(account)
+                let account = Account(accountType: accountCommon, user: connection!.username!, password: connection!.password!, isVerified: true)
+                onAccount(account)
             }
-            return accountsList
+            onComplete()
             
         }
         /// Handles the callback after attempting to verify a retailer account.

@@ -12,17 +12,21 @@ import Capacitor
 
  This struct is used to convey information about the initialization status of the ReceiptCapture plugin.
  */
-struct RspInitialized: Rsp {
+public struct RspInitialized{
+    var requestId: String
+    var event: PluginEvent
     /// A flag indicating whether the plugin is initialized.
-    private let isInitialized: Bool
+    var isInitialized: Bool
 
     /**
      Initializes an `RspInitialized` struct.
 
      - Parameter isInitialized: A boolean flag indicating whether the ReceiptCapture plugin is initialized.
      */
-    init(isInitialized: Bool) {
+    init(isInitialized: Bool, requestId: String, event: PluginEvent) {
         self.isInitialized = isInitialized
+        self.requestId = requestId
+        self.event = event
     }
 
     /**
@@ -32,7 +36,9 @@ struct RspInitialized: Rsp {
      */
     func toPluginCallResultData() -> Capacitor.PluginCallResultData {
         return [
-            "isInitialized": isInitialized
+            "isInitialized": isInitialized,
+            "requestId": requestId,
+            "event": event
         ]
     }
 }

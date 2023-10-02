@@ -14,7 +14,7 @@ import Capacitor
 
  This struct is used to encapsulate floating-point values along with their confidence scores in response to plugin calls.
  */
-struct RspFloatType: Rsp {
+struct JSFloatType{
     /// The confidence score associated with the value.
     private let confidence: Float
     

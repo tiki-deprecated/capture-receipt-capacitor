@@ -14,7 +14,7 @@ import BlinkEReceipt
 
  This class is used to encapsulate additional line details of a product, including its type, text, and line number in response to plugin calls.
  */
-class RspAdditionalLine: Rsp {
+class JSAdditionalLine {
     /// The type of the additional line (e.g., "Subtotal").
     private let type: BRStringValue
     

@@ -12,7 +12,6 @@ import BlinkReceipt
 public class ReceiptCapture: NSObject {
     
     var email: Email? = nil
-    var physical: Physical? = nil
     var retailer: Retailer? = nil
     
     /// The pending CAPPluginCall to handle asynchronous scanning.
@@ -34,12 +33,12 @@ public class ReceiptCapture: NSObject {
     /// Handles user login for receipt management.
     ///
     /// - Parameter call: The CAPPluginCall representing the login request.
-    public func login(reqLogin: ReqLogin, onError: @escaping (String) -> Void, onComplete: @escaping (Account?) -> Void) {
-        guard let accountType = AccountCommon.defaults[reqLogin.source] else {
-            onError("Invalid source: \(reqLogin.source)")
+    public func login(reqAccount: ReqAccount, onError: @escaping (String) -> Void, onComplete: @escaping (Account?) -> Void) {
+        guard let accountType = AccountCommon.defaults[reqAccount.accountCommon.source] else {
+            onError("Invalid source: \(reqAccount.accountCommon.source)")
             return
         }
-        let account = Account.init(accountType: accountType, user: reqLogin.username, password: reqLogin.password, isVerified: false)
+        let account = Account.init(accountType: accountType, user: reqAccount.username, password: reqAccount.password, isVerified: false)
         switch account.accountType.type {
         case .email :
             guard let email = email else {
@@ -105,7 +104,7 @@ public class ReceiptCapture: NSObject {
     /// Retrieves a list of user accounts for receipt management.
      ///
      /// - Parameter call: The CAPPluginCall representing the request for account information.
-    public func accounts( onError: @escaping (String) -> Void, onComplete: @escaping (RspAccountList) -> Void) {
+    public func accounts( onError: @escaping (String) -> Void, onComplete: @escaping () -> Void, onAccount: (Account) -> Void) {
         guard let retailer = retailer else {
             onError("Retailer not initialized. Did you call .initialize()?")
             return
@@ -115,78 +114,27 @@ public class ReceiptCapture: NSObject {
             return
         }
         
-        let emails = email.accounts()
-        let retailers = retailer.accounts()
-        onComplete(
-            RspAccountList(
-                accounts: emails + retailers
-            )
-        )
+        email.accounts(onError: {error in onError(error)}, onAccount: {account in onAccount(account)}, onComplete: {onComplete()})
+        retailer.accounts(onError: {error in onError(error)}, onAccount: {account in onAccount(account)}, onComplete: {onComplete()})
+        onComplete()
+        
     }
     
     /// Initiates receipt scanning based on the specified account type.
     ///
     /// - Parameter call: The CAPPluginCall representing the scan request.
-    public func scan(call: CAPPluginCall?, reqScan: ReqScan, onError: @escaping (String) -> Void, onComplete: @escaping (RspReceipt) -> Void, onKeepAlive: @escaping (Bool) -> Void) {
-        if reqScan.account == nil {
-            switch reqScan.scanType {
-            case .EMAIL:
-                guard let email = email else {
-                    onError("Email not initialized. Did you call .initialize()?")
-                    return
-                }
-                email.scan(reqScan: reqScan, onError: {error in onError(error)}, onComplete: {rspScan in onComplete(rspScan)})
-                break
-            case .RETAILER:
-                guard let retailer = retailer else {
-                    onError("Retailer not initialized. Did you call .initialize()?")
-                    return
-                }
-                retailer.orders(reqScan: reqScan, onError: {error in onError(error)}, onComplete: {rspScan in onComplete(rspScan)}, onKeepAlive: {keepAlive in onKeepAlive(keepAlive)})
-                break
-            case .PHYSICAL:
-                guard let physical = physical else {
-                    onError("Physical not initialized. Did you call .initialize()?")
-                    return
-                }
-                ReceiptCapture.pendingScanCall = call
-                physical.scan()
-                break
-            case .ONLINE:
-                guard let retailer = retailer else {
-                    onError("Retailer not initialized. Did you call .initialize()?")
-                    return
-                }
-                guard let email = email else {
-                    onError("Email not initialized. Did you call .initialize()?")
-                    return
-                }
-                email.scan(reqScan: reqScan, onError: {error in onError(error)}, onComplete: {rspScan in onComplete(rspScan)})
-                retailer.orders(reqScan: reqScan, onError: {error in onError(error)}, onComplete: {rspScan in onComplete(rspScan)}, onKeepAlive: {keepAlive in onKeepAlive(keepAlive)})
-                break
-            default:
-                onError("invalid scan type for account")
+    public func scan(call: CAPPluginCall?, reqScan: ReqScan, onError: @escaping (String) -> Void, onReceipt: @escaping (RspReceipt) -> Void, onComplete: @escaping () -> Void) {
+            guard let retailer = retailer else {
+                onError("Retailer not initialized. Did you call .initialize()?")
+                return
             }
-        } else {
-            switch reqScan.scanType {
-            case .EMAIL:
-                guard let email = email else {
-                    onError("Email not initialized. Did you call .initialize()?")
-                    return
-                }
-                email.scan(reqScan: reqScan, onError: {error in onError(error)}, onComplete: {rspScan in onComplete(rspScan)})
-                break
-            case .RETAILER:
-                guard let retailer = retailer else {
-                    onError("Retailer not initialized. Did you call .initialize()?")
-                    return
-                }
-                retailer.orders(reqScan: reqScan, onError: {error in onError(error)}, onComplete: {rspScan in onComplete(rspScan)}, onKeepAlive: {keepAlive in onKeepAlive(keepAlive)})
-                break
-            default:
-                onError("invalid scan type for account")
+            guard let email = email else {
+                onError("Email not initialized. Did you call .initialize()?")
+                return
             }
-        }
+        let reqScan = ReqScan(data: call!)
+        email.scan(reqScan: reqScan, onError: {error in onError(error)}, onReceipt: {rspReceipt in onReceipt(rspReceipt)}, onComplete: {})
+        retailer.orders(reqScan: reqScan, onError: {error in onError(error)}, onReceipt: {rspReceipt in onReceipt(rspReceipt)}, onComplete: {})
 
     }
     

@@ -32,13 +32,14 @@ public class Email {
     /// - Parameters:
     ///   - account: An instance of the Account struct containing user and account information.
     ///   - pluginCall: The CAPPluginCall object representing the plugin call.
-    public func login(_ account: Account, onError: @escaping (String) -> Void, onComplete: @escaping () -> Void) async {
-        await DispatchQueue.main.async {
-            print("start login")
+    public func login(_ account: Account, onError: @escaping (String) -> Void, onComplete: @escaping () -> Void)  {
+        let email = BRIMAPAccount(provider: .gmailIMAP, email: account.user, password: account.password!)
+
+        DispatchQueue.main.async {
             let rootVc = UIApplication.shared.windows.first?.rootViewController
             BREReceiptManager.shared().setupIMAP(for: email, viewController: rootVc!, withCompletion: { result in
             })
-            await BREReceiptManager.shared().verifyImapAccount(email, withCompletion: { success, error in
+            BREReceiptManager.shared().verifyImapAccount(email, withCompletion: { success, error in
                 if !success {
                     onComplete()
                 } else {
@@ -46,7 +47,7 @@ public class Email {
                 }
             })
         }
-        print("end login")
+
     }
     
     /// Logs out a user account or signs out of all accounts.
@@ -80,94 +81,36 @@ public class Email {
     /// - Parameters:
     ///   - pluginCall: The CAPPluginCall object representing the plugin call.
     ///   - account: An optional instance of the Account struct containing user and account information.
-    public func scan(reqScan: ReqScan, onError: @escaping (String) -> Void, onComplete: @escaping (RspReceipt) -> Void){
+    public func scan(reqScan: ReqScan, onError: @escaping (String) -> Void, onReceipt: @escaping (RspReceipt) -> Void, onComplete: @escaping () -> Void){
         BREReceiptManager.shared().dayCutoff = reqScan.daysCutOff ?? 7
-        if(reqScan.account != nil){
-            let provider = EmailEnum(rawValue:  reqScan.account!.accountType.source)?.toBREReceiptProvider()
-            let email = BRIMAPAccount(provider: provider!, email: reqScan.account?.user ?? "", password: reqScan.account?.password ?? "")
-            BREReceiptManager.shared().getEReceipts(for: email){scanResults, emailAccount, error in
+        Task(priority: .high){
+            BREReceiptManager.shared().getEReceipts(){scanResults, emailAccount, error in
                 if(scanResults != nil){
                     scanResults?.forEach{scanResults in
-                        onComplete(RspReceipt(scanResults: scanResults))
+                        onReceipt(RspReceipt(requestId: reqScan.requestId, scanResults: scanResults))
                     }
+                    onComplete()
                 }else{
                     onError(error?.localizedDescription ?? "No receipts.")
                 }
             }
-        }else{
-            Task(priority: .high){
-                BREReceiptManager.shared().getEReceipts(){scanResults, emailAccount, error in
-                    if(scanResults != nil){
-                        scanResults?.forEach{scanResults in
-                            onComplete(RspReceipt(scanResults: scanResults))
-                        }
-                    }else{
-                        onError(error?.localizedDescription ?? "No receipts.")
-                    }
-                }
-            }
+            
         }
     }
     
     /// Retrieves a list of linked email accounts.
     ///
     /// - Returns: An array of Account objects representing linked email accounts.
-    public func accounts() -> [Account]{
-        var verifiedAccounts: [Account] = []
+    public func accounts(onError: (String) -> Void, onAccount: (Account) -> Void,  onComplete: () -> Void) {
         let linkedAccounts = BREReceiptManager.shared().getLinkedAccounts()
         linkedAccounts?.forEach{ brAccount in
             let account = Account(provider: brAccount.provider, email:brAccount.email)
             account.isVerified = true
-            verifiedAccounts.append(account)
+            onAccount(account)
         }
-        return verifiedAccounts
+        onComplete()
     }
-    /// Logs in a user account using the OAuth authentication
-    ///
-    /// - Parameters:
-    ///   - pluginCall: The CAPPluginCall object representing the plugin call.
-    func loginOauth(_ pluginCall: CAPPluginCall){
-        let rootVc = UIApplication.shared.windows.first?.rootViewController
-        DispatchQueue.main.async {
-            BREReceiptManager.shared().beginOAuth(for: .gmail, with: rootVc!, andCompletion: { error in
-                if error == nil {
-                    // Account successfully authenticated
-                    for account in self.accounts() {
-                        if(account.accountType.source == "GMAIL"){
-                            pluginCall.resolve(account.toResultData())
-                            return
-                        }
-                    }
-                    pluginCall.reject("Account not saved")
-                }else{
-                    // Account problem
-                    pluginCall.reject(error.debugDescription)
-                }
-            })
-        }
-    }
-    
-    /// Retrieves e-receipts for a user account OAuth authentication for scanning.
-    ///
-    /// - Parameters:
-    ///   - pluginCall: The CAPPluginCall object representing the plugin call.
-    func scanOauth(_ pluginCall: CAPPluginCall){
-        Task(priority: .high) {
-            await BREReceiptManager.shared().getEReceipts(completion: {scanResults, emailAccount, error in
-                if(scanResults != nil){
-                    scanResults?.forEach{scanResults in
-                        pluginCall.resolve(
-                            RspScan(scan: RspReceipt(scanResults: scanResults),
-                                    account: Account(provider: emailAccount!.provider, email: emailAccount!.email))
-                            .toPluginCallResultData()
-                        )
-                    }
-                }else{
-                    print(error?.localizedDescription ?? "No receipts.")
-                }
-            })
-        }
-    }
+
 
     
     

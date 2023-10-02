@@ -14,7 +14,7 @@ import Capacitor
 
  This struct is used to convey details about promotions, including the promotion's slug, reward amount, error code, error message, related product indexes, and qualifications.
  */
-struct RspPromotion: Rsp {
+struct JSPromotion {
     /// The slug of the promotion, if available.
     private let slug: String?
     /// The reward amount associated with the promotion, if available.

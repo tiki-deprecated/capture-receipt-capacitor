@@ -14,7 +14,7 @@ import Capacitor
 
  This struct is used to convey a string value along with its confidence level.
  */
-struct RspStringType: Rsp {
+struct JSStringType{
     /// The confidence level of the string value.
     private let confidence: Float
     /// The string value.

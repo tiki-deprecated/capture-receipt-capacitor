@@ -10,7 +10,10 @@ import Foundation
 import Capacitor
 
 
-struct RspAccount {
+struct RspAccount{    
+    var requestId: String
+    var event: PluginEvent
+    
     /// The username associated with the account.
     private let username: String
     
@@ -25,7 +28,9 @@ struct RspAccount {
      
      - Parameter account: An `Account` object containing the account information.
      */
-    public init(account: Account) {
+    public init(requestId: String, event: PluginEvent, account: Account) {
+        self.requestId = requestId
+        self.event = event
         self.username = account.user
         self.source = account.accountType.source
         self.isVerified = account.isVerified ?? false
@@ -36,11 +41,16 @@ struct RspAccount {
      
      - Returns: A dictionary representing the account data in a format suitable for a Capacitor plugin call result.
      */
-    func toResultData() -> PluginCallResultData {
-        return [
+    func toPluginCallResultData() -> PluginCallResultData {
+        let payload = [
             "username" : username,
             "source" : source,
             "verified" : isVerified
+        ] as [String : Any]
+        return [
+            "request" : requestId,
+            "event" : event,
+            "payload" : payload
         ]
     }
 }

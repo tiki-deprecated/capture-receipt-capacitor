@@ -5,6 +5,8 @@
 
 import Foundation
 import Capacitor
+import BlinkReceipt
+import BlinkEReceipt
 
 @objc(ReceiptCapturePlugin)
 public class ReceiptCapturePlugin: CAPPlugin {
@@ -22,8 +24,8 @@ public class ReceiptCapturePlugin: CAPPlugin {
     }
     
     @objc public func login(_ call: CAPPluginCall) {
-        let reqLogin = ReqLogin(data: call)
-        receiptCapture.login(reqLogin: reqLogin, onError: { error in call.reject(error)} ,onComplete: { account in call.resolve(RspAccount(account: account!).toResultData()) })
+        let reqAccount = ReqAccount(data: call)
+        receiptCapture.login(reqAccount: reqAccount, onError: { error in call.reject(error)} ,onComplete: { account in call.resolve(RspAccount(requestId: call.getString("requestId", ""), event: .onComplete, account: account!).toPluginCallResultData() )} )
     }
 
     @objc func logout(_ call: CAPPluginCall) {
@@ -33,20 +35,29 @@ public class ReceiptCapturePlugin: CAPPlugin {
     @objc func accounts(_ call: CAPPluginCall){
         receiptCapture.accounts(
             onError: {error in call.reject(error)},
-            onComplete: {rspAccount in call.resolve(rspAccount.toPluginCallResultData())})
+            onComplete: { [self] in onComplete(requestId: call.getString("requestId", ""))},
+            onAccount: {account in onAccounts(requestId: call.getString("requestId", ""), account: account)})
     }
     
     @objc func scan(_ call: CAPPluginCall) {
-        receiptCapture.scan(call: call, reqScan: ReqScan(data: call), onError: {error in call.reject(error)}, onComplete: {rspReceipt in call.resolve(rspReceipt.toPluginCallResultData())}, onKeepAlive: {keepAlive in call.keepAlive = keepAlive })
+        let rsp = Rsp(requestId: call.getString("requestId", ""), event: .onReceipt)
+        receiptCapture.scan(call: call,
+                            reqScan: ReqScan(data: call),
+                            onError: {error in call.reject(error)},
+                            onReceipt: { rspReceipt in self.onScan(call.getString("requestId", ""), rspReceipt)},
+                            onComplete: {})
     }
     
-    func onScan(_ requestId: String, _ scanResult: RspScan? = nil){
-        let rsp = RspReceipt(scanResults: scanResult).toPluginCallResultData()
-        self.notifyListeners("onReceipt", data: scanResult?.toPluginCallResultData())
+    func onScan(_ requestId: String, _ rspReceipt: RspReceipt? = nil){
+        self.notifyListeners("onReceipt", data: rspReceipt?.toPluginCallResultData())
     }
     
     private func onComplete(requestId: String){
-        let rsp = Rsp(requestId, .onComplete).toPluginCallResultData()
-        self.notifyListeners("onReceipt", data: scanResult?.toPluginCallResultData())
+        let rsp = Rsp(requestId: requestId, event: .onComplete)
+        self.notifyListeners("onComplete", data: rsp.toPluginCallResultData())
+    }
+    private func onAccounts(requestId: String, account: Account) {
+        let rsp = RspAccount(requestId: requestId, event: .onAccount, account: account)
+        self.notifyListeners("onAccount", data: account.toResultData())
     }
 }
