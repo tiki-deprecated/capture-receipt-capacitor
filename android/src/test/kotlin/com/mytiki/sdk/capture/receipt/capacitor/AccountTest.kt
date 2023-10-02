@@ -1,6 +1,7 @@
 package com.mytiki.sdk.capture.receipt.capacitor
 
 import com.getcapacitor.JSObject
+import com.getcapacitor.PluginCall
 import com.microblink.digital.PasswordCredentials
 import com.mytiki.sdk.capture.receipt.capacitor.account.Account
 import com.mytiki.sdk.capture.receipt.capacitor.account.AccountCommon
@@ -16,7 +17,7 @@ import org.junit.Test
 
 class AccountTest {
     private lateinit var accountCommon: AccountCommon
-    private lateinit var data: JSObject
+    private lateinit var data: PluginCall
     private lateinit var retailerAccount: com.microblink.linking.Account
     private lateinit var emailAccount: PasswordCredentials
 
@@ -31,10 +32,12 @@ class AccountTest {
 
 //       JSObject mock
         data = mockk()
-        every { data.getString("source") } returns "AMAZON"
+
+        every { data.getString("requestId") } returns "testRequestId"
+        every { data.getString("id") } returns "AMAZON"
         every { data.getString("username") } returns "testUsername"
         every { data.getString("password") } returns "testPassword"
-        every { data.getBool("isVerified") } returns true
+        every { data.getBoolean("isVerified") } returns true
 
 //        Retailer Account mock
         retailerAccount = mockk()
@@ -56,22 +59,22 @@ class AccountTest {
     @Test
     fun testToRsp() {
         val account = Account(accountCommon, "testUsername", "testPassword", true)
-        val jsObject = account.toRsp("testReq")
+        val jsObject = account.toRsp("testReq").getJSObject("payload")!!
 
         assert(jsObject.getString("username") == "testUsername")
-        assert(jsObject.getString("source") == "testSource")
+        assert(jsObject.getString("id") == "testSource")
         assert(jsObject.getString("type") == "testType")
         assert(jsObject.getBoolean("isVerified"))
     }
 
     @Test
     fun testFromReq() {
-        //outdated
-//        val account = Account.fromReq(data)
-//        assert(account.accountCommon == AccountCommon.AMAZON)
-//        assert(account.username == "testUsername")
-//        assert(account.password == "testPassword")
-//        assert(account.isVerified == true)
+        val account = Account.fromReq(data)
+
+        assert(account.accountCommon == AccountCommon.AMAZON)
+        assert(account.username == "testUsername")
+        assert(account.password == "testPassword")
+        assert(account.isVerified == true)
     }
 
     @Test
