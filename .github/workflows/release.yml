@@ -52,7 +52,7 @@ jobs:
         run: npm ci
 
       - name: Build Dist
-        run: npm run verify
+        run: npm run verify:android && npm run verify:web
 
       - name: Get version
         id: version
