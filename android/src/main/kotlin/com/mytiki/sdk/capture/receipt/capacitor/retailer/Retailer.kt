@@ -235,8 +235,7 @@ class Retailer {
                 }
                 if (remaining == 0) onComplete?.invoke()
             }
-        val ordersFailureCallback: (Int, AccountLinkingException) -> Unit = { _: Int,
-                                                                              exception: AccountLinkingException ->
+        val ordersFailureCallback: (Int, AccountLinkingException) -> Unit = { _: Int, exception: AccountLinkingException ->
             onError(exception.message ?: exception.toString())
         }
         client.orders(
@@ -345,11 +344,9 @@ class Retailer {
                     activity.findViewById<FrameLayout>(R.id.webview_container)?.let {
                         (it.parent as ViewGroup).removeView(it)
                     }
-                    val viewGroup =
-                        (activity.findViewById(android.R.id.content) as ViewGroup).getChildAt(0) as ViewGroup
+                    val viewGroup = (activity.findViewById(android.R.id.content) as ViewGroup).getChildAt(0) as ViewGroup
                     View.inflate(activity, R.layout.webview_container, viewGroup)
-                    val webViewContainer =
-                        activity.findViewById<FrameLayout>(R.id.webview_container)
+                    val webViewContainer = activity.findViewById<FrameLayout>(R.id.webview_container)
                     webViewContainer.addView(exception.view)
                 } else {
                     onError?.let {
@@ -375,11 +372,11 @@ class Retailer {
     private fun client(
         context: Context,
         dayCutoff: Int = 7,
-        latestOrdersOnly: Boolean = false,
+        latestOrdersOnly: Boolean = true,
         countryCode: String = "US",
     ): AccountLinkingClient {
         val client = AccountLinkingClient(context)
-        client.dayCutoff = dayCutoff
+        client.dayCutoff = 30
         client.latestOrdersOnly = latestOrdersOnly
         client.countryCode = countryCode
         return client

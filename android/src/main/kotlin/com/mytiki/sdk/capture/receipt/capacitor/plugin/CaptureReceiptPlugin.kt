@@ -5,6 +5,10 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.plugin
 
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import com.getcapacitor.JSObject
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
@@ -21,6 +25,10 @@ import com.mytiki.sdk.capture.receipt.capacitor.plugin.rsp.Rsp
 import com.mytiki.sdk.capture.receipt.capacitor.plugin.rsp.RspAccount
 import com.mytiki.sdk.capture.receipt.capacitor.plugin.rsp.RspError
 import com.mytiki.sdk.capture.receipt.capacitor.plugin.rsp.RspReceipt
+import com.mytiki.sdk.capture.receipt.capacitor.readLong
+import com.mytiki.sdk.capture.receipt.capacitor.writeLong
+
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "tiki-capture-receipt")
 
 /**
  * A Capacitor plugin for receipt capture functionality.
@@ -52,6 +60,10 @@ class CaptureReceiptPlugin : Plugin() {
         captureReceipt.initialize(context, request.licenseKey, request.productKey, {
             call.resolve()
         }, { error -> call.reject(error) })
+
+        context.readLong({}){
+            context.writeLong(0L)
+        }
     }
 
     /**

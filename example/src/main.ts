@@ -16,20 +16,31 @@ export const login = async (username: string, password: string, source: string) 
     password,
     type: accountTypes.from(source)!,
   };
-  await instance.login(account).catch((error: ErrorCallback) => console.log(error));
+  console.log('login method:');
+  console.log(await instance.login(account));
 };
 
-export const accounts = async (): Promise<void> => instance.accounts(
-  (account: Account) => console.log(account),
-  () => console.log("complete"),
-  (payload: CallbackError) => console.log("error", JSON.stringify(payload)),
-);
-export const scan = async (): Promise<void> => instance.scan(
-  (receipt: Receipt) => console.log(receipt),
-  7,
-  () => console.log("complete"),
-  (payload: CallbackError) => console.log("error", JSON.stringify(payload)),
-);
+export const accounts = async (): Promise<void> => {
+  console.log('account method:');
+  instance.accounts(
+    (account: Account) => {
+      console.log('onAccount:');
+      console.log(account);
+    },
+    () => console.log('complete'),
+    (payload: CallbackError) => console.log('error', JSON.stringify(payload)),
+  );
+};
+
+export const scan = async (): Promise<void> => {
+  console.log('scan method');
+  instance.scan(
+    (receipt: Receipt) => console.log(receipt),
+    7,
+    () => console.log('complete'),
+    (payload: CallbackError) => console.log('error', JSON.stringify(payload)),
+  );
+};
 export const logout = async (): Promise<void> => instance.logout();
 export const initialize = async (): Promise<void> => {
   await instance.initialize(
