@@ -9,9 +9,9 @@ import BlinkReceipt
 import BlinkEReceipt
 
 @objc(ReceiptCapturePlugin)
-public class ReceiptCapturePlugin: CAPPlugin {
+public class CaptureReceiptPlugin: CAPPlugin {
     
-    private let receiptCapture = ReceiptCapture()
+    private let receiptCapture = CaptureReceipt()
     
     @objc public func initialize(_ call: CAPPluginCall) {
         if(call.getString("productKey") == "" || call.getString("licenseKey") == ""){
@@ -24,12 +24,20 @@ public class ReceiptCapturePlugin: CAPPlugin {
     }
     
     @objc public func login(_ call: CAPPluginCall) {
-        let reqAccount = ReqAccount(data: call)
-        receiptCapture.login(reqAccount: reqAccount, onError: { error in call.reject(error)} ,onComplete: { account in call.resolve(RspAccount(requestId: call.getString("requestId", ""), event: .onComplete, account: account!).toPluginCallResultData() )} )
+        do{
+            let reqAccount = try ReqAccount(data: call)
+            receiptCapture.login(reqAccount: reqAccount, onError: { error in call.reject(error)} ,onComplete: { account in call.resolve(RspAccount(requestId: call.getString("requestId", ""), event: .onComplete, account: account!).toPluginCallResultData() )} )
+        }catch {
+            call.reject(error.localizedDescription)
+        }
     }
 
     @objc func logout(_ call: CAPPluginCall) {
-        receiptCapture.logout(reqAccount: ReqAccount(data: call), onError: { error in call.reject(error)} ,onComplete: { call.resolve() })
+        do{
+            receiptCapture.logout(reqAccount: try ReqAccount(data: call), onError: { error in call.reject(error)} ,onComplete: { call.resolve() })
+        }catch{
+            call.reject(error.localizedDescription)
+        }
     }
 
     @objc func accounts(_ call: CAPPluginCall){

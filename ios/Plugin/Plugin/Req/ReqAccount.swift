@@ -13,11 +13,12 @@ public struct ReqAccount {
     let password: String?
     let isVerified: Bool?
     
-    init(data: CAPPluginCall){
-        if(AccountCommon.defaults[data.getString("source") ?? ""] == nil){
-            data.reject("Invalid Source")
+    init(data: CAPPluginCall) throws {
+        if(AccountCommon.defaults[data.getString("id") ?? ""] == nil){
+            data.reject("Invalid id")
+            throw NSError()
         }
-        accountCommon = AccountCommon.defaults[data.getString("source") ?? ""]!
+        accountCommon = AccountCommon.defaults[data.getString("id") ?? ""]!
         username = data.getString("username") ?? ""
         password = data.getString("password")
         isVerified = data.getBool("isVerified")

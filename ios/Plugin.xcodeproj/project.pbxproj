@@ -9,13 +9,13 @@
 /* Begin PBXBuildFile section */
 		50ADFF92201F53D600D50D53 /* Plugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ADFF88201F53D600D50D53 /* Plugin.framework */; };
 		50ADFFA42020D75100D50D53 /* Capacitor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ADFFA52020D75100D50D53 /* Capacitor.framework */; };
-		8C0623642AB2F9AE00CABC17 /* ReceiptCapturePlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C06233E2AB2F9AE00CABC17 /* ReceiptCapturePlugin.h */; };
+		8C0623642AB2F9AE00CABC17 /* CaptureReceiptPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C06233E2AB2F9AE00CABC17 /* CaptureReceiptPlugin.h */; };
 		8C502ECE2ACAFE8F009A26C5 /* PluginEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C502ECD2ACAFE8F009A26C5 /* PluginEvent.swift */; };
-		8CFF1FA22ACA1F8A00F0E853 /* ReceiptCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235A2AB2F9AE00CABC17 /* ReceiptCapture.swift */; };
+		8CFF1FA22ACA1F8A00F0E853 /* CaptureReceipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235A2AB2F9AE00CABC17 /* CaptureReceipt.swift */; };
 		8CFF1FA32ACA1F9100F0E853 /* Retailer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235E2AB2F9AE00CABC17 /* Retailer.swift */; };
 		8CFF1FA42ACA1F9100F0E853 /* RetailerEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623592AB2F9AE00CABC17 /* RetailerEnum.swift */; };
-		8CFF1FA52ACA1F9700F0E853 /* ReceiptCapturePlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235C2AB2F9AE00CABC17 /* ReceiptCapturePlugin.m */; };
-		8CFF1FA62ACA1F9700F0E853 /* ReceiptCapturePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06233D2AB2F9AE00CABC17 /* ReceiptCapturePlugin.swift */; };
+		8CFF1FA52ACA1F9700F0E853 /* CaptureReceiptPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235C2AB2F9AE00CABC17 /* CaptureReceiptPlugin.m */; };
+		8CFF1FA62ACA1F9700F0E853 /* CaptureReceiptPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06233D2AB2F9AE00CABC17 /* CaptureReceiptPlugin.swift */; };
 		8CFF1FA82ACA1F9D00F0E853 /* ReqInitialize‎.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623542AB2F9AE00CABC17 /* ReqInitialize‎.swift */; };
 		8CFF1FA92ACA1F9D00F0E853 /* ReqAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C4620D2AC76B61006B21AF /* ReqAccount.swift */; };
 		8CFF1FAA2ACA1F9D00F0E853 /* ReqScan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623552AB2F9AE00CABC17 /* ReqScan.swift */; };
@@ -69,8 +69,8 @@
 		8C0623392AB2F9AE00CABC17 /* AccountCommon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountCommon.swift; sourceTree = "<group>"; };
 		8C06233A2AB2F9AE00CABC17 /* Email.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Email.swift; sourceTree = "<group>"; };
 		8C06233C2AB2F9AE00CABC17 /* EmailEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmailEnum.swift; sourceTree = "<group>"; };
-		8C06233D2AB2F9AE00CABC17 /* ReceiptCapturePlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiptCapturePlugin.swift; sourceTree = "<group>"; };
-		8C06233E2AB2F9AE00CABC17 /* ReceiptCapturePlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReceiptCapturePlugin.h; sourceTree = "<group>"; };
+		8C06233D2AB2F9AE00CABC17 /* CaptureReceiptPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureReceiptPlugin.swift; sourceTree = "<group>"; };
+		8C06233E2AB2F9AE00CABC17 /* CaptureReceiptPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CaptureReceiptPlugin.h; sourceTree = "<group>"; };
 		8C0623422AB2F9AE00CABC17 /* RspScan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspScan.swift; sourceTree = "<group>"; };
 		8C0623432AB2F9AE00CABC17 /* JSProduct.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSProduct.swift; sourceTree = "<group>"; };
 		8C0623442AB2F9AE00CABC17 /* RspInitialized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspInitialized.swift; sourceTree = "<group>"; };
@@ -90,9 +90,9 @@
 		8C0623542AB2F9AE00CABC17 /* ReqInitialize‎.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ReqInitialize‎.swift"; sourceTree = "<group>"; };
 		8C0623552AB2F9AE00CABC17 /* ReqScan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReqScan.swift; sourceTree = "<group>"; };
 		8C0623592AB2F9AE00CABC17 /* RetailerEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RetailerEnum.swift; sourceTree = "<group>"; };
-		8C06235A2AB2F9AE00CABC17 /* ReceiptCapture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiptCapture.swift; sourceTree = "<group>"; };
+		8C06235A2AB2F9AE00CABC17 /* CaptureReceipt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureReceipt.swift; sourceTree = "<group>"; };
 		8C06235B2AB2F9AE00CABC17 /* AccountTypeEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountTypeEnum.swift; sourceTree = "<group>"; };
-		8C06235C2AB2F9AE00CABC17 /* ReceiptCapturePlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReceiptCapturePlugin.m; sourceTree = "<group>"; };
+		8C06235C2AB2F9AE00CABC17 /* CaptureReceiptPlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CaptureReceiptPlugin.m; sourceTree = "<group>"; };
 		8C06235D2AB2F9AE00CABC17 /* Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		8C06235E2AB2F9AE00CABC17 /* Retailer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Retailer.swift; sourceTree = "<group>"; };
 		8C0623832AB2FA2400CABC17 /* BlinkReceiptStatic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BlinkReceiptStatic.framework; path = ../microblink/ios/BlinkReceiptStatic.framework; sourceTree = "<group>"; };
@@ -152,7 +152,7 @@
 				8CFF1F9B2AC94C1600F0E853 /* Plugin */,
 				8CFF1F9A2AC94BF700F0E853 /* Email */,
 				8CFF1F992AC94BDB00F0E853 /* Account */,
-				8C06235A2AB2F9AE00CABC17 /* ReceiptCapture.swift */,
+				8C06235A2AB2F9AE00CABC17 /* CaptureReceipt.swift */,
 				8CFF1FA02ACA1EA800F0E853 /* Info.plist */,
 			);
 			path = Plugin;
@@ -216,9 +216,9 @@
 				8CFF1F9F2ACA1C4500F0E853 /* Js */,
 				8C0623532AB2F9AE00CABC17 /* Req */,
 				8C0623412AB2F9AE00CABC17 /* Rsp */,
-				8C06233E2AB2F9AE00CABC17 /* ReceiptCapturePlugin.h */,
-				8C06235C2AB2F9AE00CABC17 /* ReceiptCapturePlugin.m */,
-				8C06233D2AB2F9AE00CABC17 /* ReceiptCapturePlugin.swift */,
+				8C06233E2AB2F9AE00CABC17 /* CaptureReceiptPlugin.h */,
+				8C06235C2AB2F9AE00CABC17 /* CaptureReceiptPlugin.m */,
+				8C06233D2AB2F9AE00CABC17 /* CaptureReceiptPlugin.swift */,
 				8C502ECD2ACAFE8F009A26C5 /* PluginEvent.swift */,
 			);
 			path = Plugin;
@@ -271,7 +271,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C0623642AB2F9AE00CABC17 /* ReceiptCapturePlugin.h in Headers */,
+				8C0623642AB2F9AE00CABC17 /* CaptureReceiptPlugin.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -482,16 +482,16 @@
 				8CFF1FC02ACA1FAB00F0E853 /* AccountTypeEnum.swift in Sources */,
 				8CFF1FBF2ACA1FAB00F0E853 /* Account.swift in Sources */,
 				8CFF1FB82ACA1FA100F0E853 /* JSSurveyResponse.swift in Sources */,
-				8CFF1FA62ACA1F9700F0E853 /* ReceiptCapturePlugin.swift in Sources */,
+				8CFF1FA62ACA1F9700F0E853 /* CaptureReceiptPlugin.swift in Sources */,
 				8CFF1FB42ACA1FA100F0E853 /* JSProduct.swift in Sources */,
 				8CFF1FB52ACA1FA100F0E853 /* JSShipment.swift in Sources */,
-				8CFF1FA52ACA1F9700F0E853 /* ReceiptCapturePlugin.m in Sources */,
+				8CFF1FA52ACA1F9700F0E853 /* CaptureReceiptPlugin.m in Sources */,
 				8CFF1FBE2ACA1FA700F0E853 /* Email.swift in Sources */,
 				8CFF1FB62ACA1FA100F0E853 /* RspInitialized.swift in Sources */,
 				8CFF1FAB2ACA1FA100F0E853 /* Rsp.swift in Sources */,
 				8CFF1FBB2ACA1FA100F0E853 /* JSPossibleProduct.swift in Sources */,
 				8CFF1FB72ACA1FA100F0E853 /* JSFloatType.swift in Sources */,
-				8CFF1FA22ACA1F8A00F0E853 /* ReceiptCapture.swift in Sources */,
+				8CFF1FA22ACA1F8A00F0E853 /* CaptureReceipt.swift in Sources */,
 				8CFF1FA32ACA1F9100F0E853 /* Retailer.swift in Sources */,
 				8CFF1FAE2ACA1FA100F0E853 /* JSPromotion.swift in Sources */,
 				8CFF1FA42ACA1F9100F0E853 /* RetailerEnum.swift in Sources */,

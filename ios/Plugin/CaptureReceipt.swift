@@ -9,7 +9,7 @@ import Capacitor
 import BlinkReceipt
 
 /// A Swift class responsible for receipt capture and management.
-public class ReceiptCapture: NSObject {
+public class CaptureReceipt: NSObject {
     
     var email: Email? = nil
     var retailer: Retailer? = nil

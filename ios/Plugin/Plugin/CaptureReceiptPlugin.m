@@ -11,7 +11,7 @@
 
  A Capacitor plugin for handling receipt capture functionality.
  */
-CAP_PLUGIN(ReceiptCapturePlugin, "ReceiptCapture",
+CAP_PLUGIN(ReceiptCapturePlugin, "CaptureReceipt",
            CAP_PLUGIN_METHOD(initialize, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(login, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(logout, CAPPluginReturnPromise);
