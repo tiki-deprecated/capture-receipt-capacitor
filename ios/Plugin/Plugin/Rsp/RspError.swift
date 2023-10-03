@@ -3,11 +3,7 @@
  * MIT license. See LICENSE file in the root directory.
  */
 
-import Foundation
-import Capacitor
-import Foundation
-
-public class RspError: Rsp {
+public class RspError: Rsp, Error {
     let message: String
     let code: RspErrorEnum
     
@@ -17,12 +13,12 @@ public class RspError: Rsp {
         super.init(requestId: requestId, event: PluginEvent.onError)
     }
     
-    func toJS() -> PluginCallResultData {
+    // Converts the RSP error data to a dictionary
+    func toJS() -> [String: Any] {
         var ret = super.toPluginCallResultData()
-        ret["payload"] = [
+        ret["payload"]: [
             "message": message,
             "code": code.rawValue
         ]
     }
 }
-

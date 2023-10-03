@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in the root directory.
+ */
+
 /**
  A struct representing an account's response data for the ReceiptCapture plugin.
  
