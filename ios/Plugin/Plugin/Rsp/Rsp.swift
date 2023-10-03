@@ -7,21 +7,19 @@ import Foundation
 import Capacitor
 import Foundation
 
-public class RspError: Rsp {
-    let message: String
-    let code: RspErrorEnum
+public class Rsp {
+    let requestId: String
+    let event: PluginEvent
     
-    init(requestId: String, message: String, code: RspErrorEnum = .ERROR) {
-        self.message = message
-        self.code = code
-        super.init(requestId: requestId, event: PluginEvent.onError)
+    init(requestId: String, event: PluginEvent) {
+        self.requestId = requestId
+        self.event = event
     }
     
-    func toJS() -> PluginCallResultData {
-        var ret = super.toPluginCallResultData()
-        ret["payload"] = [
-            "message": message,
-            "code": code.rawValue
+    func toPluginCallResultData() -> [String: Any] {
+        return [
+            "requestId": requestId,
+            "event": event
         ]
     }
 }
