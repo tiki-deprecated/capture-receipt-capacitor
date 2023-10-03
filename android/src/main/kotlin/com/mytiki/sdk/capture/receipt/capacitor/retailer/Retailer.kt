@@ -376,7 +376,7 @@ class Retailer {
         countryCode: String = "US",
     ): AccountLinkingClient {
         val client = AccountLinkingClient(context)
-        client.dayCutoff = 30
+        client.dayCutoff = dayCutoff
         client.latestOrdersOnly = latestOrdersOnly
         client.countryCode = countryCode
         return client

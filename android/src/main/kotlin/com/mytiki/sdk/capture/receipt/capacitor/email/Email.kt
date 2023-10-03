@@ -23,8 +23,9 @@ import com.mytiki.sdk.capture.receipt.capacitor.OnAccountCallback
 import com.mytiki.sdk.capture.receipt.capacitor.OnCompleteCallback
 import com.mytiki.sdk.capture.receipt.capacitor.account.Account
 import com.mytiki.sdk.capture.receipt.capacitor.account.AccountCommon
-import com.mytiki.sdk.capture.receipt.capacitor.readLong
-import com.mytiki.sdk.capture.receipt.capacitor.writeLong
+import com.mytiki.sdk.capture.receipt.capacitor.deleteDate
+import com.mytiki.sdk.capture.receipt.capacitor.getDate
+import com.mytiki.sdk.capture.receipt.capacitor.setDate
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
@@ -42,7 +43,6 @@ typealias OnReceiptCallback = ((receipt: ScanResults?) -> Unit)
  */
 class Email {
     private val tag = "ProviderSetupDialogFragment"
-
     /**
      * Initializes [BlinkReceiptDigitalSdk] and instantiates [imapClient] and [gmailClient].
      *
@@ -158,7 +158,7 @@ class Email {
                         result.forEach { receipt ->
                             onReceipt(receipt)
                         }
-                        context.writeLong(today)
+                        context.setDate(today)
                         onComplete()
                         client.close()
                     }
@@ -170,7 +170,7 @@ class Email {
                 })
             }
         }
-        context.readLong(onRead, onError)
+        context.getDate(onRead, onError)
     }
 
     /**
@@ -240,6 +240,7 @@ class Email {
                 }
                 client.logout(passwordCredentials).addOnSuccessListener {
                     onRemove()
+                    context.deleteDate()
                 }.addOnFailureListener {
                     onError(
                         it.message
@@ -262,6 +263,7 @@ class Email {
         this.client(context, onError) { client ->
             client.logout().addOnSuccessListener {
                 onComplete()
+                context.deleteDate()
             }.addOnFailureListener {
                 onError(it.message ?: it.toString())
             }
