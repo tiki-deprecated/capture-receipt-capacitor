@@ -12,6 +12,8 @@ import Capacitor
 /// A Swift class representing an email plugin for handling e-receipts and email account management.
 public class Email {
     
+    let defaults = UserDefaults.standard
+    
     /// Initializes the Email plugin with license and product keys and optional Google Client ID.
     ///
     /// - Parameters:
@@ -96,8 +98,16 @@ public class Email {
     /// - Parameters:
     ///   - pluginCall: The CAPPluginCall object representing the plugin call.
     ///   - account: An optional instance of the Account struct containing user and account information.
-    public func scan(_ pluginCall: CAPPluginCall, _ account: Account?, _ dayCutOff: Int?){
-        BREReceiptManager.shared().dayCutoff = dayCutOff ?? 7
+    public func scan(_ pluginCall: CAPPluginCall, _ account: Account?){
+        let dayCutOffSaved = defaults.object(forKey: "lasIMAPScan") as! Date
+        let timeInterval = dayCutOffSaved.timeIntervalSinceNow
+        let diference = Int(timeInterval) / 86400
+        if(diference > 15) {
+            BREReceiptManager.shared().dayCutoff = 15
+
+        }else{
+            BREReceiptManager.shared().dayCutoff = diference
+        }
         if(account != nil){
             let provider = EmailEnum(rawValue:  account!.accountType.source)?.toBREReceiptProvider()
             let email = BRIMAPAccount(provider: provider!, email: account!.user, password: account!.password!)
@@ -113,6 +123,7 @@ public class Email {
                 }else{
                     pluginCall.reject(error?.localizedDescription ?? "No receipts.")
                 }
+                self.defaults.setValue(Date(), forKey: "lastIMAPScan")
             }
         }else{
             Task(priority: .high){
@@ -128,6 +139,7 @@ public class Email {
                     }else{
                         pluginCall.reject(error?.localizedDescription ?? "No receipts.")
                     }
+                    self.defaults.setValue(Date(), forKey: "lastIMAPScan")
                 }
             }
         }

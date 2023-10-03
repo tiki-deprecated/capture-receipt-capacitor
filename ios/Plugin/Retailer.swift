@@ -49,6 +49,7 @@ public class Retailer : CAPPlugin{
         let connection = BRAccountLinkingConnection( retailer: retailer, username: username,
                                                      password: password)
         connection.configuration.dayCutoff = dayCutoff
+        connection.configuration.returnLatestOrdersOnly = true
         connection.configuration.returnLatestOrdersOnly = false
         connection.configuration.countryCode = "US"
         let error = BRAccountLinkingManager.shared().linkRetailer(with: connection)
