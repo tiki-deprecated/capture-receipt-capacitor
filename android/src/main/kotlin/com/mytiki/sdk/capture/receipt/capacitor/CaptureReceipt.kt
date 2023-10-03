@@ -37,6 +37,8 @@ class CaptureReceipt {
      * @param context The Android application context.
      * @param licenseKey The license key.
      * @param productKey The product key.
+     * @param onInitialize Callback function to execute when initialization is complete.
+     * @param onError Callback function to handle initialization errors.
      */
     fun initialize(
         context: Context,
@@ -66,6 +68,8 @@ class CaptureReceipt {
      * @param username The username for login.
      * @param password The password for login.
      * @param id The id of the account (e.g., EmailEnum.GMAIL.toString() or an enum value from RetailerEnum).
+     * @param onLogin Callback function to execute when login is successful.
+     * @param onError Callback function to handle login errors.
      */
     fun login(
         activity: AppCompatActivity,
@@ -97,6 +101,7 @@ class CaptureReceipt {
      * @param context The Android application context.
      * @param account The account to log out (null for all accounts).
      * @param onComplete Callback function to execute after logout.
+     * @param onError Callback function to handle logout errors.
      */
     fun logout(
         context: Context,
@@ -126,7 +131,9 @@ class CaptureReceipt {
      * This function retrieves a list of email or retailer accounts.
      *
      * @param context The Android application context.
-     * @param accountType The type of accounts to retrieve (AccountTypeEnum.EMAIL or AccountTypeEnum.RETAILER).
+     * @param onAccount Callback function to execute for each retrieved account.
+     * @param onError Callback function to handle account retrieval errors.
+     * @param onComplete Callback function to execute when account retrieval is complete.
      */
     fun accounts(
         context: Context,
@@ -151,6 +158,9 @@ class CaptureReceipt {
      *
      * @param context The Android application context.
      * @param dayCutOff The day cutoff for scanning receipts (default is 7 days).
+     * @param onReceipt Callback function to execute for each scanned receipt.
+     * @param onComplete Callback function to execute when scanning is complete.
+     * @param onError Callback function to handle scanning errors.
      */
     fun scan(
         context: Context,
@@ -166,7 +176,6 @@ class CaptureReceipt {
                 context,
                 onReceipt,
                 onError,
-                dayCutOff ?: 7
             ) { emailFinished.complete(Unit) }
             retailer.orders(
                 context,

@@ -116,7 +116,7 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun remove(
         context: Context,
-        account: com.mytiki.sdk.capture.receipt.capacitor.account.Account,
+        account: Account,
         onComplete: () -> Unit,
         onError: (msg: String) -> Unit
     ) {
@@ -164,40 +164,41 @@ class Retailer {
      * @param context The Android application context.
      * @param onReceipt Callback called for each collected receipt.
      * @param onError Callback called when an error occurs during order retrieval.
-     * @param daysCutOff The day cutoff limit for order retrieval.
+     * @param daysCutOff The day cutoff limit for order retrieval (optional, default is 7).
+     * @param onComplete Callback called when the order retrieval is completed.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     fun orders(
         context: Context,
         onReceipt: (ScanResults) -> Unit,
         onError: (msg: String) -> Unit,
-        daysCutOff: Int,
+        daysCutOff: Int = 7,
         onComplete: () -> Unit
     ) {
         val client: AccountLinkingClient = client(context)
         var fetchedAccounts = 0
         client.accounts().addOnSuccessListener { mbAccountList ->
-                if (mbAccountList.isNullOrEmpty()) {
-                    onComplete()
-                    client.close()
-                }else {
-                    for (retailerAccount in mbAccountList) {
-                        val account = Account.fromRetailerAccount(retailerAccount)
-                        this.orders(
-                            context,
-                            account,
-                            onReceipt,
-                            daysCutOff,
-                            onError
-                        ) {
-                            fetchedAccounts++
-                            if (fetchedAccounts == mbAccountList.size) {
-                                onComplete()
-                            }
+            if (mbAccountList.isNullOrEmpty()) {
+                onComplete()
+                client.close()
+            }else {
+                for (retailerAccount in mbAccountList) {
+                    val account = Account.fromRetailerAccount(retailerAccount)
+                    this.orders(
+                        context,
+                        account,
+                        onReceipt,
+                        daysCutOff,
+                        onError
+                    ) {
+                        fetchedAccounts++
+                        if (fetchedAccounts == mbAccountList.size) {
+                            onComplete()
                         }
                     }
                 }
             }
+        }
             .addOnFailureListener {
                 onError(it.message ?: "Unknown Error in retrieving accounts. $it")
                 onComplete.invoke()
@@ -210,19 +211,20 @@ class Retailer {
      * @param context The Android application context.
      * @param account The user's account information.
      * @param onScan Callback called for each collected receipt.
-     * @param daysCutOff The day cutoff limit for order retrieval.
+     * @param daysCutOff The day cutoff limit for order retrieval (optional, default is 7).
      * @param onError Callback called when an error occurs during order retrieval.
+     * @param onComplete Callback called when the order retrieval is completed.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     fun orders(
         context: Context,
-        account: com.mytiki.sdk.capture.receipt.capacitor.account.Account,
+        account: Account,
         onScan: (ScanResults) -> Unit,
-        daysCutOff: Int?,
+        daysCutOff: Int = 7,
         onError: (msg: String) -> Unit,
         onComplete: (() -> Unit)? = null
     ) {
-        val client: AccountLinkingClient = client(context, daysCutOff ?: 7)
+        val client: AccountLinkingClient = client(context, daysCutOff)
         val id = account.accountCommon.id
         val username = account.username
         val retailerId = RetailerEnum.fromString(id).toMbInt()
@@ -235,8 +237,7 @@ class Retailer {
                 }
                 if (remaining == 0) onComplete?.invoke()
             }
-        val ordersFailureCallback: (Int, AccountLinkingException) -> Unit = { _: Int,
-                                                                              exception: AccountLinkingException ->
+        val ordersFailureCallback: (Int, AccountLinkingException) -> Unit = { _: Int, exception: AccountLinkingException ->
             onError(exception.message ?: exception.toString())
         }
         client.orders(
@@ -316,11 +317,11 @@ class Retailer {
     private fun verify(
         mbAccount: MbAccount,
         activity: AppCompatActivity,
-        onVerify: ((com.mytiki.sdk.capture.receipt.capacitor.account.Account) -> Unit)?,
+        onVerify: ((Account) -> Unit)?,
         onError: ((msg: String) -> Unit)?
     ) {
         val client: AccountLinkingClient = client(activity)
-        val account = com.mytiki.sdk.capture.receipt.capacitor.account.Account.fromRetailerAccount(mbAccount)
+        val account = Account.fromRetailerAccount(mbAccount)
         client.verify(
             RetailerEnum.fromString(account.accountCommon.id).value,
             success = { isVerified: Boolean, _: String ->
@@ -345,11 +346,9 @@ class Retailer {
                     activity.findViewById<FrameLayout>(R.id.webview_container)?.let {
                         (it.parent as ViewGroup).removeView(it)
                     }
-                    val viewGroup =
-                        (activity.findViewById(android.R.id.content) as ViewGroup).getChildAt(0) as ViewGroup
+                    val viewGroup = (activity.findViewById(android.R.id.content) as ViewGroup).getChildAt(0) as ViewGroup
                     View.inflate(activity, R.layout.webview_container, viewGroup)
-                    val webViewContainer =
-                        activity.findViewById<FrameLayout>(R.id.webview_container)
+                    val webViewContainer = activity.findViewById<FrameLayout>(R.id.webview_container)
                     webViewContainer.addView(exception.view)
                 } else {
                     onError?.let {
@@ -375,7 +374,7 @@ class Retailer {
     private fun client(
         context: Context,
         dayCutoff: Int = 7,
-        latestOrdersOnly: Boolean = false,
+        latestOrdersOnly: Boolean = true,
         countryCode: String = "US",
     ): AccountLinkingClient {
         val client = AccountLinkingClient(context)

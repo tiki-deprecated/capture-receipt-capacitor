@@ -6,6 +6,8 @@
 package com.mytiki.sdk.capture.receipt.capacitor.email
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentManager
 import com.microblink.core.InitializeCallback
 import com.microblink.core.ScanResults
@@ -25,6 +27,10 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.tasks.await
+import java.time.Duration
+import java.util.Calendar
+import kotlin.math.abs
+import kotlin.math.floor
 
 typealias OnReceiptCallback = ((receipt: ScanResults?) -> Unit)
 
@@ -35,9 +41,8 @@ typealias OnReceiptCallback = ((receipt: ScanResults?) -> Unit)
  */
 class Email {
     private val tag = "ProviderSetupDialogFragment"
-
     /**
-     * Initializes [BlinkReceiptDigitalSdk] and instantiates [imapClient] and [gmailClient].
+     * Initializes [BlinkReceiptDigitalSdk] and instantiates [imapClient].
      *
      * @param context The application context.
      * @param licenseKey The license key.
@@ -119,48 +124,58 @@ class Email {
     }
 
     /**
-     * Scrapes emails from both IMAP and Gmail providers.
+     * Scrapes receipts from the email using [ImapClient].
      *
      * @param context The application context.
      * @param onReceipt Callback called for each collected receipt.
      * @param onError Callback called when an error occurs during scraping.
-     * @param dayCutOff The day cutoff limit for scraping.
+     * @param onComplete Callback called when scrap is com=
      */
     fun scrape(
         context: Context,
         onReceipt: (receipt: ScanResults?) -> Unit,
         onError: (msg: String) -> Unit,
-        dayCutOff: Int,
         onComplete: () -> Unit
     ) {
-        this.client(context, onError) { client ->
-            client.dayCutoff(dayCutOff)
-            client.messages(object : MessagesCallback {
-                override fun onComplete(
-                    credential: PasswordCredentials,
-                    result: List<ScanResults>
-                ) {
-                    if (result.isEmpty()) {
-                        onError("No results for ${credential.username()} - ${credential.provider()}")
-                    }
-                    result.forEach { receipt ->
-                        onReceipt(receipt)
-                    }
-                    onComplete()
-                    client.close()
-                }
+        val onRead = { lastScrape: Long ->
+            var dayCutOff = 15
+            val now = Calendar.getInstance().timeInMillis
+            val diffInMillis = now - lastScrape
+            val diffInDays = floor((diffInMillis/86400000).toDouble()).toInt()
+            if(diffInDays <= 15) {
+                dayCutOff = diffInDays
+            }
 
-                override fun onException(throwable: Throwable) {
-                    onError(throwable.message ?: throwable.toString())
-                    onComplete()
-                    client.close()
-                }
-            })
+            this.client(context, onError) { client ->
+                client.dayCutoff(dayCutOff)
+                client.messages(object : MessagesCallback {
+                    override fun onComplete(
+                        credential: PasswordCredentials,
+                        result: List<ScanResults>
+                    ) {
+                        if (result.isEmpty()) {
+                            onError("No results for ${credential.username()} - ${credential.provider()}")
+                        }
+                        result.forEach { receipt ->
+                            onReceipt(receipt)
+                        }
+                        context.setImapScanTime(now)
+                        onComplete()
+                        client.close()
+                    }
+                    override fun onException(throwable: Throwable) {
+                        onError(throwable.message ?: throwable.toString())
+                        onComplete()
+                        client.close()
+                    }
+                })
+            }
         }
+        context.getImapScanTime(onRead, onError)
     }
 
     /**
-     * Retrieves a list of email accounts.
+     * Retrieves a list of email accounts logged using [ImapClient].
      *
      * @param context The application context.
      * @param onAccount Callback called for each retrieved email account.
@@ -202,9 +217,7 @@ class Email {
     /**
      * Removes an email account.
      *
-     * This function allows the removal of an email account. If the account is a Gmail account,
-     * it will be logged out from Gmail. For other email providers, it will be logged out from
-     * the IMAP server.
+     * This function allows the removal of an specific email account in [ImapClient].
      *
      * @param context The application context.
      * @param account The email account information to be removed.
@@ -226,6 +239,7 @@ class Email {
                 }
                 client.logout(passwordCredentials).addOnSuccessListener {
                     onRemove()
+                    context.deleteImapScanTime()
                 }.addOnFailureListener {
                     onError(
                         it.message
@@ -248,6 +262,7 @@ class Email {
         this.client(context, onError) { client ->
             client.logout().addOnSuccessListener {
                 onComplete()
+                context.deleteImapScanTime()
             }.addOnFailureListener {
                 onError(it.message ?: it.toString())
             }

@@ -16,7 +16,7 @@ import com.getcapacitor.PluginCall
  *
  * @constructor Creates an instance of [ReqInitialize] with the provided data.
  *
- * @param data A [JSObject] containing the initialization data.
+ * @param call A [PluginCall] containing the initialization data.
  */
 class ReqInitialize(call: PluginCall) : Req(call) {
     val licenseKey: String
