@@ -23,13 +23,11 @@ import com.mytiki.sdk.capture.receipt.capacitor.OnAccountCallback
 import com.mytiki.sdk.capture.receipt.capacitor.OnCompleteCallback
 import com.mytiki.sdk.capture.receipt.capacitor.account.Account
 import com.mytiki.sdk.capture.receipt.capacitor.account.AccountCommon
-import com.mytiki.sdk.capture.receipt.capacitor.deleteDate
-import com.mytiki.sdk.capture.receipt.capacitor.getDate
-import com.mytiki.sdk.capture.receipt.capacitor.setDate
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.tasks.await
+import java.time.Duration
 import java.util.Calendar
 import kotlin.math.abs
 import kotlin.math.floor
@@ -131,22 +129,25 @@ class Email {
      * @param context The application context.
      * @param onReceipt Callback called for each collected receipt.
      * @param onError Callback called when an error occurs during scraping.
-     * @param dayCutOff The day cutoff limit for scraping.
+     * @param onComplete Callback called when scrap is com=
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     fun scrape(
         context: Context,
         onReceipt: (receipt: ScanResults?) -> Unit,
         onError: (msg: String) -> Unit,
-        dayCutOff: Int,
         onComplete: () -> Unit
     ) {
         val onRead = { lastScrape: Long ->
-            val today = Calendar.getInstance().timeInMillis
-            val dayCutOffTest = floor((abs(today - lastScrape)/(24 * 60 * 60 * 1000)).toDouble()).toInt()
+            var dayCutOff = 15
+            val now = Calendar.getInstance().timeInMillis
+            val diffInMillis = now - lastScrape
+            val diffInDays = floor((diffInMillis/86400000).toDouble()).toInt()
+            if(diffInDays <= 15) {
+                dayCutOff = diffInDays
+            }
 
             this.client(context, onError) { client ->
-                client.dayCutoff(if (dayCutOffTest > 15) 15 else dayCutOffTest)
+                client.dayCutoff(dayCutOff)
                 client.messages(object : MessagesCallback {
                     override fun onComplete(
                         credential: PasswordCredentials,
@@ -158,7 +159,7 @@ class Email {
                         result.forEach { receipt ->
                             onReceipt(receipt)
                         }
-                        context.setDate(today)
+                        context.setImapScanTime(now)
                         onComplete()
                         client.close()
                     }
@@ -170,7 +171,7 @@ class Email {
                 })
             }
         }
-        context.getDate(onRead, onError)
+        context.getImapScanTime(onRead, onError)
     }
 
     /**
@@ -238,7 +239,7 @@ class Email {
                 }
                 client.logout(passwordCredentials).addOnSuccessListener {
                     onRemove()
-                    context.deleteDate()
+                    context.deleteImapScanTime()
                 }.addOnFailureListener {
                     onError(
                         it.message
@@ -261,7 +262,7 @@ class Email {
         this.client(context, onError) { client ->
             client.logout().addOnSuccessListener {
                 onComplete()
-                context.deleteDate()
+                context.deleteImapScanTime()
             }.addOnFailureListener {
                 onError(it.message ?: it.toString())
             }

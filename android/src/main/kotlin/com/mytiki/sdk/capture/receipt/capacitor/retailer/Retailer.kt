@@ -116,7 +116,7 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun remove(
         context: Context,
-        account: com.mytiki.sdk.capture.receipt.capacitor.account.Account,
+        account: Account,
         onComplete: () -> Unit,
         onError: (msg: String) -> Unit
     ) {
@@ -218,7 +218,7 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun orders(
         context: Context,
-        account: com.mytiki.sdk.capture.receipt.capacitor.account.Account,
+        account: Account,
         onScan: (ScanResults) -> Unit,
         daysCutOff: Int = 7,
         onError: (msg: String) -> Unit,
@@ -317,11 +317,11 @@ class Retailer {
     private fun verify(
         mbAccount: MbAccount,
         activity: AppCompatActivity,
-        onVerify: ((com.mytiki.sdk.capture.receipt.capacitor.account.Account) -> Unit)?,
+        onVerify: ((Account) -> Unit)?,
         onError: ((msg: String) -> Unit)?
     ) {
         val client: AccountLinkingClient = client(activity)
-        val account = com.mytiki.sdk.capture.receipt.capacitor.account.Account.fromRetailerAccount(mbAccount)
+        val account = Account.fromRetailerAccount(mbAccount)
         client.verify(
             RetailerEnum.fromString(account.accountCommon.id).value,
             success = { isVerified: Boolean, _: String ->

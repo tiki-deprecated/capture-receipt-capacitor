@@ -1,4 +1,4 @@
-package com.mytiki.sdk.capture.receipt.capacitor
+package com.mytiki.sdk.capture.receipt.capacitor.email
 
 import android.content.Context
 import androidx.datastore.preferences.core.*
@@ -11,11 +11,11 @@ import kotlinx.coroutines.flow.map
 val key = stringPreferencesKey("tiki-captures-receipt.imap-latest-date")
 
 /**
- * Store a [Long] value in the DataStore.
+ * Store the scan time in milliseconds since epoch in DataStore preferences.
  *
  * @param value The [Long] value to store.
  */
-fun Context.setDate(value: Long) {
+fun Context.setImapScanTime(value: Long) {
     MainScope().async {
         dataStore.edit { pref -> pref[longPreferencesKey(key.name)] = value }
     }
@@ -27,17 +27,17 @@ fun Context.setDate(value: Long) {
  * @param onComplete Callback function to handle the retrieved [Long] value.
  * @param onError Callback function to handle errors.
  */
-fun Context.getDate(onComplete: (Long) -> Unit, onError: (String) -> Unit) {
+fun Context.getImapScanTime(onComplete: (Long) -> Unit, onError: (String) -> Unit) {
     MainScope().async {
-        val longValue = dataStore.data.map { pref ->
-            pref[longPreferencesKey(key.name)] ?: 0L
-        }
-        longValue.distinctUntilChanged().collect { value ->
-            if (value !== null) {
-                onComplete(value)
-            } else {
-                setDate(0L)
+        try {
+            val date = dataStore.data.map { pref ->
+                pref[longPreferencesKey(key.name)] ?: 0L
             }
+            date.distinctUntilChanged().collect { value ->
+                onComplete(value)
+            }
+        }catch(ex: Exception){
+            onError(ex.message ?: "Error in getting Imap sca time.")
         }
     }
 }
@@ -45,8 +45,7 @@ fun Context.getDate(onComplete: (Long) -> Unit, onError: (String) -> Unit) {
 /**
  * Delete a [Long] value from the DataStore.
  */
-fun Context.deleteDate(){
-    // Use async to perform data removal asynchronously
+fun Context.deleteImapScanTime(){
     MainScope().async {
         dataStore.edit { pref -> pref.clear() }
     }

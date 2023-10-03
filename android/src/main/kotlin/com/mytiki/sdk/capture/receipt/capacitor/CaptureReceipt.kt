@@ -176,7 +176,6 @@ class CaptureReceipt {
                 context,
                 onReceipt,
                 onError,
-                dayCutOff ?: 7
             ) { emailFinished.complete(Unit) }
             retailer.orders(
                 context,
