@@ -44,7 +44,7 @@ typealias OnReceiptCallback = ((receipt: ScanResults?) -> Unit)
 class Email {
     private val tag = "ProviderSetupDialogFragment"
     /**
-     * Initializes [BlinkReceiptDigitalSdk] and instantiates [imapClient] and [gmailClient].
+     * Initializes [BlinkReceiptDigitalSdk] and instantiates [imapClient].
      *
      * @param context The application context.
      * @param licenseKey The license key.
@@ -126,7 +126,7 @@ class Email {
     }
 
     /**
-     * Scrapes emails from both IMAP and Gmail providers.
+     * Scrapes receipts from the email using [ImapClient].
      *
      * @param context The application context.
      * @param onReceipt Callback called for each collected receipt.
@@ -174,7 +174,7 @@ class Email {
     }
 
     /**
-     * Retrieves a list of email accounts.
+     * Retrieves a list of email accounts logged using [ImapClient].
      *
      * @param context The application context.
      * @param onAccount Callback called for each retrieved email account.
@@ -216,9 +216,7 @@ class Email {
     /**
      * Removes an email account.
      *
-     * This function allows the removal of an email account. If the account is a Gmail account,
-     * it will be logged out from Gmail. For other email providers, it will be logged out from
-     * the IMAP server.
+     * This function allows the removal of an specific email account in [ImapClient].
      *
      * @param context The application context.
      * @param account The email account information to be removed.
