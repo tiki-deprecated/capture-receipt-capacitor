@@ -1,10 +1,14 @@
 /*
  * Copyright (c) TIKI Inc.
- * MIT license.  See LICENSE file in the root directory.
+ * MIT license. See LICENSE file in the root directory.
  */
 
 package com.mytiki.sdk.capture.receipt.capacitor.plugin
 
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import com.getcapacitor.JSObject
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
@@ -21,6 +25,9 @@ import com.mytiki.sdk.capture.receipt.capacitor.plugin.rsp.Rsp
 import com.mytiki.sdk.capture.receipt.capacitor.plugin.rsp.RspAccount
 import com.mytiki.sdk.capture.receipt.capacitor.plugin.rsp.RspError
 import com.mytiki.sdk.capture.receipt.capacitor.plugin.rsp.RspReceipt
+
+
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "tiki-capture-receipt")
 
 /**
  * A Capacitor plugin for receipt capture functionality.
@@ -66,7 +73,7 @@ class CaptureReceiptPlugin : Plugin() {
     fun login(call: PluginCall) {
         val req = ReqAccount(call)
         if (req.password.isNullOrBlank()) {
-            call.reject("Provide password in login request")
+            call.reject("Provide a password in the login request")
         } else {
             captureReceipt.login(
                 activity,
@@ -76,14 +83,13 @@ class CaptureReceiptPlugin : Plugin() {
                 { account -> call.resolve(account.toRsp("login")) },
                 { msg -> call.reject(msg) }
             )
-
         }
     }
 
     /**
      * Logs out of the receipt capture service.
      *
-     * This method allows users to logout their email or retailer (amazon, wallmart, gmail...) account.
+     * This method allows users to log out their email or retailer (amazon, wallmart, gmail...) account.
      * It can be used to end the session and secure user data.
      *
      * @param call The Capacitor plugin call instance.
@@ -100,7 +106,7 @@ class CaptureReceiptPlugin : Plugin() {
                 onComplete = {
                     call.resolve()
                 })
-        }else if (!id.isNullOrBlank() && !username.isNullOrBlank()) {
+        } else if (!id.isNullOrBlank() && !username.isNullOrBlank()) {
             captureReceipt.logout(activity, Account.fromReq(call),
                 onError = {
                     call.reject(it)
@@ -140,8 +146,8 @@ class CaptureReceiptPlugin : Plugin() {
      *
      * This method fetches all receipts on logged accounts or depending on the inputs starts the physical receipt scan process, launching the camera for scanning receipts.
      * It requires the camera permission to be granted. If not, it will request the permission from the user.
-     * To Fetches receipts from a specific retailer or email account the [JSObject] from [PluginCall.data] sent through call must have a scanType, id, username, and password properties.
-     * To Fetches receipts from all email, retailer, both, or to scan a physical one the [JSObject] from [PluginCall.data] sent through call must have a scanType property.
+     * To Fetch receipts from a specific retailer or email account the [JSObject] from [PluginCall.data] sent through call must have a scanType, id, username, and password properties.
+     * To Fetch receipts from all email, retailer, both, or to scan a physical one the [JSObject] from [PluginCall.data] sent through call must have a scanType property.
      *
      * @param call The Capacitor plugin call instance.
      */
@@ -154,7 +160,6 @@ class CaptureReceiptPlugin : Plugin() {
             onReceipt = { receipt -> onReceipt(req.requestId, receipt) }
         )
     }
-
 
     /**
      * Callback for receipt scanning.
@@ -194,6 +199,4 @@ class CaptureReceiptPlugin : Plugin() {
         val data = RspError(requestId, message).toJS()
         notifyListeners("onCapturePluginResult", data)
     }
-
-
 }

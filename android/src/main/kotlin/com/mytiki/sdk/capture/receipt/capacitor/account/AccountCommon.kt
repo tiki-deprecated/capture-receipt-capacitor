@@ -87,9 +87,9 @@ enum class AccountCommon(val type: AccountTypeEnum, val id: String) {
 
     companion object {
         /**
-         * Finds and returns an [AccountCommon] enum entry with the specified [stringValue].
+         * Finds and returns an [AccountCommon] enum entry with the specified [id].
          *
-         * @param stringValue The [AccountCommon.id] to search for.
+         * @param id The [AccountCommon.id] to search for.
          * @return The matching [AccountCommon] enum entry, or null if not found.
          */
         fun fromSource(id: String) = AccountCommon.values().first { it.id == id }
