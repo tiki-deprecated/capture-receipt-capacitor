@@ -205,7 +205,7 @@ class RspReceipt(requestId: String, scanResults: ScanResults) : Rsp(requestId, P
         .put("payload", JSObject()
             .put("receiptDate", receiptDate?.toJS())
             .put("receiptTime", receiptTime?.toJS())
-            .put("retailerId", retailerId)
+            .put("retailerId", retailerId.toJS())
             .put("products", JSONArray(products.map { prd -> prd.toJS() }))
             .put("coupons", JSONArray(coupons.map { coupon -> coupon.toJS() }))
             .put("total", total?.toJS())
