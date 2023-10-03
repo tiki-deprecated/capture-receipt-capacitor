@@ -16,8 +16,7 @@ export const login = async (username: string, password: string, source: string) 
     password,
     type: accountTypes.from(source)!,
   };
-  console.log('login method:');
-  console.log(await instance.login(account));
+  await instance.login(account);
 };
 
 export const accounts = async (): Promise<void> => {
