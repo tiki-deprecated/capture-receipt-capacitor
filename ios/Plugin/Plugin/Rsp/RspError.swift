@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in the root directory.
  */
 
-public class RspError: Rsp, Error {
+public class RspError: Rsp {
     let message: String
     let code: RspErrorEnum
     
@@ -16,9 +16,10 @@ public class RspError: Rsp, Error {
     // Converts the RSP error data to a dictionary
     func toJS() -> [String: Any] {
         var ret = super.toPluginCallResultData()
-        ret["payload"]: [
+        ret["payload"] = [
             "message": message,
             "code": code.rawValue
         ]
+        return ret
     }
 }

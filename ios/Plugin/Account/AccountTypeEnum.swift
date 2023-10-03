@@ -11,4 +11,6 @@ public enum AccountTypeEnum {
     case email
     /// Indicates a retailer account type.
     case retailer
+    
+    case none
 }

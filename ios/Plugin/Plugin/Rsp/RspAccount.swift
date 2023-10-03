@@ -49,12 +49,12 @@ struct RspAccount{
     func toPluginCallResultData() -> PluginCallResultData {
         let payload = [
             "username" : username,
-            "source" : source,
+            "id" : source,
             "verified" : isVerified
         ] as [String : Any]
         return [
-            "request" : requestId,
-            "event" : event,
+            "requestId" : requestId,
+            "event" : event.rawValue,
             "payload" : payload
         ]
     }

@@ -15,7 +15,7 @@ public enum RetailerEnum: String {
     case ACME_MARKETS
     case ALBERTSONS
     case AMAZON
-    case AMAZON_BETA
+//    case AMAZON_BETA
     case AMAZON_CA
     case AMAZON_UK
     case BED_BATH_AND_BEYOND
@@ -81,7 +81,7 @@ public enum RetailerEnum: String {
             case .acmeMarkets : return .ACME_MARKETS
             case .albertsons : return .ALBERTSONS
             case .amazon : return .AMAZON
-            case .amazonBeta : return .AMAZON_BETA
+            case .amazonBeta : return .AMAZON
             case .amazonBetaCA : return .AMAZON_CA
             case .amazonBetaUK : return .AMAZON_UK
             case .bedBath : return .BED_BATH_AND_BEYOND
@@ -151,8 +151,8 @@ func toBRAccountLinkingRetailer() -> BRAccountLinkingRetailer? {
         switch self{
             case .ACME_MARKETS : return .acmeMarkets
             case .ALBERTSONS : return .albertsons
-            case .AMAZON : return .amazon
-            case .AMAZON_BETA : return .amazonBeta
+            case .AMAZON : return .amazonBeta
+//            case .AMAZON_BETA : return .amazonBeta
             case .AMAZON_CA : return .amazonBetaCA
             case .AMAZON_UK : return .amazonBetaUK
             case .BED_BATH_AND_BEYOND : return .bedBath
@@ -223,7 +223,7 @@ func toBRAccountLinkingRetailer() -> BRAccountLinkingRetailer? {
         case .ACME_MARKETS : return "ACME_MARKETS"
         case .ALBERTSONS : return "ALBERTSONS"
         case .AMAZON : return "AMAZON"
-        case .AMAZON_BETA : return "AMAZON_BETA"
+//        case .AMAZON_BETA : return "AMAZON_BETA"
         case .AMAZON_CA : return "AMAZON_CA"
         case .AMAZON_UK : return "AMAZON_UK"
         case .BED_BATH_AND_BEYOND : return "BED_BATH_AND_BEYOND"

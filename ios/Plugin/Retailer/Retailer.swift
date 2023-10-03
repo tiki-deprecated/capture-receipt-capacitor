@@ -93,14 +93,14 @@ public class Retailer : CAPPlugin{
     /// - Parameters:
     ///   - account: An optional instance of the Account struct containing user and account information.
     ///   - call: The CAPPluginCall object representing the plugin call.
-    public func orders(reqScan: ReqScan, onError: @escaping (String) -> Void, onReceipt: @escaping(RspReceipt) -> Void, onComplete: @escaping () -> Void){
+    public func orders(onError: @escaping (String) -> Void, onReceipt: @escaping(BRScanResults) -> Void, onComplete: @escaping () -> Void){
         Task(priority: .high) {
             let retailers = await BRAccountLinkingManager.shared().getLinkedRetailers()
             for ret in  retailers {
                 DispatchQueue.main.async {
                     BRAccountLinkingManager.shared().grabNewOrders( for: .amazonBeta) { retailer, order, remaining, viewController, errorCode, sessionId in
                         if(errorCode == .none && order != nil){
-                            onReceipt(RspReceipt(requestId: reqScan.requestId, scanResults: order!))
+                            onReceipt(order!)
                         }
                     }
                 }

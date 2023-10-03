@@ -26,7 +26,7 @@ public class CaptureReceiptPlugin: CAPPlugin {
     @objc public func login(_ call: CAPPluginCall) {
         do{
             let reqAccount = try ReqAccount(data: call)
-            receiptCapture.login(reqAccount: reqAccount, onError: { error in call.reject(error)} ,onComplete: { account in call.resolve(RspAccount(requestId: call.getString("requestId", ""), event: .onComplete, account: account!).toPluginCallResultData() )} )
+            receiptCapture.login(reqAccount: reqAccount, onError: { error in call.reject(error)} ,onComplete: { account in call.resolve( (account?.toResultData())! )} )
         }catch {
             call.reject(error.localizedDescription)
         }
@@ -36,7 +36,7 @@ public class CaptureReceiptPlugin: CAPPlugin {
         do{
             receiptCapture.logout(reqAccount: try ReqAccount(data: call), onError: { error in call.reject(error)} ,onComplete: { call.resolve() })
         }catch{
-            call.reject(error.localizedDescription)
+            call.reject("error logout")
         }
     }
 
@@ -56,16 +56,16 @@ public class CaptureReceiptPlugin: CAPPlugin {
                             onComplete: {})
     }
     
-    func onScan(_ requestId: String, _ rspReceipt: RspReceipt? = nil){
-        self.notifyListeners("onReceipt", data: rspReceipt?.toPluginCallResultData())
+    func onScan(_ requestId: String, _ scanResult: BRScanResults){
+        self.notifyListeners("onCapturePluginResult", data: RspReceipt(requestId: requestId, scanResults: scanResult).toPluginCallResultData())
     }
     
     private func onComplete(requestId: String){
-        let rsp = Rsp(requestId: requestId, event: .onComplete)
-        self.notifyListeners("onComplete", data: rsp.toPluginCallResultData())
+        let rsp = Rsp(requestId: requestId, event: .onComplete).toPluginCallResultData()
+        self.notifyListeners("onCapturePluginResult", data: rsp)
     }
     private func onAccounts(requestId: String, account: Account) {
-        let rsp = RspAccount(requestId: requestId, event: .onAccount, account: account)
-        self.notifyListeners("onAccount", data: account.toResultData())
+        let rsp = RspAccount(requestId: requestId, event: .onAccount, account: account).toPluginCallResultData()
+        self.notifyListeners("onCapturePluginResult", data: rsp)
     }
 }

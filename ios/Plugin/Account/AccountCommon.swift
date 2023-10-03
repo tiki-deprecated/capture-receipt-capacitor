@@ -18,8 +18,8 @@ public struct AccountCommon{
     static let defaults: [String: AccountCommon] = [
         "ACME_MARKETS" : AccountCommon(type: .retailer, source: RetailerEnum.ACME_MARKETS.rawValue),
         "ALBERTSONS" : AccountCommon(type: .retailer, source: RetailerEnum.ALBERTSONS.rawValue),
-        "AMAZON": AccountCommon(type: .retailer, source: RetailerEnum.AMAZON_BETA.rawValue),
-        "AMAZON_BETA": AccountCommon(type: .retailer, source: RetailerEnum.AMAZON_BETA.rawValue),
+        "AMAZON": AccountCommon(type: .retailer, source: RetailerEnum.AMAZON.rawValue),
+//        "AMAZON_BETA": AccountCommon(type: .retailer, source: RetailerEnum.AMAZON_BETA.rawValue),
         "AMAZON_CA": AccountCommon(type: .retailer, source: RetailerEnum.AMAZON_CA.rawValue),
         "AMAZON_UK": AccountCommon(type: .retailer, source: RetailerEnum.AMAZON_UK.rawValue),
         "BED_BATH_AND_BEYOND": AccountCommon(type: .retailer, source: RetailerEnum.BED_BATH_AND_BEYOND.rawValue),

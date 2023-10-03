@@ -29,7 +29,7 @@ public enum EmailEnum: String, CaseIterable {
     func toBREReceiptProvider() -> BREReceiptProvider? {
         switch self{
             case .AOL : return .AOL
-            case .GMAIL : return .gmail
+            case .GMAIL : return .gmailIMAP
             case .OUTLOOK : return .outlook
             case .YAHOO : return .yahoo
         }

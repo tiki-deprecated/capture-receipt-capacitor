@@ -54,14 +54,17 @@ public class CaptureReceipt: NSObject {
             }
             retailer.login(account, onError: {error in onError(error)}, onComplete: {account in onComplete(account)})
             break
+        case .none :
+            onError("Invalid Type")
         }
+
     }
     /// Handles user logout from receipt management.
     ///
     /// - Parameter call: The CAPPluginCall representing the logout request.
     public func logout(reqAccount: ReqAccount, onError: @escaping (String) -> Void, onComplete: @escaping () -> Void) {
-        if(reqAccount.accountCommon.source == ""){
-            if(reqAccount.username != "" || reqAccount.password != ""){
+        if(reqAccount.accountCommon.type == .none){
+            if(reqAccount.username != "" || reqAccount.password != nil){
                 onError("Error: Invalid logout arguments. If you want delete all accounts, don't send username of password")
                 return
             }else{
@@ -99,6 +102,8 @@ public class CaptureReceipt: NSObject {
             }
             retailer.logout(reqAccount: reqAccount, onError: {error in onError(error)}, onComplete: {onComplete()})
             break
+        case .none :
+            onError("Invalid Type")
         }
     }
     /// Retrieves a list of user accounts for receipt management.
@@ -123,7 +128,7 @@ public class CaptureReceipt: NSObject {
     /// Initiates receipt scanning based on the specified account type.
     ///
     /// - Parameter call: The CAPPluginCall representing the scan request.
-    public func scan(call: CAPPluginCall?, reqScan: ReqScan, onError: @escaping (String) -> Void, onReceipt: @escaping (RspReceipt) -> Void, onComplete: @escaping () -> Void) {
+    public func scan(call: CAPPluginCall?, reqScan: ReqScan, onError: @escaping (String) -> Void, onReceipt: @escaping (BRScanResults) -> Void, onComplete: @escaping () -> Void) {
             guard let retailer = retailer else {
                 onError("Retailer not initialized. Did you call .initialize()?")
                 return
@@ -133,8 +138,8 @@ public class CaptureReceipt: NSObject {
                 return
             }
         let reqScan = ReqScan(data: call!)
-        email.scan(reqScan: reqScan, onError: {error in onError(error)}, onReceipt: {rspReceipt in onReceipt(rspReceipt)}, onComplete: {})
-        retailer.orders(reqScan: reqScan, onError: {error in onError(error)}, onReceipt: {rspReceipt in onReceipt(rspReceipt)}, onComplete: {})
+        email.scan(reqScan: reqScan, onError: {error in onError(error)}, onReceipt: {scanResult in onReceipt(scanResult)}, onComplete: {})
+        retailer.orders(onError: {error in onError(error)}, onReceipt: {scanResult in onReceipt(scanResult)}, onComplete: {})
 
     }
     

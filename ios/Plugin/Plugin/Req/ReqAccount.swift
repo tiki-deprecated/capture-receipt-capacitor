@@ -14,10 +14,10 @@ public struct ReqAccount {
     
     init(data: CAPPluginCall) throws {
         if(AccountCommon.defaults[data.getString("id") ?? ""] == nil){
-            data.reject("Invalid id")
-            throw NSError()
+            accountCommon = AccountCommon(type: .none, source: "")
+        }else{
+            accountCommon = AccountCommon.defaults[data.getString("id") ?? ""]!
         }
-        accountCommon = AccountCommon.defaults[data.getString("id") ?? ""]!
         username = data.getString("username") ?? ""
         password = data.getString("password")
         isVerified = data.getBool("isVerified")
