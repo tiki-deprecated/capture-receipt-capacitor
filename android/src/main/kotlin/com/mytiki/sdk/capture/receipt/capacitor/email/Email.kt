@@ -137,14 +137,14 @@ class Email {
         onError: (msg: String) -> Unit,
         onComplete: () -> Unit
     ) {
-        val onRead = { lastScrape: Long ->
+//        val onRead = { lastScrape: Long ->
             var dayCutOff = 15
-            val now = Calendar.getInstance().timeInMillis
-            val diffInMillis = now - lastScrape
-            val diffInDays = floor((diffInMillis/86400000).toDouble()).toInt()
-            if(diffInDays <= 15) {
-                dayCutOff = diffInDays
-            }
+//            val now = Calendar.getInstance().timeInMillis
+//            val diffInMillis = now - lastScrape
+//            val diffInDays = floor((diffInMillis/86400000).toDouble()).toInt()
+//            if(diffInDays <= 15) {
+//                dayCutOff = diffInDays
+//            }
 
             this.client(context, onError) { client ->
                 client.dayCutoff(dayCutOff)
@@ -153,13 +153,10 @@ class Email {
                         credential: PasswordCredentials,
                         result: List<ScanResults>
                     ) {
-                        if (result.isEmpty()) {
-                            onError("No results for ${credential.username()} - ${credential.provider()}")
-                        }
                         result.forEach { receipt ->
                             onReceipt(receipt)
                         }
-                        context.setImapScanTime(now)
+//                        context.setImapScanTime(now)
                         onComplete()
                         client.close()
                     }
@@ -171,8 +168,8 @@ class Email {
                 })
             }
         }
-        context.getImapScanTime(onRead, onError)
-    }
+//        context.getImapScanTime(onRead, onError)
+//    }
 
     /**
      * Retrieves a list of email accounts logged using [ImapClient].

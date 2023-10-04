@@ -37,7 +37,7 @@ fun Context.getImapScanTime(onComplete: (Long) -> Unit, onError: (String) -> Uni
                 onComplete(value)
             }
         }catch(ex: Exception){
-            onError(ex.message ?: "Error in getting Imap sca time.")
+            onError(ex.message ?: "Error in getting Imap scan time.")
         }
     }
 }
