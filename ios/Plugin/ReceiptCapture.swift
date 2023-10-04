@@ -22,16 +22,21 @@ public class ReceiptCapture: NSObject {
     ///
     /// - Parameter call: The CAPPluginCall representing the initialization request.
     public func initialize(_ call: CAPPluginCall) {
-        let reqInit = ReqInitialize(call)
-        let licenseKey = reqInit.licenseKey
-        let productKey = reqInit.productKey
-        let googleClientId = reqInit.googleClientId
-        let scanManager = BRScanManager.shared()
-        scanManager.licenseKey = licenseKey
-        scanManager.prodIntelKey = productKey
-        physical = Physical()
-        email = Email(licenseKey, productKey, googleClientId)
-        retailer = Retailer(licenseKey, productKey)
+        do {
+            let reqInit = try ReqInitialize(call)
+            let licenseKey = reqInit.ios
+            let productKey = reqInit.product
+            let googleClientId = reqInit.googleClientId
+            let scanManager = BRScanManager.shared()
+            scanManager.licenseKey = licenseKey
+            scanManager.prodIntelKey = productKey
+            physical = Physical()
+            email = Email(licenseKey, productKey, googleClientId)
+            retailer = Retailer(licenseKey, productKey)
+            call.resolve()
+        }catch let error as NSError {
+            call.reject(error.description)
+        }
     }
     
     /// Handles user login for receipt management.
