@@ -55,10 +55,14 @@ class CaptureReceiptPlugin : Plugin() {
      */
     @PluginMethod
     fun initialize(call: PluginCall) {
-        val request = ReqInitialize(call)
-        captureReceipt.initialize(context, request.licenseKey, request.productKey, {
-            call.resolve()
-        }, { error -> call.reject(error) })
+        try{
+            val request = ReqInitialize(call)
+            captureReceipt.initialize(context, request.android, request.product, {
+                call.resolve()
+            }, { error -> call.reject(error) })
+        }catch (error: Error) {
+            call.reject(error.message);
+        }
     }
 
     /**

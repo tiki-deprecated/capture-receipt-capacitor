@@ -30,13 +30,21 @@ export class CaptureReceipt {
   }
 
   /**
-   * Initializes the SDK
-   * @param licenseKey The license key of the package.
-   * @param productKey The product intelligence key of the package.
+   * Initializes the SDK.
+   *
+   * One of (or both) ios or android is required depending on the platform used.
+   *
+   * @param product The product intelligence key for the package.
+   * @param ios The iOS license key.
+   * @param android The Android license key.
    * @returns A Promise that resolves to void on completion
    */
-  initialize(licenseKey: string, productKey: string): Promise<void> {
-    const req: ReqInitialize = new ReqInitialize(licenseKey, productKey);
+  initialize(
+    product: string,
+    ios: string | undefined = undefined,
+    android: string | undefined = undefined,
+  ): Promise<void> {
+    const req: ReqInitialize = new ReqInitialize(product, ios, android);
     return this.plugin.initialize(req);
   }
 

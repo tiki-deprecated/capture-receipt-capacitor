@@ -19,8 +19,8 @@ import com.getcapacitor.PluginCall
  * @param call A [PluginCall] containing the initialization data.
  */
 class ReqInitialize(call: PluginCall) : Req(call) {
-    val licenseKey: String
-    val productKey: String
+    val product: String
+    val android: String
 
     /**
      * Initializes the [ReqInitialize] object by extracting the licenseKey and productKey
@@ -29,17 +29,9 @@ class ReqInitialize(call: PluginCall) : Req(call) {
      * @param data A [JSObject] containing the initialization data.
      */
     init {
-        val licenseKey = call.getString("licenseKey")
-        val productKey = call.getString("productKey")
-        if (licenseKey == null) {
-            call.reject("Provide a License Key for initialization.")
-            throw Error("Provide a License Key for initialization.")
-        }
-        if (productKey == null) {
-            call.reject("Provide a Product Intelligence Key for initialization.")
-            throw Error("Provide a Product Intelligence Key for initialization.")
-        }
-        this.productKey = productKey
-        this.licenseKey = licenseKey
+        product = call.getString("product")
+            ?: throw Error("Provide a Product Intelligence Key for initialization.")
+        android = call.getString("android") ?:
+            throw Error("Provide an Android License Key for initialization.")
     }
 }

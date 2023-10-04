@@ -12,12 +12,14 @@ import type { Req } from './req';
  */
 export class ReqInitialize implements Req {
   requestId: string;
-  licenseKey: string;
-  productKey: string;
+  ios?: string;
+  android?: string;
+  product: string;
 
-  constructor(licenseKey: string, productKey: string) {
+  constructor(product: string, ios: string | undefined = undefined, android: string | undefined = undefined) {
     this.requestId = uuid.v4();
-    this.licenseKey = licenseKey;
-    this.productKey = productKey;
+    this.product = product;
+    this.ios = ios;
+    this.android = android;
   }
 }
