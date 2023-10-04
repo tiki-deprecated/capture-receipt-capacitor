@@ -13,8 +13,8 @@ target 'Plugin'do
   capacitor_pods
   use_frameworks!
   
-  pod 'BlinkReceipt', '~> 2.31' 
-  pod 'BlinkEReceipt', '~> 1.39' 
+  pod 'BlinkReceipt', '~> 1.39'
+  pod 'BlinkEReceipt', '~> 2.31'
 end
 
 

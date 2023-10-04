@@ -21,8 +21,8 @@ target 'App' do
   capacitor_pods
   use_frameworks!
 
-  pod 'BlinkReceipt', '~> 1.38'
-  pod 'BlinkEReceipt', '~> 2.0'
+  pod 'BlinkReceipt', '~> 1.39'
+  pod 'BlinkEReceipt', '~> 2.31'
 end
 
 post_install do |installer|
