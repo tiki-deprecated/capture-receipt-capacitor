@@ -46,14 +46,12 @@ export class CallbackManager {
    * @param cbDetails
    */
   fire(body: CallbackBody): void {
-    debugger
     const event = toCallbackEvent(body.event);
     if (!event) {
       console.debug(`Invalid body. Skipping callback: ${JSON.stringify(body)}`);
       return;
     }
     const details = new CallbackDetails(body.requestId, event);
-    console.log(JSON.stringify(details))
     const registered = this.callbacks.get(details.id);
     if (!registered) {
       console.debug(`No callback registered. Skipping callback: ${JSON.stringify(body)}`);
@@ -75,10 +73,10 @@ export class CallbackManager {
       case CallbackEvent.onComplete: {
         const callback = registered.callback as CompleteCallback;
         callback();
-        const requestId = body.requestId
-        const callbackEvents = Object.keys(CallbackEvent)
+        const requestId = body.requestId;
+        const callbackEvents = Object.keys(CallbackEvent);
         for (const event of callbackEvents) {
-          this.remove(`${event}:${requestId}`)
+          this.remove(`${event}:${requestId}`);
         }
         break;
       }
