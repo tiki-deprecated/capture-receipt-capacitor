@@ -170,7 +170,7 @@ class Email {
                 })
             }
         }
-        context.getImapScanTime(onRead, onError)
+        context.getImapScanTime(onRead)
     }
 
     /**
@@ -196,7 +196,6 @@ class Email {
                     } else {
                         for (credential in credentials) {
                             val account = Account.fromEmailAccount(credential)
-
                             account.isVerified = client.verify(credential).await()
                             onAccount(account)
                             returnedAccounts++
@@ -237,12 +236,9 @@ class Email {
                     ).value
                 }
                 client.logout(passwordCredentials).addOnSuccessListener {
-                    client.clearLastCheckedTime(Provider.valueOf(account.accountCommon.id)).addOnSuccessListener {
-                        onRemove()
-                    }.addOnFailureListener {
-                        onError(it.message ?: it.toString())
-                    }
+                    client.clearLastCheckedTime(Provider.valueOf(account.accountCommon.id))
                     context.deleteImapScanTime()
+                    onRemove()
                 }.addOnFailureListener {
                     onError(
                         it.message
@@ -264,12 +260,9 @@ class Email {
     fun flush(context: Context, onComplete: () -> Unit, onError: (msg: String) -> Unit) {
         this.client(context, onError) { client ->
             client.logout().addOnSuccessListener {
-                client.clearLastCheckedTime().addOnSuccessListener {
-                    onComplete()
-                }.addOnFailureListener {
-                    onError(it.message ?: it.toString())
-                }
+                client.clearLastCheckedTime()
                 context.deleteImapScanTime()
+                onComplete()
             }.addOnFailureListener {
                 onError(it.message ?: it.toString())
             }
@@ -287,7 +280,6 @@ class Email {
                 override fun onComplete() {
                     clientInitialization.complete(Unit)
                 }
-
                 override fun onException(ex: Throwable) {
                     onError(ex.message ?: "Error in IMAP client initialization: $ex")
                 }

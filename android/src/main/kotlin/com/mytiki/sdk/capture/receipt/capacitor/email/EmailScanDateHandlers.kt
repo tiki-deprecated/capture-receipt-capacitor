@@ -2,6 +2,7 @@ package com.mytiki.sdk.capture.receipt.capacitor.email
 
 import android.content.Context
 import androidx.datastore.preferences.core.*
+import com.microblink.core.Timberland
 import com.mytiki.sdk.capture.receipt.capacitor.plugin.dataStore
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
@@ -28,14 +29,14 @@ fun Context.setImapScanTime(value: Long) {
  * @param onComplete Callback function to handle the retrieved [Long] value.
  * @param onError Callback function to handle errors.
  */
-fun Context.getImapScanTime(onComplete: (Long) -> Unit, onError: (String) -> Unit) {
+fun Context.getImapScanTime(onComplete: (Long) -> Unit) {
     MainScope().async {
         try {
             val date = dataStore.data.first()[longPreferencesKey(key.name)] ?: 0L
             onComplete(date)
 
         }catch(ex: Exception){
-            onError(ex.message ?: "Error in getting Imap scan time.")
+           Timberland.d(ex.message ?: "Error in getting Imap scan time.")
         }
     }
 }
