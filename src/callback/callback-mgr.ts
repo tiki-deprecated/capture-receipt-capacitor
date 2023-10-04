@@ -73,10 +73,10 @@ export class CallbackManager {
       case CallbackEvent.onComplete: {
         const callback = registered.callback as CompleteCallback;
         callback();
-        const requestId = body.requestId
-        const callbackEvents = Object.keys(CallbackEvent)
+        const requestId = body.requestId;
+        const callbackEvents = Object.keys(CallbackEvent);
         for (const event of callbackEvents) {
-          this.remove(`${event}:${requestId}`)
+          this.remove(`${event}:${requestId}`);
         }
         break;
       }
