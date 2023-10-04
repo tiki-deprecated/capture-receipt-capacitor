@@ -6,6 +6,7 @@ import com.mytiki.sdk.capture.receipt.capacitor.plugin.dataStore
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 val key = stringPreferencesKey("tiki-captures-receipt.imap-latest-date")
@@ -30,12 +31,9 @@ fun Context.setImapScanTime(value: Long) {
 fun Context.getImapScanTime(onComplete: (Long) -> Unit, onError: (String) -> Unit) {
     MainScope().async {
         try {
-            val date = dataStore.data.map { pref ->
-                pref[longPreferencesKey(key.name)] ?: 0L
-            }
-            date.distinctUntilChanged().collect { value ->
-                onComplete(value)
-            }
+            val date = dataStore.data.first()[longPreferencesKey(key.name)] ?: 0L
+            onComplete(date)
+
         }catch(ex: Exception){
             onError(ex.message ?: "Error in getting Imap scan time.")
         }
