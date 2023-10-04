@@ -6,20 +6,21 @@
 import Foundation
 import Capacitor
 
-public struct ReqAccount {
+public class ReqAccount : Req {
     let accountCommon: AccountCommon
     let username: String
     let password: String?
     let isVerified: Bool?
     
-    init(data: CAPPluginCall) throws {
-        if(AccountCommon.defaults[data.getString("id") ?? ""] == nil){
+    override init(_ call: CAPPluginCall) throws {
+        if(AccountCommon.defaults[call.getString("id") ?? ""] == nil){
             accountCommon = AccountCommon(type: .none, source: "")
         }else{
-            accountCommon = AccountCommon.defaults[data.getString("id") ?? ""]!
+            accountCommon = AccountCommon.defaults[call.getString("id") ?? ""]!
         }
-        username = data.getString("username") ?? ""
-        password = data.getString("password")
-        isVerified = data.getBool("isVerified")
+        username = call.getString("username") ?? ""
+        password = call.getString("password")
+        isVerified = call.getBool("isVerified")
+        try super.init(call)
     }
 }

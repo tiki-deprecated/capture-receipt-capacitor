@@ -14,7 +14,7 @@ public class RspError: Rsp {
     }
     
     // Converts the RSP error data to a dictionary
-    func toJS() -> [String: Any] {
+    override func toPluginCallResultData() -> [String: Any] {
         var ret = super.toPluginCallResultData()
         ret["payload"] = [
             "message": message,

@@ -33,7 +33,7 @@ public class CaptureReceipt: NSObject {
     /// Handles user login for receipt management.
     ///
     /// - Parameter call: The CAPPluginCall representing the login request.
-    public func login(reqAccount: ReqAccount, onError: @escaping (String) -> Void, onComplete: @escaping (Account?) -> Void) {
+    public func login(reqAccount: ReqAccount, onError: @escaping (String) -> Void, onComplete: @escaping (Account) -> Void) {
         guard let accountType = AccountCommon.defaults[reqAccount.accountCommon.source] else {
             onError("Invalid source: \(reqAccount.accountCommon.source)")
             return
@@ -128,7 +128,7 @@ public class CaptureReceipt: NSObject {
     /// Initiates receipt scanning based on the specified account type.
     ///
     /// - Parameter call: The CAPPluginCall representing the scan request.
-    public func scan(call: CAPPluginCall?, reqScan: ReqScan, onError: @escaping (String) -> Void, onReceipt: @escaping (BRScanResults) -> Void, onComplete: @escaping () -> Void) {
+    public func scan(onError: @escaping (String) -> Void, onReceipt: @escaping (BRScanResults) -> Void, onComplete: @escaping () -> Void) {
             guard let retailer = retailer else {
                 onError("Retailer not initialized. Did you call .initialize()?")
                 return
@@ -137,7 +137,6 @@ public class CaptureReceipt: NSObject {
                 onError("Email not initialized. Did you call .initialize()?")
                 return
             }
-        let reqScan = ReqScan(data: call!)
         email.scan(reqScan: reqScan, onError: {error in onError(error)}, onReceipt: {scanResult in onReceipt(scanResult)}, onComplete: {})
         retailer.orders(onError: {error in onError(error)}, onReceipt: {scanResult in onReceipt(scanResult)}, onComplete: {})
 

@@ -13,9 +13,7 @@ import Capacitor
 
  This struct is used to convey details about a receipt, including various receipt fields, such as date, time, products, coupons, totals, and more.
  */
-public struct RspReceipt{
-    var requestId: String
-    var event: PluginEvent
+public class RspReceipt : Rsp{
     /// The date of the receipt, if available.
     private let receiptDate: String?
     /// The time of the receipt, if available.
@@ -233,8 +231,7 @@ public struct RspReceipt{
         paymentTerminalId = scanResults.paymentTerminalId?.value
         paymentTransactionId = scanResults.paymentTransactionId?.value
         combinedRawText = scanResults.combinedRawText
-        self.requestId = requestId
-        self.event = .onReceipt
+        super.init(requestId: requestId, event: .onReceipt)
     }
 
     
@@ -243,9 +240,16 @@ public struct RspReceipt{
 
      - Returns: A dictionary containing receipt information in a format suitable for a Capacitor plugin call result.
      */
-    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+    override func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+        var payload = getPayload()
+        var ret = super.toPluginCallResultData()
+        ret["payload"] = payload
+        return ret
+    }
+    
+    
+    private func getPayload() -> JSObject{
         var payload = JSObject()
-        // Mapping struct properties to dictionary values.
         payload["receiptDate"] = receiptDate
         payload["receiptTime"] = receiptTime
         payload["retailerId"] = Int(retailerId)
@@ -308,11 +312,6 @@ public struct RspReceipt{
         payload["paymentTerminalId"] = paymentTerminalId
         payload["paymentTransactionId"] = paymentTransactionId
         payload["combinedRawText"] = combinedRawText
-        let ret = [
-            "requestId" : requestId,
-            "event" : event,
-            "payload": payload
-        ] as [String : Any]
-        return ret
+        return payload
     }
 }

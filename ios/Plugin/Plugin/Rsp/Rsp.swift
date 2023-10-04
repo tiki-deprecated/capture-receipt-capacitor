@@ -19,7 +19,7 @@ public class Rsp {
     func toPluginCallResultData() -> [String: Any] {
         return [
             "requestId": requestId,
-            "event": event
+            "event": event.rawValue
         ]
     }
 }

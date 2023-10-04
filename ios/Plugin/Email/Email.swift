@@ -102,16 +102,13 @@ public class Email {
         BRAccountLinkingManager.shared().resetHistory()
         Task(priority: .high){
             await BREReceiptManager.shared().getEReceipts() {scanResults, emailAccount, error in
-                    print(scanResults)
-    //                if(scanResults != nil){
-    //                    scanResults?.forEach{scanResults in
-    //                        onReceipt(scanResults)
-    //                    }
-    //                    self.defaults.set(Date(), forKey: "lastIMAPScan")
-    //                    onComplete()
-    //                }else{
-    //                    onError(error?.localizedDescription ?? "No receipts.")
-    //                }
+                if(scanResults != nil){
+                    scanResults!.forEach{scanResults in
+                        onReceipt(scanResults)
+                    }
+                }
+                self.defaults.set(Date(), forKey: "lastIMAPScan")
+                onComplete()
             }
         }
 

@@ -14,58 +14,57 @@ public class CaptureReceiptPlugin: CAPPlugin {
     private let receiptCapture = CaptureReceipt()
     
     @objc public func initialize(_ call: CAPPluginCall) {
-        if(call.getString("productKey") == "" || call.getString("licenseKey") == ""){
-            call.reject("Please, provide a valid LicenseKey and ProductKey")
-        }else{
-            let reqInitialize = ReqInitialize(licenseKey: call.getString("productKey")!, productKey: call.getString("licenseKey")!)
-            receiptCapture.initialize(reqInitialize: reqInitialize)
-            call.resolve()
-        }
+        let reqInitialize = try! ReqInitialize(call)
+        receiptCapture.initialize(reqInitialize: reqInitialize)
+        call.resolve()
     }
     
     @objc public func login(_ call: CAPPluginCall) {
-        do{
-            let reqAccount = try ReqAccount(data: call)
-            receiptCapture.login(reqAccount: reqAccount, onError: { error in call.reject(error)} ,onComplete: { account in call.resolve( (account?.toResultData())! )} )
-        }catch {
-            call.reject(error.localizedDescription)
-        }
+        let reqAccount = try! ReqAccount(call)
+        receiptCapture.login(reqAccount: reqAccount,
+                             onError: { error in call.reject(error)},
+                             onComplete: { account in call.resolve( (account.toResultData()) )} )
     }
 
     @objc func logout(_ call: CAPPluginCall) {
-        do{
-            receiptCapture.logout(reqAccount: try ReqAccount(data: call), onError: { error in call.reject(error)} ,onComplete: { call.resolve() })
-        }catch{
-            call.reject("error logout")
-        }
+        let reqAccount = try! ReqAccount(call)
+        receiptCapture.logout(reqAccount: reqAccount,
+                              onError: { error in call.reject(error)},
+                              onComplete: { call.resolve() })
     }
 
     @objc func accounts(_ call: CAPPluginCall){
+        let req = try! Req(call)
         receiptCapture.accounts(
-            onError: {error in call.reject(error)},
-            onComplete: { [self] in onComplete(requestId: call.getString("requestId", ""))},
-            onAccount: {account in onAccounts(requestId: call.getString("requestId", ""), account: account)})
+            onError: {error in self.onError(req.requestId, error)},
+            onComplete: { [self] in onComplete(requestId: req.requestId)},
+            onAccount: {account in onAccount(requestId: req.requestId, account: account)})
     }
     
     @objc func scan(_ call: CAPPluginCall) {
-        let rsp = Rsp(requestId: call.getString("requestId", ""), event: .onReceipt)
-        receiptCapture.scan(call: call,
-                            reqScan: ReqScan(data: call),
-                            onError: {error in call.reject(error)},
-                            onReceipt: { rspReceipt in self.onScan(call.getString("requestId", ""), rspReceipt)},
+        let req = try! Req(call)
+        receiptCapture.scan(onError: {error in self.onError(req.requestId, error)},
+                            onReceipt: { receipt in self.onReceipt(req.requestId, receipt)},
                             onComplete: {})
     }
     
-    func onScan(_ requestId: String, _ scanResult: BRScanResults){
-        self.notifyListeners("onCapturePluginResult", data: RspReceipt(requestId: requestId, scanResults: scanResult).toPluginCallResultData())
+    private func onReceipt(_ requestId: String, _ scanResults: BRScanResults){
+        let rsp = RspReceipt(requestId: requestId, scanResults: scanResults).toPluginCallResultData()
+        self.notifyListeners("onCapturePluginResult", data: rsp)
+    }
+    
+    private func onError(_ requestId: String, _ message: String){
+        let rsp = RspError(requestId: requestId, message: message).toPluginCallResultData()
+        self.notifyListeners("onCapturePluginResult", data: rsp)
     }
     
     private func onComplete(requestId: String){
         let rsp = Rsp(requestId: requestId, event: .onComplete).toPluginCallResultData()
         self.notifyListeners("onCapturePluginResult", data: rsp)
     }
-    private func onAccounts(requestId: String, account: Account) {
-        let rsp = RspAccount(requestId: requestId, event: .onAccount, account: account).toPluginCallResultData()
+    
+    private func onAccount(requestId: String, account: Account) {
+        let rsp = RspAccount(requestId: requestId, account: account).toPluginCallResultData()
         self.notifyListeners("onCapturePluginResult", data: rsp)
     }
 }
