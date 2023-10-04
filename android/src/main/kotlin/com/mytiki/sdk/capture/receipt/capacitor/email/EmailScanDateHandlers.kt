@@ -45,7 +45,7 @@ fun Context.getImapScanTime(onComplete: (Long) -> Unit, onError: (String) -> Uni
  */
 fun Context.deleteImapScanTime(){
     MainScope().async {
-        dataStore.edit { pref -> pref.clear() }
+        dataStore.edit { pref -> pref[longPreferencesKey(key.name)] = 0L }
     }
 }
 

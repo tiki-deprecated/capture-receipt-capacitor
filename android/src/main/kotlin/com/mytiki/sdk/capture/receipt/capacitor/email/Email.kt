@@ -10,6 +10,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentManager
 import com.microblink.core.InitializeCallback
+import com.microblink.core.Retailer
 import com.microblink.core.ScanResults
 import com.microblink.digital.BlinkReceiptDigitalSdk
 import com.microblink.digital.ImapClient
@@ -23,6 +24,7 @@ import com.mytiki.sdk.capture.receipt.capacitor.OnAccountCallback
 import com.mytiki.sdk.capture.receipt.capacitor.OnCompleteCallback
 import com.mytiki.sdk.capture.receipt.capacitor.account.Account
 import com.mytiki.sdk.capture.receipt.capacitor.account.AccountCommon
+import com.mytiki.sdk.capture.receipt.capacitor.retailer.RetailerEnum
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
@@ -153,12 +155,8 @@ class Email {
                         credential: PasswordCredentials,
                         result: List<ScanResults>
                     ) {
-                        if (result.isEmpty()){
-                            onReceipt(null)
-                        } else {
-                            result.forEach { receipt ->
-                                onReceipt(receipt)
-                            }
+                        result.forEach { receipt ->
+                            onReceipt(receipt)
                         }
                         context.setImapScanTime(now)
                         onComplete()
@@ -239,7 +237,11 @@ class Email {
                     ).value
                 }
                 client.logout(passwordCredentials).addOnSuccessListener {
-                    onRemove()
+                    client.clearLastCheckedTime(Provider.valueOf(account.accountCommon.id)).addOnSuccessListener {
+                        onRemove()
+                    }.addOnFailureListener {
+                        onError(it.message ?: it.toString())
+                    }
                     context.deleteImapScanTime()
                 }.addOnFailureListener {
                     onError(
@@ -262,7 +264,11 @@ class Email {
     fun flush(context: Context, onComplete: () -> Unit, onError: (msg: String) -> Unit) {
         this.client(context, onError) { client ->
             client.logout().addOnSuccessListener {
-                onComplete()
+                client.clearLastCheckedTime().addOnSuccessListener {
+                    onComplete()
+                }.addOnFailureListener {
+                    onError(it.message ?: it.toString())
+                }
                 context.deleteImapScanTime()
             }.addOnFailureListener {
                 onError(it.message ?: it.toString())

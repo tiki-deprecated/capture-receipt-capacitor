@@ -167,12 +167,10 @@ class CaptureReceiptPlugin : Plugin() {
      * @param scan The scanned results.
      */
     private fun onReceipt(requestId: String, scan: ScanResults? = null) {
-        val data = if (scan != null) {
-            RspReceipt(requestId, scan).toJS()
-        } else {
-            JSObject()
+       if (scan != null) {
+            val data = RspReceipt(requestId, scan).toJS()
+            notifyListeners("onCapturePluginResult", data)
         }
-        notifyListeners("onCapturePluginResult", data)
     }
 
     /**
