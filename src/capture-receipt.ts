@@ -40,11 +40,11 @@ export class CaptureReceipt {
    * @returns A Promise that resolves to void on completion
    */
   initialize(
-    product: string,
+    productKey: string,
     ios: string | undefined = undefined,
     android: string | undefined = undefined,
   ): Promise<void> {
-    const req: ReqInitialize = new ReqInitialize(product, ios, android);
+    const req: ReqInitialize = new ReqInitialize(productKey, ios, android);
     return this.plugin.initialize(req);
   }
 

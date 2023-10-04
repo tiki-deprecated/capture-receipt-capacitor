@@ -14,11 +14,11 @@ export class ReqInitialize implements Req {
   requestId: string;
   ios?: string;
   android?: string;
-  product: string;
+  productKey: string;
 
-  constructor(product: string, ios: string | undefined = undefined, android: string | undefined = undefined) {
+  constructor(productKey: string, ios: string | undefined = undefined, android: string | undefined = undefined) {
     this.requestId = uuid.v4();
-    this.product = product;
+    this.productKey = productKey;
     this.ios = ios;
     this.android = android;
   }
