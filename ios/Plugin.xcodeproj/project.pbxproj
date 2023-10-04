@@ -7,47 +7,43 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		007042002EF5C7CF0B45F4E3 /* Pods_PluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB7672BD02C3F75B3947D999 /* Pods_PluginTests.framework */; };
 		50ADFF92201F53D600D50D53 /* Plugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ADFF88201F53D600D50D53 /* Plugin.framework */; };
 		50ADFFA42020D75100D50D53 /* Capacitor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ADFFA52020D75100D50D53 /* Capacitor.framework */; };
-		88F1E8422AC1C30A00180ECB /* RspPossibleProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F1E8412AC1C30A00180ECB /* RspPossibleProduct.swift */; };
-		8C06235F2AB2F9AE00CABC17 /* AccountCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623392AB2F9AE00CABC17 /* AccountCommon.swift */; };
-		8C0623602AB2F9AE00CABC17 /* Email.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06233A2AB2F9AE00CABC17 /* Email.swift */; };
-		8C0623612AB2F9AE00CABC17 /* ScanResultsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06233B2AB2F9AE00CABC17 /* ScanResultsDelegate.swift */; };
-		8C0623622AB2F9AE00CABC17 /* EmailEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06233C2AB2F9AE00CABC17 /* EmailEnum.swift */; };
-		8C0623632AB2F9AE00CABC17 /* ReceiptCapturePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06233D2AB2F9AE00CABC17 /* ReceiptCapturePlugin.swift */; };
-		8C0623642AB2F9AE00CABC17 /* ReceiptCapturePlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C06233E2AB2F9AE00CABC17 /* ReceiptCapturePlugin.h */; };
-		8C0623662AB2F9AE00CABC17 /* Physical.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623402AB2F9AE00CABC17 /* Physical.swift */; };
-		8C0623672AB2F9AE00CABC17 /* RspScan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623422AB2F9AE00CABC17 /* RspScan.swift */; };
-		8C0623682AB2F9AE00CABC17 /* RspProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623432AB2F9AE00CABC17 /* RspProduct.swift */; };
-		8C0623692AB2F9AE00CABC17 /* RspInitialized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623442AB2F9AE00CABC17 /* RspInitialized.swift */; };
-		8C06236A2AB2F9AE00CABC17 /* RspFloatType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623452AB2F9AE00CABC17 /* RspFloatType.swift */; };
-		8C06236B2AB2F9AE00CABC17 /* RspAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623462AB2F9AE00CABC17 /* RspAccount.swift */; };
-		8C06236C2AB2F9AE00CABC17 /* RspSurveyQuestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623472AB2F9AE00CABC17 /* RspSurveyQuestion.swift */; };
-		8C06236D2AB2F9AE00CABC17 /* RspCoupon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623482AB2F9AE00CABC17 /* RspCoupon.swift */; };
-		8C06236E2AB2F9AE00CABC17 /* RspStringType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623492AB2F9AE00CABC17 /* RspStringType.swift */; };
-		8C0623702AB2F9AE00CABC17 /* RspAdditionalLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06234B2AB2F9AE00CABC17 /* RspAdditionalLine.swift */; };
-		8C0623712AB2F9AE00CABC17 /* RspSurveyAnswer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06234C2AB2F9AE00CABC17 /* RspSurveyAnswer.swift */; };
-		8C0623722AB2F9AE00CABC17 /* RspSurveyResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06234D2AB2F9AE00CABC17 /* RspSurveyResponse.swift */; };
-		8C0623732AB2F9AE00CABC17 /* RspShipment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06234E2AB2F9AE00CABC17 /* RspShipment.swift */; };
-		8C0623742AB2F9AE00CABC17 /* RspPaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06234F2AB2F9AE00CABC17 /* RspPaymentMethod.swift */; };
-		8C0623752AB2F9AE00CABC17 /* Rsp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623502AB2F9AE00CABC17 /* Rsp.swift */; };
-		8C0623762AB2F9AE00CABC17 /* RspReceipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623512AB2F9AE00CABC17 /* RspReceipt.swift */; };
-		8C0623772AB2F9AE00CABC17 /* RspPromotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623522AB2F9AE00CABC17 /* RspPromotion.swift */; };
-		8C0623782AB2F9AE00CABC17 /* ReqInitialize‎.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623542AB2F9AE00CABC17 /* ReqInitialize‎.swift */; };
-		8C0623792AB2F9AE00CABC17 /* ReqScan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623552AB2F9AE00CABC17 /* ReqScan.swift */; };
-		8C06237A2AB2F9AE00CABC17 /* ReqRetailerLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623562AB2F9AE00CABC17 /* ReqRetailerLogin.swift */; };
-		8C06237B2AB2F9AE00CABC17 /* ReqLogout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623572AB2F9AE00CABC17 /* ReqLogout.swift */; };
-		8C06237C2AB2F9AE00CABC17 /* ReqLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623582AB2F9AE00CABC17 /* ReqLogin.swift */; };
-		8C06237D2AB2F9AE00CABC17 /* RetailerEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623592AB2F9AE00CABC17 /* RetailerEnum.swift */; };
-		8C06237E2AB2F9AE00CABC17 /* ReceiptCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235A2AB2F9AE00CABC17 /* ReceiptCapture.swift */; };
-		8C06237F2AB2F9AE00CABC17 /* AccountTypeEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235B2AB2F9AE00CABC17 /* AccountTypeEnum.swift */; };
-		8C0623802AB2F9AE00CABC17 /* ReceiptCapturePlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235C2AB2F9AE00CABC17 /* ReceiptCapturePlugin.m */; };
-		8C0623812AB2F9AE00CABC17 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235D2AB2F9AE00CABC17 /* Account.swift */; };
-		8C0623822AB2F9AE00CABC17 /* Retailer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235E2AB2F9AE00CABC17 /* Retailer.swift */; };
-		8C06238D2AB2FC7800CABC17 /* ScanTypeEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06238C2AB2FC7800CABC17 /* ScanTypeEnum.swift */; };
-		8C0623912AB3074D00CABC17 /* RspAccountList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623902AB3074D00CABC17 /* RspAccountList.swift */; };
-		B7AB3BC37ECA3B920D1ED1B2 /* Pods_Plugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71869562961BAF74F469690A /* Pods_Plugin.framework */; };
+		8C0623642AB2F9AE00CABC17 /* CaptureReceiptPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C06233E2AB2F9AE00CABC17 /* CaptureReceiptPlugin.h */; };
+		8C502ECE2ACAFE8F009A26C5 /* PluginEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C502ECD2ACAFE8F009A26C5 /* PluginEvent.swift */; };
+		8C502ED52ACC6013009A26C5 /* RspErroEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C502ED42ACC6013009A26C5 /* RspErroEnum.swift */; };
+		8C502ED72ACC84F6009A26C5 /* RspError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C502ED62ACC84F6009A26C5 /* RspError.swift */; };
+		8C502ED92ACC8703009A26C5 /* Req.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C502ED82ACC8703009A26C5 /* Req.swift */; };
+		8CFF1FA22ACA1F8A00F0E853 /* CaptureReceipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235A2AB2F9AE00CABC17 /* CaptureReceipt.swift */; };
+		8CFF1FA32ACA1F9100F0E853 /* Retailer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235E2AB2F9AE00CABC17 /* Retailer.swift */; };
+		8CFF1FA42ACA1F9100F0E853 /* RetailerEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623592AB2F9AE00CABC17 /* RetailerEnum.swift */; };
+		8CFF1FA52ACA1F9700F0E853 /* CaptureReceiptPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235C2AB2F9AE00CABC17 /* CaptureReceiptPlugin.m */; };
+		8CFF1FA62ACA1F9700F0E853 /* CaptureReceiptPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06233D2AB2F9AE00CABC17 /* CaptureReceiptPlugin.swift */; };
+		8CFF1FA82ACA1F9D00F0E853 /* ReqInitialize‎.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623542AB2F9AE00CABC17 /* ReqInitialize‎.swift */; };
+		8CFF1FA92ACA1F9D00F0E853 /* ReqAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C4620D2AC76B61006B21AF /* ReqAccount.swift */; };
+		8CFF1FAB2ACA1FA100F0E853 /* Rsp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623502AB2F9AE00CABC17 /* Rsp.swift */; };
+		8CFF1FAC2ACA1FA100F0E853 /* RspReceipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623512AB2F9AE00CABC17 /* RspReceipt.swift */; };
+		8CFF1FAD2ACA1FA100F0E853 /* JSCoupon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623482AB2F9AE00CABC17 /* JSCoupon.swift */; };
+		8CFF1FAE2ACA1FA100F0E853 /* JSPromotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623522AB2F9AE00CABC17 /* JSPromotion.swift */; };
+		8CFF1FAF2ACA1FA100F0E853 /* JSSurveyQuestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623472AB2F9AE00CABC17 /* JSSurveyQuestion.swift */; };
+		8CFF1FB02ACA1FA100F0E853 /* JSStringType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623492AB2F9AE00CABC17 /* JSStringType.swift */; };
+		8CFF1FB32ACA1FA100F0E853 /* JSAdditionalLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06234B2AB2F9AE00CABC17 /* JSAdditionalLine.swift */; };
+		8CFF1FB42ACA1FA100F0E853 /* JSProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623432AB2F9AE00CABC17 /* JSProduct.swift */; };
+		8CFF1FB52ACA1FA100F0E853 /* JSShipment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06234E2AB2F9AE00CABC17 /* JSShipment.swift */; };
+		8CFF1FB72ACA1FA100F0E853 /* JSFloatType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623452AB2F9AE00CABC17 /* JSFloatType.swift */; };
+		8CFF1FB82ACA1FA100F0E853 /* JSSurveyResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06234D2AB2F9AE00CABC17 /* JSSurveyResponse.swift */; };
+		8CFF1FB92ACA1FA100F0E853 /* JSSurveyAnswer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06234C2AB2F9AE00CABC17 /* JSSurveyAnswer.swift */; };
+		8CFF1FBA2ACA1FA100F0E853 /* JSPaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06234F2AB2F9AE00CABC17 /* JSPaymentMethod.swift */; };
+		8CFF1FBB2ACA1FA100F0E853 /* JSPossibleProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F1E8412AC1C30A00180ECB /* JSPossibleProduct.swift */; };
+		8CFF1FBC2ACA1FA100F0E853 /* RspAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623462AB2F9AE00CABC17 /* RspAccount.swift */; };
+		8CFF1FBD2ACA1FA700F0E853 /* EmailEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06233C2AB2F9AE00CABC17 /* EmailEnum.swift */; };
+		8CFF1FBE2ACA1FA700F0E853 /* Email.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06233A2AB2F9AE00CABC17 /* Email.swift */; };
+		8CFF1FBF2ACA1FAB00F0E853 /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235D2AB2F9AE00CABC17 /* Account.swift */; };
+		8CFF1FC02ACA1FAB00F0E853 /* AccountTypeEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06235B2AB2F9AE00CABC17 /* AccountTypeEnum.swift */; };
+		8CFF1FC12ACA1FAB00F0E853 /* AccountCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623392AB2F9AE00CABC17 /* AccountCommon.swift */; };
+		B7AB3BC37ECA3B920D1ED1B2 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
+		BF253E26DF79DE6DA572F9B5 /* Pods_Plugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 910B72BD70E81B39FE84D250 /* Pods_Plugin.framework */; };
+		CBCF9B9D053D57F4636A9BD5 /* Pods_PluginTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4411A121C6318C27F4380923 /* Pods_PluginTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,55 +57,50 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		128FB7E96562D87A3A046025 /* Pods-Plugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plugin.release.xcconfig"; path = "Target Support Files/Pods-Plugin/Pods-Plugin.release.xcconfig"; sourceTree = "<group>"; };
+		087724A7199D39D51C58D562 /* Pods-Plugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plugin.release.xcconfig"; path = "Target Support Files/Pods-Plugin/Pods-Plugin.release.xcconfig"; sourceTree = "<group>"; };
+		128B96FD139C9B07FB0A4A42 /* Pods-PluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PluginTests.release.xcconfig"; path = "Target Support Files/Pods-PluginTests/Pods-PluginTests.release.xcconfig"; sourceTree = "<group>"; };
+		4411A121C6318C27F4380923 /* Pods_PluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		50ADFF88201F53D600D50D53 /* Plugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Plugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		50ADFF91201F53D600D50D53 /* PluginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PluginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		50ADFFA52020D75100D50D53 /* Capacitor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Capacitor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		57AD10C7A7176DCFCCF41C13 /* Pods-PluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PluginTests.release.xcconfig"; path = "Target Support Files/Pods-PluginTests/Pods-PluginTests.release.xcconfig"; sourceTree = "<group>"; };
-		71869562961BAF74F469690A /* Pods_Plugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Plugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		88F1E8412AC1C30A00180ECB /* RspPossibleProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspPossibleProduct.swift; sourceTree = "<group>"; };
+		707DE9550F4511DB04ABC8E3 /* Pods-Plugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plugin.debug.xcconfig"; path = "Target Support Files/Pods-Plugin/Pods-Plugin.debug.xcconfig"; sourceTree = "<group>"; };
+		88C4620D2AC76B61006B21AF /* ReqAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReqAccount.swift; sourceTree = "<group>"; };
+		88F1E8412AC1C30A00180ECB /* JSPossibleProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSPossibleProduct.swift; sourceTree = "<group>"; };
 		8C0623392AB2F9AE00CABC17 /* AccountCommon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountCommon.swift; sourceTree = "<group>"; };
 		8C06233A2AB2F9AE00CABC17 /* Email.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Email.swift; sourceTree = "<group>"; };
-		8C06233B2AB2F9AE00CABC17 /* ScanResultsDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanResultsDelegate.swift; sourceTree = "<group>"; };
 		8C06233C2AB2F9AE00CABC17 /* EmailEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmailEnum.swift; sourceTree = "<group>"; };
-		8C06233D2AB2F9AE00CABC17 /* ReceiptCapturePlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiptCapturePlugin.swift; sourceTree = "<group>"; };
-		8C06233E2AB2F9AE00CABC17 /* ReceiptCapturePlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReceiptCapturePlugin.h; sourceTree = "<group>"; };
-		8C06233F2AB2F9AE00CABC17 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8C0623402AB2F9AE00CABC17 /* Physical.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Physical.swift; sourceTree = "<group>"; };
-		8C0623422AB2F9AE00CABC17 /* RspScan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspScan.swift; sourceTree = "<group>"; };
-		8C0623432AB2F9AE00CABC17 /* RspProduct.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspProduct.swift; sourceTree = "<group>"; };
-		8C0623442AB2F9AE00CABC17 /* RspInitialized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspInitialized.swift; sourceTree = "<group>"; };
-		8C0623452AB2F9AE00CABC17 /* RspFloatType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspFloatType.swift; sourceTree = "<group>"; };
+		8C06233D2AB2F9AE00CABC17 /* CaptureReceiptPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureReceiptPlugin.swift; sourceTree = "<group>"; };
+		8C06233E2AB2F9AE00CABC17 /* CaptureReceiptPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CaptureReceiptPlugin.h; sourceTree = "<group>"; };
+		8C0623432AB2F9AE00CABC17 /* JSProduct.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSProduct.swift; sourceTree = "<group>"; };
+		8C0623452AB2F9AE00CABC17 /* JSFloatType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSFloatType.swift; sourceTree = "<group>"; };
 		8C0623462AB2F9AE00CABC17 /* RspAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspAccount.swift; sourceTree = "<group>"; };
-		8C0623472AB2F9AE00CABC17 /* RspSurveyQuestion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspSurveyQuestion.swift; sourceTree = "<group>"; };
-		8C0623482AB2F9AE00CABC17 /* RspCoupon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspCoupon.swift; sourceTree = "<group>"; };
-		8C0623492AB2F9AE00CABC17 /* RspStringType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspStringType.swift; sourceTree = "<group>"; };
-		8C06234B2AB2F9AE00CABC17 /* RspAdditionalLine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspAdditionalLine.swift; sourceTree = "<group>"; };
-		8C06234C2AB2F9AE00CABC17 /* RspSurveyAnswer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspSurveyAnswer.swift; sourceTree = "<group>"; };
-		8C06234D2AB2F9AE00CABC17 /* RspSurveyResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspSurveyResponse.swift; sourceTree = "<group>"; };
-		8C06234E2AB2F9AE00CABC17 /* RspShipment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspShipment.swift; sourceTree = "<group>"; };
-		8C06234F2AB2F9AE00CABC17 /* RspPaymentMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspPaymentMethod.swift; sourceTree = "<group>"; };
+		8C0623472AB2F9AE00CABC17 /* JSSurveyQuestion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSSurveyQuestion.swift; sourceTree = "<group>"; };
+		8C0623482AB2F9AE00CABC17 /* JSCoupon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSCoupon.swift; sourceTree = "<group>"; };
+		8C0623492AB2F9AE00CABC17 /* JSStringType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSStringType.swift; sourceTree = "<group>"; };
+		8C06234B2AB2F9AE00CABC17 /* JSAdditionalLine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSAdditionalLine.swift; sourceTree = "<group>"; };
+		8C06234C2AB2F9AE00CABC17 /* JSSurveyAnswer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSSurveyAnswer.swift; sourceTree = "<group>"; };
+		8C06234D2AB2F9AE00CABC17 /* JSSurveyResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSSurveyResponse.swift; sourceTree = "<group>"; };
+		8C06234E2AB2F9AE00CABC17 /* JSShipment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSShipment.swift; sourceTree = "<group>"; };
+		8C06234F2AB2F9AE00CABC17 /* JSPaymentMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSPaymentMethod.swift; sourceTree = "<group>"; };
 		8C0623502AB2F9AE00CABC17 /* Rsp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rsp.swift; sourceTree = "<group>"; };
 		8C0623512AB2F9AE00CABC17 /* RspReceipt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspReceipt.swift; sourceTree = "<group>"; };
-		8C0623522AB2F9AE00CABC17 /* RspPromotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspPromotion.swift; sourceTree = "<group>"; };
+		8C0623522AB2F9AE00CABC17 /* JSPromotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSPromotion.swift; sourceTree = "<group>"; };
 		8C0623542AB2F9AE00CABC17 /* ReqInitialize‎.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ReqInitialize‎.swift"; sourceTree = "<group>"; };
-		8C0623552AB2F9AE00CABC17 /* ReqScan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReqScan.swift; sourceTree = "<group>"; };
-		8C0623562AB2F9AE00CABC17 /* ReqRetailerLogin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReqRetailerLogin.swift; sourceTree = "<group>"; };
-		8C0623572AB2F9AE00CABC17 /* ReqLogout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReqLogout.swift; sourceTree = "<group>"; };
-		8C0623582AB2F9AE00CABC17 /* ReqLogin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReqLogin.swift; sourceTree = "<group>"; };
 		8C0623592AB2F9AE00CABC17 /* RetailerEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RetailerEnum.swift; sourceTree = "<group>"; };
-		8C06235A2AB2F9AE00CABC17 /* ReceiptCapture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiptCapture.swift; sourceTree = "<group>"; };
+		8C06235A2AB2F9AE00CABC17 /* CaptureReceipt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureReceipt.swift; sourceTree = "<group>"; };
 		8C06235B2AB2F9AE00CABC17 /* AccountTypeEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountTypeEnum.swift; sourceTree = "<group>"; };
-		8C06235C2AB2F9AE00CABC17 /* ReceiptCapturePlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReceiptCapturePlugin.m; sourceTree = "<group>"; };
+		8C06235C2AB2F9AE00CABC17 /* CaptureReceiptPlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CaptureReceiptPlugin.m; sourceTree = "<group>"; };
 		8C06235D2AB2F9AE00CABC17 /* Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		8C06235E2AB2F9AE00CABC17 /* Retailer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Retailer.swift; sourceTree = "<group>"; };
 		8C0623832AB2FA2400CABC17 /* BlinkReceiptStatic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BlinkReceiptStatic.framework; path = ../microblink/ios/BlinkReceiptStatic.framework; sourceTree = "<group>"; };
-		8C06238C2AB2FC7800CABC17 /* ScanTypeEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanTypeEnum.swift; sourceTree = "<group>"; };
 		8C06238E2AB2FE9400CABC17 /* BlinkReceiptStatic.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BlinkReceiptStatic.framework; path = Plugin/microblink/BlinkReceiptStatic.framework; sourceTree = "<group>"; };
-		8C0623902AB3074D00CABC17 /* RspAccountList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspAccountList.swift; sourceTree = "<group>"; };
-		C156B3B7E22297829FB957BF /* Pods-Plugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plugin.debug.xcconfig"; path = "Target Support Files/Pods-Plugin/Pods-Plugin.debug.xcconfig"; sourceTree = "<group>"; };
-		DB7672BD02C3F75B3947D999 /* Pods_PluginTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PluginTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		FAA68378ABB31C036D615B66 /* Pods-PluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PluginTests.debug.xcconfig"; path = "Target Support Files/Pods-PluginTests/Pods-PluginTests.debug.xcconfig"; sourceTree = "<group>"; };
+		8C502ECD2ACAFE8F009A26C5 /* PluginEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginEvent.swift; sourceTree = "<group>"; };
+		8C502ED42ACC6013009A26C5 /* RspErroEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspErroEnum.swift; sourceTree = "<group>"; };
+		8C502ED62ACC84F6009A26C5 /* RspError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RspError.swift; sourceTree = "<group>"; };
+		8C502ED82ACC8703009A26C5 /* Req.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Req.swift; sourceTree = "<group>"; };
+		8CFF1FA02ACA1EA800F0E853 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		910B72BD70E81B39FE84D250 /* Pods_Plugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Plugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BA94A12AC90285FD475A810B /* Pods-PluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PluginTests.debug.xcconfig"; path = "Target Support Files/Pods-PluginTests/Pods-PluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,7 +109,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				50ADFFA42020D75100D50D53 /* Capacitor.framework in Frameworks */,
-				B7AB3BC37ECA3B920D1ED1B2 /* Pods_Plugin.framework in Frameworks */,
+				B7AB3BC37ECA3B920D1ED1B2 /* (null) in Frameworks */,
+				BF253E26DF79DE6DA572F9B5 /* Pods_Plugin.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,7 +119,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				50ADFF92201F53D600D50D53 /* Plugin.framework in Frameworks */,
-				007042002EF5C7CF0B45F4E3 /* Pods_PluginTests.framework in Frameworks */,
+				CBCF9B9D053D57F4636A9BD5 /* Pods_PluginTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -156,23 +148,12 @@
 		50ADFF8A201F53D600D50D53 /* Plugin */ = {
 			isa = PBXGroup;
 			children = (
-				8C06235D2AB2F9AE00CABC17 /* Account.swift */,
-				8C0623392AB2F9AE00CABC17 /* AccountCommon.swift */,
-				8C06235B2AB2F9AE00CABC17 /* AccountTypeEnum.swift */,
-				8C06233A2AB2F9AE00CABC17 /* Email.swift */,
-				8C06233C2AB2F9AE00CABC17 /* EmailEnum.swift */,
-				8C06233F2AB2F9AE00CABC17 /* Info.plist */,
-				8C0623402AB2F9AE00CABC17 /* Physical.swift */,
-				8C06235A2AB2F9AE00CABC17 /* ReceiptCapture.swift */,
-				8C06233E2AB2F9AE00CABC17 /* ReceiptCapturePlugin.h */,
-				8C06235C2AB2F9AE00CABC17 /* ReceiptCapturePlugin.m */,
-				8C06233D2AB2F9AE00CABC17 /* ReceiptCapturePlugin.swift */,
-				8C0623532AB2F9AE00CABC17 /* Req */,
-				8C06235E2AB2F9AE00CABC17 /* Retailer.swift */,
-				8C0623592AB2F9AE00CABC17 /* RetailerEnum.swift */,
-				8C0623412AB2F9AE00CABC17 /* Rsp */,
-				8C06233B2AB2F9AE00CABC17 /* ScanResultsDelegate.swift */,
-				8C06238C2AB2FC7800CABC17 /* ScanTypeEnum.swift */,
+				8CFF1F9C2AC94C4300F0E853 /* Retailer */,
+				8CFF1F9B2AC94C1600F0E853 /* Plugin */,
+				8CFF1F9A2AC94BF700F0E853 /* Email */,
+				8CFF1F992AC94BDB00F0E853 /* Account */,
+				8C06235A2AB2F9AE00CABC17 /* CaptureReceipt.swift */,
+				8CFF1FA02ACA1EA800F0E853 /* Info.plist */,
 			);
 			path = Plugin;
 			sourceTree = "<group>";
@@ -180,10 +161,10 @@
 		74B12954E94D52575716D347 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				C156B3B7E22297829FB957BF /* Pods-Plugin.debug.xcconfig */,
-				128FB7E96562D87A3A046025 /* Pods-Plugin.release.xcconfig */,
-				FAA68378ABB31C036D615B66 /* Pods-PluginTests.debug.xcconfig */,
-				57AD10C7A7176DCFCCF41C13 /* Pods-PluginTests.release.xcconfig */,
+				707DE9550F4511DB04ABC8E3 /* Pods-Plugin.debug.xcconfig */,
+				087724A7199D39D51C58D562 /* Pods-Plugin.release.xcconfig */,
+				BA94A12AC90285FD475A810B /* Pods-PluginTests.debug.xcconfig */,
+				128B96FD139C9B07FB0A4A42 /* Pods-PluginTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -191,24 +172,11 @@
 		8C0623412AB2F9AE00CABC17 /* Rsp */ = {
 			isa = PBXGroup;
 			children = (
-				8C0623422AB2F9AE00CABC17 /* RspScan.swift */,
-				8C0623432AB2F9AE00CABC17 /* RspProduct.swift */,
-				8C0623442AB2F9AE00CABC17 /* RspInitialized.swift */,
-				8C0623452AB2F9AE00CABC17 /* RspFloatType.swift */,
 				8C0623462AB2F9AE00CABC17 /* RspAccount.swift */,
-				8C0623472AB2F9AE00CABC17 /* RspSurveyQuestion.swift */,
-				8C0623482AB2F9AE00CABC17 /* RspCoupon.swift */,
-				8C0623492AB2F9AE00CABC17 /* RspStringType.swift */,
-				8C06234B2AB2F9AE00CABC17 /* RspAdditionalLine.swift */,
-				8C06234C2AB2F9AE00CABC17 /* RspSurveyAnswer.swift */,
-				8C06234D2AB2F9AE00CABC17 /* RspSurveyResponse.swift */,
-				8C06234E2AB2F9AE00CABC17 /* RspShipment.swift */,
-				8C06234F2AB2F9AE00CABC17 /* RspPaymentMethod.swift */,
 				8C0623502AB2F9AE00CABC17 /* Rsp.swift */,
 				8C0623512AB2F9AE00CABC17 /* RspReceipt.swift */,
-				8C0623522AB2F9AE00CABC17 /* RspPromotion.swift */,
-				8C0623902AB3074D00CABC17 /* RspAccountList.swift */,
-				88F1E8412AC1C30A00180ECB /* RspPossibleProduct.swift */,
+				8C502ED42ACC6013009A26C5 /* RspErroEnum.swift */,
+				8C502ED62ACC84F6009A26C5 /* RspError.swift */,
 			);
 			path = Rsp;
 			sourceTree = "<group>";
@@ -216,13 +184,72 @@
 		8C0623532AB2F9AE00CABC17 /* Req */ = {
 			isa = PBXGroup;
 			children = (
+				88C4620D2AC76B61006B21AF /* ReqAccount.swift */,
+				8C502ED82ACC8703009A26C5 /* Req.swift */,
 				8C0623542AB2F9AE00CABC17 /* ReqInitialize‎.swift */,
-				8C0623552AB2F9AE00CABC17 /* ReqScan.swift */,
-				8C0623562AB2F9AE00CABC17 /* ReqRetailerLogin.swift */,
-				8C0623572AB2F9AE00CABC17 /* ReqLogout.swift */,
-				8C0623582AB2F9AE00CABC17 /* ReqLogin.swift */,
 			);
 			path = Req;
+			sourceTree = "<group>";
+		};
+		8CFF1F992AC94BDB00F0E853 /* Account */ = {
+			isa = PBXGroup;
+			children = (
+				8C06235D2AB2F9AE00CABC17 /* Account.swift */,
+				8C0623392AB2F9AE00CABC17 /* AccountCommon.swift */,
+				8C06235B2AB2F9AE00CABC17 /* AccountTypeEnum.swift */,
+			);
+			path = Account;
+			sourceTree = "<group>";
+		};
+		8CFF1F9A2AC94BF700F0E853 /* Email */ = {
+			isa = PBXGroup;
+			children = (
+				8C06233A2AB2F9AE00CABC17 /* Email.swift */,
+				8C06233C2AB2F9AE00CABC17 /* EmailEnum.swift */,
+			);
+			path = Email;
+			sourceTree = "<group>";
+		};
+		8CFF1F9B2AC94C1600F0E853 /* Plugin */ = {
+			isa = PBXGroup;
+			children = (
+				8CFF1F9F2ACA1C4500F0E853 /* Js */,
+				8C0623532AB2F9AE00CABC17 /* Req */,
+				8C0623412AB2F9AE00CABC17 /* Rsp */,
+				8C06233E2AB2F9AE00CABC17 /* CaptureReceiptPlugin.h */,
+				8C06235C2AB2F9AE00CABC17 /* CaptureReceiptPlugin.m */,
+				8C06233D2AB2F9AE00CABC17 /* CaptureReceiptPlugin.swift */,
+				8C502ECD2ACAFE8F009A26C5 /* PluginEvent.swift */,
+			);
+			path = Plugin;
+			sourceTree = "<group>";
+		};
+		8CFF1F9C2AC94C4300F0E853 /* Retailer */ = {
+			isa = PBXGroup;
+			children = (
+				8C06235E2AB2F9AE00CABC17 /* Retailer.swift */,
+				8C0623592AB2F9AE00CABC17 /* RetailerEnum.swift */,
+			);
+			path = Retailer;
+			sourceTree = "<group>";
+		};
+		8CFF1F9F2ACA1C4500F0E853 /* Js */ = {
+			isa = PBXGroup;
+			children = (
+				8C0623432AB2F9AE00CABC17 /* JSProduct.swift */,
+				8C0623482AB2F9AE00CABC17 /* JSCoupon.swift */,
+				8C06234C2AB2F9AE00CABC17 /* JSSurveyAnswer.swift */,
+				8C0623472AB2F9AE00CABC17 /* JSSurveyQuestion.swift */,
+				8C0623492AB2F9AE00CABC17 /* JSStringType.swift */,
+				8C06234D2AB2F9AE00CABC17 /* JSSurveyResponse.swift */,
+				8C0623522AB2F9AE00CABC17 /* JSPromotion.swift */,
+				8C06234F2AB2F9AE00CABC17 /* JSPaymentMethod.swift */,
+				88F1E8412AC1C30A00180ECB /* JSPossibleProduct.swift */,
+				8C0623452AB2F9AE00CABC17 /* JSFloatType.swift */,
+				8C06234B2AB2F9AE00CABC17 /* JSAdditionalLine.swift */,
+				8C06234E2AB2F9AE00CABC17 /* JSShipment.swift */,
+			);
+			path = Js;
 			sourceTree = "<group>";
 		};
 		A797B9EFA3DCEFEA1FBB66A9 /* Frameworks */ = {
@@ -231,8 +258,8 @@
 				8C0623832AB2FA2400CABC17 /* BlinkReceiptStatic.framework */,
 				8C06238E2AB2FE9400CABC17 /* BlinkReceiptStatic.framework */,
 				50ADFFA52020D75100D50D53 /* Capacitor.framework */,
-				71869562961BAF74F469690A /* Pods_Plugin.framework */,
-				DB7672BD02C3F75B3947D999 /* Pods_PluginTests.framework */,
+				910B72BD70E81B39FE84D250 /* Pods_Plugin.framework */,
+				4411A121C6318C27F4380923 /* Pods_PluginTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -244,7 +271,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C0623642AB2F9AE00CABC17 /* ReceiptCapturePlugin.h in Headers */,
+				8C0623642AB2F9AE00CABC17 /* CaptureReceiptPlugin.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,7 +282,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 50ADFF9C201F53D600D50D53 /* Build configuration list for PBXNativeTarget "Plugin" */;
 			buildPhases = (
-				E62F8160A293B497D38394BB /* [CP] Check Pods Manifest.lock */,
+				6F55B3A87B4318C2E4772C83 /* [CP] Check Pods Manifest.lock */,
 				50ADFF83201F53D600D50D53 /* Sources */,
 				50ADFF84201F53D600D50D53 /* Frameworks */,
 				50ADFF85201F53D600D50D53 /* Headers */,
@@ -274,11 +301,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 50ADFF9F201F53D600D50D53 /* Build configuration list for PBXNativeTarget "PluginTests" */;
 			buildPhases = (
-				4D85915338F5DDB60631EC66 /* [CP] Check Pods Manifest.lock */,
+				D82BEB740174D46E8A0C7F88 /* [CP] Check Pods Manifest.lock */,
 				50ADFF8D201F53D600D50D53 /* Sources */,
 				50ADFF8E201F53D600D50D53 /* Frameworks */,
 				50ADFF8F201F53D600D50D53 /* Resources */,
-				5E6C2649FB8516ED100FC2E3 /* [CP] Embed Pods Frameworks */,
+				0EDD902D388AA7460D0B1846 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -349,29 +376,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		4D85915338F5DDB60631EC66 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-PluginTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		5E6C2649FB8516ED100FC2E3 /* [CP] Embed Pods Frameworks */ = {
+		0EDD902D388AA7460D0B1846 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -417,7 +422,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PluginTests/Pods-PluginTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		E62F8160A293B497D38394BB /* [CP] Check Pods Manifest.lock */ = {
+		6F55B3A87B4318C2E4772C83 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -439,6 +444,28 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		D82BEB740174D46E8A0C7F88 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-PluginTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -446,42 +473,37 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C0623802AB2F9AE00CABC17 /* ReceiptCapturePlugin.m in Sources */,
-				8C0623722AB2F9AE00CABC17 /* RspSurveyResponse.swift in Sources */,
-				8C0623742AB2F9AE00CABC17 /* RspPaymentMethod.swift in Sources */,
-				8C06237C2AB2F9AE00CABC17 /* ReqLogin.swift in Sources */,
-				8C06236D2AB2F9AE00CABC17 /* RspCoupon.swift in Sources */,
-				8C0623632AB2F9AE00CABC17 /* ReceiptCapturePlugin.swift in Sources */,
-				8C06237F2AB2F9AE00CABC17 /* AccountTypeEnum.swift in Sources */,
-				8C0623912AB3074D00CABC17 /* RspAccountList.swift in Sources */,
-				8C06237E2AB2F9AE00CABC17 /* ReceiptCapture.swift in Sources */,
-				8C06236C2AB2F9AE00CABC17 /* RspSurveyQuestion.swift in Sources */,
-				88F1E8422AC1C30A00180ECB /* RspPossibleProduct.swift in Sources */,
-				8C06237D2AB2F9AE00CABC17 /* RetailerEnum.swift in Sources */,
-				8C0623692AB2F9AE00CABC17 /* RspInitialized.swift in Sources */,
-				8C06237A2AB2F9AE00CABC17 /* ReqRetailerLogin.swift in Sources */,
-				8C0623682AB2F9AE00CABC17 /* RspProduct.swift in Sources */,
-				8C0623752AB2F9AE00CABC17 /* Rsp.swift in Sources */,
-				8C0623712AB2F9AE00CABC17 /* RspSurveyAnswer.swift in Sources */,
-				8C0623602AB2F9AE00CABC17 /* Email.swift in Sources */,
-				8C06238D2AB2FC7800CABC17 /* ScanTypeEnum.swift in Sources */,
-				8C0623762AB2F9AE00CABC17 /* RspReceipt.swift in Sources */,
-				8C06236A2AB2F9AE00CABC17 /* RspFloatType.swift in Sources */,
-				8C0623612AB2F9AE00CABC17 /* ScanResultsDelegate.swift in Sources */,
-				8C0623822AB2F9AE00CABC17 /* Retailer.swift in Sources */,
-				8C0623702AB2F9AE00CABC17 /* RspAdditionalLine.swift in Sources */,
-				8C06236B2AB2F9AE00CABC17 /* RspAccount.swift in Sources */,
-				8C0623782AB2F9AE00CABC17 /* ReqInitialize‎.swift in Sources */,
-				8C06237B2AB2F9AE00CABC17 /* ReqLogout.swift in Sources */,
-				8C0623812AB2F9AE00CABC17 /* Account.swift in Sources */,
-				8C0623672AB2F9AE00CABC17 /* RspScan.swift in Sources */,
-				8C0623792AB2F9AE00CABC17 /* ReqScan.swift in Sources */,
-				8C0623772AB2F9AE00CABC17 /* RspPromotion.swift in Sources */,
-				8C06236E2AB2F9AE00CABC17 /* RspStringType.swift in Sources */,
-				8C0623732AB2F9AE00CABC17 /* RspShipment.swift in Sources */,
-				8C06235F2AB2F9AE00CABC17 /* AccountCommon.swift in Sources */,
-				8C0623662AB2F9AE00CABC17 /* Physical.swift in Sources */,
-				8C0623622AB2F9AE00CABC17 /* EmailEnum.swift in Sources */,
+				8CFF1FA92ACA1F9D00F0E853 /* ReqAccount.swift in Sources */,
+				8CFF1FBA2ACA1FA100F0E853 /* JSPaymentMethod.swift in Sources */,
+				8CFF1FAF2ACA1FA100F0E853 /* JSSurveyQuestion.swift in Sources */,
+				8CFF1FB02ACA1FA100F0E853 /* JSStringType.swift in Sources */,
+				8CFF1FC12ACA1FAB00F0E853 /* AccountCommon.swift in Sources */,
+				8CFF1FB92ACA1FA100F0E853 /* JSSurveyAnswer.swift in Sources */,
+				8CFF1FC02ACA1FAB00F0E853 /* AccountTypeEnum.swift in Sources */,
+				8CFF1FBF2ACA1FAB00F0E853 /* Account.swift in Sources */,
+				8C502ED72ACC84F6009A26C5 /* RspError.swift in Sources */,
+				8CFF1FB82ACA1FA100F0E853 /* JSSurveyResponse.swift in Sources */,
+				8CFF1FA62ACA1F9700F0E853 /* CaptureReceiptPlugin.swift in Sources */,
+				8CFF1FB42ACA1FA100F0E853 /* JSProduct.swift in Sources */,
+				8C502ED92ACC8703009A26C5 /* Req.swift in Sources */,
+				8CFF1FB52ACA1FA100F0E853 /* JSShipment.swift in Sources */,
+				8CFF1FA52ACA1F9700F0E853 /* CaptureReceiptPlugin.m in Sources */,
+				8CFF1FBE2ACA1FA700F0E853 /* Email.swift in Sources */,
+				8CFF1FAB2ACA1FA100F0E853 /* Rsp.swift in Sources */,
+				8CFF1FBB2ACA1FA100F0E853 /* JSPossibleProduct.swift in Sources */,
+				8CFF1FB72ACA1FA100F0E853 /* JSFloatType.swift in Sources */,
+				8CFF1FA22ACA1F8A00F0E853 /* CaptureReceipt.swift in Sources */,
+				8CFF1FA32ACA1F9100F0E853 /* Retailer.swift in Sources */,
+				8CFF1FAE2ACA1FA100F0E853 /* JSPromotion.swift in Sources */,
+				8CFF1FA42ACA1F9100F0E853 /* RetailerEnum.swift in Sources */,
+				8CFF1FA82ACA1F9D00F0E853 /* ReqInitialize‎.swift in Sources */,
+				8CFF1FB32ACA1FA100F0E853 /* JSAdditionalLine.swift in Sources */,
+				8CFF1FAC2ACA1FA100F0E853 /* RspReceipt.swift in Sources */,
+				8CFF1FBC2ACA1FA100F0E853 /* RspAccount.swift in Sources */,
+				8C502ED52ACC6013009A26C5 /* RspErroEnum.swift in Sources */,
+				8CFF1FAD2ACA1FA100F0E853 /* JSCoupon.swift in Sources */,
+				8C502ECE2ACAFE8F009A26C5 /* PluginEvent.swift in Sources */,
+				8CFF1FBD2ACA1FA700F0E853 /* EmailEnum.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -630,7 +652,7 @@
 		};
 		50ADFF9D201F53D600D50D53 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C156B3B7E22297829FB957BF /* Pods-Plugin.debug.xcconfig */;
+			baseConfigurationReference = 707DE9550F4511DB04ABC8E3 /* Pods-Plugin.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -662,7 +684,7 @@
 		};
 		50ADFF9E201F53D600D50D53 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 128FB7E96562D87A3A046025 /* Pods-Plugin.release.xcconfig */;
+			baseConfigurationReference = 087724A7199D39D51C58D562 /* Pods-Plugin.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -693,7 +715,7 @@
 		};
 		50ADFFA0201F53D600D50D53 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FAA68378ABB31C036D615B66 /* Pods-PluginTests.debug.xcconfig */;
+			baseConfigurationReference = BA94A12AC90285FD475A810B /* Pods-PluginTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -708,7 +730,7 @@
 		};
 		50ADFFA1201F53D600D50D53 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 57AD10C7A7176DCFCCF41C13 /* Pods-PluginTests.release.xcconfig */;
+			baseConfigurationReference = 128B96FD139C9B07FB0A4A42 /* Pods-PluginTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
