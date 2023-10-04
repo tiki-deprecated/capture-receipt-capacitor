@@ -96,11 +96,11 @@ class JSProduct(product: Product) {
 
     init {
         productNumber = JSStringType.opt(product.productNumber())
-        this.description = JSStringType.opt(product.description())
-        this.quantity = JSFloatType.opt(product.quantity())
-        this.unitPrice = JSFloatType.opt(product.unitPrice())
-        this.unitOfMeasure = JSStringType.opt(product.unitOfMeasure())
-        this.totalPrice = JSFloatType.opt(product.totalPrice())
+        description = JSStringType.opt(product.description())
+        quantity = JSFloatType.opt(product.quantity())
+        unitPrice = JSFloatType.opt(product.unitPrice())
+        unitOfMeasure = JSStringType.opt(product.unitOfMeasure())
+        totalPrice = JSFloatType.opt(product.totalPrice())
         fullPrice = product.fullPrice()
         line = product.line()
         productName = product.productName()
