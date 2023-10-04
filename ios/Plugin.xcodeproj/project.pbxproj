@@ -21,7 +21,6 @@
 		8CFF1FA62ACA1F9700F0E853 /* CaptureReceiptPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06233D2AB2F9AE00CABC17 /* CaptureReceiptPlugin.swift */; };
 		8CFF1FA82ACA1F9D00F0E853 /* ReqInitialize‎.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623542AB2F9AE00CABC17 /* ReqInitialize‎.swift */; };
 		8CFF1FA92ACA1F9D00F0E853 /* ReqAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C4620D2AC76B61006B21AF /* ReqAccount.swift */; };
-		8CFF1FAA2ACA1F9D00F0E853 /* ReqScan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623552AB2F9AE00CABC17 /* ReqScan.swift */; };
 		8CFF1FAB2ACA1FA100F0E853 /* Rsp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623502AB2F9AE00CABC17 /* Rsp.swift */; };
 		8CFF1FAC2ACA1FA100F0E853 /* RspReceipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623512AB2F9AE00CABC17 /* RspReceipt.swift */; };
 		8CFF1FAD2ACA1FA100F0E853 /* JSCoupon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623482AB2F9AE00CABC17 /* JSCoupon.swift */; };
@@ -87,7 +86,6 @@
 		8C0623512AB2F9AE00CABC17 /* RspReceipt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RspReceipt.swift; sourceTree = "<group>"; };
 		8C0623522AB2F9AE00CABC17 /* JSPromotion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSPromotion.swift; sourceTree = "<group>"; };
 		8C0623542AB2F9AE00CABC17 /* ReqInitialize‎.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ReqInitialize‎.swift"; sourceTree = "<group>"; };
-		8C0623552AB2F9AE00CABC17 /* ReqScan.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReqScan.swift; sourceTree = "<group>"; };
 		8C0623592AB2F9AE00CABC17 /* RetailerEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RetailerEnum.swift; sourceTree = "<group>"; };
 		8C06235A2AB2F9AE00CABC17 /* CaptureReceipt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureReceipt.swift; sourceTree = "<group>"; };
 		8C06235B2AB2F9AE00CABC17 /* AccountTypeEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountTypeEnum.swift; sourceTree = "<group>"; };
@@ -189,7 +187,6 @@
 				88C4620D2AC76B61006B21AF /* ReqAccount.swift */,
 				8C502ED82ACC8703009A26C5 /* Req.swift */,
 				8C0623542AB2F9AE00CABC17 /* ReqInitialize‎.swift */,
-				8C0623552AB2F9AE00CABC17 /* ReqScan.swift */,
 			);
 			path = Req;
 			sourceTree = "<group>";
@@ -499,7 +496,6 @@
 				8CFF1FA32ACA1F9100F0E853 /* Retailer.swift in Sources */,
 				8CFF1FAE2ACA1FA100F0E853 /* JSPromotion.swift in Sources */,
 				8CFF1FA42ACA1F9100F0E853 /* RetailerEnum.swift in Sources */,
-				8CFF1FAA2ACA1F9D00F0E853 /* ReqScan.swift in Sources */,
 				8CFF1FA82ACA1F9D00F0E853 /* ReqInitialize‎.swift in Sources */,
 				8CFF1FB32ACA1FA100F0E853 /* JSAdditionalLine.swift in Sources */,
 				8CFF1FAC2ACA1FA100F0E853 /* RspReceipt.swift in Sources */,

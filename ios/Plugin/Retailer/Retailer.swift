@@ -34,7 +34,7 @@ public class Retailer : CAPPlugin{
     /// - Parameters:
     ///   - account: An instance of the Account struct containing user and account information.
     ///   - call: The CAPPluginCall object representing the plugin call.
-    public func login(_ account: Account, onError: @escaping (String) -> Void, onComplete: @escaping (Account) -> Void) {
+    public func login(_ account: Account, onError: @escaping (String) -> Void, onSuccess: @escaping (Account) -> Void) {
         let dayCutoff: Int = 7
         let username: String = account.user
         guard let retailer: BRAccountLinkingRetailer =
@@ -55,9 +55,9 @@ public class Retailer : CAPPlugin{
         if (error == .none) {
             // Success
             Task(priority: .high){
-                await BRAccountLinkingManager.shared().verifyRetailer(with: connection, withCompletion: {
+                BRAccountLinkingManager.shared().verifyRetailer(with: connection, withCompletion: {
                     error, viewController, sessionId in
-                    self.verifyRetailerCallback(error,viewController, connection, { error in onError(error) }, {account in onComplete(account)}, account)
+                    self.verifyRetailerCallback(error,viewController, connection, { error in onError(error) }, {account in onSuccess(account)}, account)
                 })
             }
         }else {
@@ -69,23 +69,20 @@ public class Retailer : CAPPlugin{
     /// - Parameters:
     ///   - call: The CAPPluginCall object representing the plugin call.
     ///   - account: An instance of the Account struct containing user and account information.
-    public func logout(reqAccount: ReqAccount, onError: @escaping (String) -> Void, onComplete: @escaping () -> Void) {
-        if (reqAccount.username == "" && reqAccount.accountCommon.source == "") {
+    public func logout(onError: @escaping (String) -> Void, onComplete: @escaping () -> Void, account: Account? = nil) {
+        if (account != nil) {
             BRAccountLinkingManager.shared().unlinkAllAccounts {
                 onComplete()
             }
             return
         }
         
-        guard let retailer: BRAccountLinkingRetailer = RetailerEnum(
-            rawValue: reqAccount.accountCommon.source)?.toBRAccountLinkingRetailer() else {
-            onError("Unsuported retailer \(reqAccount.accountCommon.source)")
+        guard let retailer: BRAccountLinkingRetailer = RetailerEnum( rawValue: account!.accountType.source)?.toBRAccountLinkingRetailer() else {
+            onError("Unsuported retailer \(account!.accountType.type)")
             return
         }
-        if (reqAccount.accountCommon.source != "") {
-            BRAccountLinkingManager.shared().unlinkAccount(for: retailer) {
+        BRAccountLinkingManager.shared().unlinkAccount(for: retailer) {
                 onComplete()
-            }
         }
     }
     /// Retrieves orders for a specific user account or for all linked accounts.
@@ -95,17 +92,19 @@ public class Retailer : CAPPlugin{
     ///   - call: The CAPPluginCall object representing the plugin call.
     public func orders(onError: @escaping (String) -> Void, onReceipt: @escaping(BRScanResults) -> Void, onComplete: @escaping () -> Void){
         Task(priority: .high) {
-            let retailers = await BRAccountLinkingManager.shared().getLinkedRetailers()
-            for ret in  retailers {
+            let retailers = BRAccountLinkingManager.shared().getLinkedRetailers()
+            for ret in retailers {
+                guard let retailerId = BRAccountLinkingRetailer(rawValue: UInt(truncating: ret)) else{
+                    continue
+                }
                 DispatchQueue.main.async {
-                    BRAccountLinkingManager.shared().grabNewOrders( for: .amazonBeta) { retailer, order, remaining, viewController, errorCode, sessionId in
+                    BRAccountLinkingManager.shared().grabNewOrders( for: retailerId)  { retailer, order, remaining, viewController, errorCode, sessionId in
                         if(errorCode == .none && order != nil){
                             onReceipt(order!)
                         }
                     }
                 }
             }
-            onComplete()
         }
     }
     

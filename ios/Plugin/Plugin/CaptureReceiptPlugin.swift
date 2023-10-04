@@ -15,22 +15,29 @@ public class CaptureReceiptPlugin: CAPPlugin {
     
     @objc public func initialize(_ call: CAPPluginCall) {
         let reqInitialize = try! ReqInitialize(call)
-        receiptCapture.initialize(reqInitialize: reqInitialize)
+        receiptCapture.initialize(licenseKey: reqInitialize.licenseKey, productKey: reqInitialize.productKey)
         call.resolve()
     }
     
     @objc public func login(_ call: CAPPluginCall) {
         let reqAccount = try! ReqAccount(call)
-        receiptCapture.login(reqAccount: reqAccount,
+        receiptCapture.login(account: reqAccount.account(),
                              onError: { error in call.reject(error)},
                              onComplete: { account in call.resolve( (account.toResultData()) )} )
     }
 
     @objc func logout(_ call: CAPPluginCall) {
-        let reqAccount = try! ReqAccount(call)
-        receiptCapture.logout(reqAccount: reqAccount,
-                              onError: { error in call.reject(error)},
-                              onComplete: { call.resolve() })
+        let reqAccount = try? ReqAccount(call)
+        if(reqAccount == nil){
+            receiptCapture.logout(
+                onError: { error in call.reject(error)},
+                onComplete: { call.resolve() })
+        }else{
+            receiptCapture.logout(
+                onError: { error in call.reject(error)},
+                onComplete: { call.resolve() },
+                account: reqAccount!.account())
+        }
     }
 
     @objc func accounts(_ call: CAPPluginCall){

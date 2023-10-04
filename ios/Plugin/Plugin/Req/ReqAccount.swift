@@ -23,4 +23,8 @@ public class ReqAccount : Req {
         isVerified = call.getBool("isVerified")
         try super.init(call)
     }
+    
+    public func account() -> Account{
+        return Account(accountType: self.accountCommon, user: self.username, password: self.password, isVerified: self.isVerified)
+    }
 }

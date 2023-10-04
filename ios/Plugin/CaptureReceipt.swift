@@ -20,9 +20,7 @@ public class CaptureReceipt: NSObject {
     /// Initializes the ReceiptCapture class.
     ///
     /// - Parameter call: The CAPPluginCall representing the initialization request.
-    public func initialize(reqInitialize: ReqInitialize) {
-        let licenseKey = reqInitialize.licenseKey
-        let productKey = reqInitialize.productKey
+    public func initialize(licenseKey: String, productKey: String) {
         let scanManager = BRScanManager.shared()
         scanManager.licenseKey = licenseKey
         scanManager.prodIntelKey = productKey
@@ -33,77 +31,46 @@ public class CaptureReceipt: NSObject {
     /// Handles user login for receipt management.
     ///
     /// - Parameter call: The CAPPluginCall representing the login request.
-    public func login(reqAccount: ReqAccount, onError: @escaping (String) -> Void, onComplete: @escaping (Account) -> Void) {
-        guard let accountType = AccountCommon.defaults[reqAccount.accountCommon.source] else {
-            onError("Invalid source: \(reqAccount.accountCommon.source)")
-            return
-        }
-        let account = Account.init(accountType: accountType, user: reqAccount.username, password: reqAccount.password, isVerified: false)
-        switch account.accountType.type {
-        case .email :
-            guard let email = email else {
-                onError("Email not initialized. Did you call .initialize()?")
-                return
+    public func login(account: Account, onError: @escaping (String) -> Void, onComplete: @escaping (Account) -> Void) {
+        DispatchQueue.main.async {
+            switch account.accountType.type {
+            case .email :
+                guard let email = self.email else {
+                    onError("Email not initialized. Did you call .initialize()?")
+                    return
+                }
+                email.login(account, onError: {error in onError(error)}, onSuccess: {onComplete(account)})
+                break
+            case .retailer :
+                guard let retailer = self.retailer else {
+                    onError("Retailer not initialized. Did you call .initialize()?")
+                    return
+                }
+                retailer.login(account, onError: {error in onError(error)}, onSuccess: {account in onComplete(account)})
+                break
+            case .none :
+                onError("Invalid Type")
             }
-            email.login(account, onError: {error in onError(error)}, onComplete: {onComplete(account)})
-            break
-        case .retailer :
-            guard let retailer = retailer else {
-                onError("Retailer not initialized. Did you call .initialize()?")
-                return
-            }
-            retailer.login(account, onError: {error in onError(error)}, onComplete: {account in onComplete(account)})
-            break
-        case .none :
-            onError("Invalid Type")
         }
-
     }
     /// Handles user logout from receipt management.
     ///
     /// - Parameter call: The CAPPluginCall representing the logout request.
-    public func logout(reqAccount: ReqAccount, onError: @escaping (String) -> Void, onComplete: @escaping () -> Void) {
-        if(reqAccount.accountCommon.type == .none){
-            if(reqAccount.username != "" || reqAccount.password != nil){
-                onError("Error: Invalid logout arguments. If you want delete all accounts, don't send username of password")
-                return
-            }else{
-                guard let retailer = retailer else {
-                    onError("Retailer not initialized. Did you call .initialize()?")
-                    return
-                }
-                guard let email = email else {
-                    onError("Email not initialized. Did you call .initialize()?")
-                    return
-                }
-                email.logout(reqAccount: reqAccount, onError: {error in onError(error)}, onComplete: {onComplete()})
-                retailer.logout(reqAccount: reqAccount, onError: {error in onError(error)}, onComplete: {onComplete()})
-                return
+    public func logout(onError: @escaping (String) -> Void, onComplete: @escaping () -> Void, account: Account? = nil) {
+        if(account != nil){
+            switch(account?.accountType.type){
+            case .email :
+                email!.logout(onError: {error in onError(error)}, onComplete: {onComplete()}, account: account)
+                break
+            case .retailer :
+                retailer!.logout(onError: {error in onError(error)}, onComplete: {onComplete()}, account: account)
+                break
+            default:
+                onError("Invalid logout account type.")
             }
-
-        }
-        guard let accountType = AccountCommon.defaults[reqAccount.accountCommon.source] else {
-            onError("Invalid source: \(reqAccount.accountCommon.source)")
-            return
-        }
-        let account = Account.init(accountType: AccountCommon.defaults[reqAccount.accountCommon.source]!, user: reqAccount.username, password: reqAccount.password, isVerified: false)
-        switch account.accountType.type {
-        case .email :
-            guard let email = email else {
-                onError("Email not initialized. Did you call .initialize()?")
-                return
-            }
-            email.logout(reqAccount: reqAccount, onError: {error in onError(error)}, onComplete: {onComplete()})
-            break
-        case .retailer :
-            guard let retailer = retailer else {
-                onError("Retailer not initialized. Did you call .initialize()?")
-                return
-            }
-            retailer.logout(reqAccount: reqAccount, onError: {error in onError(error)}, onComplete: {onComplete()})
-            break
-        case .none :
-            onError("Invalid Type")
+        }else{
+            email!.logout(onError: {error in onError(error)}, onComplete: {onComplete()})
+            retailer!.logout(onError: {error in onError(error)}, onComplete: {onComplete()})
         }
     }
     /// Retrieves a list of user accounts for receipt management.
@@ -137,7 +104,7 @@ public class CaptureReceipt: NSObject {
                 onError("Email not initialized. Did you call .initialize()?")
                 return
             }
-        email.scan(reqScan: reqScan, onError: {error in onError(error)}, onReceipt: {scanResult in onReceipt(scanResult)}, onComplete: {})
+        email.scan(onError: {error in onError(error)}, onReceipt: {scanResult in onReceipt(scanResult)}, onComplete: {})
         retailer.orders(onError: {error in onError(error)}, onReceipt: {scanResult in onReceipt(scanResult)}, onComplete: {})
 
     }

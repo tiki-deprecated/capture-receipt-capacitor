@@ -51,18 +51,7 @@ public class Account {
         self.user = email
         self.password = password
     }
-    /// Initializes an Account object for a retailer account with the specified retailer name, username, and password.
-    ///
-    /// - Parameters:
-    ///   - retailer: The name of the retailer.
-    ///   - username: The username associated with the retailer account.
-    ///   - password: The password associated with the retailer account.
-    init(retailer: String, username: String, password: String){
-        self.accountType = AccountCommon(type: .retailer, source: retailer)
-        self.user = username
-        self.password = password
-        self.isVerified = false
-    }
+
     
     /// Converts the Account object to a PluginCallResultData dictionary for use in plugin calls.
     ///

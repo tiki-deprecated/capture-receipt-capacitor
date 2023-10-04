@@ -23,8 +23,6 @@ public class Email {
         DispatchQueue.main.async {
             BRScanManager.shared().licenseKey = licenseKey
             BRScanManager.shared().prodIntelKey = productKey
-            BREReceiptManager.shared().dayCutoff = 7
-            BRScanManager.shared().daysToStoreReceiptData =  0
             BRAccountLinkingManager.shared()
         }
     }
@@ -34,18 +32,14 @@ public class Email {
     /// - Parameters:
     ///   - account: An instance of the Account struct containing user and account information.
     ///   - pluginCall: The CAPPluginCall object representing the plugin call.
-    public func login(_ account: Account, onError: @escaping (String) -> Void, onComplete: @escaping () -> Void)  {
+    public func login(_ account: Account, onError: @escaping (String) -> Void, onSuccess: @escaping () -> Void)  {
         let email = BRIMAPAccount(provider: .gmailIMAP, email: account.user, password: account.password!)
-
         DispatchQueue.main.async {
             let rootVc = UIApplication.shared.windows.first?.rootViewController
             BREReceiptManager.shared().setupIMAP(for: email, viewController: rootVc!, withCompletion: { result in
                 BREReceiptManager.shared().verifyImapAccount(email, withCompletion: { success, error in
                     if success {
-                        BREReceiptManager.shared().getEReceipts(){scanResults, emailAccount, error in
-                            if(scanResults != nil){}
-                        }
-                        onComplete()
+                        onSuccess()
                     } else {
                         onError(error.debugDescription)
                     }
@@ -60,20 +54,23 @@ public class Email {
     /// - Parameters:
     ///   - pluginCall: The CAPPluginCall object representing the plugin call.
     ///   - account: An optional instance of the Account struct containing user and account information.
-    public func logout(reqAccount: ReqAccount,  onError: @escaping (String) -> Void, onComplete: @escaping () -> Void){
-        if(reqAccount.accountCommon.type != .none){
-            let email = BRIMAPAccount(provider: .gmailIMAP, email: reqAccount.username, password: reqAccount.password ?? "")
-            BREReceiptManager.shared().signOut(from: email) { error in
-                if(error != nil){
-                    onError(error.debugDescription ?? "Email logout error.")
-                }else{
-                    onComplete()
+    public func logout(onError: @escaping (String) -> Void, onComplete: @escaping () -> Void, account: Account? = nil){
+        if(account != nil){
+            let linkedAccounts = BREReceiptManager.shared().getLinkedAccounts()
+            if(linkedAccounts != nil && !linkedAccounts!.isEmpty){
+                let email = linkedAccounts!.first(where: { acc in acc.email == account!.user })
+                BREReceiptManager.shared().signOut(from: email) { error in
+                    if(error != nil){
+                        onError(error.debugDescription)
+                    }else{
+                        onComplete()
+                    }
                 }
             }
         }else{
             BREReceiptManager.shared().signOut(completion: { error in
-                if(error == nil){
-                    onError(error.debugDescription ?? "Email logout error.")
+                if(error != nil){
+                    onError(error.debugDescription)
                 }else{
                     onComplete()
                 }
@@ -86,22 +83,10 @@ public class Email {
     /// - Parameters:
     ///   - pluginCall: The CAPPluginCall object representing the plugin call.
     ///   - account: An optional instance of the Account struct containing user and account information.
-    public func scan(reqScan: ReqScan, onError: @escaping (String) -> Void, onReceipt: @escaping (BRScanResults) -> Void, onComplete: @escaping () -> Void) {
-        if (defaults.object(forKey: "lastIMAPScan") != nil) {
-            let dayCutOffSaved = defaults.object(forKey: "lastIMAPScan") as! Date
-            let timeInterval = dayCutOffSaved.timeIntervalSinceNow
-            let diference = Int((timeInterval)) / 86400
-            if(diference > 15) {
-                BREReceiptManager.shared().dayCutoff = 15
-            }else{
-                BREReceiptManager.shared().dayCutoff = diference
-            }
-        }else{
-            BREReceiptManager.shared().dayCutoff = 15
-        }
-        BRAccountLinkingManager.shared().resetHistory()
-        Task(priority: .high){
-            await BREReceiptManager.shared().getEReceipts() {scanResults, emailAccount, error in
+    public func scan(onError: @escaping (String) -> Void, onReceipt: @escaping (BRScanResults) -> Void, onComplete: @escaping () -> Void) {
+        BREReceiptManager.shared().dayCutoff = getDayCutOff()
+        Task(priority: .high){ {
+            BREReceiptManager.shared().getEReceipts() {scanResults, emailAccount, error in
                 if(scanResults != nil){
                     scanResults!.forEach{scanResults in
                         onReceipt(scanResults)
@@ -109,11 +94,8 @@ public class Email {
                 }
                 self.defaults.set(Date(), forKey: "lastIMAPScan")
                 onComplete()
-            }
+            } }
         }
-
-            
-        
     }
     
     /// Retrieves a list of linked email accounts.
@@ -129,7 +111,16 @@ public class Email {
         onComplete()
     }
 
-
-    
+    private func getDayCutOff() -> Int{
+        if (defaults.object(forKey: "lastIMAPScan") != nil) {
+            let dayCutOffSaved = defaults.object(forKey: "lastIMAPScan") as! Date
+            let timeInterval = dayCutOffSaved.timeIntervalSinceNow
+            let difference = Int((timeInterval)) / 86400
+            if(difference < 15){
+                return difference
+            }
+        }
+        return 15
+    }
     
 }
