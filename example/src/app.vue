@@ -30,7 +30,11 @@ const source = ref<HTMLSelectElement>()
         <label for="">Choose the Account</label>
         <select ref="source">
           <option value="AMAZON" label="Amazon" />
+          <option value="BESTBUY" label="BESTBUY" />
+          <option value="DOOR_DASH" label="DOOR DASH" />
+          <option value="STARBUCKS" label="STARBUCKS" />
           <option value="GMAIL" label="Gmail" />
+          
         </select>
         <input placeholder="username" type="text" ref="username" />
         <input placeholder="password" type="password" ref="password" />
