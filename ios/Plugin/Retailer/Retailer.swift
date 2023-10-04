@@ -70,7 +70,7 @@ public class Retailer : CAPPlugin{
     ///   - call: The CAPPluginCall object representing the plugin call.
     ///   - account: An instance of the Account struct containing user and account information.
     public func logout(onError: @escaping (String) -> Void, onComplete: @escaping () -> Void, account: Account? = nil) {
-        if (account != nil) {
+        if (account == nil) {
             BRAccountLinkingManager.shared().unlinkAllAccounts {
                 onComplete()
             }

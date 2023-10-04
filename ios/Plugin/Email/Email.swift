@@ -72,6 +72,7 @@ public class Email {
                 if(error != nil){
                     onError(error.debugDescription)
                 }else{
+                    BREReceiptManager.shared().resetEmailsChecked()
                     onComplete()
                 }
             })
@@ -85,7 +86,7 @@ public class Email {
     ///   - account: An optional instance of the Account struct containing user and account information.
     public func scan(onError: @escaping (String) -> Void, onReceipt: @escaping (BRScanResults) -> Void, onComplete: @escaping () -> Void) {
         BREReceiptManager.shared().dayCutoff = getDayCutOff()
-        Task(priority: .high){ {
+        Task(priority: .high){
             BREReceiptManager.shared().getEReceipts() {scanResults, emailAccount, error in
                 if(scanResults != nil){
                     scanResults!.forEach{scanResults in
@@ -94,7 +95,7 @@ public class Email {
                 }
                 self.defaults.set(Date(), forKey: "lastIMAPScan")
                 onComplete()
-            } }
+            } 
         }
     }
     
