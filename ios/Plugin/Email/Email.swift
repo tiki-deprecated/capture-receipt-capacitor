@@ -75,6 +75,7 @@ public class Email {
                     onError(error.debugDescription)
                 }else{
                     BREReceiptManager.shared().resetEmailsChecked()
+                    self.defaults.set(Date.distantPast, forKey: "lastIMAPScan")
                     onComplete()
                 }
             })
@@ -124,7 +125,7 @@ public class Email {
             let dayCutOffSaved = defaults.object(forKey: "lastIMAPScan") as! Date
             let timeInterval = dayCutOffSaved.timeIntervalSinceNow
             let difference = Int((timeInterval)) / 86400
-            if(difference < 15){
+            if(difference < 15 && difference >= 0){
                 return difference
             }
         }
