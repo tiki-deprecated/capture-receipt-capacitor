@@ -1,4 +1,5 @@
 /*
+ * RspReceipt Class
  * Copyright (c) TIKI Inc.
  * MIT license. See LICENSE file in the root directory.
  */
@@ -9,9 +10,9 @@ import BlinkEReceipt
 import Capacitor
 
 /**
- Represents a response containing receipt information.
-
- This struct is used to convey details about a receipt, including various receipt fields, such as date, time, products, coupons, totals, and more.
+ A class representing a response containing receipt information for the ReceiptCapture plugin.
+ 
+ This class encapsulates detailed information about a receipt, including various receipt fields such as date, time, products, coupons, totals, and more.
  */
 public class RspReceipt : Rsp{
     /// The date of the receipt, if available.
