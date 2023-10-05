@@ -34,10 +34,8 @@ fun Context.setImapScanTime(value: Long) {
 fun Context.getImapScanTime(): Deferred<Long> {
     return MainScope().async {
         try{
-            //dataStore.data.first()[longPreferencesKey(key.name)] ?: 0L
-            15
-
-        }catch(ex: Exception){
+            dataStore.data.first()[longPreferencesKey(key.name)] ?: 0L
+        } catch(ex: Exception) {
            Timberland.d(ex.message ?: "Error in getting Imap scan time.")
             15
         }
