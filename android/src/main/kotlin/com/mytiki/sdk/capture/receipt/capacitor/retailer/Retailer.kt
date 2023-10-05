@@ -128,6 +128,7 @@ class Retailer {
                         it.credentials.username() == account.username
             }
             if (mbAccount != null) {
+                client(context).resetHistory()
                 client.unlink(mbAccount).addOnSuccessListener {
                     onComplete()
                 }.addOnFailureListener {
