@@ -119,6 +119,7 @@ class Email {
         }.show(supportFragmentManager, tag)
     }
 
+
     /**
      * Scrapes receipts from the email using [ImapClient].
      *
@@ -229,9 +230,9 @@ class Email {
                         account.accountCommon.id
                     ).value
                 }
+                client.clearLastCheckedTime(Provider.valueOf(account.accountCommon.id))
+                context.deleteImapScanTime()
                 client.logout(passwordCredentials).addOnSuccessListener {
-                    client.clearLastCheckedTime(Provider.valueOf(account.accountCommon.id))
-                    context.deleteImapScanTime()
                     onRemove()
                 }.addOnFailureListener {
                     onError(
@@ -253,9 +254,9 @@ class Email {
      */
     fun flush(context: Context, onComplete: () -> Unit, onError: (msg: String) -> Unit) {
         this.client(context, onError) { client ->
+            client.clearLastCheckedTime()
+            context.deleteImapScanTime()
             client.logout().addOnSuccessListener {
-                client.clearLastCheckedTime()
-                context.deleteImapScanTime()
                 onComplete()
             }.addOnFailureListener {
                 onError(it.message ?: it.toString())

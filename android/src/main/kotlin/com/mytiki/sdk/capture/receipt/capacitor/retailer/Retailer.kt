@@ -149,13 +149,9 @@ class Retailer {
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     fun flush(context: Context, onComplete: () -> Unit, onError: (String) -> Unit) {
+        client(context).resetHistory()
         client(context).unlink().addOnSuccessListener {
-            client(context).resetHistory().addOnSuccessListener {
-                onComplete()
-            }.addOnFailureListener { ex ->
-                Timberland.e(ex)
-                onComplete()
-            }
+            onComplete()
         }.addOnFailureListener { ex ->
             Timberland.e(ex)
         }
