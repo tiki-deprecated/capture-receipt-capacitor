@@ -143,26 +143,29 @@ class Email {
                 dayCutOff = diffInDays
             }
             this@Email.client(context, onError) { client ->
-                client.dayCutoff(dayCutOff)
-                client.messages(object : MessagesCallback {
-                    override fun onComplete(
-                        credential: PasswordCredentials,
-                        result: List<ScanResults>
-                    ) {
-                        result.forEach { receipt ->
-                            onReceipt(receipt)
-                        }
-                        context.setImapScanTime(now)
-                        onComplete()
-                        client.close()
-                    }
-
-                    override fun onException(throwable: Throwable) {
-                        onError(throwable.message ?: throwable.toString())
-                        onComplete()
-                        client.close()
-                    }
-                })
+                client.accounts().addOnSuccessListener { credentials ->
+                   if (credentials.size > 0){
+                       client.dayCutoff(dayCutOff)
+                       client.messages(object : MessagesCallback {
+                           override fun onComplete(
+                               credential: PasswordCredentials,
+                               result: List<ScanResults>
+                           ) {
+                               result.forEach { receipt ->
+                                   onReceipt(receipt)
+                               }
+                               context.setImapScanTime(now)
+                               onComplete()
+                               client.close()
+                           }
+                           override fun onException(throwable: Throwable) {
+                               onError(throwable.message ?: throwable.toString())
+                               onComplete()
+                               client.close()
+                           }
+                       })
+                   }
+                }.addOnFailureListener {}
             }
         }
     }

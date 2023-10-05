@@ -226,7 +226,7 @@ class Retailer {
         daysCutOff: Int = 7,
         onComplete: (() -> Unit)? = null
     ) {
-        val client: AccountLinkingClient = client(context, daysCutOff)
+        val client: AccountLinkingClient = client(context, 120)
         val id = account.accountCommon.id
         val retailerId = RetailerEnum.fromString(id).toMbInt()
         val ordersSuccessCallback: (Int, ScanResults?, Int, String) -> Unit =
