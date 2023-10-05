@@ -13,6 +13,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.microblink.core.InitializeCallback
 import com.microblink.core.ScanResults
+import com.microblink.core.Timberland
 import com.microblink.linking.AccountLinkingClient
 import com.microblink.linking.AccountLinkingException
 import com.microblink.linking.BlinkReceiptLinkingSdk
@@ -114,7 +115,7 @@ class Retailer {
      * @param onError Callback called when an error occurs during account removal.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun remove(
+    fun logout(
         context: Context,
         account: Account,
         onComplete: () -> Unit,
@@ -133,7 +134,8 @@ class Retailer {
                     onError(it.message ?: it.toString())
                 }
             } else {
-                onError("Error in logout: Account not found ${account.accountCommon.id} - ${account.username}")
+                onError(
+                    "Logout: Account not found ${account.accountCommon.id} - ${account.username}")
             }
         }
     }
@@ -151,10 +153,11 @@ class Retailer {
             client(context).resetHistory().addOnSuccessListener {
                 onComplete()
             }.addOnFailureListener { ex ->
-                onError(ex.message ?: ex.toString())
+                Timberland.e(ex)
+                onComplete()
             }
         }.addOnFailureListener { ex ->
-            onError(ex.message ?: ex.toString())
+            Timberland.e(ex)
         }
     }
 
@@ -170,37 +173,37 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun orders(
         context: Context,
-        onReceipt: (ScanResults) -> Unit,
+        onReceipt: (ScanResults?) -> Unit,
         onError: (msg: String) -> Unit,
-        daysCutOff: Int = 7,
+        daysCutOff: Int = 15,
         onComplete: () -> Unit
     ) {
         val client: AccountLinkingClient = client(context)
         var fetchedAccounts = 0
-        client.accounts().addOnSuccessListener { mbAccountList ->
-            if (mbAccountList.isNullOrEmpty()) {
-                onComplete()
-                client.close()
-            }else {
-                for (retailerAccount in mbAccountList) {
-                    val account = Account.fromRetailerAccount(retailerAccount)
-                    this.orders(
-                        context,
-                        account,
-                        onReceipt,
-                        daysCutOff,
-                        onError
-                    ) {
-                        fetchedAccounts++
-                        if (fetchedAccounts == mbAccountList.size) {
-                            onComplete()
+        client.accounts()
+            .addOnSuccessListener { mbAccountList ->
+                if (mbAccountList.isNullOrEmpty()) {
+                    onComplete()
+                    client.close()
+                }else {
+                    for (retailerAccount in mbAccountList) {
+                        val account = Account.fromRetailerAccount(retailerAccount)
+                        this.orders(
+                            context,
+                            account,
+                            onReceipt,
+                            daysCutOff,
+                        ) {
+                            fetchedAccounts++
+                            if (fetchedAccounts >= mbAccountList.size) {
+                                onComplete()
+                            }
                         }
                     }
                 }
             }
-        }
             .addOnFailureListener {
-                onError(it.message ?: "Unknown Error in retrieving accounts. $it")
+                Timberland.e(it)
                 onComplete.invoke()
             }
     }
@@ -219,26 +222,23 @@ class Retailer {
     fun orders(
         context: Context,
         account: Account,
-        onScan: (ScanResults) -> Unit,
+        onScan: (ScanResults?) -> Unit,
         daysCutOff: Int = 7,
-        onError: (msg: String) -> Unit,
         onComplete: (() -> Unit)? = null
     ) {
         val client: AccountLinkingClient = client(context, daysCutOff)
         val id = account.accountCommon.id
-        val username = account.username
         val retailerId = RetailerEnum.fromString(id).toMbInt()
         val ordersSuccessCallback: (Int, ScanResults?, Int, String) -> Unit =
             { _: Int, results: ScanResults?, remaining: Int, _: String ->
-                if (results != null) {
-                    onScan(results)
-                } else {
-                    onError("Null ScanResult in $id - $username. Remaining $remaining")
+                onScan(results)
+                if(remaining == 0){
+                    onComplete?.invoke()
                 }
-                if (remaining == 0) onComplete?.invoke()
             }
         val ordersFailureCallback: (Int, AccountLinkingException) -> Unit = { _: Int, exception: AccountLinkingException ->
-            onError(exception.message ?: exception.toString())
+            Timberland.e(exception)
+            onComplete?.invoke()
         }
         client.orders(
             retailerId,
@@ -325,6 +325,9 @@ class Retailer {
         client.verify(
             RetailerEnum.fromString(account.accountCommon.id).value,
             success = { isVerified: Boolean, _: String ->
+                activity.findViewById<FrameLayout>(R.id.webview_container)?.let {
+                    (it.parent as ViewGroup).removeView(it)
+                }
                 if (isVerified) {
                     account.isVerified = true
                     onVerify?.invoke(account)
@@ -338,13 +341,13 @@ class Retailer {
                 }
             },
             failure = { exception ->
+                activity.findViewById<FrameLayout>(R.id.webview_container)?.let {
+                    (it.parent as ViewGroup).removeView(it)
+                }
                 if (exception.code == VERIFICATION_NEEDED && exception.view != null) {
                     exception.view!!.isFocusableInTouchMode = true
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         exception.view!!.focusable = View.FOCUSABLE
-                    }
-                    activity.findViewById<FrameLayout>(R.id.webview_container)?.let {
-                        (it.parent as ViewGroup).removeView(it)
                     }
                     val viewGroup = (activity.findViewById(android.R.id.content) as ViewGroup).getChildAt(0) as ViewGroup
                     View.inflate(activity, R.layout.webview_container, viewGroup)
