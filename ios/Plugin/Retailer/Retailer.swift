@@ -36,7 +36,7 @@ public class Retailer : CAPPlugin{
     ///   - onError: A closure to handle error messages.
     ///   - onSuccess: A closure to handle successful login.
     public func login(_ account: Account, onError: @escaping (String) -> Void, onSuccess: @escaping (Account) -> Void) {
-        let dayCutoff: Int = 7
+        let dayCutoff: Int = 15
         let username: String = account.user
         guard let retailer: BRAccountLinkingRetailer =
                 RetailerEnum(rawValue: account.accountType.source)?.toBRAccountLinkingRetailer() else {
@@ -55,7 +55,7 @@ public class Retailer : CAPPlugin{
         let error = BRAccountLinkingManager.shared().linkRetailer(with: connection)
         if (error == .none) {
             // Success
-            Task(priority: .high){
+            DispatchQueue.main.async{
                 BRAccountLinkingManager.shared().verifyRetailer(with: connection, withCompletion: {
                     error, viewController, sessionId in
                     self.verifyRetailerCallback(error,viewController, connection, { error in onError(error) }, {account in onSuccess(account)}, account)
@@ -73,8 +73,11 @@ public class Retailer : CAPPlugin{
     ///   - account: An instance of the Account struct containing user and account information.
     public func logout(onError: @escaping (String) -> Void, onComplete: @escaping () -> Void, account: Account? = nil) {
         if (account == nil) {
-            BRAccountLinkingManager.shared().unlinkAllAccounts {
-                onComplete()
+            BRAccountLinkingManager.shared().resetHistory()
+            DispatchQueue.main.async {
+                BRAccountLinkingManager.shared().unlinkAllAccounts {
+                    onComplete()
+                }
             }
             return
         }
@@ -83,9 +86,14 @@ public class Retailer : CAPPlugin{
             onError("Unsuported retailer \(account!.accountType.type)")
             return
         }
-        BRAccountLinkingManager.shared().unlinkAccount(for: retailer) {
+        
+        BRAccountLinkingManager.shared().resetHistory(for: retailer)
+        DispatchQueue.main.async {
+            BRAccountLinkingManager.shared().unlinkAccount(for: retailer) {
                 onComplete()
+            }
         }
+
     }
     /// Retrieves orders for a specific user account or for all linked accounts.
     ///
@@ -104,9 +112,15 @@ public class Retailer : CAPPlugin{
                     BRAccountLinkingManager.shared().grabNewOrders( for: retailerId)  { retailer, order, remaining, viewController, errorCode, sessionId in
                         if(errorCode == .none && order != nil){
                             onReceipt(order!)
+                            print(order!)
                         }
+                        if(remaining == 0){
+                            onComplete()
+                        }
+
                     }
                 }
+                
             }
         }
     }
