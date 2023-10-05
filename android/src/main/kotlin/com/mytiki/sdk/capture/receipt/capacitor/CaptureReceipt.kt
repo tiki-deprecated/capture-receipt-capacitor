@@ -115,11 +115,11 @@ class CaptureReceipt {
         } else {
             when (account.accountCommon.type) {
                 AccountTypeEnum.EMAIL -> {
-                    email.remove(context, account, onComplete, onError)
+                    email.logout(context, account, onComplete, onError)
                 }
 
                 AccountTypeEnum.RETAILER -> {
-                    retailer.remove(context, account, onComplete, onError)
+                    retailer.logout(context, account, onComplete, onError)
                 }
             }
         }

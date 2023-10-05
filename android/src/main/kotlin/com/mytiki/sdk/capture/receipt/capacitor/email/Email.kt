@@ -6,11 +6,8 @@
 package com.mytiki.sdk.capture.receipt.capacitor.email
 
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentManager
 import com.microblink.core.InitializeCallback
-import com.microblink.core.Retailer
 import com.microblink.core.ScanResults
 import com.microblink.digital.BlinkReceiptDigitalSdk
 import com.microblink.digital.ImapClient
@@ -24,14 +21,11 @@ import com.mytiki.sdk.capture.receipt.capacitor.OnAccountCallback
 import com.mytiki.sdk.capture.receipt.capacitor.OnCompleteCallback
 import com.mytiki.sdk.capture.receipt.capacitor.account.Account
 import com.mytiki.sdk.capture.receipt.capacitor.account.AccountCommon
-import com.mytiki.sdk.capture.receipt.capacitor.retailer.RetailerEnum
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.tasks.await
-import java.time.Duration
 import java.util.Calendar
-import kotlin.math.abs
 import kotlin.math.floor
 
 typealias OnReceiptCallback = ((receipt: ScanResults?) -> Unit)
@@ -139,16 +133,16 @@ class Email {
         onError: (msg: String) -> Unit,
         onComplete: () -> Unit
     ) {
-        val onRead = { lastScrape: Long ->
+        MainScope().async {
             var dayCutOff = 15
             val now = Calendar.getInstance().timeInMillis
+            val lastScrape = context.getImapScanTime().await()
             val diffInMillis = now - lastScrape
-            val diffInDays = floor((diffInMillis/86400000).toDouble()).toInt()
-            if(diffInDays <= 15) {
+            val diffInDays = floor((diffInMillis / 86400000).toDouble()).toInt()
+            if (diffInDays <= 15) {
                 dayCutOff = diffInDays
             }
-
-            this.client(context, onError) { client ->
+            this@Email.client(context, onError) { client ->
                 client.dayCutoff(dayCutOff)
                 client.messages(object : MessagesCallback {
                     override fun onComplete(
@@ -162,6 +156,7 @@ class Email {
                         onComplete()
                         client.close()
                     }
+
                     override fun onException(throwable: Throwable) {
                         onError(throwable.message ?: throwable.toString())
                         onComplete()
@@ -170,7 +165,6 @@ class Email {
                 })
             }
         }
-        context.getImapScanTime(onRead)
     }
 
     /**
@@ -222,7 +216,7 @@ class Email {
      * @param onRemove Callback called when the account is successfully removed.
      * @param onError Callback called when an error occurs during account removal.
      */
-    fun remove(
+    fun logout(
         context: Context,
         account: Account,
         onRemove: () -> Unit,
@@ -269,7 +263,7 @@ class Email {
         }
     }
 
-    private fun client(
+    fun client(
         context: Context, onError: (String) -> Unit,
         onClientReady: (ImapClient) -> Unit
     ) {
