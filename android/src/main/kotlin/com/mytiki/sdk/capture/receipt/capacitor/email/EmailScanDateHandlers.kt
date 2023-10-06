@@ -2,10 +2,14 @@ package com.mytiki.sdk.capture.receipt.capacitor.email
 
 import android.content.Context
 import androidx.datastore.preferences.core.*
+import com.microblink.core.Timberland
 import com.mytiki.sdk.capture.receipt.capacitor.plugin.dataStore
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 val key = stringPreferencesKey("tiki-captures-receipt.imap-latest-date")
@@ -27,17 +31,15 @@ fun Context.setImapScanTime(value: Long) {
  * @param onComplete Callback function to handle the retrieved [Long] value.
  * @param onError Callback function to handle errors.
  */
-fun Context.getImapScanTime(onComplete: (Long) -> Unit, onError: (String) -> Unit) {
-    MainScope().async {
-        try {
-            val date = dataStore.data.map { pref ->
-                pref[longPreferencesKey(key.name)] ?: 0L
-            }
-            date.distinctUntilChanged().collect { value ->
-                onComplete(value)
-            }
+fun Context.getImapScanTime(): Deferred<Long> {
+    return MainScope().async {
+        try{
+            //dataStore.data.first()[longPreferencesKey(key.name)] ?: 0L
+            15
+
         }catch(ex: Exception){
-            onError(ex.message ?: "Error in getting Imap sca time.")
+           Timberland.d(ex.message ?: "Error in getting Imap scan time.")
+            15
         }
     }
 }
@@ -47,7 +49,7 @@ fun Context.getImapScanTime(onComplete: (Long) -> Unit, onError: (String) -> Uni
  */
 fun Context.deleteImapScanTime(){
     MainScope().async {
-        dataStore.edit { pref -> pref.clear() }
+        dataStore.edit { pref -> pref[longPreferencesKey(key.name)] = 0L }
     }
 }
 

@@ -30,8 +30,9 @@ public class Email {
     /// Logs in a user account using the provided credentials or initiates OAuth authentication for Gmail.
     ///
     /// - Parameters:
-    ///   - account: An instance of the Account struct containing user and account information.
-    ///   - pluginCall: The CAPPluginCall object representing the plugin call.
+    ///   - account: An instance of the Account class containing user and account information.
+    ///   - onError: A closure to handle error messages.
+    ///   - onSuccess: A closure to handle success actions.
     public func login(_ account: Account, onError: @escaping (String) -> Void, onSuccess: @escaping () -> Void)  {
         let email = BRIMAPAccount(provider: .gmailIMAP, email: account.user, password: account.password!)
         DispatchQueue.main.async {
@@ -52,7 +53,8 @@ public class Email {
     /// Logs out a user account or signs out of all accounts.
     ///
     /// - Parameters:
-    ///   - pluginCall: The CAPPluginCall object representing the plugin call.
+    ///   - onError: A closure to handle error messages.
+    ///   - onComplete: A closure to handle completion actions.
     ///   - account: An optional instance of the Account struct containing user and account information.
     public func logout(onError: @escaping (String) -> Void, onComplete: @escaping () -> Void, account: Account? = nil){
         if(account != nil){
@@ -73,17 +75,19 @@ public class Email {
                     onError(error.debugDescription)
                 }else{
                     BREReceiptManager.shared().resetEmailsChecked()
+                    self.defaults.set(Date.distantPast, forKey: "lastIMAPScan")
                     onComplete()
                 }
             })
         }
     }
     
-    /// Retrieves e-receipts for a user account or initiates OAuth authentication for scanning OAuth.
+    /// Retrieves e-receipts for a user email account
     ///
     /// - Parameters:
-    ///   - pluginCall: The CAPPluginCall object representing the plugin call.
-    ///   - account: An optional instance of the Account struct containing user and account information.
+    ///   - onError: A closure to handle error messages.
+    ///   - onReceipt: A closure to handle individual receipt results.
+    ///   - onComplete: A closure to handle completion actions.
     public func scan(onError: @escaping (String) -> Void, onReceipt: @escaping (BRScanResults) -> Void, onComplete: @escaping () -> Void) {
         BREReceiptManager.shared().dayCutoff = getDayCutOff()
         Task(priority: .high){
@@ -101,7 +105,10 @@ public class Email {
     
     /// Retrieves a list of linked email accounts.
     ///
-    /// - Returns: An array of Account objects representing linked email accounts.
+    /// - Parameters:
+    ///   - onError: A closure to handle error messages.
+    ///   - onAccount: A closure to handle individual linked email accounts.
+    ///   - onComplete: A closure to handle completion actions.
     public func accounts(onError: (String) -> Void, onAccount: (Account) -> Void,  onComplete: () -> Void) {
         let linkedAccounts = BREReceiptManager.shared().getLinkedAccounts()
         linkedAccounts?.forEach{ brAccount in
@@ -111,13 +118,14 @@ public class Email {
         }
         onComplete()
     }
+    
 
     private func getDayCutOff() -> Int{
         if (defaults.object(forKey: "lastIMAPScan") != nil) {
             let dayCutOffSaved = defaults.object(forKey: "lastIMAPScan") as! Date
             let timeInterval = dayCutOffSaved.timeIntervalSinceNow
             let difference = Int((timeInterval)) / 86400
-            if(difference < 15){
+            if(difference < 15 && difference >= 0){
                 return difference
             }
         }

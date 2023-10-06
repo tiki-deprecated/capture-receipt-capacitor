@@ -33,9 +33,10 @@ public class Retailer : CAPPlugin{
     ///
     /// - Parameters:
     ///   - account: An instance of the Account struct containing user and account information.
-    ///   - call: The CAPPluginCall object representing the plugin call.
+    ///   - onError: A closure to handle error messages.
+    ///   - onSuccess: A closure to handle successful login.
     public func login(_ account: Account, onError: @escaping (String) -> Void, onSuccess: @escaping (Account) -> Void) {
-        let dayCutoff: Int = 7
+        let dayCutoff: Int = 15
         let username: String = account.user
         guard let retailer: BRAccountLinkingRetailer =
                 RetailerEnum(rawValue: account.accountType.source)?.toBRAccountLinkingRetailer() else {
@@ -54,7 +55,7 @@ public class Retailer : CAPPlugin{
         let error = BRAccountLinkingManager.shared().linkRetailer(with: connection)
         if (error == .none) {
             // Success
-            Task(priority: .high){
+            DispatchQueue.main.async{
                 BRAccountLinkingManager.shared().verifyRetailer(with: connection, withCompletion: {
                     error, viewController, sessionId in
                     self.verifyRetailerCallback(error,viewController, connection, { error in onError(error) }, {account in onSuccess(account)}, account)
@@ -67,12 +68,16 @@ public class Retailer : CAPPlugin{
     /// Logs out a user account.
     ///
     /// - Parameters:
-    ///   - call: The CAPPluginCall object representing the plugin call.
+    ///   - onError: A closure to handle error messages.
+    ///   - onComplete: A closure to handle the completion of the logout process.
     ///   - account: An instance of the Account struct containing user and account information.
     public func logout(onError: @escaping (String) -> Void, onComplete: @escaping () -> Void, account: Account? = nil) {
         if (account == nil) {
-            BRAccountLinkingManager.shared().unlinkAllAccounts {
-                onComplete()
+            BRAccountLinkingManager.shared().resetHistory()
+            DispatchQueue.main.async {
+                BRAccountLinkingManager.shared().unlinkAllAccounts {
+                    onComplete()
+                }
             }
             return
         }
@@ -81,15 +86,21 @@ public class Retailer : CAPPlugin{
             onError("Unsuported retailer \(account!.accountType.type)")
             return
         }
-        BRAccountLinkingManager.shared().unlinkAccount(for: retailer) {
+        
+        BRAccountLinkingManager.shared().resetHistory(for: retailer)
+        DispatchQueue.main.async {
+            BRAccountLinkingManager.shared().unlinkAccount(for: retailer) {
                 onComplete()
+            }
         }
+
     }
     /// Retrieves orders for a specific user account or for all linked accounts.
     ///
     /// - Parameters:
-    ///   - account: An optional instance of the Account struct containing user and account information.
-    ///   - call: The CAPPluginCall object representing the plugin call.
+    ///   - onError: A closure to handle error messages.
+    ///   - onReceipt: A closure to handle individual receipt results.
+    ///   - onComplete: A closure to handle the completion of the order retrieval process.
     public func orders(onError: @escaping (String) -> Void, onReceipt: @escaping(BRScanResults) -> Void, onComplete: @escaping () -> Void){
         Task(priority: .high) {
             let retailers = BRAccountLinkingManager.shared().getLinkedRetailers()
@@ -101,9 +112,15 @@ public class Retailer : CAPPlugin{
                     BRAccountLinkingManager.shared().grabNewOrders( for: retailerId)  { retailer, order, remaining, viewController, errorCode, sessionId in
                         if(errorCode == .none && order != nil){
                             onReceipt(order!)
+                            print(order!)
                         }
+                        if(remaining == 0){
+                            onComplete()
+                        }
+
                     }
                 }
+                
             }
         }
     }
@@ -112,7 +129,10 @@ public class Retailer : CAPPlugin{
         
         /// Retrieves a list of linked accounts.
         ///
-        /// - Returns: An array of Account objects representing linked accounts.
+        /// - Parameters:
+        ///   - onError: A closure to handle error messages.
+        ///   - onAccount: A closure to handle individual linked email accounts.
+        ///   - onComplete: A closure to handle the completion of the account retrieval process.
         public func accounts (onError: (String) -> Void, onAccount: (Account) -> Void,  onComplete: () -> Void) {
             let retailers = BRAccountLinkingManager.shared().getLinkedRetailers()
             for ret in retailers {
@@ -126,12 +146,13 @@ public class Retailer : CAPPlugin{
         }
         /// Handles the callback after attempting to verify a retailer account.
         ///
-        /// - Parameters:
-        ///   - error: The BRAccountLinkingError code indicating the result of the verification.
-        ///   - viewController: The UIViewController to present for verification if needed.
-        ///   - connection: The BRAccountLinkingConnection object representing the user's account connection.
-        ///   - call: The CAPPluginCall object representing the plugin call.
-        ///   - account: An instance of the Account struct containing user and account information.
+    /// - Parameters:
+    ///   - error: The BRAccountLinkingError code indicating the result of the verification.
+    ///   - viewController: The UIViewController to present for verification if needed.
+    ///   - connection: The BRAccountLinkingConnection object representing the user's account connection.
+    ///   - onError: A closure to handle error messages.
+    ///   - onComplete: A closure to handle the completion of the verification process.
+    ///   - account: An instance of the Account struct containing user and account information.
         private func verifyRetailerCallback(
             _ error: BRAccountLinkingError,
             _ viewController: UIViewController?,

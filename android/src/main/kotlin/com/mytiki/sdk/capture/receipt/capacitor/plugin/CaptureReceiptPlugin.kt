@@ -55,10 +55,14 @@ class CaptureReceiptPlugin : Plugin() {
      */
     @PluginMethod
     fun initialize(call: PluginCall) {
-        val request = ReqInitialize(call)
-        captureReceipt.initialize(context, request.licenseKey, request.productKey, {
-            call.resolve()
-        }, { error -> call.reject(error) })
+        try{
+            val request = ReqInitialize(call)
+            captureReceipt.initialize(context, request.licenseKey, request.productKey, {
+                call.resolve()
+            }, { error -> call.reject(error) })
+        }catch (error: Error) {
+            call.reject(error.message);
+        }
     }
 
     /**
@@ -167,12 +171,10 @@ class CaptureReceiptPlugin : Plugin() {
      * @param scan The scanned results.
      */
     private fun onReceipt(requestId: String, scan: ScanResults? = null) {
-        val data = if (scan != null) {
-            RspReceipt(requestId, scan).toJS()
-        } else {
-            JSObject()
+       if (scan != null) {
+            val data = RspReceipt(requestId, scan).toJS()
+            notifyListeners("onCapturePluginResult", data)
         }
-        notifyListeners("onCapturePluginResult", data)
     }
 
     /**

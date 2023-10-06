@@ -19,7 +19,9 @@ public class CaptureReceipt: NSObject {
     
     /// Initializes the ReceiptCapture class.
     ///
-    /// - Parameter call: The CAPPluginCall representing the initialization request.
+    /// - Parameters:
+    ///   - licenseKey: The license key for BlinkReceipt.
+    ///   - productKey: The product key for BlinkReceipt.
     public func initialize(licenseKey: String, productKey: String) {
         let scanManager = BRScanManager.shared()
         scanManager.licenseKey = licenseKey
@@ -30,7 +32,10 @@ public class CaptureReceipt: NSObject {
     
     /// Handles user login for receipt management.
     ///
-    /// - Parameter call: The CAPPluginCall representing the login request.
+    /// - Parameters:
+    ///   - account: An instance of the Account struct containing user and account information.
+    ///   - onError: A closure to handle error messages.
+    ///   - onComplete: A closure to handle the completion of the login process.
     public func login(account: Account, onError: @escaping (String) -> Void, onComplete: @escaping (Account) -> Void) {
         DispatchQueue.main.async {
             switch account.accountType.type {
@@ -53,9 +58,13 @@ public class CaptureReceipt: NSObject {
             }
         }
     }
+    
     /// Handles user logout from receipt management.
     ///
-    /// - Parameter call: The CAPPluginCall representing the logout request.
+    /// - Parameters:
+    ///   - onError: A closure to handle error messages.
+    ///   - onComplete: A closure to handle the completion of the logout process.
+    ///   - account: An optional instance of the Account struct containing user and account information.
     public func logout(onError: @escaping (String) -> Void, onComplete: @escaping () -> Void, account: Account? = nil) {
         if(account != nil){
             switch(account?.accountType.type){
@@ -73,9 +82,13 @@ public class CaptureReceipt: NSObject {
             retailer!.logout(onError: {error in onError(error)}, onComplete: {onComplete()})
         }
     }
+    
     /// Retrieves a list of user accounts for receipt management.
-     ///
-     /// - Parameter call: The CAPPluginCall representing the request for account information.
+    ///
+    /// - Parameters:
+    ///   - onError: A closure to handle error messages.
+    ///   - onComplete: A closure to handle the completion of the account retrieval process.
+    ///   - onAccount: A closure to handle individual account information.
     public func accounts( onError: @escaping (String) -> Void, onComplete: @escaping () -> Void, onAccount: (Account) -> Void) {
         guard let retailer = retailer else {
             onError("Retailer not initialized. Did you call .initialize()?")
@@ -94,7 +107,10 @@ public class CaptureReceipt: NSObject {
     
     /// Initiates receipt scanning based on the specified account type.
     ///
-    /// - Parameter call: The CAPPluginCall representing the scan request.
+    /// - Parameters:
+    ///   - onError: A closure to handle error messages.
+    ///   - onReceipt: A closure to handle individual receipt results.
+    ///   - onComplete: A closure to handle the completion of the scanning process.
     public func scan(onError: @escaping (String) -> Void, onReceipt: @escaping (BRScanResults) -> Void, onComplete: @escaping () -> Void) {
             guard let retailer = retailer else {
                 onError("Retailer not initialized. Did you call .initialize()?")

@@ -1,14 +1,7 @@
 /*
+ * RspAccount Class
  * Copyright (c) TIKI Inc.
  * MIT license. See LICENSE file in the root directory.
- */
-
-/**
- A struct representing an account's response data for the ReceiptCapture plugin.
- 
- This struct is used to encapsulate account information for use in plugin responses. It contains details such as the username, source, and verification status of an account.
- 
- - Note: This struct is typically used to construct response data for account-related plugin calls.
  */
 
 import Foundation
@@ -29,6 +22,7 @@ public class RspAccount : Rsp{
     /**
      Initializes an `RspAccount` object with the provided account details.
      
+     - Parameter requestId: The unique identifier for the associated request.
      - Parameter account: An `Account` object containing the account information.
      */
     public init(requestId: String, account: Account) {

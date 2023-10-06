@@ -3,7 +3,7 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-The TIKI Capture Receipt Plugin for Capacitor enables the extraction of receipt data from photos, email inboxes, and retailer accounts using [Microblink's](https://microblink.com) OCR technology.
+The TIKI Capture Receipt Plugin for Capacitor enables the extraction of receipt data from email inboxes, and retailer accounts using [Microblink's](https://microblink.com) technology.
 
 This plugin wraps (and simplifies) Microblink's native [iOS](https://github.com/BlinkReceipt/blinkreceipt-ios) and [Android](https://github.com/BlinkReceipt/blinkreceipt-android) SDKs for use with Capacitor applications.
 
@@ -14,9 +14,9 @@ This plugin wraps (and simplifies) Microblink's native [iOS](https://github.com/
 
 1. Install the dependency from NPM
 
-`npm install @mytiki/tiki-capture-receipt-capacitor`
+`npm install @mytiki/capture-receipt-capacitor`
 
-2. Add Microblink iOS dependencies in `ios/App/Podfile`
+2. iOS only - Add Microblink iOS dependencies in `ios/App/Podfile`
 
 ```
 source 'https://github.com/BlinkReceipt/PodSpecRepo.git' # <- add this
@@ -48,6 +48,8 @@ end
 
 That's it. And yes, it's really that easy.
 
+_NOTE: if Cocoapods can't find BlinkReceipt/BlinkEReceipt in iOS, run `pod install --repo-udpate` and `npx cap sync` again._
+
 ## Initialization
 
 **IMPORTANT: Requires a valid Microblink BlinkReceipt License Key and Product Intelligence Key. [Reach out to get one →](https://mytiki.com)**
@@ -56,22 +58,11 @@ That's it. And yes, it's really that easy.
 ```ts
 import { instance } from '@mytiki/tiki-capture-receipt-capacitor'
 
-instance.initialize('<LICENSE KEY>', '<PRODUCT KEY>')
+instance.initialize('<PRODUCT KEY>', '<IOS LICENSE KEY>', '<ANDROID LICENSE KEY>', 
         .then((rsp) => console.log(`initialized`))
 ```
 
 _NOTE: Only iOS and Android are supported._
-
-### Google OAuth
-
-To use Google OAuth for Gmail login provide a valid [Google OAuth Client ID](https://developers.google.com/identity/protocols/oauth2) in initialization:
-
-```ts
-import { instance } from '@mytiki/tiki-capture-receipt-capacitor'
-
-instance.initialize('<LICENSE KEY>', '<PRODUCT KEY>', '<GOOGLE_CLIENT_ID>')
-        .then((rsp) => console.log(`initialized`))
-```
 
 # Contributing
 

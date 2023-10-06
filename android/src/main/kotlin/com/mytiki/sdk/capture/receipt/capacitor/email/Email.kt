@@ -6,8 +6,6 @@
 package com.mytiki.sdk.capture.receipt.capacitor.email
 
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentManager
 import com.microblink.core.InitializeCallback
 import com.microblink.core.ScanResults
@@ -27,9 +25,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.tasks.await
-import java.time.Duration
 import java.util.Calendar
-import kotlin.math.abs
 import kotlin.math.floor
 
 typealias OnReceiptCallback = ((receipt: ScanResults?) -> Unit)
@@ -137,25 +133,22 @@ class Email {
         onError: (msg: String) -> Unit,
         onComplete: () -> Unit
     ) {
-        val onRead = { lastScrape: Long ->
+        MainScope().async {
             var dayCutOff = 15
             val now = Calendar.getInstance().timeInMillis
+            val lastScrape = context.getImapScanTime().await()
             val diffInMillis = now - lastScrape
-            val diffInDays = floor((diffInMillis/86400000).toDouble()).toInt()
-            if(diffInDays <= 15) {
+            val diffInDays = floor((diffInMillis / 86400000).toDouble()).toInt()
+            if (diffInDays <= 15) {
                 dayCutOff = diffInDays
             }
-
-            this.client(context, onError) { client ->
+            this@Email.client(context, onError) { client ->
                 client.dayCutoff(dayCutOff)
                 client.messages(object : MessagesCallback {
                     override fun onComplete(
                         credential: PasswordCredentials,
                         result: List<ScanResults>
                     ) {
-                        if (result.isEmpty()) {
-                            onError("No results for ${credential.username()} - ${credential.provider()}")
-                        }
                         result.forEach { receipt ->
                             onReceipt(receipt)
                         }
@@ -163,6 +156,7 @@ class Email {
                         onComplete()
                         client.close()
                     }
+
                     override fun onException(throwable: Throwable) {
                         onError(throwable.message ?: throwable.toString())
                         onComplete()
@@ -171,7 +165,6 @@ class Email {
                 })
             }
         }
-        context.getImapScanTime(onRead, onError)
     }
 
     /**
@@ -197,7 +190,6 @@ class Email {
                     } else {
                         for (credential in credentials) {
                             val account = Account.fromEmailAccount(credential)
-
                             account.isVerified = client.verify(credential).await()
                             onAccount(account)
                             returnedAccounts++
@@ -224,7 +216,7 @@ class Email {
      * @param onRemove Callback called when the account is successfully removed.
      * @param onError Callback called when an error occurs during account removal.
      */
-    fun remove(
+    fun logout(
         context: Context,
         account: Account,
         onRemove: () -> Unit,
@@ -238,8 +230,9 @@ class Email {
                     ).value
                 }
                 client.logout(passwordCredentials).addOnSuccessListener {
-                    onRemove()
+                    client.clearLastCheckedTime(Provider.valueOf(account.accountCommon.id))
                     context.deleteImapScanTime()
+                    onRemove()
                 }.addOnFailureListener {
                     onError(
                         it.message
@@ -261,15 +254,16 @@ class Email {
     fun flush(context: Context, onComplete: () -> Unit, onError: (msg: String) -> Unit) {
         this.client(context, onError) { client ->
             client.logout().addOnSuccessListener {
-                onComplete()
+                client.clearLastCheckedTime()
                 context.deleteImapScanTime()
+                onComplete()
             }.addOnFailureListener {
                 onError(it.message ?: it.toString())
             }
         }
     }
 
-    private fun client(
+    fun client(
         context: Context, onError: (String) -> Unit,
         onClientReady: (ImapClient) -> Unit
     ) {
@@ -280,7 +274,6 @@ class Email {
                 override fun onComplete() {
                     clientInitialization.complete(Unit)
                 }
-
                 override fun onException(ex: Throwable) {
                     onError(ex.message ?: "Error in IMAP client initialization: $ex")
                 }
