@@ -69,17 +69,33 @@ public class CaptureReceipt: NSObject {
         if(account != nil){
             switch(account?.accountType.type){
             case .email :
-                email!.logout(onError: {error in onError(error)}, onComplete: {onComplete()}, account: account)
+                guard let email = self.email else {
+                    onError("Email not initialized. Did you call .initialize()?")
+                    return
+                }
+                email.logout(onError: {error in onError(error)}, onComplete: {onComplete()}, account: account)
                 break
             case .retailer :
-                retailer!.logout(onError: {error in onError(error)}, onComplete: {onComplete()}, account: account)
+                guard let retailer = self.retailer else {
+                    onError("Retailer not initialized. Did you call .initialize()?")
+                    return
+                }
+                retailer.logout(onError: {error in onError(error)}, onComplete: {onComplete()}, account: account)
                 break
             default:
                 onError("Invalid logout account type.")
             }
         }else{
-            email!.logout(onError: {error in onError(error)}, onComplete: {onComplete()})
-            retailer!.logout(onError: {error in onError(error)}, onComplete: {onComplete()})
+            guard let retailer = self.retailer else {
+                onError("Retailer not initialized. Did you call .initialize()?")
+                return
+            }
+            guard let email = self.email else {
+                onError("Email not initialized. Did you call .initialize()?")
+                return
+            }
+            email.logout(onError: {error in onError(error)}, onComplete: {onComplete()})
+            retailer.logout(onError: {error in onError(error)}, onComplete: {onComplete()})
         }
     }
     

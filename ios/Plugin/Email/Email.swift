@@ -39,9 +39,23 @@ public class Email {
             let rootVc = UIApplication.shared.windows.first?.rootViewController
             BREReceiptManager.shared().setupIMAP(for: email, viewController: rootVc!, withCompletion: { result in
                 BREReceiptManager.shared().verifyImapAccount(email, withCompletion: { success, error in
-                    if success {
-                        onSuccess()
-                    } else {
+                    guard let errorCallback: Int = (error as? NSError)?.code else {
+                        if success {
+                            onSuccess()
+                            return
+                        } else {
+                            onError(error.debugDescription)
+                            return
+                        }
+                    }
+                    if(errorCallback == BREReceiptIMAPError.gmailIMAPDisabled.rawValue){
+                        BREReceiptManager.shared().signOut(from: email) { errorLogout in
+                            if(errorLogout != nil){
+                                onError(errorLogout.debugDescription)
+                            }
+                        }
+                        onError(error.debugDescription)
+                    }else{
                         onError(error.debugDescription)
                     }
                 })
@@ -92,13 +106,18 @@ public class Email {
         BREReceiptManager.shared().dayCutoff = getDayCutOff()
         Task(priority: .high){
             BREReceiptManager.shared().getEReceipts() {scanResults, emailAccount, error in
-                if(scanResults != nil){
-                    scanResults!.forEach{scanResults in
-                        onReceipt(scanResults)
+                guard let errorCallback = error as? BREReceiptIMAPError else {
+                    if(scanResults != nil){
+                        scanResults!.forEach{scanResults in
+                            onReceipt(scanResults)
+                        }
                     }
+                    self.defaults.set(Date(), forKey: "lastIMAPScan")
+                    onComplete()
+                    return
                 }
-                self.defaults.set(Date(), forKey: "lastIMAPScan")
-                onComplete()
+                onError(error.debugDescription)
+
             } 
         }
     }
