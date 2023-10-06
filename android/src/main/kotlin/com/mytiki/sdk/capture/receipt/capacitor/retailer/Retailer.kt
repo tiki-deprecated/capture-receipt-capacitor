@@ -133,10 +133,11 @@ class Retailer {
                     onComplete()
                 }.addOnFailureListener {
                     onError(it.message ?: it.toString())
+                    onComplete()
                 }
             } else {
-                onError(
-                    "Logout: Account not found ${account.accountCommon.id} - ${account.username}")
+                onError("Logout: Account not found ${account.accountCommon.id} - ${account.username}")
+                onComplete()
             }
         }
     }
@@ -153,8 +154,9 @@ class Retailer {
         client(context).resetHistory()
         client(context).unlink().addOnSuccessListener {
             onComplete()
-        }.addOnFailureListener { ex ->
-            Timberland.e(ex)
+        }.addOnFailureListener {
+            onError(it.message ?: it.toString())
+            onComplete()
         }
     }
 
@@ -182,7 +184,7 @@ class Retailer {
                 if (mbAccountList.isNullOrEmpty()) {
                     onComplete()
                     client.close()
-                }else {
+                } else {
                     for (retailerAccount in mbAccountList) {
                         val account = Account.fromRetailerAccount(retailerAccount)
                         this.orders(
@@ -194,6 +196,7 @@ class Retailer {
                             fetchedAccounts++
                             if (fetchedAccounts >= mbAccountList.size) {
                                 onComplete()
+                                client.close()
                             }
                         }
                     }
@@ -231,6 +234,7 @@ class Retailer {
                 onScan(results)
                 if(remaining == 0){
                     onComplete?.invoke()
+                    client.close()
                 }
             }
         val ordersFailureCallback: (Int, AccountLinkingException) -> Unit = { _: Int, exception: AccountLinkingException ->
@@ -261,46 +265,34 @@ class Retailer {
         onComplete: (() -> Unit)? = null
     ) {
         val client: AccountLinkingClient = client(context)
-        client.accounts()
-            .addOnSuccessListener { mbAccountList ->
-                if (mbAccountList.isNullOrEmpty()){
-                    onComplete?.invoke()
-                }else {
-                    MainScope().async {
-                        var counter = 0
-                        mbAccountList.forEach { retailerAccount ->
-                            client.verify(retailerAccount.retailerId,
-                                success = { isVerified: Boolean, _: String ->
-                                    val account = Account.fromRetailerAccount(retailerAccount)
-                                    account.isVerified = isVerified
-                                    onAccount.invoke(account)
-                                    counter++
-                                    if (counter == mbAccountList.size) {
-                                        onComplete?.invoke()
-                                        client.close()
-                                    }
-                                },
-                                failure = {
-                                    val account = Account.fromRetailerAccount(retailerAccount)
-                                    account.isVerified = false
-                                    onAccount.invoke(account)
-                                    counter++
-                                    if (counter == mbAccountList.size) {
-                                        onComplete?.invoke()
-                                        client.close()
-                                    }
-                                }
-                            )
-                        }
-                    }
-                }
-            }
-            .addOnFailureListener {
-                onError(it.message ?: "Unknown Error in retrieving accounts. $it")
+        client.accounts().addOnSuccessListener { mbAccountList ->
+            if (mbAccountList.isNullOrEmpty()){
                 onComplete?.invoke()
                 client.close()
+            } else {
+                MainScope().async {
+                    var counter = 0
+                    mbAccountList.forEach { retailerAccount ->
+                        val account = Account.fromRetailerAccount(retailerAccount)
+                        account.isVerified = true
+                        onAccount.invoke(account)
+                        counter++
+                        if (counter == mbAccountList.size) {
+                            onComplete?.invoke()
+                            client.close()
+                        }
+                    }
+
+                }
             }
+        }.addOnFailureListener {
+            onError(it.message ?: "Unknown Error in retrieving accounts. $it")
+            onComplete?.invoke()
+            client.close()
+        }
     }
+
+
 
     /**
      * Verifies a user account.
