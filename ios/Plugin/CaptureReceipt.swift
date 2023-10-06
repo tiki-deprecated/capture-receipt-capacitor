@@ -36,25 +36,25 @@ public class CaptureReceipt: NSObject {
     ///   - account: An instance of the Account struct containing user and account information.
     ///   - onError: A closure to handle error messages.
     ///   - onComplete: A closure to handle the completion of the login process.
-    public func login(account: Account, onError: @escaping (String) -> Void, onComplete: @escaping (Account) -> Void) {
+    public func login(account: Account, onError: @escaping (String, RspErrorEnum) -> Void, onComplete: @escaping (Account) -> Void) {
         DispatchQueue.main.async {
             switch account.accountType.type {
             case .email :
                 guard let email = self.email else {
-                    onError("Email not initialized. Did you call .initialize()?")
+                    onError("Email not initialized. Did you call .initialize()?", .ERROR)
                     return
                 }
-                email.login(account, onError: {error in onError(error)}, onSuccess: {onComplete(account)})
+                email.login(account, onError: {error, errorCode in onError(error, errorCode)}, onSuccess: {onComplete(account)})
                 break
             case .retailer :
                 guard let retailer = self.retailer else {
-                    onError("Retailer not initialized. Did you call .initialize()?")
+                    onError("Retailer not initialized. Did you call .initialize()?", .ERROR)
                     return
                 }
-                retailer.login(account, onError: {error in onError(error)}, onSuccess: {account in onComplete(account)})
+                retailer.login(account, onError: {error in onError(error, .ERROR)}, onSuccess: {account in onComplete(account)})
                 break
             case .none :
-                onError("Invalid Type")
+                onError("Invalid Type", .ERROR)
             }
         }
     }

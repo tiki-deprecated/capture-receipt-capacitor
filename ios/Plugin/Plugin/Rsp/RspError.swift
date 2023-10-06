@@ -4,6 +4,8 @@
  * MIT license. See LICENSE file in the root directory.
  */
 
+import Capacitor
+
 /**
  A class representing an error response for the ReceiptCapture plugin.
  
@@ -36,7 +38,7 @@ public class RspError: Rsp {
      
      - Returns: A dictionary representing the error data in a format suitable for a Capacitor plugin call result.
      */
-    override func toPluginCallResultData() -> [String: Any] {
+    override func toPluginCallResultData() -> PluginCallResultData {
         var ret = super.toPluginCallResultData()
         ret["payload"] = [
             "message": message,

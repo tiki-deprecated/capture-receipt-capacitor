@@ -33,7 +33,7 @@ public class Email {
     ///   - account: An instance of the Account class containing user and account information.
     ///   - onError: A closure to handle error messages.
     ///   - onSuccess: A closure to handle success actions.
-    public func login(_ account: Account, onError: @escaping (String) -> Void, onSuccess: @escaping () -> Void)  {
+    public func login(_ account: Account, onError: @escaping (String, RspErrorEnum) -> Void, onSuccess: @escaping () -> Void)  {
         let email = BRIMAPAccount(provider: .gmailIMAP, email: account.user, password: account.password!)
         DispatchQueue.main.async {
             let rootVc = UIApplication.shared.windows.first?.rootViewController
@@ -44,19 +44,16 @@ public class Email {
                             onSuccess()
                             return
                         } else {
-                            onError(error.debugDescription)
+                            onError(error.debugDescription, .ERROR)
                             return
                         }
                     }
                     if(errorCallback == BREReceiptIMAPError.gmailIMAPDisabled.rawValue){
                         BREReceiptManager.shared().signOut(from: email) { errorLogout in
-                            if(errorLogout != nil){
-                                onError(errorLogout.debugDescription)
-                            }
+                            onError("Please, activate the Gmail IMAP", .GmailIMAPDisabled)
                         }
-                        onError(error.debugDescription)
                     }else{
-                        onError(error.debugDescription)
+                        onError(error.debugDescription, .ERROR)
                     }
                 })
             })
