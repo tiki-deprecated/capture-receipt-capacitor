@@ -274,7 +274,7 @@ class RspReceipt(requestId: String, scanResults: ScanResults) : Rsp(requestId, P
             .put("eReceiptSubMerchant", eReceiptSubMerchant)
             .put(
                 "qualifiedSurveys",
-                qualifiedSurveys.map { survey -> survey.toJS() }
+                JSONArray(qualifiedSurveys.map { survey -> survey.toJS() })
             )
             .put("barcode", barcode)
             .put("eReceiptMerchantEmail", eReceiptMerchantEmail)
