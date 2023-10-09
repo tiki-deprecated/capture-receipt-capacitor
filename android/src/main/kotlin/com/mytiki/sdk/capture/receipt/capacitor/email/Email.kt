@@ -119,6 +119,7 @@ class Email {
         }.show(supportFragmentManager, tag)
     }
 
+
     /**
      * Scrapes receipts from the email using [ImapClient].
      *
@@ -143,26 +144,31 @@ class Email {
                 dayCutOff = diffInDays
             }
             this@Email.client(context, onError) { client ->
-                client.dayCutoff(dayCutOff)
-                client.messages(object : MessagesCallback {
-                    override fun onComplete(
-                        credential: PasswordCredentials,
-                        result: List<ScanResults>
-                    ) {
-                        result.forEach { receipt ->
-                            onReceipt(receipt)
-                        }
-                        context.setImapScanTime(now)
-                        onComplete()
-                        client.close()
-                    }
-
-                    override fun onException(throwable: Throwable) {
-                        onError(throwable.message ?: throwable.toString())
-                        onComplete()
-                        client.close()
-                    }
-                })
+                client.accounts().addOnSuccessListener { credentials ->
+                   if (credentials.isNullOrEmpty()) {
+                       onComplete()
+                   }else{
+                       client.dayCutoff(dayCutOff)
+                       client.messages(object : MessagesCallback {
+                           override fun onComplete(
+                               credential: PasswordCredentials,
+                               result: List<ScanResults>
+                           ) {
+                               result.forEach { receipt ->
+                                   onReceipt(receipt)
+                               }
+                               context.setImapScanTime(now)
+                               onComplete()
+                               client.close()
+                           }
+                           override fun onException(throwable: Throwable) {
+                               onError(throwable.message ?: throwable.toString())
+                               onComplete()
+                               client.close()
+                           }
+                       })
+                   }
+                }.addOnFailureListener {}
             }
         }
     }
@@ -182,26 +188,29 @@ class Email {
     ) {
         this.client(context, onError) { client ->
             client.accounts().addOnSuccessListener { credentials ->
-                MainScope().async {
-                    var returnedAccounts = 0
-                    if (credentials.isNullOrEmpty()) {
-                        onComplete?.invoke()
-                        client.close()
-                    } else {
+                if (credentials.isNullOrEmpty()) {
+                    onComplete?.invoke()
+                    client.close()
+                } else {
+                    MainScope().async {
+                        var returnedAccounts = 0
                         for (credential in credentials) {
                             val account = Account.fromEmailAccount(credential)
-                            account.isVerified = client.verify(credential).await()
+                            account.isVerified = true
                             onAccount(account)
                             returnedAccounts++
                             if (returnedAccounts == credentials.size) {
                                 onComplete?.invoke()
+                                client.close()
                             }
                         }
+
                     }
                 }
             }.addOnFailureListener {
                 onError(it.message ?: it.toString())
                 onComplete?.invoke()
+                client.close()
             }
         }
     }
@@ -229,9 +238,9 @@ class Email {
                         account.accountCommon.id
                     ).value
                 }
+                client.clearLastCheckedTime(Provider.valueOf(account.accountCommon.id))
+                context.deleteImapScanTime()
                 client.logout(passwordCredentials).addOnSuccessListener {
-                    client.clearLastCheckedTime(Provider.valueOf(account.accountCommon.id))
-                    context.deleteImapScanTime()
                     onRemove()
                 }.addOnFailureListener {
                     onError(
@@ -253,12 +262,13 @@ class Email {
      */
     fun flush(context: Context, onComplete: () -> Unit, onError: (msg: String) -> Unit) {
         this.client(context, onError) { client ->
+            client.clearLastCheckedTime()
+            context.deleteImapScanTime()
             client.logout().addOnSuccessListener {
-                client.clearLastCheckedTime()
-                context.deleteImapScanTime()
                 onComplete()
             }.addOnFailureListener {
                 onError(it.message ?: it.toString())
+                onComplete()
             }
         }
     }
