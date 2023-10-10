@@ -146,7 +146,7 @@ class Email {
                    if (credentials.isNullOrEmpty()) {
                        onComplete()
                    }else{
-                       client.dayCutoff(30)
+                       client.dayCutoff(dayCutOff)
                        client.messages(object : MessagesCallback {
                            override fun onComplete(
                                credential: PasswordCredentials,
@@ -166,7 +166,9 @@ class Email {
                            }
                        })
                    }
-                }.addOnFailureListener {}
+                }.addOnFailureListener {
+                    onComplete()
+                }
             }
         }
     }
