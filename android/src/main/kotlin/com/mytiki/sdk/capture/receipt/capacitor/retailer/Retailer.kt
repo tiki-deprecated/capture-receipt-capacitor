@@ -84,15 +84,15 @@ class Retailer {
         onAccount: ((Account) -> Unit)? = null,
         onError: ((String) -> Unit)? = null
     ) {
-        val mbAccount = MbAccount(
+        val retailerAccount = MbAccount(
             RetailerEnum.fromString(id).toMbInt(),
             PasswordCredentials(username, password)
         )
         val client = client(activity)
-        client.link(mbAccount)
+        client.link(retailerAccount)
             .addOnSuccessListener {
                 if (it) {
-                    verify(mbAccount, activity, onAccount, onError)
+                    verify(retailerAccount, activity, onAccount, onError)
                 } else {
                     onError?.invoke("Login failed: account $username - $id")
                     client.close()
@@ -110,33 +110,33 @@ class Retailer {
      * Removes a user account.
      *
      * @param context The Android application context.
-     * @param account The user's account information.
+     * @param tikiAccount The user's account information.
      * @param onComplete Callback called when the account is successfully removed.
      * @param onError Callback called when an error occurs during account removal.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     fun logout(
         context: Context,
-        account: Account,
+        tikiAccount: Account,
         onComplete: () -> Unit,
         onError: (msg: String) -> Unit
     ) {
         val client = client(context)
         client.accounts().addOnSuccessListener { accounts ->
-            val mbAccount = accounts?.firstOrNull {
-                it.retailerId == RetailerEnum.fromString(account.accountCommon.id).toMbInt() &&
-                        it.credentials.username() == account.username
+            val retailerAccount = accounts?.firstOrNull {
+                it.retailerId == RetailerEnum.fromString(tikiAccount.accountCommon.id).toMbInt() &&
+                        it.credentials.username() == tikiAccount.username
             }
-            if (mbAccount != null) {
-                client(context).resetHistory()
-                client.unlink(mbAccount).addOnSuccessListener {
+            if (retailerAccount != null) {
+                client(context).resetHistory(RetailerEnum.fromString(tikiAccount.accountCommon.id).toMbInt())
+                client.unlink(retailerAccount).addOnSuccessListener {
                     onComplete()
                 }.addOnFailureListener {
                     onError(it.message ?: it.toString())
                     onComplete()
                 }
             } else {
-                onError("Logout: Account not found ${account.accountCommon.id} - ${account.username}")
+                onError("Logout: Account not found ${tikiAccount.accountCommon.id} - ${tikiAccount.username}")
                 onComplete()
             }
         }
@@ -180,21 +180,21 @@ class Retailer {
         val client: AccountLinkingClient = client(context)
         var fetchedAccounts = 0
         client.accounts()
-            .addOnSuccessListener { mbAccountList ->
-                if (mbAccountList.isNullOrEmpty()) {
+            .addOnSuccessListener { retailerAccountList ->
+                if (retailerAccountList.isNullOrEmpty()) {
                     onComplete()
                     client.close()
                 } else {
-                    for (retailerAccount in mbAccountList) {
-                        val account = Account.fromRetailerAccount(retailerAccount)
+                    for (retailerAccount in retailerAccountList) {
+                        val tikiAccount = Account.fromRetailerAccount(retailerAccount)
                         this.orders(
                             context,
-                            account,
+                            tikiAccount,
                             onReceipt,
                             daysCutOff,
                         ) {
                             fetchedAccounts++
-                            if (fetchedAccounts >= mbAccountList.size) {
+                            if (fetchedAccounts >= retailerAccountList.size) {
                                 onComplete()
                                 client.close()
                             }
@@ -212,7 +212,7 @@ class Retailer {
      * Retrieves orders for a specific user account.
      *
      * @param context The Android application context.
-     * @param account The user's account information.
+     * @param tikiAccount The user's account information.
      * @param onScan Callback called for each collected receipt.
      * @param daysCutOff The day cutoff limit for order retrieval (optional, default is 7).
      * @param onError Callback called when an error occurs during order retrieval.
@@ -221,13 +221,13 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun orders(
         context: Context,
-        account: Account,
+        tikiAccount: Account,
         onScan: (ScanResults?) -> Unit,
         daysCutOff: Int = 7,
         onComplete: (() -> Unit)? = null
     ) {
         val client: AccountLinkingClient = client(context, 120)
-        val id = account.accountCommon.id
+        val id = tikiAccount.accountCommon.id
         val retailerId = RetailerEnum.fromString(id).toMbInt()
         val ordersSuccessCallback: (Int, ScanResults?, Int, String) -> Unit =
             { _: Int, results: ScanResults?, remaining: Int, _: String ->
@@ -265,19 +265,19 @@ class Retailer {
         onComplete: (() -> Unit)? = null
     ) {
         val client: AccountLinkingClient = client(context)
-        client.accounts().addOnSuccessListener { mbAccountList ->
-            if (mbAccountList.isNullOrEmpty()){
+        client.accounts().addOnSuccessListener { retailerAccountList ->
+            if (retailerAccountList.isNullOrEmpty()){
                 onComplete?.invoke()
                 client.close()
             } else {
                 MainScope().async {
                     var counter = 0
-                    mbAccountList.forEach { retailerAccount ->
-                        val account = Account.fromRetailerAccount(retailerAccount)
-                        account.isVerified = true
-                        onAccount.invoke(account)
+                    retailerAccountList.forEach { retailerAccount ->
+                        val tikiAccount = Account.fromRetailerAccount(retailerAccount)
+                        tikiAccount.isVerified = true
+                        onAccount.invoke(tikiAccount)
                         counter++
-                        if (counter == mbAccountList.size) {
+                        if (counter == retailerAccountList.size) {
                             onComplete?.invoke()
                             client.close()
                         }
@@ -297,34 +297,34 @@ class Retailer {
     /**
      * Verifies a user account.
      *
-     * @param mbAccount The user's account in the Retailer SDK.
+     * @param retailerAccount The user's account in the Retailer SDK.
      * @param activity The [AppCompatActivity] where verification may occur.
      * @param onVerify Callback called when the verification is successful.
      * @param onError Callback called when an error occurs during verification.
      */
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun verify(
-        mbAccount: MbAccount,
+        retailerAccount: MbAccount,
         activity: AppCompatActivity,
         onVerify: ((Account) -> Unit)?,
         onError: ((msg: String) -> Unit)?
     ) {
         val client: AccountLinkingClient = client(activity)
-        val account = Account.fromRetailerAccount(mbAccount)
+        val tikiAccount = Account.fromRetailerAccount(retailerAccount)
         client.verify(
-            RetailerEnum.fromString(account.accountCommon.id).value,
+            RetailerEnum.fromString(tikiAccount.accountCommon.id).value,
             success = { isVerified: Boolean, _: String ->
                 activity.findViewById<FrameLayout>(R.id.webview_container)?.let {
                     (it.parent as ViewGroup).removeView(it)
                 }
                 if (isVerified) {
-                    account.isVerified = true
-                    onVerify?.invoke(account)
+                    tikiAccount.isVerified = true
+                    onVerify?.invoke(tikiAccount)
                     client.close()
                 } else {
-                    client.unlink(mbAccount)
+                    client.unlink(retailerAccount)
                     onError?.let {
-                        it("Please login. Account not verified ${account.username} - ${account.accountCommon.id}")
+                        it("Please login. Account not verified ${tikiAccount.username} - ${tikiAccount.accountCommon.id}")
                     }
                     client.close()
                 }
@@ -333,6 +333,7 @@ class Retailer {
                 activity.findViewById<FrameLayout>(R.id.webview_container)?.let {
                     (it.parent as ViewGroup).removeView(it)
                 }
+
                 if (exception.code == VERIFICATION_NEEDED && exception.view != null) {
                     exception.view!!.isFocusableInTouchMode = true
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -344,9 +345,10 @@ class Retailer {
                     webViewContainer.addView(exception.view)
                 } else {
                     onError?.let {
-                        it("Account not verified ${account.username} - ${account.accountCommon.id}: ${exception.message} - $exception")
+                        it("Account not verified ${tikiAccount.username} - ${tikiAccount.accountCommon.id}: ${exception.message} - $exception")
                     }
-                    client.unlink(mbAccount)
+                    client(activity).resetHistory(RetailerEnum.fromString(tikiAccount.accountCommon.id).toMbInt())
+                    client.unlink(retailerAccount)
                     client.close()
                 }
             }

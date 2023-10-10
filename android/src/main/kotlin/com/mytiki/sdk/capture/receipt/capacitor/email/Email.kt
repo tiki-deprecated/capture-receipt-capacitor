@@ -24,7 +24,6 @@ import com.mytiki.sdk.capture.receipt.capacitor.account.AccountCommon
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.tasks.await
 import java.util.Calendar
 import kotlin.math.floor
 
@@ -99,12 +98,11 @@ class Email {
         ).callback { results ->
             when (results) {
                 ProviderSetupResults.CREATED_APP_PASSWORD -> {
-                    val account = Account(
+                    val tikiAccount = Account(
                         AccountCommon.fromSource(id), username, password, true
                     )
-                    onComplete?.invoke(account)
+                    onComplete?.invoke(tikiAccount)
                 }
-
                 else -> {
                     onError?.invoke(results.toString())
                 }
@@ -148,7 +146,7 @@ class Email {
                    if (credentials.isNullOrEmpty()) {
                        onComplete()
                    }else{
-                       client.dayCutoff(dayCutOff)
+                       client.dayCutoff(30)
                        client.messages(object : MessagesCallback {
                            override fun onComplete(
                                credential: PasswordCredentials,
@@ -195,9 +193,9 @@ class Email {
                     MainScope().async {
                         var returnedAccounts = 0
                         for (credential in credentials) {
-                            val account = Account.fromEmailAccount(credential)
-                            account.isVerified = true
-                            onAccount(account)
+                            val tikiAccount = Account.fromEmailAccount(credential)
+                            tikiAccount.isVerified = true
+                            onAccount(tikiAccount)
                             returnedAccounts++
                             if (returnedAccounts == credentials.size) {
                                 onComplete?.invoke()
@@ -221,31 +219,31 @@ class Email {
      * This function allows the removal of an specific email account in [ImapClient].
      *
      * @param context The application context.
-     * @param account The email account information to be removed.
+     * @param tikiAccount The email account information to be removed.
      * @param onRemove Callback called when the account is successfully removed.
      * @param onError Callback called when an error occurs during account removal.
      */
     fun logout(
         context: Context,
-        account: Account,
+        tikiAccount: Account,
         onRemove: () -> Unit,
         onError: (String) -> Unit
     ) {
         this.client(context, onError) { client ->
             client.accounts().addOnSuccessListener { list ->
                 val passwordCredentials = list.first {
-                    it.username() == account.username && it.provider() == EmailEnum.fromString(
-                        account.accountCommon.id
+                    it.username() == tikiAccount.username && it.provider() == EmailEnum.fromString(
+                        tikiAccount.accountCommon.id
                     ).value
                 }
-                client.clearLastCheckedTime(Provider.valueOf(account.accountCommon.id))
+                client.clearLastCheckedTime(Provider.valueOf(tikiAccount.accountCommon.id))
                 context.deleteImapScanTime()
                 client.logout(passwordCredentials).addOnSuccessListener {
                     onRemove()
                 }.addOnFailureListener {
                     onError(
                         it.message
-                            ?: "Unknown error when removing account ${account.username} from ${account.accountCommon.id}"
+                            ?: "Unknown error when removing account ${tikiAccount.username} from ${tikiAccount.accountCommon.id}"
                     )
                 }
             }
