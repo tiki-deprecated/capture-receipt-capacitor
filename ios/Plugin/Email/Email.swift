@@ -33,16 +33,27 @@ public class Email {
     ///   - account: An instance of the Account class containing user and account information.
     ///   - onError: A closure to handle error messages.
     ///   - onSuccess: A closure to handle success actions.
-    public func login(_ account: Account, onError: @escaping (String) -> Void, onSuccess: @escaping () -> Void)  {
+    public func login(_ account: Account, onError: @escaping (String, RspErrorEnum) -> Void, onSuccess: @escaping () -> Void)  {
         let email = BRIMAPAccount(provider: .gmailIMAP, email: account.user, password: account.password!)
         DispatchQueue.main.async {
             let rootVc = UIApplication.shared.windows.first?.rootViewController
             BREReceiptManager.shared().setupIMAP(for: email, viewController: rootVc!, withCompletion: { result in
                 BREReceiptManager.shared().verifyImapAccount(email, withCompletion: { success, error in
-                    if success {
-                        onSuccess()
-                    } else {
-                        onError(error.debugDescription)
+                    guard let receivedError: Int = (error as? NSError)?.code else {
+                        if success {
+                            onSuccess()
+                            return
+                        } else {
+                            onError(error.debugDescription, .ERROR)
+                            return
+                        }
+                    }
+                    if(receivedError == BREReceiptIMAPError.gmailIMAPDisabled.rawValue){
+                        BREReceiptManager.shared().signOut(from: email) { errorLogout in
+                            onError("Please, activate the Gmail IMAP", .GmailIMAPDisabled)
+                        }
+                    }else{
+                        onError(error.debugDescription, .ERROR)
                     }
                 })
             })
@@ -92,13 +103,18 @@ public class Email {
         BREReceiptManager.shared().dayCutoff = getDayCutOff()
         Task(priority: .high){
             BREReceiptManager.shared().getEReceipts() {scanResults, emailAccount, error in
-                if(scanResults != nil){
-                    scanResults!.forEach{scanResults in
-                        onReceipt(scanResults)
+                guard let receivedError = error as? BREReceiptIMAPError else {
+                    if(scanResults != nil){
+                        scanResults!.forEach{scanResults in
+                            onReceipt(scanResults)
+                        }
                     }
+                    self.defaults.set(Date(), forKey: "lastIMAPScan")
+                    onComplete()
+                    return
                 }
-                self.defaults.set(Date(), forKey: "lastIMAPScan")
-                onComplete()
+                onError(error.debugDescription)
+
             } 
         }
     }
