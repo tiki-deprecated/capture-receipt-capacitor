@@ -39,7 +39,7 @@ public class Email {
             let rootVc = UIApplication.shared.windows.first?.rootViewController
             BREReceiptManager.shared().setupIMAP(for: email, viewController: rootVc!, withCompletion: { result in
                 BREReceiptManager.shared().verifyImapAccount(email, withCompletion: { success, error in
-                    guard let errorCallback: Int = (error as? NSError)?.code else {
+                    guard let receivedError: Int = (error as? NSError)?.code else {
                         if success {
                             onSuccess()
                             return
@@ -48,7 +48,7 @@ public class Email {
                             return
                         }
                     }
-                    if(errorCallback == BREReceiptIMAPError.gmailIMAPDisabled.rawValue){
+                    if(receivedError == BREReceiptIMAPError.gmailIMAPDisabled.rawValue){
                         BREReceiptManager.shared().signOut(from: email) { errorLogout in
                             onError("Please, activate the Gmail IMAP", .GmailIMAPDisabled)
                         }
@@ -103,7 +103,7 @@ public class Email {
         BREReceiptManager.shared().dayCutoff = getDayCutOff()
         Task(priority: .high){
             BREReceiptManager.shared().getEReceipts() {scanResults, emailAccount, error in
-                guard let errorCallback = error as? BREReceiptIMAPError else {
+                guard let receivedError = error as? BREReceiptIMAPError else {
                     if(scanResults != nil){
                         scanResults!.forEach{scanResults in
                             onReceipt(scanResults)
