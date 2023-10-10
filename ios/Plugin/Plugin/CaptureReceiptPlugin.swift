@@ -30,7 +30,12 @@ public class CaptureReceiptPlugin: CAPPlugin {
     @objc public func login(_ call: CAPPluginCall) {
         let reqAccount = try! ReqAccount(call)
         receiptCapture.login(account: reqAccount.account(),
-                             onError: { error in call.reject(error)},
+                             onError: { error, errorCode in
+                                            let errorMsg = error
+                                            let code = errorCode.rawValue.description
+                                            let rspError = RspError(requestId: reqAccount.requestId, message: error, code: errorCode).toPluginCallResultData()
+                                            call.reject(errorMsg, code, .none, rspError)
+                            },
                              onComplete: { account in call.resolve( (account.toResultData()) )} )
     }
 
