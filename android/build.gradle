@@ -33,7 +33,7 @@ android {
     defaultConfig {
         minSdkVersion project.hasProperty('minSdkVersion') ? rootProject.ext.minSdkVersion : 22
         compileSdk project.hasProperty('compileSdkVersion') ? rootProject.ext.compileSdkVersion : 33
-        targetSdkVersion project.hasProperty('targetSdkVersion') ? rootProject.ext.targetSdkVersion : 34
+        targetSdkVersion project.hasProperty('targetSdkVersion') ? rootProject.ext.targetSdkVersion : 33
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testApplicationId "com.mytiki.sdk.capture.receipt.capacitor"
     }
@@ -74,7 +74,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "androidx.core:core:$androidxCoreVersion"
     implementation "androidx.core:core-ktx:$androidxCoreVersion"
-    implementation "androidx.webkit:webkit:1.8.0"
+    implementation "androidx.webkit:webkit:1.7.0"
     implementation "androidx.work:work-runtime:$androidxWorkVersion"
     implementation "androidx.work:work-runtime-ktx:$androidxWorkVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$androidxLifecycleVersion"
@@ -83,7 +83,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$androidxLifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$androidxLifecycleVersion"
     implementation "androidx.fragment:fragment-ktx:1.6.1"
-    implementation 'androidx.databinding:viewbinding:8.1.1'
+    implementation 'androidx.databinding:viewbinding:8.1.2'
     implementation "androidx.datastore:datastore-preferences:1.0.0"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
@@ -114,7 +114,7 @@ dependencies {
     implementation("com.microblink.blinkreceipt:blinkreceipt-core")
     implementation("com.microblink.blinkreceipt:blinkreceipt-digital")
     implementation("com.microblink.blinkreceipt:blinkreceipt-recognizer")
-    
+
     implementation 'androidx.test:monitor:1.6.1'
     implementation 'androidx.test.ext:junit-ktx:1.1.5'
 
