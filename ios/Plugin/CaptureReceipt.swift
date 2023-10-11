@@ -66,7 +66,7 @@ public class CaptureReceipt: NSObject {
     ///   - onComplete: A closure to handle the completion of the logout process.
     ///   - account: An optional instance of the Account struct containing user and account information.
     public func logout(onError: @escaping (String) -> Void, onComplete: @escaping () -> Void, account: Account? = nil) {
-        if(account != nil){
+        if(account != nil && account?.accountType.type != AccountTypeEnum.none){
             switch(account?.accountType.type){
             case .email :
                 guard let email = self.email else {
