@@ -18,10 +18,10 @@ export class ReqAccount implements Req {
   password?: string;
   id?: string;
 
-  constructor(account: Account) {
+  constructor(account?: Account) {
     this.requestId = uuid.v4();
-    this.username = account.username;
-    this.password = account.password;
-    this.id = account.type.id;
+    this.username = account?.username;
+    this.password = account?.password;
+    this.id = account?.type.id;
   }
 }
