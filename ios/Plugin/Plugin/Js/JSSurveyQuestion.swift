@@ -19,13 +19,13 @@ struct JSSurveyQuestion{
     /// The text of the survey question.
     private let text: String?
     /// The type of the survey question.
-    private let type: BRSurveyQuestionType
+    private let type: String?
     /// The list of survey answers associated with the question.
-    private let answers: [BRSurveyAnswer]
+    private let answers: [JSSurveyAnswer]
     /// A boolean flag indicating whether multiple answers are allowed.
     private let multipleAnswers: Bool
     /// The user's response to the survey question.
-    private let userResponse: BRSurveyResponse
+    private let userResponse: JSSurveyResponse
 
     /**
      Initializes an `RspSurveyQuestion` struct.
@@ -35,10 +35,10 @@ struct JSSurveyQuestion{
      */
     init(surveyQuestion: BRSurveyQuestion) {
         text = surveyQuestion.text
-        type = surveyQuestion.type
-        answers = surveyQuestion.answers
+        type = String(describing: surveyQuestion.type)
+        answers = surveyQuestion.answers.map { answer in JSSurveyAnswer(surveyAnswer: answer) }
         multipleAnswers = surveyQuestion.multipleAnswers
-        userResponse = surveyQuestion.userResponse
+        userResponse = JSSurveyResponse(surveyResponse: surveyQuestion.userResponse)
     }
 
     /**
@@ -46,13 +46,13 @@ struct JSSurveyQuestion{
 
      - Returns: A dictionary containing the survey question's text, type, answers, multipleAnswers flag, and user response in a format suitable for a Capacitor plugin call result.
      */
-    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+    func toJSObject() -> JSObject {
         var ret = JSObject()
         ret["text"] = text
-        ret["type"] = Int(type.rawValue)
+        ret["type"] = type
         ret["answers"] = JSArray(answers.map { answer in answers })
         ret["multipleAnswers"] = multipleAnswers
-        ret["userResponse"] = JSObject(_immutableCocoaDictionary: userResponse)
+        ret["userResponse"] = userResponse.toJSObject()
         return ret
     }
 }

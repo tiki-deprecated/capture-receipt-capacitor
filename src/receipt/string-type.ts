@@ -9,10 +9,10 @@
  */
 export interface StringType {
   /**
-   * The confidence level associated with the string value.
+   * The confidence level associated with the string value, if available.
    * This value indicates the certainty or reliability of the reported value.
    */
-  confidence: number;
+  confidence?: number;
 
   /**
    * The actual string value.

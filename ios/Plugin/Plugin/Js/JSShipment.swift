@@ -28,7 +28,7 @@ struct JSShipment {
      */
     init(shipment: BRShipment) {
         status = shipment.status
-        products = shipment.products.map { product in JSProduct(product: product) }
+        products = shipment.products?.map { product in JSProduct(product: product) } ?? []
     }
 
     /**
@@ -36,10 +36,10 @@ struct JSShipment {
 
      - Returns: A dictionary containing shipment information in a format suitable for a Capacitor plugin call result.
      */
-    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+    func toJSObject() -> JSObject {
         var ret = JSObject()
         ret["status"] = status
-        ret["products"] = JSArray(arrayLiteral: products.map { prd in prd.toPluginCallResultData() })
+        ret["products"] = JSArray(arrayLiteral: products.map { prd in prd.toJSObject() })
         return ret
     }
 }

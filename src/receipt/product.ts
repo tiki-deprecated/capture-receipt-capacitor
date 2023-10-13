@@ -49,7 +49,7 @@ export interface Product {
   /**
    * The line number associated with the product.
    */
-  line: number;
+  line?: number;
 
   /**
    * The name of the product.

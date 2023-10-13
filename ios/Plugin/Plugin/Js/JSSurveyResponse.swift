@@ -17,9 +17,9 @@ import BlinkEReceipt
  */
 struct JSSurveyResponse {
     /// The indices of selected answers in the survey.
-    let answersSelected: [Int]
+    let answersSelected: [NSNumber]
     /// Free-text comments provided as part of the survey response.
-    let freeText: String
+    let freeText: String?
 
     /**
      Initializes an `RspSurveyResponse` struct.
@@ -28,9 +28,9 @@ struct JSSurveyResponse {
         - answersSelected: The indices of selected answers in the survey.
         - freeText: Free-text comments provided as part of the survey response.
      */
-    init(answersSelected: [Int], freeText: String) {
-        self.answersSelected = answersSelected
-        self.freeText = freeText
+    init(surveyResponse: BRSurveyResponse) {
+        self.answersSelected = surveyResponse.answersSelected
+        self.freeText = surveyResponse.freeText
     }
 
     /**
@@ -38,7 +38,7 @@ struct JSSurveyResponse {
 
      - Returns: A dictionary containing the selected answers' indices and free-text comments in a format suitable for a Capacitor plugin call result.
      */
-    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+    func toJSObject() -> JSObject {
         var ret = JSObject()
         ret["answersSelected"] = JSArray(answersSelected.map { answerSelected in answersSelected })
         ret["freeText"] = freeText

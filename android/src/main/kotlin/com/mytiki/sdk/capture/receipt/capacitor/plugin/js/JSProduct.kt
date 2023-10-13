@@ -6,6 +6,7 @@
 package com.mytiki.sdk.capture.receipt.capacitor.plugin.js
 
 import com.getcapacitor.JSObject
+import com.microblink.core.FloatType
 import com.microblink.core.Product
 import org.json.JSONArray
 import org.json.JSONObject
@@ -60,7 +61,7 @@ class JSProduct(product: Product) {
     private val unitPrice: JSFloatType?
     private val unitOfMeasure: JSStringType?
     private val totalPrice: JSFloatType?
-    private val fullPrice: Float
+    private val fullPrice: JSFloatType
     private val line: Int
     private val productName: String?
     private val brand: String?
@@ -101,7 +102,7 @@ class JSProduct(product: Product) {
         unitPrice = JSFloatType.opt(product.unitPrice())
         unitOfMeasure = JSStringType.opt(product.unitOfMeasure())
         totalPrice = JSFloatType.opt(product.totalPrice())
-        fullPrice = product.fullPrice()
+        fullPrice = JSFloatType(FloatType(product.fullPrice()))
         line = product.line()
         productName = product.productName()
         brand = product.brand()

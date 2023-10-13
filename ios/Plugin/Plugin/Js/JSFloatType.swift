@@ -16,7 +16,7 @@ import Capacitor
  */
 struct JSFloatType{
     /// The confidence score associated with the value.
-    private let confidence: Float
+    private let confidence: Float?
     
     /// The floating-point value.
     private let value: Float
@@ -30,13 +30,18 @@ struct JSFloatType{
         confidence = floatType.confidence
         value = floatType.value
     }
+    
+    init (float: Float) {
+        value = float
+        confidence = nil
+    }
 
     /**
      Converts the `RspFloatType` struct into a dictionary suitable for use in plugin response data.
 
      - Returns: A dictionary representing floating-point values and their confidence scores in a format suitable for a Capacitor plugin call result.
      */
-    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+    func toJSObject() -> JSObject {
         var result = JSObject()
         result["confidence"] = confidence
         result["value"] = value

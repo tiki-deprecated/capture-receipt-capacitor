@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		50ADFF92201F53D600D50D53 /* Plugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ADFF88201F53D600D50D53 /* Plugin.framework */; };
 		50ADFFA42020D75100D50D53 /* Capacitor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ADFFA52020D75100D50D53 /* Capacitor.framework */; };
+		5D11216C2AD99D1000F2B8B7 /* JSRetailer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D11216B2AD99D1000F2B8B7 /* JSRetailer.swift */; };
+		5D11216E2AD9B7F800F2B8B7 /* JSSurvey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D11216D2AD9B7F800F2B8B7 /* JSSurvey.swift */; };
+		5D1121712AD9BF2D00F2B8B7 /* FormatDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1121702AD9BF2D00F2B8B7 /* FormatDate.swift */; };
 		8C0623642AB2F9AE00CABC17 /* CaptureReceiptPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C06233E2AB2F9AE00CABC17 /* CaptureReceiptPlugin.h */; };
 		8C502ECE2ACAFE8F009A26C5 /* PluginEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C502ECD2ACAFE8F009A26C5 /* PluginEvent.swift */; };
 		8C502ED52ACC6013009A26C5 /* RspErroEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C502ED42ACC6013009A26C5 /* RspErroEnum.swift */; };
@@ -34,7 +37,6 @@
 		8CFF1FB82ACA1FA100F0E853 /* JSSurveyResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06234D2AB2F9AE00CABC17 /* JSSurveyResponse.swift */; };
 		8CFF1FB92ACA1FA100F0E853 /* JSSurveyAnswer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06234C2AB2F9AE00CABC17 /* JSSurveyAnswer.swift */; };
 		8CFF1FBA2ACA1FA100F0E853 /* JSPaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06234F2AB2F9AE00CABC17 /* JSPaymentMethod.swift */; };
-		8CFF1FBB2ACA1FA100F0E853 /* JSPossibleProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F1E8412AC1C30A00180ECB /* JSPossibleProduct.swift */; };
 		8CFF1FBC2ACA1FA100F0E853 /* RspAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0623462AB2F9AE00CABC17 /* RspAccount.swift */; };
 		8CFF1FBD2ACA1FA700F0E853 /* EmailEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06233C2AB2F9AE00CABC17 /* EmailEnum.swift */; };
 		8CFF1FBE2ACA1FA700F0E853 /* Email.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C06233A2AB2F9AE00CABC17 /* Email.swift */; };
@@ -63,9 +65,11 @@
 		50ADFF88201F53D600D50D53 /* Plugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Plugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		50ADFF91201F53D600D50D53 /* PluginTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PluginTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		50ADFFA52020D75100D50D53 /* Capacitor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Capacitor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5D11216B2AD99D1000F2B8B7 /* JSRetailer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSRetailer.swift; sourceTree = "<group>"; };
+		5D11216D2AD9B7F800F2B8B7 /* JSSurvey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSSurvey.swift; sourceTree = "<group>"; };
+		5D1121702AD9BF2D00F2B8B7 /* FormatDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatDate.swift; sourceTree = "<group>"; };
 		707DE9550F4511DB04ABC8E3 /* Pods-Plugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plugin.debug.xcconfig"; path = "Target Support Files/Pods-Plugin/Pods-Plugin.debug.xcconfig"; sourceTree = "<group>"; };
 		88C4620D2AC76B61006B21AF /* ReqAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReqAccount.swift; sourceTree = "<group>"; };
-		88F1E8412AC1C30A00180ECB /* JSPossibleProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSPossibleProduct.swift; sourceTree = "<group>"; };
 		8C0623392AB2F9AE00CABC17 /* AccountCommon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountCommon.swift; sourceTree = "<group>"; };
 		8C06233A2AB2F9AE00CABC17 /* Email.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Email.swift; sourceTree = "<group>"; };
 		8C06233C2AB2F9AE00CABC17 /* EmailEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmailEnum.swift; sourceTree = "<group>"; };
@@ -148,6 +152,7 @@
 		50ADFF8A201F53D600D50D53 /* Plugin */ = {
 			isa = PBXGroup;
 			children = (
+				5D11216F2AD9BF1700F2B8B7 /* Utils */,
 				8CFF1F9C2AC94C4300F0E853 /* Retailer */,
 				8CFF1F9B2AC94C1600F0E853 /* Plugin */,
 				8CFF1F9A2AC94BF700F0E853 /* Email */,
@@ -156,6 +161,14 @@
 				8CFF1FA02ACA1EA800F0E853 /* Info.plist */,
 			);
 			path = Plugin;
+			sourceTree = "<group>";
+		};
+		5D11216F2AD9BF1700F2B8B7 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				5D1121702AD9BF2D00F2B8B7 /* FormatDate.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		74B12954E94D52575716D347 /* Pods */ = {
@@ -244,10 +257,11 @@
 				8C06234D2AB2F9AE00CABC17 /* JSSurveyResponse.swift */,
 				8C0623522AB2F9AE00CABC17 /* JSPromotion.swift */,
 				8C06234F2AB2F9AE00CABC17 /* JSPaymentMethod.swift */,
-				88F1E8412AC1C30A00180ECB /* JSPossibleProduct.swift */,
 				8C0623452AB2F9AE00CABC17 /* JSFloatType.swift */,
 				8C06234B2AB2F9AE00CABC17 /* JSAdditionalLine.swift */,
 				8C06234E2AB2F9AE00CABC17 /* JSShipment.swift */,
+				5D11216B2AD99D1000F2B8B7 /* JSRetailer.swift */,
+				5D11216D2AD9B7F800F2B8B7 /* JSSurvey.swift */,
 			);
 			path = Js;
 			sourceTree = "<group>";
@@ -473,6 +487,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5D11216C2AD99D1000F2B8B7 /* JSRetailer.swift in Sources */,
 				8CFF1FA92ACA1F9D00F0E853 /* ReqAccount.swift in Sources */,
 				8CFF1FBA2ACA1FA100F0E853 /* JSPaymentMethod.swift in Sources */,
 				8CFF1FAF2ACA1FA100F0E853 /* JSSurveyQuestion.swift in Sources */,
@@ -485,14 +500,15 @@
 				8CFF1FB82ACA1FA100F0E853 /* JSSurveyResponse.swift in Sources */,
 				8CFF1FA62ACA1F9700F0E853 /* CaptureReceiptPlugin.swift in Sources */,
 				8CFF1FB42ACA1FA100F0E853 /* JSProduct.swift in Sources */,
+				5D1121712AD9BF2D00F2B8B7 /* FormatDate.swift in Sources */,
 				8C502ED92ACC8703009A26C5 /* Req.swift in Sources */,
 				8CFF1FB52ACA1FA100F0E853 /* JSShipment.swift in Sources */,
 				8CFF1FA52ACA1F9700F0E853 /* CaptureReceiptPlugin.m in Sources */,
 				8CFF1FBE2ACA1FA700F0E853 /* Email.swift in Sources */,
 				8CFF1FAB2ACA1FA100F0E853 /* Rsp.swift in Sources */,
-				8CFF1FBB2ACA1FA100F0E853 /* JSPossibleProduct.swift in Sources */,
 				8CFF1FB72ACA1FA100F0E853 /* JSFloatType.swift in Sources */,
 				8CFF1FA22ACA1F8A00F0E853 /* CaptureReceipt.swift in Sources */,
+				5D11216E2AD9B7F800F2B8B7 /* JSSurvey.swift in Sources */,
 				8CFF1FA32ACA1F9100F0E853 /* Retailer.swift in Sources */,
 				8CFF1FAE2ACA1FA100F0E853 /* JSPromotion.swift in Sources */,
 				8CFF1FA42ACA1F9100F0E853 /* RetailerEnum.swift in Sources */,

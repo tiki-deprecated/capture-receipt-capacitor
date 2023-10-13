@@ -51,7 +51,7 @@ struct JSPromotion {
 
      - Returns: A dictionary containing promotion information in a format suitable for a Capacitor plugin call result.
      */
-    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+    func toJSObject() -> JSObject {
         var ret = JSObject()
         ret["slug"] = slug
         ret["reward"] = reward
