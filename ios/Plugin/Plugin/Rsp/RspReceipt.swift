@@ -278,7 +278,6 @@ public class RspReceipt : Rsp{
         payload["longTransactionId"] = longTransactionId?.toJSObject()
         payload["subtotalMatches"] = subtotalMatches
         payload["eReceiptEmailProvider"] = eReceiptEmailProvider
-        payload["eReceiptEmailId"] = eReceiptEmailId
         payload["eReceiptAuthenticated"] = eReceiptAuthenticated
         payload["instacartShopper"] = instacartShopper
         payload["eReceipt"] = eReceipt
