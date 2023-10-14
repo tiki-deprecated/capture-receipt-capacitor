@@ -7,6 +7,7 @@ package com.mytiki.sdk.capture.receipt.capacitor.plugin.rsp
 
 import com.getcapacitor.JSObject
 import com.microblink.core.ScanResults
+import com.microblink.core.StringType
 import com.mytiki.sdk.capture.receipt.capacitor.plugin.PluginEvent
 import com.mytiki.sdk.capture.receipt.capacitor.plugin.js.JSCoupon
 import com.mytiki.sdk.capture.receipt.capacitor.plugin.js.JSFloatType
@@ -95,7 +96,7 @@ class RspReceipt(requestId: String, scanResults: ScanResults) : Rsp(requestId, P
     private val eReceiptEmailSubject: String?
     private val eReceiptShippingCosts: Float
     private val currencyCode: String?
-    private val clientMerchantName: String?
+    private val clientMerchantName: JSStringType?
     private val loyaltyProgram: Boolean
     private val merchantSources: List<Int>
     private val paymentTerminalId: JSStringType?
@@ -188,7 +189,7 @@ class RspReceipt(requestId: String, scanResults: ScanResults) : Rsp(requestId, P
         eReceiptEmailSubject = scanResults.eReceiptEmailSubject()
         eReceiptShippingCosts = scanResults.eReceiptShippingCosts()
         currencyCode = scanResults.currencyCode()
-        clientMerchantName = scanResults.clientMerchantName()
+        clientMerchantName = JSStringType.opt(StringType(scanResults.clientMerchantName()))
         loyaltyProgram = scanResults.loyaltyProgram()
         merchantSources = scanResults.merchantSources() ?: emptyList()
         paymentTerminalId = JSStringType.opt(scanResults.paymentTerminalId())
@@ -281,7 +282,7 @@ class RspReceipt(requestId: String, scanResults: ScanResults) : Rsp(requestId, P
             .put("eReceiptEmailSubject", eReceiptEmailSubject)
             .put("eReceiptShippingCosts", eReceiptShippingCosts)
             .put("currencyCode", currencyCode)
-            .put("clientMerchantName", clientMerchantName)
+            .put("clientMerchantName", clientMerchantName?.toJS())
             .put("loyaltyProgram", loyaltyProgram)
             .put("merchantSources", JSONArray(merchantSources))
             .put("paymentTerminalId", paymentTerminalId?.toJS())

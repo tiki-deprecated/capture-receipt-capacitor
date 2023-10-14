@@ -18,7 +18,7 @@ import org.json.JSONObject
 class JSPromotion(promotion: Promotion) {
     private val id: Long
     private val slug: String?
-    private val reward: String?
+    private val reward: Double?
     private val rewardCurrency: String?
     private val errorCode: Int
     private val errorMessage: String?
@@ -28,7 +28,7 @@ class JSPromotion(promotion: Promotion) {
     init {
         id = promotion.id()
         slug = promotion.slug()
-        reward = promotion.reward()?.toPlainString()
+        reward = promotion.reward()?.toDouble()
         rewardCurrency = promotion.rewardCurrency()
         errorCode = promotion.errorCode()
         errorMessage = promotion.errorMessage()

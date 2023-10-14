@@ -15,5 +15,5 @@ export interface Retailer {
   /**
    * The unique identifier for the banner associated with the retailer.
    */
-  bannerId: number;
+  bannerId?: number;
 }

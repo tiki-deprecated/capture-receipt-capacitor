@@ -16,7 +16,7 @@ import Capacitor
  */
 struct JSStringType{
     /// The confidence level of the string value.
-    private let confidence: Float
+    private let confidence: Float?
     /// The string value.
     private let value: String?
 
@@ -30,17 +30,30 @@ struct JSStringType{
         confidence = stringType.confidence
         value = stringType.value
     }
-
+    
+    init(string: String) {
+        value = string
+        confidence = nil
+    }
+    
+    static func opt(stringType: BRStringValue?) -> JSStringType? {
+        return stringType != nil ? JSStringType(stringType: stringType!) : nil
+    }
+    
+    static func opt(string: String?) -> JSStringType? {
+        return string != nil ? JSStringType(string: string!) : nil
+    }
+    
     /**
      Converts the `RspStringType` struct into a dictionary suitable for use in plugin response data.
 
      - Returns: A dictionary containing the string value and its confidence level in a format suitable for a Capacitor plugin call result.
      */
-    public func toPluginCallResultData() -> Capacitor.PluginCallResultData {
-        return [
-            "confidence": confidence,
-            "value": value ?? ""
-        ]
+    public func toJSObject() -> JSObject {
+        var result = JSObject()
+        result["confidence"] = confidence
+        result["value"] = value
+        return result;
     }
 }
 

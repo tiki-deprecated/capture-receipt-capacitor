@@ -16,16 +16,16 @@ import BlinkEReceipt
  */
 struct JSCoupon {
     /// The type of the coupon.
-    private let type: UInt?
+    private let type: String?
     
     /// The coupon amount, if available.
-    private let amount: Float?
+    private let amount: JSFloatType?
     
     /// The SKU (Stock Keeping Unit) associated with the coupon, if available.
-    private let sku: String?
+    private let sku: JSStringType?
     
     /// The description or text associated with the coupon, if available.
-    private let description: String?
+    private let description: JSStringType?
     
     /// The index of the related product associated with this coupon.
     private let relatedProductIndex: Int
@@ -36,11 +36,15 @@ struct JSCoupon {
      - Parameter coupon: A `BRCoupon` object containing coupon information.
      */
     init(coupon: BRCoupon) {
-        type = coupon.couponType.rawValue
-        amount = coupon.couponAmount?.value
-        sku = coupon.couponSku?.value
-        description = coupon.description
+        type = String(describing: coupon.couponType)
+        amount = JSFloatType.opt(floatType: coupon.couponAmount)
+        sku = JSStringType.opt(stringType: coupon.couponSku)
+        description = JSStringType.opt(string: coupon.description)
         relatedProductIndex = coupon.relatedProductIndex
+    }
+    
+    static func opt(coupon: BRCoupon?) -> JSCoupon? {
+        return coupon != nil ? JSCoupon(coupon: coupon!) : nil
     }
 
     /**
@@ -48,12 +52,12 @@ struct JSCoupon {
 
      - Returns: A dictionary representing coupon details, including its type, amount, SKU, description, and related product index, in a format suitable for a Capacitor plugin call result.
      */
-    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+    func toJSObject() -> JSObject {
         var result = JSObject()
-        result["type"] = type as JSValue?
-        result["amount"] = amount
-        result["sku"] = sku
-        result["description"] = description
+        result["type"] = type
+        result["amount"] = amount?.toJSObject()
+        result["sku"] = sku?.toJSObject()
+        result["description"] = description?.toJSObject()
         result["relatedProductIndex"] = relatedProductIndex
         return result
     }

@@ -6,6 +6,8 @@
 
 import Foundation
 import Capacitor
+import BlinkReceipt
+import BlinkEReceipt
 
 /**
  Represents a response containing payment method information.
@@ -14,13 +16,13 @@ import Capacitor
  */
 public struct JSPaymentMethod {
     /// The payment method, if available.
-    private let paymentMethod: String?
+    private let paymentMethod: JSStringType?
     /// The card type, if available.
-    private let cardType: String?
+    private let cardType: JSStringType?
     /// The card issuer, if available.
-    private let cardIssuer: String?
+    private let cardIssuer: JSStringType?
     /// The payment amount, if available.
-    private let amount: Float?
+    private let amount: JSFloatType?
     
     /**
      Initializes an `RspPaymentMethod` struct.
@@ -31,11 +33,15 @@ public struct JSPaymentMethod {
         - cardIssuer: The card issuer, if available.
         - amount: The payment amount, if available.
      */
-    init(paymentMethod: String?, cardType: String?, cardIssuer: String?, amount: Float?) {
-        self.paymentMethod = paymentMethod
-        self.cardType = cardType
-        self.cardIssuer = cardIssuer
-        self.amount = amount
+    init(method: BRPaymentMethod) {
+        self.paymentMethod = JSStringType.opt(stringType: method.method)
+        self.cardType = JSStringType.opt(stringType: method.cardType)
+        self.cardIssuer = JSStringType.opt(stringType: method.cardIssuer)
+        self.amount = JSFloatType.opt(floatType: method.amount)
+    }
+    
+    static func opt(method: BRPaymentMethod?) -> JSPaymentMethod? {
+        return method != nil ? JSPaymentMethod(method: method!) : nil
     }
     
     /**
@@ -43,12 +49,12 @@ public struct JSPaymentMethod {
 
      - Returns: A dictionary containing payment method information in a format suitable for a Capacitor plugin call result.
      */
-    public func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+    public func toJSObject() -> JSObject {
         var ret = JSObject()
-        ret["paymentMethod"] = paymentMethod
-        ret["cardType"] = cardType
-        ret["cardIssuer"] = cardIssuer
-        ret["amount"] = amount
+        ret["paymentMethod"] = paymentMethod?.toJSObject()
+        ret["cardType"] = cardType?.toJSObject()
+        ret["cardIssuer"] = cardIssuer?.toJSObject()
+        ret["amount"] = amount?.toJSObject()
         return ret
     }
 }

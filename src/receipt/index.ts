@@ -145,7 +145,7 @@ export interface Receipt {
   /**
    * The OCR (Optical Character Recognition) confidence level for the receipt.
    */
-  ocrConfidence: number;
+  ocrConfidenc: number;
 
   /**
    * The source of the merchant's data in the receipt.
@@ -320,7 +320,7 @@ export interface Receipt {
   /**
    * An array of qualified surveys associated with the receipt.
    */
-  qualifiedSurveys?: Survey[];
+  qualifiedSurveys: Survey[];
 
   /**
    * The barcode associated with the receipt.
@@ -340,7 +340,7 @@ export interface Receipt {
   /**
    * The shipping costs associated with the e-receipt.
    */
-  eReceiptShippingCosts?: number;
+  eReceiptShippingCosts: number;
 
   /**
    * The currency code associated with the receipt.
@@ -350,7 +350,7 @@ export interface Receipt {
   /**
    * The name of the merchant as known by the client.
    */
-  clientMerchantName?: string;
+  clientMerchantName?: StringType;
 
   /**
    * Indicates if the receipt is part of a loyalty program.
@@ -360,7 +360,7 @@ export interface Receipt {
   /**
    * An array of merchant sources associated with the receipt.
    */
-  merchantSources?: number[];
+  merchantSources: number[];
 
   /**
    * The ID of the payment terminal used for the transaction.

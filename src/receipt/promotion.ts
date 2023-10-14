@@ -10,7 +10,7 @@ export interface Promotion {
   /**
    * The unique identifier for the promotion.
    */
-  id: number;
+  id?: number;
 
   /**
    * The slug or short identifier for the promotion.
@@ -18,9 +18,9 @@ export interface Promotion {
   slug?: string;
 
   /**
-   * The description of the reward offered by the promotion.
+   * The amount of the reward offered by the promotion.
    */
-  reward?: string;
+  reward?: number;
 
   /**
    * The currency in which the reward is provided, if applicable.
