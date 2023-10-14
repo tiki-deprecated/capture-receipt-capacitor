@@ -16,7 +16,7 @@ import Capacitor
  */
 struct JSShipment {
     /// The status of the shipment.
-    private let status: String
+    private let status: String?
     /// The list of products within the shipment.
     private let products: [JSProduct]
 

@@ -12,7 +12,7 @@ export interface Shipment {
   /**
    * The status of the shipment.
    */
-  status: string;
+  status?: string;
 
   /**
    * An array of products included in the shipment.

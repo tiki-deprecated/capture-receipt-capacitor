@@ -19,7 +19,7 @@ import org.json.JSONObject
  * @param shipment The [Shipment] object to be converted to an JSShipment.
  */
 class JSShipment(shipment: Shipment) {
-    private val status: String
+    private val status: String?
     private val products: List<JSProduct>
 
     /**
