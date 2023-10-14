@@ -83,8 +83,6 @@ public class RspReceipt : Rsp{
     private let subtotalMatches: Bool?
     /// The email provider associated with the eReceipt, if available.
     private let eReceiptEmailProvider: String?
-    ///The email identifier associated with the eReceipt.
-    private let eReceiptEmailId: String?
     /// Indicates if the eReceipt was successfully authenticated.
     private let eReceiptAuthenticated: Bool?
     /// Indicates if the shopper is an Instacart shopper.
@@ -187,7 +185,6 @@ public class RspReceipt : Rsp{
         longTransactionId = JSStringType.opt(stringType: scanResults.longTransactionId)
         subtotalMatches = scanResults.subtotalMatches
         eReceiptEmailProvider = scanResults.ereceiptEmailProvider
-        eReceiptEmailId = scanResults.ereceiptEmailId
         eReceiptAuthenticated = scanResults.ereceiptAuthenticated
         instacartShopper = scanResults.isInstacartShopper
         eReceipt = scanResults.ereceiptIsValid
