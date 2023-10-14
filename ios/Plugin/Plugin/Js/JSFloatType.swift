@@ -35,6 +35,14 @@ struct JSFloatType{
         value = float
         confidence = nil
     }
+    
+    static func opt(floatType: BRFloatValue?) -> JSFloatType? {
+        return floatType != nil ? JSFloatType(floatType: floatType!) : nil
+    }
+    
+    static func opt(float: Float?) -> JSFloatType? {
+        return float != nil ? JSFloatType(float: float!) : nil
+    }
 
     /**
      Converts the `RspFloatType` struct into a dictionary suitable for use in plugin response data.

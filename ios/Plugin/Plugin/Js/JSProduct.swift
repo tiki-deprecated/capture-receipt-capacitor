@@ -93,12 +93,12 @@ struct JSProduct {
         - product: The `BRProduct` object containing product information.
      */
     init(product: BRProduct) {
-        productNumber = JSStringType(stringType: product.productNumber)
-        description = JSStringType(string: product.description)
-        quantity = JSFloatType(floatType: product.quantity)
-        unitPrice = JSFloatType(floatType: product.unitPrice)
-        unitOfMeasure = JSStringType(stringType: product.unitOfMeasure)
-        totalPrice = JSFloatType(floatType: product.totalPrice)
+        productNumber = JSStringType.opt(stringType: product.productNumber)
+        description = JSStringType.opt(string: product.description)
+        quantity = JSFloatType.opt(floatType: product.quantity)
+        unitPrice = JSFloatType.opt(floatType: product.unitPrice)
+        unitOfMeasure = JSStringType.opt(stringType: product.unitOfMeasure)
+        totalPrice = JSFloatType.opt(floatType: product.totalPrice)
         fullPrice = JSFloatType(floatType: product.fullPrice)
         productName = product.productName
         brand = product.brand
@@ -108,7 +108,7 @@ struct JSProduct {
         imageUrl = product.imgUrl
         shippingStatus = product.shippingStatus
         additionalLines = product.additionalLines?.map { additionalLine in JSAdditionalLine(additionalLine: additionalLine) } ?? []
-        priceAfterCoupons = JSFloatType(floatType: product.priceAfterCoupons)
+        priceAfterCoupons = JSFloatType.opt(floatType: product.priceAfterCoupons)
         voided = product.isVoided
         probability = product.probability
         sensitive = product.isSensitive
@@ -125,10 +125,10 @@ struct JSProduct {
             return ret
         }() : nil
         fuelType = product.fuelType
-        descriptionPrefix = JSStringType(stringType: product.prodDescPrefix)
-        descriptionPostfix = JSStringType(stringType: product.prodDescPostfix)
-        skuPrefix = JSStringType(stringType: product.prodNumPrefix)
-        skuPostfix = JSStringType(stringType: product.prodNumPostfix)
+        descriptionPrefix = JSStringType.opt(stringType: product.prodDescPrefix)
+        descriptionPostfix = JSStringType.opt(stringType: product.prodDescPostfix)
+        skuPrefix = JSStringType.opt(stringType: product.prodNumPrefix)
+        skuPostfix = JSStringType.opt(stringType: product.prodNumPostfix)
         sector = product.sector
         department = product.department
         majorCategory = product.majorCategory
@@ -136,6 +136,10 @@ struct JSProduct {
         itemType = product.itemType
     }
 
+    static func opt(product: BRProduct?) -> JSProduct? {
+        return product != nil ? JSProduct(product: product!) : nil
+    }
+    
     /**
      Converts the `RspProduct` struct into a dictionary suitable for use in plugin response data.
 

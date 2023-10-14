@@ -30,9 +30,13 @@ class JSAdditionalLine {
      - Parameter additionalLine: A `BRProductAdditionalLine` object containing additional line information.
      */
     init(additionalLine: BRProductAdditionalLine) {
-        type = JSStringType(stringType: additionalLine.type)
-        text = JSStringType(stringType: additionalLine.text)
+        type = JSStringType.opt(stringType: additionalLine.type)
+        text = JSStringType.opt(stringType: additionalLine.text)
         lineNumber = additionalLine.lineNumber
+    }
+    
+    static func opt(additionalLine: BRProductAdditionalLine?) -> JSAdditionalLine? {
+        return additionalLine != nil ? JSAdditionalLine(additionalLine: additionalLine!) : nil
     }
 
     /**

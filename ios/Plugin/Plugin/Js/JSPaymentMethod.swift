@@ -34,10 +34,14 @@ public struct JSPaymentMethod {
         - amount: The payment amount, if available.
      */
     init(method: BRPaymentMethod) {
-        self.paymentMethod = JSStringType(stringType: method.method)
-        self.cardType = JSStringType(stringType: method.cardType)
-        self.cardIssuer = JSStringType(stringType: method.cardIssuer)
-        self.amount = JSFloatType(floatType: method.amount)
+        self.paymentMethod = JSStringType.opt(stringType: method.method)
+        self.cardType = JSStringType.opt(stringType: method.cardType)
+        self.cardIssuer = JSStringType.opt(stringType: method.cardIssuer)
+        self.amount = JSFloatType.opt(floatType: method.amount)
+    }
+    
+    static func opt(method: BRPaymentMethod?) -> JSPaymentMethod? {
+        return method != nil ? JSPaymentMethod(method: method!) : nil
     }
     
     /**

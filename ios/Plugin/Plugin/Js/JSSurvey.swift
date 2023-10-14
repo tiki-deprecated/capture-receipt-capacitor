@@ -42,6 +42,10 @@ struct JSSurvey {
         endDate = survey.endDate != nil ? survey.endDate!.ISOStringFromDate() : nil
         questions = survey.questions.map { question in JSSurveyQuestion(surveyQuestion: question) }
     }
+    
+    static func opt(survey: BRSurvey?) -> JSSurvey? {
+        return survey != nil ? JSSurvey(survey: survey!) : nil
+    }
 
     /**
      Converts the `JSSurvey` struct into a dictionary suitable for use in plugin response data.

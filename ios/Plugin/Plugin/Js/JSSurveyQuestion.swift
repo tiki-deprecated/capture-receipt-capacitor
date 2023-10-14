@@ -25,7 +25,7 @@ struct JSSurveyQuestion{
     /// A boolean flag indicating whether multiple answers are allowed.
     private let multipleAnswers: Bool
     /// The user's response to the survey question.
-    private let userResponse: JSSurveyResponse
+    private let userResponse: JSSurveyResponse?
 
     /**
      Initializes an `RspSurveyQuestion` struct.
@@ -38,7 +38,11 @@ struct JSSurveyQuestion{
         type = String(describing: surveyQuestion.type)
         answers = surveyQuestion.answers.map { answer in JSSurveyAnswer(surveyAnswer: answer) }
         multipleAnswers = surveyQuestion.multipleAnswers
-        userResponse = JSSurveyResponse(surveyResponse: surveyQuestion.userResponse)
+        userResponse = JSSurveyResponse.opt(surveyResponse: surveyQuestion.userResponse)
+    }
+    
+    static func opt(surveyQuestion: BRSurveyQuestion?) -> JSSurveyQuestion? {
+        return surveyQuestion != nil ? JSSurveyQuestion(surveyQuestion: surveyQuestion!) : nil
     }
 
     /**
@@ -52,7 +56,7 @@ struct JSSurveyQuestion{
         ret["type"] = type
         ret["answers"] = JSArray(answers.map { answer in answers })
         ret["multipleAnswers"] = multipleAnswers
-        ret["userResponse"] = userResponse.toJSObject()
+        ret["userResponse"] = userResponse?.toJSObject()
         return ret
     }
 }

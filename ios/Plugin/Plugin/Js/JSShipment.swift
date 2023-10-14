@@ -30,6 +30,10 @@ struct JSShipment {
         status = shipment.status
         products = shipment.products?.map { product in JSProduct(product: product) } ?? []
     }
+    
+    static func opt(shipment: BRShipment?) -> JSShipment? {
+        return shipment != nil ? JSShipment(shipment: shipment!) : nil
+    }
 
     /**
      Converts the `RspShipment` struct into a dictionary suitable for use in plugin response data.

@@ -32,6 +32,10 @@ struct JSSurveyResponse {
         self.answersSelected = surveyResponse.answersSelected
         self.freeText = surveyResponse.freeText
     }
+    
+    static func opt(surveyResponse: BRSurveyResponse?) -> JSSurveyResponse? {
+        return surveyResponse != nil ? JSSurveyResponse(surveyResponse: surveyResponse!) : nil
+    }
 
     /**
      Converts the `RspSurveyResponse` struct into a dictionary suitable for use in plugin response data.

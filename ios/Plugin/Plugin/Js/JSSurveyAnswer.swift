@@ -27,6 +27,10 @@ struct JSSurveyAnswer {
     init(surveyAnswer: BRSurveyAnswer) {
         text = surveyAnswer.text
     }
+    
+    static func opt(surveyAnswer: BRSurveyAnswer?) -> JSSurveyAnswer? {
+        return surveyAnswer != nil ? JSSurveyAnswer(surveyAnswer: surveyAnswer!) : nil
+    }
 
     /**
      Converts the `RspSurveyAnswer` struct into a dictionary suitable for use in plugin response data.

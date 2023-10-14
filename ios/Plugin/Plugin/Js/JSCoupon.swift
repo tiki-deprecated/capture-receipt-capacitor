@@ -37,10 +37,14 @@ struct JSCoupon {
      */
     init(coupon: BRCoupon) {
         type = String(describing: coupon.couponType)
-        amount = JSFloatType(floatType: coupon.couponAmount)
-        sku = JSStringType(stringType: coupon.couponSku)
-        description = JSStringType(string: coupon.description)
+        amount = JSFloatType.opt(floatType: coupon.couponAmount)
+        sku = JSStringType.opt(stringType: coupon.couponSku)
+        description = JSStringType.opt(string: coupon.description)
         relatedProductIndex = coupon.relatedProductIndex
+    }
+    
+    static func opt(coupon: BRCoupon?) -> JSCoupon? {
+        return coupon != nil ? JSCoupon(coupon: coupon!) : nil
     }
 
     /**

@@ -36,6 +36,14 @@ struct JSStringType{
         confidence = nil
     }
     
+    static func opt(stringType: BRStringValue?) -> JSStringType? {
+        return stringType != nil ? JSStringType(stringType: stringType!) : nil
+    }
+    
+    static func opt(string: String?) -> JSStringType? {
+        return string != nil ? JSStringType(string: string!) : nil
+    }
+    
     /**
      Converts the `RspStringType` struct into a dictionary suitable for use in plugin response data.
 

@@ -78,7 +78,7 @@ public class RspReceipt : Rsp{
     /// An array of shipment information associated with the receipt.
     private let shipments: [JSShipment]
     /// The long transaction identifier, if available.
-    private let longTransactionId: String?
+    private let longTransactionId: JSStringType?
     /// Indicates if the subtotal matches expectations.
     private let subtotalMatches: Bool?
     /// The email provider associated with the eReceipt, if available.
@@ -153,30 +153,30 @@ public class RspReceipt : Rsp{
         - scanResults: The `BRScanResults` object containing receipt information.
      */
     init(requestId: String, scanResults: BRScanResults) {
-        receiptDate = JSStringType(stringType: scanResults.receiptDate)
-        receiptTime = JSStringType(stringType: scanResults.receiptTime)
+        receiptDate = JSStringType.opt(stringType: scanResults.receiptDate)
+        receiptTime = JSStringType.opt(stringType: scanResults.receiptTime)
         retailerId = JSRetailer(retailer: scanResults.retailerId)
         products = scanResults.products?.map { product in JSProduct(product: product) } ?? []
         coupons = scanResults.coupons?.map { coupon in JSCoupon(coupon: coupon) } ?? []
-        total = JSFloatType(floatType: scanResults.total)
-        tip = JSFloatType(floatType: scanResults.tip)
-        subtotal = JSFloatType(floatType: scanResults.subtotal)
-        taxes = JSFloatType(floatType: scanResults.taxes)
-        storeNumber = JSStringType(stringType: scanResults.storeNumber)
-        merchantName = JSStringType(stringType: scanResults.merchantName)
-        storeAddress = JSStringType(stringType: scanResults.storeAddress)
-        storeCity = JSStringType(stringType: scanResults.storeCity)
+        total = JSFloatType.opt(floatType: scanResults.total)
+        tip = JSFloatType.opt(floatType: scanResults.tip)
+        subtotal = JSFloatType.opt(floatType: scanResults.subtotal)
+        taxes = JSFloatType.opt(floatType: scanResults.taxes)
+        storeNumber = JSStringType.opt(stringType: scanResults.storeNumber)
+        merchantName = JSStringType.opt(stringType: scanResults.merchantName)
+        storeAddress = JSStringType.opt(stringType: scanResults.storeAddress)
+        storeCity = JSStringType.opt(stringType: scanResults.storeCity)
         blinkReceiptId = scanResults.blinkReceiptId
-        storeState = JSStringType(stringType: scanResults.storeState)
-        storeZip = JSStringType(stringType: scanResults.storeZip)
-        storePhone = JSStringType(stringType: scanResults.storePhone)
-        cashierId = JSStringType(stringType: scanResults.cashierId)
-        transactionId = JSStringType(stringType: scanResults.transactionId)
-        registerId = JSStringType(stringType: scanResults.registerId)
+        storeState = JSStringType.opt(stringType: scanResults.storeState)
+        storeZip = JSStringType.opt(stringType: scanResults.storeZip)
+        storePhone = JSStringType.opt(stringType: scanResults.storePhone)
+        cashierId = JSStringType.opt(stringType: scanResults.cashierId)
+        transactionId = JSStringType.opt(stringType: scanResults.transactionId)
+        registerId = JSStringType.opt(stringType: scanResults.registerId)
         paymentMethods = scanResults.paymentMethods?.map { payment in JSPaymentMethod(method: payment)} ?? []
-        taxId = JSStringType(stringType: scanResults.taxId)
-        mallName = JSStringType(stringType: scanResults.mallName)
-        last4cc = JSStringType(stringType: scanResults.last4CC)
+        taxId = JSStringType.opt(stringType: scanResults.taxId)
+        mallName = JSStringType.opt(stringType: scanResults.mallName)
+        last4cc = JSStringType.opt(stringType: scanResults.last4CC)
         ocrConfidence = scanResults.ocrConfidence
         foundTopEdge = scanResults.foundTopEdge
         foundBottomEdge = scanResults.foundBottomEdge
@@ -184,7 +184,7 @@ public class RspReceipt : Rsp{
         eReceiptOrderStatus = scanResults.ereceiptOrderStatus
         eReceiptRawHtml = scanResults.ereceiptRawHTML
         shipments = scanResults.shipments?.map { shipment in JSShipment(shipment: shipment) } ?? []
-        longTransactionId = scanResults.longTransactionId?.value
+        longTransactionId = JSStringType.opt(stringType: scanResults.longTransactionId)
         subtotalMatches = scanResults.subtotalMatches
         eReceiptEmailProvider = scanResults.ereceiptEmailProvider
         eReceiptEmailId = scanResults.ereceiptEmailId
@@ -213,8 +213,8 @@ public class RspReceipt : Rsp{
             }
             return ret
         }() : nil
-        purchaseType = JSStringType(string: scanResults.purchaseType)
-        channel = JSStringType(stringType: scanResults.channel)
+        purchaseType = JSStringType.opt(string: scanResults.purchaseType)
+        channel = JSStringType.opt(stringType: scanResults.channel)
         eReceiptFulfilledBy = scanResults.ereceiptFulfilledBy
         eReceiptPOSSystem = scanResults.ereceiptPOSSystem
         eReceiptSubMerchant = scanResults.ereceiptSubMerchant
@@ -224,12 +224,12 @@ public class RspReceipt : Rsp{
         eReceiptEmailSubject = scanResults.ereceiptEmailSubject
         eReceiptShippingCosts = scanResults.ereceiptShippingCosts
         currencyCode = scanResults.currencyCode
-        clientMerchantName = JSStringType(stringType: scanResults.clientMerchantName)
+        clientMerchantName = JSStringType.opt(stringType: scanResults.clientMerchantName)
         loyaltyProgram = scanResults.loyaltyProgram
         merchantSources = scanResults.merchantSources ?? []
-        paymentTerminalId = JSStringType(stringType: scanResults.paymentTerminalId)
-        paymentTransactionId = JSStringType(stringType: scanResults.paymentTransactionId)
-        combinedRawText = JSStringType(string: scanResults.combinedRawText)
+        paymentTerminalId = JSStringType.opt(stringType: scanResults.paymentTerminalId)
+        paymentTransactionId = JSStringType.opt(stringType: scanResults.paymentTransactionId)
+        combinedRawText = JSStringType.opt(string: scanResults.combinedRawText)
         super.init(requestId: requestId, event: .onReceipt)
     }
 
@@ -240,9 +240,8 @@ public class RspReceipt : Rsp{
      - Returns: A dictionary containing receipt information in a format suitable for a Capacitor plugin call result.
      */
     override func toPluginCallResultData() -> Capacitor.PluginCallResultData {
-        var payload = toJSObject()
         var ret = super.toPluginCallResultData()
-        ret["payload"] = payload
+        ret["payload"] = toJSObject()
         return ret
     }
     
@@ -279,7 +278,7 @@ public class RspReceipt : Rsp{
         payload["eReceiptOrderStatus"] = eReceiptOrderStatus
         payload["eReceiptRawHtml"] = eReceiptRawHtml
         payload["shipments"] = JSArray(arrayLiteral: shipments.map { shipment in shipment.toJSObject() })
-        payload["longTransactionId"] = longTransactionId
+        payload["longTransactionId"] = longTransactionId?.toJSObject()
         payload["subtotalMatches"] = subtotalMatches
         payload["eReceiptEmailProvider"] = eReceiptEmailProvider
         payload["eReceiptEmailId"] = eReceiptEmailId

@@ -17,8 +17,6 @@ import Capacitor
 struct JSRetailer{
     /// The retailer's id
     private let id: Int
-    /// The retailer's banner id
-    private let bannerId: Int?
 
     /**
      Initializes an `JSStringType` struct.
@@ -28,7 +26,10 @@ struct JSRetailer{
      */
     init(retailer: WFRetailerId) {
         id = Int(retailer.rawValue)
-        bannerId = nil
+    }
+    
+    static func opt(retailer: WFRetailerId?) -> JSRetailer? {
+        return retailer != nil ? JSRetailer(retailer: retailer!) : nil
     }
 
     /**
@@ -39,7 +40,6 @@ struct JSRetailer{
     public func toJSObject() -> JSObject {
         var ret = JSObject()
         ret["id"] = id
-        ret["bannerId"] = bannerId
         return ret
     }
 }
