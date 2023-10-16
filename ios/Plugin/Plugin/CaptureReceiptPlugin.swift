@@ -74,7 +74,7 @@ public class CaptureReceiptPlugin: CAPPlugin {
     @objc func scan(_ call: CAPPluginCall) {
         let req = try! Req(call)
         receiptCapture.scan(onError: {error in self.onError(req.requestId, error)},
-                            onReceipt: { receipt in self.onReceipt(req.requestId, receipt)},
+                            onReceipt: { receipt in self.onReceipt(req.requestId, Receipt(requestId: req.requestId, scanResults: receipt))},
                             onComplete: {})
     }
     
@@ -85,8 +85,8 @@ public class CaptureReceiptPlugin: CAPPlugin {
     /// - Parameters:
     ///   - requestId: The unique identifier for the request.
     ///   - scanResults: The results of the receipt scan.
-    private func onReceipt(_ requestId: String, _ scanResults: BRScanResults){
-        let rsp = RspReceipt(requestId: requestId, scanResults: scanResults).toPluginCallResultData()
+    private func onReceipt(_ requestId: String, _ receipt: Receipt){
+        let rsp = RspReceipt(requestId: requestId, receipt: receipt).toPluginCallResultData()
         self.notifyListeners("onCapturePluginResult", data: rsp)
     }
     

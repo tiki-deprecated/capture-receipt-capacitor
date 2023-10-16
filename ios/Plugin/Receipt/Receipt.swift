@@ -90,7 +90,7 @@ public class Receipt : Rsp{
     /// Indicates if the receipt is an eReceipt.
     private let eReceipt: Bool
     /// An array of component emails associated with the eReceipt.
-    private let eReceiptComponentEmails: [RspReceipt]
+    private let eReceiptComponentEmails: [Receipt]
     /// Indicates if the receipt is a duplicate.
     private let duplicate: Bool?
     /// Indicates if the receipt is fraudulent.
@@ -188,7 +188,7 @@ public class Receipt : Rsp{
         eReceiptAuthenticated = scanResults.ereceiptAuthenticated
         instacartShopper = scanResults.isInstacartShopper
         eReceipt = scanResults.ereceiptIsValid
-        eReceiptComponentEmails = scanResults.ereceiptComponentEmails?.map{ res in RspReceipt(requestId: requestId, scanResults: res)} ?? []
+        eReceiptComponentEmails = scanResults.ereceiptComponentEmails?.map{ res in Receipt(requestId: requestId, scanResults: res)} ?? []
         duplicate = scanResults.isDuplicate
         fraudulent = scanResults.isFraudulent
         duplicateBlinkReceiptIds = scanResults.duplicateBlinkReceiptIds ?? []
