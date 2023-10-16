@@ -98,10 +98,10 @@ class Email {
         ).callback { results ->
             when (results) {
                 ProviderSetupResults.CREATED_APP_PASSWORD -> {
-                    val tikiAccount = Account(
+                    val account = Account(
                         AccountCommon.fromSource(id), username, password, true
                     )
-                    onComplete?.invoke(tikiAccount)
+                    onComplete?.invoke(account)
                 }
                 else -> {
                     onError?.invoke(results.toString())
@@ -195,9 +195,9 @@ class Email {
                     MainScope().async {
                         var returnedAccounts = 0
                         for (credential in credentials) {
-                            val tikiAccount = Account.fromEmailAccount(credential)
-                            tikiAccount.isVerified = true
-                            onAccount(tikiAccount)
+                            val account = Account.fromEmailAccount(credential)
+                            account.isVerified = true
+                            onAccount(account)
                             returnedAccounts++
                             if (returnedAccounts == credentials.size) {
                                 onComplete?.invoke()
@@ -221,31 +221,31 @@ class Email {
      * This function allows the removal of an specific email account in [ImapClient].
      *
      * @param context The application context.
-     * @param tikiAccount The email account information to be removed.
+     * @param account The email account information to be removed.
      * @param onRemove Callback called when the account is successfully removed.
      * @param onError Callback called when an error occurs during account removal.
      */
     fun logout(
         context: Context,
-        tikiAccount: Account,
+        account: Account,
         onRemove: () -> Unit,
         onError: (String) -> Unit
     ) {
         this.client(context, onError) { client ->
             client.accounts().addOnSuccessListener { list ->
                 val passwordCredentials = list.first {
-                    it.username() == tikiAccount.username && it.provider() == EmailEnum.fromString(
-                        tikiAccount.accountCommon.id
+                    it.username() == account.username && it.provider() == EmailEnum.fromString(
+                        account.accountCommon.id
                     ).value
                 }
-                client.clearLastCheckedTime(Provider.valueOf(tikiAccount.accountCommon.id))
+                client.clearLastCheckedTime(Provider.valueOf(account.accountCommon.id))
                 context.deleteImapScanTime()
                 client.logout(passwordCredentials).addOnSuccessListener {
                     onRemove()
                 }.addOnFailureListener {
                     onError(
                         it.message
-                            ?: "Unknown error when removing account ${tikiAccount.username} from ${tikiAccount.accountCommon.id}"
+                            ?: "Unknown error when removing account ${account.username} from ${account.accountCommon.id}"
                     )
                 }
             }
