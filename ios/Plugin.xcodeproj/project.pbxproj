@@ -12,6 +12,20 @@
 		5D11216C2AD99D1000F2B8B7 /* JSRetailer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D11216B2AD99D1000F2B8B7 /* JSRetailer.swift */; };
 		5D11216E2AD9B7F800F2B8B7 /* JSSurvey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D11216D2AD9B7F800F2B8B7 /* JSSurvey.swift */; };
 		5D1121712AD9BF2D00F2B8B7 /* FormatDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1121702AD9BF2D00F2B8B7 /* FormatDate.swift */; };
+		88D621BF2ADDA0900093389C /* Receipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D621BE2ADDA0900093389C /* Receipt.swift */; };
+		88D621C32ADDB92D0093389C /* ModelProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D621C22ADDB92D0093389C /* ModelProduct.swift */; };
+		88D621C52ADDBA150093389C /* ModelCoupon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D621C42ADDBA150093389C /* ModelCoupon.swift */; };
+		88D621C72ADDBA5E0093389C /* ModelSurveyAnswer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D621C62ADDBA5E0093389C /* ModelSurveyAnswer.swift */; };
+		88D621C92ADDBAB60093389C /* ModelSurveyQuestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D621C82ADDBAB60093389C /* ModelSurveyQuestion.swift */; };
+		88D621CB2ADDBB300093389C /* ModelStringType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D621CA2ADDBB300093389C /* ModelStringType.swift */; };
+		88D621CD2ADDBB880093389C /* ModelSurveyResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D621CC2ADDBB880093389C /* ModelSurveyResponse.swift */; };
+		88D621CF2ADDBC880093389C /* ModelPromotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D621CE2ADDBC880093389C /* ModelPromotion.swift */; };
+		88D621D12ADDBCC50093389C /* ModelPaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D621D02ADDBCC50093389C /* ModelPaymentMethod.swift */; };
+		88D621D32ADDBD730093389C /* ModelFloatType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D621D22ADDBD730093389C /* ModelFloatType.swift */; };
+		88D621D52ADDBDA50093389C /* ModelAdditionalLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D621D42ADDBDA50093389C /* ModelAdditionalLine.swift */; };
+		88D621D72ADDBDCC0093389C /* ModelShipment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D621D62ADDBDCC0093389C /* ModelShipment.swift */; };
+		88D621D92ADDBEAE0093389C /* ModelRetailer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D621D82ADDBEAE0093389C /* ModelRetailer.swift */; };
+		88D621DB2ADDBEEE0093389C /* ModelSurvey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88D621DA2ADDBEEE0093389C /* ModelSurvey.swift */; };
 		8C0623642AB2F9AE00CABC17 /* CaptureReceiptPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C06233E2AB2F9AE00CABC17 /* CaptureReceiptPlugin.h */; };
 		8C502ECE2ACAFE8F009A26C5 /* PluginEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C502ECD2ACAFE8F009A26C5 /* PluginEvent.swift */; };
 		8C502ED52ACC6013009A26C5 /* RspErroEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C502ED42ACC6013009A26C5 /* RspErroEnum.swift */; };
@@ -70,6 +84,20 @@
 		5D1121702AD9BF2D00F2B8B7 /* FormatDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatDate.swift; sourceTree = "<group>"; };
 		707DE9550F4511DB04ABC8E3 /* Pods-Plugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plugin.debug.xcconfig"; path = "Target Support Files/Pods-Plugin/Pods-Plugin.debug.xcconfig"; sourceTree = "<group>"; };
 		88C4620D2AC76B61006B21AF /* ReqAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReqAccount.swift; sourceTree = "<group>"; };
+		88D621BE2ADDA0900093389C /* Receipt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Receipt.swift; sourceTree = "<group>"; };
+		88D621C22ADDB92D0093389C /* ModelProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelProduct.swift; sourceTree = "<group>"; };
+		88D621C42ADDBA150093389C /* ModelCoupon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelCoupon.swift; sourceTree = "<group>"; };
+		88D621C62ADDBA5E0093389C /* ModelSurveyAnswer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelSurveyAnswer.swift; sourceTree = "<group>"; };
+		88D621C82ADDBAB60093389C /* ModelSurveyQuestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelSurveyQuestion.swift; sourceTree = "<group>"; };
+		88D621CA2ADDBB300093389C /* ModelStringType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelStringType.swift; sourceTree = "<group>"; };
+		88D621CC2ADDBB880093389C /* ModelSurveyResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelSurveyResponse.swift; sourceTree = "<group>"; };
+		88D621CE2ADDBC880093389C /* ModelPromotion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelPromotion.swift; sourceTree = "<group>"; };
+		88D621D02ADDBCC50093389C /* ModelPaymentMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelPaymentMethod.swift; sourceTree = "<group>"; };
+		88D621D22ADDBD730093389C /* ModelFloatType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelFloatType.swift; sourceTree = "<group>"; };
+		88D621D42ADDBDA50093389C /* ModelAdditionalLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelAdditionalLine.swift; sourceTree = "<group>"; };
+		88D621D62ADDBDCC0093389C /* ModelShipment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelShipment.swift; sourceTree = "<group>"; };
+		88D621D82ADDBEAE0093389C /* ModelRetailer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelRetailer.swift; sourceTree = "<group>"; };
+		88D621DA2ADDBEEE0093389C /* ModelSurvey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelSurvey.swift; sourceTree = "<group>"; };
 		8C0623392AB2F9AE00CABC17 /* AccountCommon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountCommon.swift; sourceTree = "<group>"; };
 		8C06233A2AB2F9AE00CABC17 /* Email.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Email.swift; sourceTree = "<group>"; };
 		8C06233C2AB2F9AE00CABC17 /* EmailEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmailEnum.swift; sourceTree = "<group>"; };
@@ -156,6 +184,7 @@
 				8CFF1F9C2AC94C4300F0E853 /* Retailer */,
 				8CFF1F9B2AC94C1600F0E853 /* Plugin */,
 				8CFF1F9A2AC94BF700F0E853 /* Email */,
+				88D621C02ADDA7D90093389C /* Receipt */,
 				8CFF1F992AC94BDB00F0E853 /* Account */,
 				8C06235A2AB2F9AE00CABC17 /* CaptureReceipt.swift */,
 				8CFF1FA02ACA1EA800F0E853 /* Info.plist */,
@@ -180,6 +209,35 @@
 				128B96FD139C9B07FB0A4A42 /* Pods-PluginTests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		88D621C02ADDA7D90093389C /* Receipt */ = {
+			isa = PBXGroup;
+			children = (
+				88D621C12ADDB4FC0093389C /* Model */,
+				88D621BE2ADDA0900093389C /* Receipt.swift */,
+			);
+			path = Receipt;
+			sourceTree = "<group>";
+		};
+		88D621C12ADDB4FC0093389C /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				88D621C22ADDB92D0093389C /* ModelProduct.swift */,
+				88D621C42ADDBA150093389C /* ModelCoupon.swift */,
+				88D621C62ADDBA5E0093389C /* ModelSurveyAnswer.swift */,
+				88D621C82ADDBAB60093389C /* ModelSurveyQuestion.swift */,
+				88D621CA2ADDBB300093389C /* ModelStringType.swift */,
+				88D621CC2ADDBB880093389C /* ModelSurveyResponse.swift */,
+				88D621CE2ADDBC880093389C /* ModelPromotion.swift */,
+				88D621D02ADDBCC50093389C /* ModelPaymentMethod.swift */,
+				88D621D22ADDBD730093389C /* ModelFloatType.swift */,
+				88D621D42ADDBDA50093389C /* ModelAdditionalLine.swift */,
+				88D621D62ADDBDCC0093389C /* ModelShipment.swift */,
+				88D621D82ADDBEAE0093389C /* ModelRetailer.swift */,
+				88D621DA2ADDBEEE0093389C /* ModelSurvey.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		8C0623412AB2F9AE00CABC17 /* Rsp */ = {
@@ -488,7 +546,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				5D11216C2AD99D1000F2B8B7 /* JSRetailer.swift in Sources */,
+				88D621D72ADDBDCC0093389C /* ModelShipment.swift in Sources */,
 				8CFF1FA92ACA1F9D00F0E853 /* ReqAccount.swift in Sources */,
+				88D621D52ADDBDA50093389C /* ModelAdditionalLine.swift in Sources */,
 				8CFF1FBA2ACA1FA100F0E853 /* JSPaymentMethod.swift in Sources */,
 				8CFF1FAF2ACA1FA100F0E853 /* JSSurveyQuestion.swift in Sources */,
 				8CFF1FB02ACA1FA100F0E853 /* JSStringType.swift in Sources */,
@@ -497,15 +557,24 @@
 				8CFF1FC02ACA1FAB00F0E853 /* AccountTypeEnum.swift in Sources */,
 				8CFF1FBF2ACA1FAB00F0E853 /* Account.swift in Sources */,
 				8C502ED72ACC84F6009A26C5 /* RspError.swift in Sources */,
+				88D621C92ADDBAB60093389C /* ModelSurveyQuestion.swift in Sources */,
+				88D621D12ADDBCC50093389C /* ModelPaymentMethod.swift in Sources */,
+				88D621D32ADDBD730093389C /* ModelFloatType.swift in Sources */,
+				88D621BF2ADDA0900093389C /* Receipt.swift in Sources */,
 				8CFF1FB82ACA1FA100F0E853 /* JSSurveyResponse.swift in Sources */,
 				8CFF1FA62ACA1F9700F0E853 /* CaptureReceiptPlugin.swift in Sources */,
 				8CFF1FB42ACA1FA100F0E853 /* JSProduct.swift in Sources */,
+				88D621CF2ADDBC880093389C /* ModelPromotion.swift in Sources */,
 				5D1121712AD9BF2D00F2B8B7 /* FormatDate.swift in Sources */,
+				88D621CB2ADDBB300093389C /* ModelStringType.swift in Sources */,
 				8C502ED92ACC8703009A26C5 /* Req.swift in Sources */,
 				8CFF1FB52ACA1FA100F0E853 /* JSShipment.swift in Sources */,
+				88D621C52ADDBA150093389C /* ModelCoupon.swift in Sources */,
 				8CFF1FA52ACA1F9700F0E853 /* CaptureReceiptPlugin.m in Sources */,
 				8CFF1FBE2ACA1FA700F0E853 /* Email.swift in Sources */,
+				88D621D92ADDBEAE0093389C /* ModelRetailer.swift in Sources */,
 				8CFF1FAB2ACA1FA100F0E853 /* Rsp.swift in Sources */,
+				88D621C72ADDBA5E0093389C /* ModelSurveyAnswer.swift in Sources */,
 				8CFF1FB72ACA1FA100F0E853 /* JSFloatType.swift in Sources */,
 				8CFF1FA22ACA1F8A00F0E853 /* CaptureReceipt.swift in Sources */,
 				5D11216E2AD9B7F800F2B8B7 /* JSSurvey.swift in Sources */,
@@ -515,9 +584,12 @@
 				8CFF1FA82ACA1F9D00F0E853 /* ReqInitialize‎.swift in Sources */,
 				8CFF1FB32ACA1FA100F0E853 /* JSAdditionalLine.swift in Sources */,
 				8CFF1FAC2ACA1FA100F0E853 /* RspReceipt.swift in Sources */,
+				88D621C32ADDB92D0093389C /* ModelProduct.swift in Sources */,
+				88D621CD2ADDBB880093389C /* ModelSurveyResponse.swift in Sources */,
 				8CFF1FBC2ACA1FA100F0E853 /* RspAccount.swift in Sources */,
 				8C502ED52ACC6013009A26C5 /* RspErroEnum.swift in Sources */,
 				8CFF1FAD2ACA1FA100F0E853 /* JSCoupon.swift in Sources */,
+				88D621DB2ADDBEEE0093389C /* ModelSurvey.swift in Sources */,
 				8C502ECE2ACAFE8F009A26C5 /* PluginEvent.swift in Sources */,
 				8CFF1FBD2ACA1FA700F0E853 /* EmailEnum.swift in Sources */,
 			);
