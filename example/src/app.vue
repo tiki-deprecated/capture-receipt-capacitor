@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { login, accounts, scan, logout, initialize } from './main';
-const username = ref<HTMLInputElement>()
-const password = ref<HTMLInputElement>()
-const source = ref<HTMLSelectElement>()
+const username = ref<HTMLInputElement>();
+const password = ref<HTMLInputElement>();
+const source = ref<HTMLSelectElement>();
 </script>
 
 <template>
@@ -11,12 +11,13 @@ const source = ref<HTMLSelectElement>()
     <img alt="TIKI Icon" class="logo" src="./assets/logo.svg" width="125" height="125" />
     <style>
       .greetings {
-        display:flex; 
-        flex-direction:column; 
+        display: flex;
+        flex-direction: column;
         justify-content: space-evenly;
       }
 
-      .greetings input, .greetings button{
+      .greetings input,
+      .greetings button {
         margin-top: 10px;
         height: 48px;
       }
@@ -34,10 +35,11 @@ const source = ref<HTMLSelectElement>()
           <option value="DOOR_DASH" label="DOOR DASH" />
           <option value="STARBUCKS" label="STARBUCKS" />
           <option value="GMAIL" label="Gmail" />
-          
         </select>
+
         <input placeholder="username" type="text" ref="username" />
         <input placeholder="password" type="password" ref="password" />
+
         <button @click="initialize()">initialize</button>
         <button @click="login(username?.value ?? '', password?.value ?? '', source?.value ?? '')">Login</button>
         <button @click="accounts()">Accounts</button>
@@ -49,13 +51,15 @@ const source = ref<HTMLSelectElement>()
 </template>
 
 <style scoped>
-.form{
+.form {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
 }
 
-.form input, .form button, .form select{
+.form input,
+.form button,
+.form select {
   height: 48px;
   margin-bottom: 1.5em;
   width: 100%;

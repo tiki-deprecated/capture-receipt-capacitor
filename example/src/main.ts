@@ -36,7 +36,7 @@ export const accounts = async (): Promise<void> => {
 export const scan = async (): Promise<void> => {
   console.log('scan method');
   instance.scan(
-    (receipt: Receipt) => console.log(receipt),
+    (receipt: Receipt) => console.log(receipt.merchantName?.value + ':   ' + receipt.total?.value),
     7,
     () => console.log('complete'),
     (payload: CallbackError) => console.log('error', JSON.stringify(payload)),
