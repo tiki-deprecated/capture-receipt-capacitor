@@ -21,6 +21,7 @@ import com.mytiki.sdk.capture.receipt.capacitor.OnAccountCallback
 import com.mytiki.sdk.capture.receipt.capacitor.OnCompleteCallback
 import com.mytiki.sdk.capture.receipt.capacitor.account.Account
 import com.mytiki.sdk.capture.receipt.capacitor.account.AccountCommon
+import com.mytiki.sdk.capture.receipt.capacitor.receipt.Receipt
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
@@ -128,7 +129,7 @@ class Email {
      */
     fun scrape(
         context: Context,
-        onReceipt: (receipt: ScanResults?) -> Unit,
+        onReceipt: (receipt: Receipt?) -> Unit,
         onError: (msg: String) -> Unit,
         onComplete: () -> Unit
     ) {
@@ -152,7 +153,8 @@ class Email {
                                credential: PasswordCredentials,
                                result: List<ScanResults>
                            ) {
-                               result.forEach { receipt ->
+                               result.forEach { scanResults ->
+                                   val receipt = Receipt(scanResults)
                                    onReceipt(receipt)
                                }
                                context.setImapScanTime(now)

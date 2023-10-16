@@ -23,12 +23,11 @@ import com.microblink.linking.VERIFICATION_NEEDED
 import com.microblink.linking.Account as MbAccount
 import com.mytiki.sdk.capture.receipt.capacitor.R
 import com.mytiki.sdk.capture.receipt.capacitor.account.Account
+import com.mytiki.sdk.capture.receipt.capacitor.receipt.Receipt
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
-
-typealias OnReceiptCallback = ((receipt: ScanResults?) -> Unit)
 
 /**
  * This class represents the Retailer functionality for account linking and order retrieval.
@@ -185,7 +184,7 @@ class Retailer {
     @OptIn(ExperimentalCoroutinesApi::class)
     fun orders(
         context: Context,
-        onReceipt: (ScanResults?) -> Unit,
+        onReceipt: (Receipt?) -> Unit,
         onError: (msg: String) -> Unit,
         daysCutOff: Int = 15,
         onComplete: () -> Unit
@@ -238,7 +237,7 @@ class Retailer {
     fun orders(
         context: Context,
         account: Account,
-        onScan: (ScanResults?) -> Unit,
+        onScan: (Receipt?) -> Unit,
         daysCutOff: Int = 7,
         onError: (msg: String) -> Unit,
         onComplete: (() -> Unit)? = null
@@ -247,8 +246,9 @@ class Retailer {
             val id = account.accountCommon.id
             val retailerId = RetailerEnum.fromString(id).toMbInt()
             val ordersSuccessCallback: (Int, ScanResults?, Int, String) -> Unit =
-                { _: Int, results: ScanResults?, remaining: Int, _: String ->
-                    onScan(results)
+                { _: Int, scanResults: ScanResults?, remaining: Int, _: String ->
+                    val receipt = Receipt.opt(scanResults)
+                    onScan(receipt)
                     if (remaining == 0) {
                         onComplete?.invoke()
                         client.close()

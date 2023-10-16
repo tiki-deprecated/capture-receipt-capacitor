@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.plugin.js
+package com.mytiki.sdk.capture.receipt.capacitor.receipt.model
 
 import com.getcapacitor.JSObject
 import com.microblink.core.FloatType
@@ -54,14 +54,14 @@ import org.json.JSONObject
  * @property subCategory The sub-category of the product, if available.
  * @property itemType The item type of the product, if available.
  */
-class JSProduct(product: Product) {
-    private val productNumber: JSStringType?
-    private val description: JSStringType?
-    private val quantity: JSFloatType?
-    private val unitPrice: JSFloatType?
-    private val unitOfMeasure: JSStringType?
-    private val totalPrice: JSFloatType?
-    private val fullPrice: JSFloatType
+class ModelProduct(product: Product) {
+    private val productNumber: ModelStringType?
+    private val description: ModelStringType?
+    private val quantity: ModelFloatType?
+    private val unitPrice: ModelFloatType?
+    private val unitOfMeasure: ModelStringType?
+    private val totalPrice: ModelFloatType?
+    private val fullPrice: ModelFloatType
     private val line: Int
     private val productName: String?
     private val brand: String?
@@ -72,22 +72,22 @@ class JSProduct(product: Product) {
     private val upc: String?
     private val imageUrl: String?
     private val shippingStatus: String?
-    private val additionalLines: List<JSAdditionalLine>
-    private val priceAfterCoupons: JSFloatType?
+    private val additionalLines: List<ModelAdditionalLine>
+    private val priceAfterCoupons: ModelFloatType?
     private val voided: Boolean
     private val probability: Double
     private val sensitive: Boolean
-    private val possibleProducts: List<JSProduct>
-    private val subProducts: List<JSProduct>
+    private val possibleProducts: List<ModelProduct>
+    private val subProducts: List<ModelProduct>
     private val added: Boolean
     private val blinkReceiptBrand: String?
     private val blinkReceiptCategory: String?
     private val extendedFields: JSONObject?
     private val fuelType: String?
-    private val descriptionPrefix: JSStringType?
-    private val descriptionPostfix: JSStringType?
-    private val skuPrefix: JSStringType?
-    private val skuPostfix: JSStringType?
+    private val descriptionPrefix: ModelStringType?
+    private val descriptionPostfix: ModelStringType?
+    private val skuPrefix: ModelStringType?
+    private val skuPostfix: ModelStringType?
     private val attributes: List<JSONObject>
     private val sector: String?
     private val department: String?
@@ -96,13 +96,13 @@ class JSProduct(product: Product) {
     private val itemType: String?
 
     init {
-        productNumber = JSStringType.opt(product.productNumber())
-        description = JSStringType.opt(product.description())
-        quantity = JSFloatType.opt(product.quantity())
-        unitPrice = JSFloatType.opt(product.unitPrice())
-        unitOfMeasure = JSStringType.opt(product.unitOfMeasure())
-        totalPrice = JSFloatType.opt(product.totalPrice())
-        fullPrice = JSFloatType(FloatType(product.fullPrice()))
+        productNumber = ModelStringType.opt(product.productNumber())
+        description = ModelStringType.opt(product.description())
+        quantity = ModelFloatType.opt(product.quantity())
+        unitPrice = ModelFloatType.opt(product.unitPrice())
+        unitOfMeasure = ModelStringType.opt(product.unitOfMeasure())
+        totalPrice = ModelFloatType.opt(product.totalPrice())
+        fullPrice = ModelFloatType(FloatType(product.fullPrice()))
         line = product.line()
         productName = product.productName()
         brand = product.brand()
@@ -114,22 +114,22 @@ class JSProduct(product: Product) {
         imageUrl = product.imageUrl()
         shippingStatus = product.shippingStatus()
         additionalLines =
-            product.additionalLines()?.map { additionalLine -> JSAdditionalLine(additionalLine) }
+            product.additionalLines()?.map { additionalLine -> ModelAdditionalLine(additionalLine) }
                 ?: emptyList()
-        priceAfterCoupons = JSFloatType.opt(product.priceAfterCoupons())
+        priceAfterCoupons = ModelFloatType.opt(product.priceAfterCoupons())
         voided = product.voided()
         probability = product.probability()
         sensitive = product.sensitive()
-        possibleProducts = product.possibleProducts()?.map { prd -> JSProduct(prd) } ?: emptyList()
-        subProducts = product.subProducts()?.map { prd -> JSProduct(prd) } ?: emptyList()
+        possibleProducts = product.possibleProducts()?.map { prd -> ModelProduct(prd) } ?: emptyList()
+        subProducts = product.subProducts()?.map { prd -> ModelProduct(prd) } ?: emptyList()
         added = product.added()
         blinkReceiptBrand = product.blinkReceiptBrand()
         blinkReceiptCategory = product.blinkReceiptCategory()
         fuelType = product.fuelType()
-        descriptionPrefix = JSStringType.opt(product.descriptionPrefix())
-        descriptionPostfix = JSStringType.opt(product.skuPostfix())
-        skuPrefix = JSStringType.opt(product.skuPrefix())
-        skuPostfix = JSStringType.opt(product.skuPostfix())
+        descriptionPrefix = ModelStringType.opt(product.descriptionPrefix())
+        descriptionPostfix = ModelStringType.opt(product.skuPostfix())
+        skuPrefix = ModelStringType.opt(product.skuPrefix())
+        skuPostfix = ModelStringType.opt(product.skuPostfix())
         sector = product.sector()
         department = product.department()
         majorCategory = product.majorCategory()
@@ -199,12 +199,12 @@ class JSProduct(product: Product) {
 
     companion object {
         /**
-         * Creates an optional [JSProduct] from a [Product] instance.
+         * Creates an optional [ModelProduct] from a [Product] instance.
          *
-         * @param product The [Product] instance to create an [JSProduct] from.
-         * @return An [JSProduct] instance or null if the input is null.
+         * @param product The [Product] instance to create an [ModelProduct] from.
+         * @return An [ModelProduct] instance or null if the input is null.
          */
-        fun opt(product: Product?): JSProduct? =
-            if (product != null) JSProduct(product) else null
+        fun opt(product: Product?): ModelProduct? =
+            if (product != null) ModelProduct(product) else null
     }
 }

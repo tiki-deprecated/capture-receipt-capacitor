@@ -14,7 +14,6 @@ import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
 import com.getcapacitor.PluginMethod
 import com.getcapacitor.annotation.CapacitorPlugin
-import com.microblink.core.ScanResults
 import com.mytiki.sdk.capture.receipt.capacitor.CaptureReceipt
 import com.mytiki.sdk.capture.receipt.capacitor.account.Account
 import com.mytiki.sdk.capture.receipt.capacitor.plugin.req.Req
@@ -24,7 +23,7 @@ import com.mytiki.sdk.capture.receipt.capacitor.plugin.req.ReqScan
 import com.mytiki.sdk.capture.receipt.capacitor.plugin.rsp.Rsp
 import com.mytiki.sdk.capture.receipt.capacitor.plugin.rsp.RspAccount
 import com.mytiki.sdk.capture.receipt.capacitor.plugin.rsp.RspError
-import com.mytiki.sdk.capture.receipt.capacitor.plugin.rsp.RspReceipt
+import com.mytiki.sdk.capture.receipt.capacitor.receipt.Receipt
 
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "tiki-capture-receipt")
@@ -168,11 +167,11 @@ class CaptureReceiptPlugin : Plugin() {
     /**
      * Callback for receipt scanning.
      *
-     * @param scan The scanned results.
+     * @param receipt The scanned results.
      */
-    private fun onReceipt(requestId: String, scan: ScanResults? = null) {
-       if (scan != null) {
-            val data = RspReceipt(requestId, scan).toJS()
+    private fun onReceipt(requestId: String, receipt: Receipt? = null) {
+       if (receipt != null) {
+            val data = receipt.toRsp(requestId)
             notifyListeners("onCapturePluginResult", data)
         }
     }

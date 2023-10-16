@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in the root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.plugin.js
+package com.mytiki.sdk.capture.receipt.capacitor.receipt.model
 
 import com.getcapacitor.JSObject
 import com.microblink.core.Promotion
@@ -15,7 +15,7 @@ import org.json.JSONObject
  *
  * @property promotion The [Promotion] object to convert into an JSPromotion.
  */
-class JSPromotion(promotion: Promotion) {
+class ModelPromotion(promotion: Promotion) {
     private val id: Long
     private val slug: String?
     private val reward: Double?
@@ -54,12 +54,12 @@ class JSPromotion(promotion: Promotion) {
 
     companion object {
         /**
-         * Converts a [Promotion] object into an [JSPromotion] object.
+         * Converts a [Promotion] object into an [ModelPromotion] object.
          *
          * @param promotion The [Promotion] object to convert.
-         * @return An [JSPromotion] object or null if the input is null.
+         * @return An [ModelPromotion] object or null if the input is null.
          */
-        fun opt(promotion: Promotion?): JSPromotion? =
-            if (promotion != null) JSPromotion(promotion) else null
+        fun opt(promotion: Promotion?): ModelPromotion? =
+            if (promotion != null) ModelPromotion(promotion) else null
     }
 }

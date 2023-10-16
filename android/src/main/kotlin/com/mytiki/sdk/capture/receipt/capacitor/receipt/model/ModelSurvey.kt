@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.plugin.js
+package com.mytiki.sdk.capture.receipt.capacitor.receipt.model
 
 import com.getcapacitor.JSObject
 import com.microblink.core.Survey
@@ -15,7 +15,7 @@ import org.json.JSONObject
  *
  * @param survey The [Survey] object containing survey data.
  */
-class JSSurvey(survey: Survey) {
+class ModelSurvey(survey: Survey) {
 
     /**
      * The client's user ID for the survey.
@@ -50,7 +50,7 @@ class JSSurvey(survey: Survey) {
     /**
      * The list of survey questions.
      */
-    private val questions: List<JSSurveyQuestion>
+    private val questions: List<ModelSurveyQuestion>
 
     init {
         clientUserId = survey.clientUserId()
@@ -60,7 +60,7 @@ class JSSurvey(survey: Survey) {
         startDate = survey.startDate()
         endDate = survey.endDate()
         questions =
-            survey.questions()?.map { question -> JSSurveyQuestion(question) } ?: emptyList()
+            survey.questions()?.map { question -> ModelSurveyQuestion(question) } ?: emptyList()
     }
 
     /**
@@ -81,12 +81,12 @@ class JSSurvey(survey: Survey) {
     companion object {
 
         /**
-         * Creates an instance of [JSSurvey] from a [Survey] object.
+         * Creates an instance of [ModelSurvey] from a [Survey] object.
          *
          * @param survey The [Survey] object to convert.
-         * @return An [JSSurvey] object representing the survey response, or `null` if the input is `null`.
+         * @return An [ModelSurvey] object representing the survey response, or `null` if the input is `null`.
          */
-        fun opt(survey: Survey?): JSSurvey? =
-            if (survey != null) JSSurvey(survey) else null
+        fun opt(survey: Survey?): ModelSurvey? =
+            if (survey != null) ModelSurvey(survey) else null
     }
 }

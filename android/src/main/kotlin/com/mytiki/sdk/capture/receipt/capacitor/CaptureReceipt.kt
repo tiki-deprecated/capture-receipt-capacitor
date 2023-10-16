@@ -17,12 +17,13 @@ import com.mytiki.sdk.capture.receipt.capacitor.account.Account
 import com.mytiki.sdk.capture.receipt.capacitor.account.AccountTypeEnum
 import com.mytiki.sdk.capture.receipt.capacitor.email.Email
 import com.mytiki.sdk.capture.receipt.capacitor.email.EmailEnum
-import com.mytiki.sdk.capture.receipt.capacitor.retailer.OnReceiptCallback
+import com.mytiki.sdk.capture.receipt.capacitor.receipt.Receipt
 import com.mytiki.sdk.capture.receipt.capacitor.retailer.Retailer
 
 typealias OnErrorCallback = ((message: String) -> Unit)
 typealias OnAccountCallback = ((account: Account) -> Unit)
 typealias OnCompleteCallback = (() -> Unit)
+typealias OnReceiptCallback = ((receipt: Receipt?) -> Unit)
 
 /**
  * A plugin for capturing and processing receipts in a Capacitor-based Android application.

@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in the root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.plugin.js
+package com.mytiki.sdk.capture.receipt.capacitor.receipt.model
 
 import com.getcapacitor.JSObject
 import com.microblink.core.FloatType
@@ -14,7 +14,7 @@ import com.microblink.core.FloatType
  * @property confidence The confidence level of the extracted floating-point value.
  * @property value The extracted floating-point value.
  */
-class JSFloatType(private val floatType: FloatType) {
+class ModelFloatType(private val floatType: FloatType) {
     private val confidence: Float = floatType.confidence()
     private val value: Float = floatType.value()
 
@@ -35,7 +35,7 @@ class JSFloatType(private val floatType: FloatType) {
          * @param floatType The FloatType object to convert to JSFloatType.
          * @return An JSFloatType instance or null if the input floatType is null.
          */
-        fun opt(floatType: FloatType?): JSFloatType? =
-            if (floatType != null) JSFloatType(floatType) else null
+        fun opt(floatType: FloatType?): ModelFloatType? =
+            if (floatType != null) ModelFloatType(floatType) else null
     }
 }
