@@ -8,6 +8,13 @@ updates:
       prefix: "npm"
     labels:
       - "chore"
+    groups:
+      all:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -17,6 +24,10 @@ updates:
       prefix: "gh-action"
     labels:
       - "chore"
+    groups:
+      all:
+        patterns:
+          - "*"
 
   - package-ecosystem: "npm"
     directory: "/example"
@@ -26,3 +37,7 @@ updates:
       prefix: "npm"
     labels:
       - "chore"
+    groups:
+      all:
+        patterns:
+          - "*"
