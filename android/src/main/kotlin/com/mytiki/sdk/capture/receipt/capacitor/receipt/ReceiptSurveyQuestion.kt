@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.receipt.model
+package com.mytiki.sdk.capture.receipt.capacitor.receipt
 
 import com.getcapacitor.JSObject
 import com.microblink.core.SurveyQuestion
@@ -15,14 +15,14 @@ import org.json.JSONObject
  *
  * @param surveyQuestion The [SurveyQuestion] object from the Microblink SDK.
  */
-class ModelSurveyQuestion(surveyQuestion: SurveyQuestion) {
+class ReceiptSurveyQuestion(surveyQuestion: SurveyQuestion) {
     private val myIndex: Int
     private val lastQuestion: Boolean
     private val nextQuestionIndex: Int
     private val serverId: Int
     private val text: String?
     private val type: String?
-    private val answers: List<ModelSurveyAnswer>
+    private val answers: List<ReceiptSurveyAnswer>
     private val multipleAnswers: Boolean
     private val totalNumberOfQuestions: Int
 
@@ -33,7 +33,7 @@ class ModelSurveyQuestion(surveyQuestion: SurveyQuestion) {
         serverId = surveyQuestion.serverId()
         text = surveyQuestion.text()
         type = surveyQuestion.type()?.a
-        answers = surveyQuestion.answers()?.map { answer -> ModelSurveyAnswer(answer) } ?: emptyList()
+        answers = surveyQuestion.answers()?.map { answer -> ReceiptSurveyAnswer(answer) } ?: emptyList()
         multipleAnswers = surveyQuestion.multipleAnswers()
         totalNumberOfQuestions = surveyQuestion.totalNumberOfQuestions()
     }
@@ -60,9 +60,9 @@ class ModelSurveyQuestion(surveyQuestion: SurveyQuestion) {
          * Creates an JSSurveyQuestion instance from a [SurveyQuestion] object.
          *
          * @param surveyQuestion The [SurveyQuestion] object to convert.
-         * @return An [ModelSurveyQuestion] instance or null if the input is null.
+         * @return An [ReceiptSurveyQuestion] instance or null if the input is null.
          */
-        fun opt(surveyQuestion: SurveyQuestion?): ModelSurveyQuestion? =
-            if (surveyQuestion != null) ModelSurveyQuestion(surveyQuestion) else null
+        fun opt(surveyQuestion: SurveyQuestion?): ReceiptSurveyQuestion? =
+            if (surveyQuestion != null) ReceiptSurveyQuestion(surveyQuestion) else null
     }
 }

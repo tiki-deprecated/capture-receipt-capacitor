@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in the root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.receipt.model
+package com.mytiki.sdk.capture.receipt.capacitor.receipt
 
 import com.getcapacitor.JSObject
 import com.microblink.core.Coupon
@@ -14,23 +14,23 @@ import org.json.JSONObject
  *
  * @property coupon The [Coupon] object containing coupon information.
  */
-class ModelCoupon(coupon: Coupon) {
+class ReceiptCoupon(coupon: Coupon) {
     private val type: String?
-    private val amount: ModelFloatType?
-    private val sku: ModelStringType?
-    private val description: ModelStringType?
+    private val amount: ReceiptFloatType?
+    private val sku: ReceiptStringType?
+    private val description: ReceiptStringType?
     private val relatedProductIndex: Int
 
     init {
         type = coupon.typeToString()
-        amount = ModelFloatType.opt(coupon.amount())
-        sku = ModelStringType.opt(coupon.sku())
-        description = ModelStringType.opt(coupon.description())
+        amount = ReceiptFloatType.opt(coupon.amount())
+        sku = ReceiptStringType.opt(coupon.sku())
+        description = ReceiptStringType.opt(coupon.description())
         relatedProductIndex = coupon.relatedProductIndex()
     }
 
     /**
-     * Converts the [ModelCoupon] object to a JSON representation.
+     * Converts the [ReceiptCoupon] object to a JSON representation.
      *
      * @return A [JSONObject] containing the coupon information.
      */
@@ -44,12 +44,12 @@ class ModelCoupon(coupon: Coupon) {
 
     companion object {
         /**
-         * Creates an optional [ModelCoupon] object from a [Coupon].
+         * Creates an optional [ReceiptCoupon] object from a [Coupon].
          *
          * @param coupon The [Coupon] object to convert.
-         * @return An [ModelCoupon] object if [coupon] is not null, otherwise null.
+         * @return An [ReceiptCoupon] object if [coupon] is not null, otherwise null.
          */
-        fun opt(coupon: Coupon?): ModelCoupon? =
-            if (coupon != null) ModelCoupon(coupon) else null
+        fun opt(coupon: Coupon?): ReceiptCoupon? =
+            if (coupon != null) ReceiptCoupon(coupon) else null
     }
 }

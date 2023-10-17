@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in the root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.receipt.model
+package com.mytiki.sdk.capture.receipt.capacitor.receipt
 
 import com.getcapacitor.JSObject
 import com.microblink.core.Retailer
@@ -13,7 +13,7 @@ import com.microblink.core.Retailer
  *
  * @param retailer The retailer object to be wrapped by JSRetailer.
  */
-class ModelRetailer(retailer: Retailer) {
+class ReceiptRetailer(retailer: Retailer) {
     private val id: Int
     private val bannerId: Int
 
@@ -39,7 +39,7 @@ class ModelRetailer(retailer: Retailer) {
          * @param retailer The Retailer object to be converted.
          * @return An JSRetailer object if the input Retailer is not null, otherwise null.
          */
-        fun opt(retailer: Retailer?): ModelRetailer? =
-            if (retailer != null) ModelRetailer(retailer) else null
+        fun opt(retailer: Retailer?): ReceiptRetailer? =
+            if (retailer != null) ReceiptRetailer(retailer) else null
     }
 }

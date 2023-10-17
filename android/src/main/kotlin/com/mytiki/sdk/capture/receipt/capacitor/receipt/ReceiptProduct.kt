@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.receipt.model
+package com.mytiki.sdk.capture.receipt.capacitor.receipt
 
 import com.getcapacitor.JSObject
 import com.microblink.core.FloatType
@@ -54,14 +54,14 @@ import org.json.JSONObject
  * @property subCategory The sub-category of the product, if available.
  * @property itemType The item type of the product, if available.
  */
-class ModelProduct(product: Product) {
-    private val productNumber: ModelStringType?
-    private val description: ModelStringType?
-    private val quantity: ModelFloatType?
-    private val unitPrice: ModelFloatType?
-    private val unitOfMeasure: ModelStringType?
-    private val totalPrice: ModelFloatType?
-    private val fullPrice: ModelFloatType
+class ReceiptProduct(product: Product) {
+    private val productNumber: ReceiptStringType?
+    private val description: ReceiptStringType?
+    private val quantity: ReceiptFloatType?
+    private val unitPrice: ReceiptFloatType?
+    private val unitOfMeasure: ReceiptStringType?
+    private val totalPrice: ReceiptFloatType?
+    private val fullPrice: ReceiptFloatType
     private val line: Int
     private val productName: String?
     private val brand: String?
@@ -72,22 +72,22 @@ class ModelProduct(product: Product) {
     private val upc: String?
     private val imageUrl: String?
     private val shippingStatus: String?
-    private val additionalLines: List<ModelAdditionalLine>
-    private val priceAfterCoupons: ModelFloatType?
+    private val additionalLines: List<ReceiptAdditionalLine>
+    private val priceAfterCoupons: ReceiptFloatType?
     private val voided: Boolean
     private val probability: Double
     private val sensitive: Boolean
-    private val possibleProducts: List<ModelProduct>
-    private val subProducts: List<ModelProduct>
+    private val possibleProducts: List<ReceiptProduct>
+    private val subProducts: List<ReceiptProduct>
     private val added: Boolean
     private val blinkReceiptBrand: String?
     private val blinkReceiptCategory: String?
     private val extendedFields: JSONObject?
     private val fuelType: String?
-    private val descriptionPrefix: ModelStringType?
-    private val descriptionPostfix: ModelStringType?
-    private val skuPrefix: ModelStringType?
-    private val skuPostfix: ModelStringType?
+    private val descriptionPrefix: ReceiptStringType?
+    private val descriptionPostfix: ReceiptStringType?
+    private val skuPrefix: ReceiptStringType?
+    private val skuPostfix: ReceiptStringType?
     private val attributes: List<JSONObject>
     private val sector: String?
     private val department: String?
@@ -96,13 +96,13 @@ class ModelProduct(product: Product) {
     private val itemType: String?
 
     init {
-        productNumber = ModelStringType.opt(product.productNumber())
-        description = ModelStringType.opt(product.description())
-        quantity = ModelFloatType.opt(product.quantity())
-        unitPrice = ModelFloatType.opt(product.unitPrice())
-        unitOfMeasure = ModelStringType.opt(product.unitOfMeasure())
-        totalPrice = ModelFloatType.opt(product.totalPrice())
-        fullPrice = ModelFloatType(FloatType(product.fullPrice()))
+        productNumber = ReceiptStringType.opt(product.productNumber())
+        description = ReceiptStringType.opt(product.description())
+        quantity = ReceiptFloatType.opt(product.quantity())
+        unitPrice = ReceiptFloatType.opt(product.unitPrice())
+        unitOfMeasure = ReceiptStringType.opt(product.unitOfMeasure())
+        totalPrice = ReceiptFloatType.opt(product.totalPrice())
+        fullPrice = ReceiptFloatType(FloatType(product.fullPrice()))
         line = product.line()
         productName = product.productName()
         brand = product.brand()
@@ -114,22 +114,22 @@ class ModelProduct(product: Product) {
         imageUrl = product.imageUrl()
         shippingStatus = product.shippingStatus()
         additionalLines =
-            product.additionalLines()?.map { additionalLine -> ModelAdditionalLine(additionalLine) }
+            product.additionalLines()?.map { additionalLine -> ReceiptAdditionalLine(additionalLine) }
                 ?: emptyList()
-        priceAfterCoupons = ModelFloatType.opt(product.priceAfterCoupons())
+        priceAfterCoupons = ReceiptFloatType.opt(product.priceAfterCoupons())
         voided = product.voided()
         probability = product.probability()
         sensitive = product.sensitive()
-        possibleProducts = product.possibleProducts()?.map { prd -> ModelProduct(prd) } ?: emptyList()
-        subProducts = product.subProducts()?.map { prd -> ModelProduct(prd) } ?: emptyList()
+        possibleProducts = product.possibleProducts()?.map { prd -> ReceiptProduct(prd) } ?: emptyList()
+        subProducts = product.subProducts()?.map { prd -> ReceiptProduct(prd) } ?: emptyList()
         added = product.added()
         blinkReceiptBrand = product.blinkReceiptBrand()
         blinkReceiptCategory = product.blinkReceiptCategory()
         fuelType = product.fuelType()
-        descriptionPrefix = ModelStringType.opt(product.descriptionPrefix())
-        descriptionPostfix = ModelStringType.opt(product.skuPostfix())
-        skuPrefix = ModelStringType.opt(product.skuPrefix())
-        skuPostfix = ModelStringType.opt(product.skuPostfix())
+        descriptionPrefix = ReceiptStringType.opt(product.descriptionPrefix())
+        descriptionPostfix = ReceiptStringType.opt(product.skuPostfix())
+        skuPrefix = ReceiptStringType.opt(product.skuPrefix())
+        skuPostfix = ReceiptStringType.opt(product.skuPostfix())
         sector = product.sector()
         department = product.department()
         majorCategory = product.majorCategory()
@@ -199,12 +199,12 @@ class ModelProduct(product: Product) {
 
     companion object {
         /**
-         * Creates an optional [ModelProduct] from a [Product] instance.
+         * Creates an optional [ReceiptProduct] from a [Product] instance.
          *
-         * @param product The [Product] instance to create an [ModelProduct] from.
-         * @return An [ModelProduct] instance or null if the input is null.
+         * @param product The [Product] instance to create an [ReceiptProduct] from.
+         * @return An [ReceiptProduct] instance or null if the input is null.
          */
-        fun opt(product: Product?): ModelProduct? =
-            if (product != null) ModelProduct(product) else null
+        fun opt(product: Product?): ReceiptProduct? =
+            if (product != null) ReceiptProduct(product) else null
     }
 }

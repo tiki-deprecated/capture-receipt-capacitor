@@ -9,15 +9,6 @@ import com.getcapacitor.JSObject
 import com.microblink.core.ScanResults
 import com.microblink.core.StringType
 import com.mytiki.sdk.capture.receipt.capacitor.plugin.rsp.RspReceipt
-import com.mytiki.sdk.capture.receipt.capacitor.receipt.model.ModelCoupon
-import com.mytiki.sdk.capture.receipt.capacitor.receipt.model.ModelFloatType
-import com.mytiki.sdk.capture.receipt.capacitor.receipt.model.ModelPaymentMethod
-import com.mytiki.sdk.capture.receipt.capacitor.receipt.model.ModelProduct
-import com.mytiki.sdk.capture.receipt.capacitor.receipt.model.ModelPromotion
-import com.mytiki.sdk.capture.receipt.capacitor.receipt.model.ModelRetailer
-import com.mytiki.sdk.capture.receipt.capacitor.receipt.model.ModelShipment
-import com.mytiki.sdk.capture.receipt.capacitor.receipt.model.ModelStringType
-import com.mytiki.sdk.capture.receipt.capacitor.receipt.model.ModelSurvey
 import org.json.JSONObject
 
 /**
@@ -29,31 +20,31 @@ import org.json.JSONObject
  */
 class Receipt(scanResults: ScanResults) {
 
-    val receiptDate: ModelStringType?
-    val receiptTime: ModelStringType?
-    val retailerId: ModelRetailer
-    val products: List<ModelProduct>
-    val coupons: List<ModelCoupon>
-    val total: ModelFloatType?
-    val tip: ModelFloatType?
-    val subtotal: ModelFloatType?
-    val taxes: ModelFloatType?
-    val storeNumber: ModelStringType?
-    val merchantName: ModelStringType?
-    val storeAddress: ModelStringType?
-    val storeCity: ModelStringType?
+    val receiptDate: ReceiptStringType?
+    val receiptTime: ReceiptStringType?
+    val retailerId: ReceiptRetailer
+    val products: List<ReceiptProduct>
+    val coupons: List<ReceiptCoupon>
+    val total: ReceiptFloatType?
+    val tip: ReceiptFloatType?
+    val subtotal: ReceiptFloatType?
+    val taxes: ReceiptFloatType?
+    val storeNumber: ReceiptStringType?
+    val merchantName: ReceiptStringType?
+    val storeAddress: ReceiptStringType?
+    val storeCity: ReceiptStringType?
     val blinkReceiptId: String?
-    val storeState: ModelStringType?
-    val storeZip: ModelStringType?
-    val storeCountry: ModelStringType?
-    val storePhone: ModelStringType?
-    val cashierId: ModelStringType?
-    val transactionId: ModelStringType?
-    val registerId: ModelStringType?
-    val paymentMethods: List<ModelPaymentMethod>
-    val taxId: ModelStringType?
-    val mallName: ModelStringType?
-    val last4cc: ModelStringType?
+    val storeState: ReceiptStringType?
+    val storeZip: ReceiptStringType?
+    val storeCountry: ReceiptStringType?
+    val storePhone: ReceiptStringType?
+    val cashierId: ReceiptStringType?
+    val transactionId: ReceiptStringType?
+    val registerId: ReceiptStringType?
+    val paymentMethods: List<ReceiptPaymentMethod>
+    val taxId: ReceiptStringType?
+    val mallName: ReceiptStringType?
+    val last4cc: ReceiptStringType?
     val ocrConfidence: Float
     val merchantSource: String?
     val foundTopEdge: Boolean
@@ -62,8 +53,8 @@ class Receipt(scanResults: ScanResults) {
     val eReceiptOrderStatus: String?
     val eReceiptRawHtml: String?
     val eReceiptShippingAddress: String?
-    val shipments: List<ModelShipment>
-    val longTransactionId: ModelStringType?
+    val shipments: List<ReceiptShipment>
+    val longTransactionId: ReceiptStringType?
     val subtotalMatches: Boolean
     val eReceiptEmailProvider: String?
     val eReceiptEmailId: String?
@@ -75,62 +66,62 @@ class Receipt(scanResults: ScanResults) {
     val fraudulent: Boolean
     val receiptDateTime: Long?
     val duplicateBlinkReceiptIds: List<String>
-    val merchantMatchGuess: ModelStringType?
+    val merchantMatchGuess: ReceiptStringType?
     val productsPendingLookup: Int
-    val qualifiedPromotions: List<ModelPromotion>
-    val unqualifiedPromotions: List<ModelPromotion>
+    val qualifiedPromotions: List<ReceiptPromotion>
+    val unqualifiedPromotions: List<ReceiptPromotion>
     val extendedFields: JSONObject?
     val eReceiptAdditionalFees: JSONObject?
-    val purchaseType: ModelStringType?
+    val purchaseType: ReceiptStringType?
     val loyaltyForBanner: Boolean
-    val channel: ModelStringType?
+    val channel: ReceiptStringType?
     val submissionDate: Long?
     val eReceiptFulfilledBy: String?
     val eReceiptShippingStatus: String?
     val eReceiptPOSSystem: String?
     val eReceiptSubMerchant: String?
-    val qualifiedSurveys: List<ModelSurvey>
+    val qualifiedSurveys: List<ReceiptSurvey>
     val barcode: String?
     val eReceiptMerchantEmail: String?
     val eReceiptEmailSubject: String?
     val eReceiptShippingCosts: Float
     val currencyCode: String?
-    val clientMerchantName: ModelStringType?
+    val clientMerchantName: ReceiptStringType?
     val loyaltyProgram: Boolean
     val merchantSources: List<Int>
-    val paymentTerminalId: ModelStringType?
-    val paymentTransactionId: ModelStringType?
-    val combinedRawText: ModelStringType?
+    val paymentTerminalId: ReceiptStringType?
+    val paymentTransactionId: ReceiptStringType?
+    val combinedRawText: ReceiptStringType?
 
     init {
         // Initialize properties with data from scanResults
-        receiptDate = ModelStringType.opt(scanResults.receiptDate())
-        receiptTime = ModelStringType.opt(scanResults.receiptTime())
-        retailerId = ModelRetailer(scanResults.retailerId())
-        products = scanResults.products()?.map { product -> ModelProduct(product) } ?: emptyList()
-        coupons = scanResults.coupons()?.map { coupon -> ModelCoupon(coupon) } ?: emptyList()
-        total = ModelFloatType.opt(scanResults.total())
-        tip = ModelFloatType.opt(scanResults.tip())
-        subtotal = ModelFloatType.opt(scanResults.subtotal())
-        taxes = ModelFloatType.opt(scanResults.taxes())
-        storeNumber = ModelStringType.opt(scanResults.storeNumber())
-        merchantName = ModelStringType.opt(scanResults.merchantName())
-        storeAddress = ModelStringType.opt(scanResults.storeAddress())
-        storeCity = ModelStringType.opt(scanResults.storeCity())
+        receiptDate = ReceiptStringType.opt(scanResults.receiptDate())
+        receiptTime = ReceiptStringType.opt(scanResults.receiptTime())
+        retailerId = ReceiptRetailer(scanResults.retailerId())
+        products = scanResults.products()?.map { product -> ReceiptProduct(product) } ?: emptyList()
+        coupons = scanResults.coupons()?.map { coupon -> ReceiptCoupon(coupon) } ?: emptyList()
+        total = ReceiptFloatType.opt(scanResults.total())
+        tip = ReceiptFloatType.opt(scanResults.tip())
+        subtotal = ReceiptFloatType.opt(scanResults.subtotal())
+        taxes = ReceiptFloatType.opt(scanResults.taxes())
+        storeNumber = ReceiptStringType.opt(scanResults.storeNumber())
+        merchantName = ReceiptStringType.opt(scanResults.merchantName())
+        storeAddress = ReceiptStringType.opt(scanResults.storeAddress())
+        storeCity = ReceiptStringType.opt(scanResults.storeCity())
         blinkReceiptId = scanResults.blinkReceiptId()
-        storeState = ModelStringType.opt(scanResults.storeState())
-        storeZip = ModelStringType.opt(scanResults.storeZip())
-        storeCountry = ModelStringType.opt(scanResults.storeCountry())
-        storePhone = ModelStringType.opt(scanResults.storePhone())
-        cashierId = ModelStringType.opt(scanResults.cashierId())
-        transactionId = ModelStringType.opt(scanResults.transactionId())
-        registerId = ModelStringType.opt(scanResults.registerId())
+        storeState = ReceiptStringType.opt(scanResults.storeState())
+        storeZip = ReceiptStringType.opt(scanResults.storeZip())
+        storeCountry = ReceiptStringType.opt(scanResults.storeCountry())
+        storePhone = ReceiptStringType.opt(scanResults.storePhone())
+        cashierId = ReceiptStringType.opt(scanResults.cashierId())
+        transactionId = ReceiptStringType.opt(scanResults.transactionId())
+        registerId = ReceiptStringType.opt(scanResults.registerId())
         paymentMethods =
-            scanResults.paymentMethods()?.map { paymentMethod -> ModelPaymentMethod(paymentMethod) }
+            scanResults.paymentMethods()?.map { paymentMethod -> ReceiptPaymentMethod(paymentMethod) }
                 ?: emptyList()
-        taxId = ModelStringType.opt(scanResults.taxId())
-        mallName = ModelStringType.opt(scanResults.mallName())
-        last4cc = ModelStringType.opt(scanResults.last4cc())
+        taxId = ReceiptStringType.opt(scanResults.taxId())
+        mallName = ReceiptStringType.opt(scanResults.mallName())
+        last4cc = ReceiptStringType.opt(scanResults.last4cc())
         ocrConfidence = scanResults.ocrConfidence()
         merchantSource = scanResults.merchantSource()
         foundTopEdge = scanResults.foundTopEdge()
@@ -140,8 +131,8 @@ class Receipt(scanResults: ScanResults) {
         eReceiptRawHtml = scanResults.eReceiptRawHtml()
         eReceiptShippingAddress = scanResults.eReceiptShippingAddress()
         shipments =
-            scanResults.shipments()?.map { shipment -> ModelShipment(shipment) } ?: emptyList()
-        longTransactionId = ModelStringType.opt(scanResults.longTransactionId())
+            scanResults.shipments()?.map { shipment -> ReceiptShipment(shipment) } ?: emptyList()
+        longTransactionId = ReceiptStringType.opt(scanResults.longTransactionId())
         subtotalMatches = scanResults.subtotalMatches()
         eReceiptEmailProvider = scanResults.eReceiptEmailProvider()
         eReceiptEmailId = scanResults.eReceiptEmailId()
@@ -155,12 +146,12 @@ class Receipt(scanResults: ScanResults) {
         fraudulent = scanResults.fraudulent()
         receiptDateTime = scanResults.receiptDateTime()?.time
         duplicateBlinkReceiptIds = scanResults.duplicateBlinkReceiptIds() ?: emptyList()
-        merchantMatchGuess = ModelStringType.opt(scanResults.merchantMatchGuess())
+        merchantMatchGuess = ReceiptStringType.opt(scanResults.merchantMatchGuess())
         productsPendingLookup = scanResults.productsPendingLookup()
         qualifiedPromotions =
-            scanResults.qualified()?.map { promotion -> ModelPromotion(promotion) } ?: emptyList()
+            scanResults.qualified()?.map { promotion -> ReceiptPromotion(promotion) } ?: emptyList()
         unqualifiedPromotions =
-            scanResults.unqualified()?.map { promotion -> ModelPromotion(promotion) } ?: emptyList()
+            scanResults.unqualified()?.map { promotion -> ReceiptPromotion(promotion) } ?: emptyList()
         extendedFields = if (scanResults.extendedFields() != null) {
             val extendedFields = JSObject()
             scanResults.extendedFields()
@@ -173,27 +164,27 @@ class Receipt(scanResults: ScanResults) {
                 ?.forEach { entry -> additionalFees.put(entry.key, entry.value) }
             additionalFees
         } else null
-        purchaseType = ModelStringType.opt(scanResults.purchaseType())
+        purchaseType = ReceiptStringType.opt(scanResults.purchaseType())
         loyaltyForBanner = scanResults.loyaltyForBanner()
-        channel = ModelStringType.opt(scanResults.channel())
+        channel = ReceiptStringType.opt(scanResults.channel())
         submissionDate = scanResults.submissionDate()?.time
         eReceiptFulfilledBy = scanResults.eReceiptFulfilledBy()
         eReceiptShippingStatus = scanResults.eReceiptShippingStatus()
         eReceiptPOSSystem = scanResults.eReceiptPOSSystem()
         eReceiptSubMerchant = scanResults.eReceiptSubMerchant()
         qualifiedSurveys =
-            scanResults.qualifiedSurveys()?.map { survey -> ModelSurvey(survey) } ?: emptyList()
+            scanResults.qualifiedSurveys()?.map { survey -> ReceiptSurvey(survey) } ?: emptyList()
         barcode = scanResults.barcode()
         eReceiptMerchantEmail = scanResults.eReceiptMerchantEmail()
         eReceiptEmailSubject = scanResults.eReceiptEmailSubject()
         eReceiptShippingCosts = scanResults.eReceiptShippingCosts()
         currencyCode = scanResults.currencyCode()
-        clientMerchantName = ModelStringType.opt(StringType(scanResults.clientMerchantName()))
+        clientMerchantName = ReceiptStringType.opt(StringType(scanResults.clientMerchantName()))
         loyaltyProgram = scanResults.loyaltyProgram()
         merchantSources = scanResults.merchantSources() ?: emptyList()
-        paymentTerminalId = ModelStringType.opt(scanResults.paymentTerminalId())
-        paymentTransactionId = ModelStringType.opt(scanResults.paymentTransactionId())
-        combinedRawText = ModelStringType.opt(scanResults.combinedRawText())
+        paymentTerminalId = ReceiptStringType.opt(scanResults.paymentTerminalId())
+        paymentTransactionId = ReceiptStringType.opt(scanResults.paymentTransactionId())
+        combinedRawText = ReceiptStringType.opt(scanResults.combinedRawText())
     }
 
     fun toRsp(requestId: String) : JSObject {

@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in the root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.receipt.model
+package com.mytiki.sdk.capture.receipt.capacitor.receipt
 
 import com.getcapacitor.JSObject
 import com.microblink.core.StringType
@@ -14,7 +14,7 @@ import org.json.JSONObject
  *
  * @param stringType The [StringType] recognized by the TIKI SDK.
  */
-class ModelStringType(stringType: StringType) {
+class ReceiptStringType(stringType: StringType) {
     /**
      * The confidence score of the recognized string.
      */
@@ -31,7 +31,7 @@ class ModelStringType(stringType: StringType) {
     }
 
     /**
-     * Converts the [ModelStringType] object to a JSON representation.
+     * Converts the [ReceiptStringType] object to a JSON representation.
      *
      * @return A [JSONObject] containing the confidence and value of the recognized string.
      */
@@ -42,12 +42,12 @@ class ModelStringType(stringType: StringType) {
 
     companion object {
         /**
-         * Creates an [ModelStringType] object from the provided [StringType].
+         * Creates an [ReceiptStringType] object from the provided [StringType].
          *
          * @param stringType The [StringType] to convert.
-         * @return An [ModelStringType] object representing the provided [StringType], or null if the input is null.
+         * @return An [ReceiptStringType] object representing the provided [StringType], or null if the input is null.
          */
-        fun opt(stringType: StringType?): ModelStringType? =
-            if (stringType != null) ModelStringType(stringType) else null
+        fun opt(stringType: StringType?): ReceiptStringType? =
+            if (stringType != null) ReceiptStringType(stringType) else null
     }
 }

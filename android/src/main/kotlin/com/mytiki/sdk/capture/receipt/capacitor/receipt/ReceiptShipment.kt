@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.receipt.model
+package com.mytiki.sdk.capture.receipt.capacitor.receipt
 
 import com.getcapacitor.JSObject
 import com.microblink.core.Shipment
@@ -18,9 +18,9 @@ import org.json.JSONObject
  *
  * @param shipment The [Shipment] object to be converted to an JSShipment.
  */
-class ModelShipment(shipment: Shipment) {
+class ReceiptShipment(shipment: Shipment) {
     private val status: String?
-    private val products: List<ModelProduct>
+    private val products: List<ReceiptProduct>
 
     /**
      * Initializes an JSShipment instance based on the provided [shipment].
@@ -29,7 +29,7 @@ class ModelShipment(shipment: Shipment) {
      */
     init {
         status = shipment.status()
-        products = shipment.products().map { product -> ModelProduct(product) }
+        products = shipment.products().map { product -> ReceiptProduct(product) }
     }
 
     /**
@@ -47,9 +47,9 @@ class ModelShipment(shipment: Shipment) {
          * Creates an JSShipment object if the provided [shipment] is not null.
          *
          * @param shipment The [Shipment] object to be converted to an JSShipment.
-         * @return An [ModelShipment] object if [shipment] is not null; otherwise, null.
+         * @return An [ReceiptShipment] object if [shipment] is not null; otherwise, null.
          */
-        fun opt(shipment: Shipment?): ModelShipment? =
-            if (shipment != null) ModelShipment(shipment) else null
+        fun opt(shipment: Shipment?): ReceiptShipment? =
+            if (shipment != null) ReceiptShipment(shipment) else null
     }
 }

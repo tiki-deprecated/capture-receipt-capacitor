@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.receipt.model
+package com.mytiki.sdk.capture.receipt.capacitor.receipt
 
 import com.getcapacitor.JSObject
 import com.microblink.core.PaymentMethod
@@ -18,21 +18,21 @@ import org.json.JSONObject
  *
  * @param paymentMethod The [PaymentMethod] instance to be wrapped.
  */
-class ModelPaymentMethod(paymentMethod: PaymentMethod) {
-    private val paymentMethod: ModelStringType?
-    private val cardType: ModelStringType?
-    private val cardIssuer: ModelStringType?
-    private val amount: ModelFloatType?
+class ReceiptPaymentMethod(paymentMethod: PaymentMethod) {
+    private val paymentMethod: ReceiptStringType?
+    private val cardType: ReceiptStringType?
+    private val cardIssuer: ReceiptStringType?
+    private val amount: ReceiptFloatType?
 
     init {
-        this.paymentMethod = ModelStringType.opt(paymentMethod.paymentMethod())
-        cardType = ModelStringType.opt(paymentMethod.cardType())
-        cardIssuer = ModelStringType.opt(paymentMethod.cardIssuer())
-        amount = ModelFloatType.opt(paymentMethod.amount())
+        this.paymentMethod = ReceiptStringType.opt(paymentMethod.paymentMethod())
+        cardType = ReceiptStringType.opt(paymentMethod.cardType())
+        cardIssuer = ReceiptStringType.opt(paymentMethod.cardIssuer())
+        amount = ReceiptFloatType.opt(paymentMethod.amount())
     }
 
     /**
-     * Converts the [ModelPaymentMethod] instance to a JSON representation.
+     * Converts the [ReceiptPaymentMethod] instance to a JSON representation.
      *
      * @return A [JSONObject] containing the payment method information.
      */
@@ -45,13 +45,13 @@ class ModelPaymentMethod(paymentMethod: PaymentMethod) {
 
     companion object {
         /**
-         * Creates an [ModelPaymentMethod] instance from a [PaymentMethod] instance,
+         * Creates an [ReceiptPaymentMethod] instance from a [PaymentMethod] instance,
          * or returns null if the input is null.
          *
          * @param paymentMethod The [PaymentMethod] instance to be converted.
-         * @return An [ModelPaymentMethod] instance if [paymentMethod] is not null; otherwise, null.
+         * @return An [ReceiptPaymentMethod] instance if [paymentMethod] is not null; otherwise, null.
          */
-        fun opt(paymentMethod: PaymentMethod?): ModelPaymentMethod? =
-            if (paymentMethod != null) ModelPaymentMethod(paymentMethod) else null
+        fun opt(paymentMethod: PaymentMethod?): ReceiptPaymentMethod? =
+            if (paymentMethod != null) ReceiptPaymentMethod(paymentMethod) else null
     }
 }

@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-package com.mytiki.sdk.capture.receipt.capacitor.receipt.model
+package com.mytiki.sdk.capture.receipt.capacitor.receipt
 
 import com.getcapacitor.JSObject
 import com.microblink.core.AdditionalLine
@@ -16,9 +16,9 @@ import com.microblink.core.AdditionalLine
  * @property text The text content of the additional line.
  * @property lineNumber The line number of the additional line within the receipt.
  */
-class ModelAdditionalLine(additionalLine: AdditionalLine) {
-    private val type: ModelStringType? = ModelStringType.opt(additionalLine.type())
-    private val text: ModelStringType? = ModelStringType.opt(additionalLine.text())
+class ReceiptAdditionalLine(additionalLine: AdditionalLine) {
+    private val type: ReceiptStringType? = ReceiptStringType.opt(additionalLine.type())
+    private val text: ReceiptStringType? = ReceiptStringType.opt(additionalLine.text())
     private val lineNumber: Int = additionalLine.lineNumber()
 
     /**
@@ -39,7 +39,7 @@ class ModelAdditionalLine(additionalLine: AdditionalLine) {
          * @param additionalLine The `AdditionalLine` to convert.
          * @return An `JSAdditionalLine` object, or null if the input is null.
          */
-        fun opt(additionalLine: AdditionalLine?): ModelAdditionalLine? =
-            if (additionalLine != null) ModelAdditionalLine(additionalLine) else null
+        fun opt(additionalLine: AdditionalLine?): ReceiptAdditionalLine? =
+            if (additionalLine != null) ReceiptAdditionalLine(additionalLine) else null
     }
 }
