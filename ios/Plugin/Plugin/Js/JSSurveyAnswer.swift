@@ -17,8 +17,6 @@ import Capacitor
 struct JSSurveyAnswer {
     /// The text of the survey answer.
     private let text: String?
-    /// The description of the survey answer.
-    private let description: String?
 
     /**
      Initializes an `RspSurveyAnswer` struct.
@@ -28,7 +26,10 @@ struct JSSurveyAnswer {
      */
     init(surveyAnswer: BRSurveyAnswer) {
         text = surveyAnswer.text
-        description = surveyAnswer.description
+    }
+    
+    static func opt(surveyAnswer: BRSurveyAnswer?) -> JSSurveyAnswer? {
+        return surveyAnswer != nil ? JSSurveyAnswer(surveyAnswer: surveyAnswer!) : nil
     }
 
     /**
@@ -36,10 +37,9 @@ struct JSSurveyAnswer {
 
      - Returns: A dictionary containing the survey answer's text and description in a format suitable for a Capacitor plugin call result.
      */
-    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
-        return [
-            "text": text,
-            "description": description
-        ]
+    func toJSObject() -> JSObject {
+        var result = JSObject()
+        result["text"] = text
+        return result;
     }
 }

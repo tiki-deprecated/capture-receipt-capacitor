@@ -82,13 +82,9 @@ public class Email {
             }
         }else{
             BREReceiptManager.shared().signOut(completion: { error in
-                if(error != nil){
-                    onError(error.debugDescription)
-                }else{
-                    BREReceiptManager.shared().resetEmailsChecked()
-                    self.defaults.set(Date.distantPast, forKey: "lastIMAPScan")
-                    onComplete()
-                }
+                BREReceiptManager.shared().resetEmailsChecked()
+                self.defaults.set(Date.distantPast, forKey: "lastIMAPScan")
+                onComplete()
             })
         }
     }

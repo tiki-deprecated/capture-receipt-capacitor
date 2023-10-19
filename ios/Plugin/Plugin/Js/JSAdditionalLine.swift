@@ -16,10 +16,10 @@ import BlinkEReceipt
  */
 class JSAdditionalLine {
     /// The type of the additional line (e.g., "Subtotal").
-    private let type: BRStringValue
+    private let type: JSStringType?
     
     /// The text content of the additional line.
-    private let text: BRStringValue
+    private let text: JSStringType?
     
     /// The line number representing the order of the additional line.
     private let lineNumber: Int
@@ -30,9 +30,13 @@ class JSAdditionalLine {
      - Parameter additionalLine: A `BRProductAdditionalLine` object containing additional line information.
      */
     init(additionalLine: BRProductAdditionalLine) {
-        type = additionalLine.type
-        text = additionalLine.text
+        type = JSStringType.opt(stringType: additionalLine.type)
+        text = JSStringType.opt(stringType: additionalLine.text)
         lineNumber = additionalLine.lineNumber
+    }
+    
+    static func opt(additionalLine: BRProductAdditionalLine?) -> JSAdditionalLine? {
+        return additionalLine != nil ? JSAdditionalLine(additionalLine: additionalLine!) : nil
     }
 
     /**
@@ -40,10 +44,10 @@ class JSAdditionalLine {
 
      - Returns: A dictionary representing the additional line's type, text, and line number in a format suitable for a Capacitor plugin call result.
      */
-    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+    func toJSObject() -> JSObject {
         var result = JSObject()
-        result["type"] = type.value
-        result["text"] = text.value
+        result["type"] = type?.toJSObject()
+        result["text"] = text?.toJSObject()
         result["lineNumber"] = lineNumber
         return result
     }

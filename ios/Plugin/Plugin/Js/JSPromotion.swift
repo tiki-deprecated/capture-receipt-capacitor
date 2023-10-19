@@ -45,13 +45,17 @@ struct JSPromotion {
         relatedProductIndexes = promotion.relatedProductIndexes
         qualifications = promotion.qualifications
     }
+    
+    static func opt(promotion: BRPromotion?) -> JSPromotion? {
+        return promotion != nil ? JSPromotion(promotion: promotion!) : nil
+    }
 
     /**
      Converts the `RspPromotion` struct into a dictionary suitable for use in plugin response data.
 
      - Returns: A dictionary containing promotion information in a format suitable for a Capacitor plugin call result.
      */
-    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+    func toJSObject() -> JSObject {
         var ret = JSObject()
         ret["slug"] = slug
         ret["reward"] = reward

@@ -4,6 +4,7 @@
  */
 
 import type { SurveyAnswer } from './survey-answer';
+import type { SurveyResponse } from './survey-response';
 
 /**
  * Represents a survey question along with relevant details and potential answers.
@@ -53,4 +54,9 @@ export interface SurveyQuestion {
    * The total number of questions in the survey.
    */
   totalNumberOfQuestions: number;
+
+  /**
+   * The user's response to the survey.
+   */
+  userResponse?: SurveyResponse;
 }

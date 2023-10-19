@@ -67,7 +67,7 @@ export class CaptureReceipt {
    * the method will flush all the accounts connected
    */
   async logout(account: Account | undefined = undefined): Promise<void> {
-    const reqAccount = account != undefined ? new ReqAccount(account) : undefined;
+    const reqAccount = new ReqAccount(account);
     await this.plugin.logout(reqAccount);
   }
 

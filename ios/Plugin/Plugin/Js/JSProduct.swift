@@ -16,19 +16,19 @@ import Capacitor
  */
 struct JSProduct {
     /// The product number, if available.
-    private let productNumber: String?
+    private let productNumber: JSStringType?
     /// The product description, if available.
-    private let description: String?
+    private let description: JSStringType?
     /// The quantity of the product, if available.
-    private let quantity: Float?
+    private let quantity: JSFloatType?
     /// The unit price of the product, if available.
-    private let unitPrice: Float?
+    private let unitPrice: JSFloatType?
     /// The unit of measure for the product, if available.
-    private let unitOfMeasure: String?
+    private let unitOfMeasure: JSStringType?
     /// The total price of the product, if available.
-    private let totalPrice: Float?
+    private let totalPrice: JSFloatType?
     /// The full price of the product, if available.
-    private let fullPrice: Float?
+    private let fullPrice: JSFloatType
     /// The product name, if available.
     private let productName: String?
     /// The brand of the product, if available.
@@ -37,6 +37,8 @@ struct JSProduct {
     private let category: String?
     /// The size of the product, if available.
     private let size: String?
+    /// The UPC code for the product
+    private let upc: String?
     /// The URL of the product image, if available.
     private let imageUrl: String?
     /// The shipping status of the product, if available.
@@ -44,7 +46,7 @@ struct JSProduct {
     /// Additional lines associated with the product.
     private let additionalLines: [JSAdditionalLine]?
     /// The price of the product after applying coupons, if available.
-    private let priceAfterCoupons: Float?
+    private let priceAfterCoupons: JSFloatType?
     /// Indicates if the product is voided.
     private let voided: Bool?
     /// The probability associated with the product.
@@ -52,25 +54,27 @@ struct JSProduct {
     /// Indicates if the product is sensitive.
     private let sensitive: Bool?
     /// Possible sub-products associated with the product.
-    private let possibleProducts: [JSPossibleProduct]?
+    private let possibleProducts: [JSProduct]
     /// Sub-products of the product.
-    private let subProducts: [JSProduct]?
+    private let subProducts: [JSProduct]
     /// Indicates if the product is user-added.
     private let added: Bool?
     /// The brand according to BlinkReceipt.
     private let blinkReceiptBrand: String?
     /// The category according to BlinkReceipt.
     private let blinkReceiptCategory: String?
+    /// A map of extended fields associated with the product.
+    private let extendedFields: JSObject?
     /// The fuel type of the product.
     private let fuelType: String?
     /// The description prefix, if available.
-    private let descriptionPrefix: String?
+    private let descriptionPrefix: JSStringType?
     /// The description postfix, if available.
-    private let descriptionPostfix: String?
+    private let descriptionPostfix: JSStringType?
     /// The SKU prefix, if available.
-    private let skuPrefix: String?
+    private let skuPrefix: JSStringType?
     /// The SKU postfix, if available.
-    private let skuPostfix: String?
+    private let skuPostfix: JSStringType?
     /// The sector of the product.
     private let sector: String?
     /// The department of the product.
@@ -89,34 +93,42 @@ struct JSProduct {
         - product: The `BRProduct` object containing product information.
      */
     init(product: BRProduct) {
-        productNumber = product.productNumber?.value
-        description = product.description
-        quantity = product.quantity?.value
-        unitPrice = product.unitPrice?.value
-        unitOfMeasure = product.unitOfMeasure?.value
-        totalPrice = product.totalPrice?.value
-        fullPrice = product.fullPrice?.value
+        productNumber = JSStringType.opt(stringType: product.productNumber)
+        description = JSStringType.opt(string: product.description)
+        quantity = JSFloatType.opt(floatType: product.quantity)
+        unitPrice = JSFloatType.opt(floatType: product.unitPrice)
+        unitOfMeasure = JSStringType.opt(stringType: product.unitOfMeasure)
+        totalPrice = JSFloatType.opt(floatType: product.totalPrice)
+        fullPrice = JSFloatType(floatType: product.fullPrice)
         productName = product.productName
         brand = product.brand
         category = product.category
         size = product.size
+        upc = product.upc
         imageUrl = product.imgUrl
         shippingStatus = product.shippingStatus
         additionalLines = product.additionalLines?.map { additionalLine in JSAdditionalLine(additionalLine: additionalLine) } ?? []
-        priceAfterCoupons = product.priceAfterCoupons?.value
+        priceAfterCoupons = JSFloatType.opt(floatType: product.priceAfterCoupons)
         voided = product.isVoided
         probability = product.probability
         sensitive = product.isSensitive
-        possibleProducts = product.possibleProducts?.map { prd in JSPossibleProduct(product: prd) } ?? []
+        possibleProducts = product.possibleProducts?.map { prd in JSProduct(product: prd) } ?? []
         subProducts = product.subProducts?.map { prd in JSProduct(product: prd) } ?? []
         added = product.userAdded
         blinkReceiptBrand = product.brand
         blinkReceiptCategory = product.category
+        extendedFields = product.extendedFields != nil ? {
+            var ret = JSObject()
+            product.extendedFields!.forEach { (key: AnyHashable, value: Any) in
+                ret.updateValue(value as! any JSValue, forKey: key as! String)
+            }
+            return ret
+        }() : nil
         fuelType = product.fuelType
-        descriptionPrefix = product.prodDescPrefix?.value
-        descriptionPostfix = product.prodDescPostfix?.value
-        skuPrefix = product.prodNumPrefix?.value
-        skuPostfix = product.prodNumPostfix?.value
+        descriptionPrefix = JSStringType.opt(stringType: product.prodDescPrefix)
+        descriptionPostfix = JSStringType.opt(stringType: product.prodDescPostfix)
+        skuPrefix = JSStringType.opt(stringType: product.prodNumPrefix)
+        skuPostfix = JSStringType.opt(stringType: product.prodNumPostfix)
         sector = product.sector
         department = product.department
         majorCategory = product.majorCategory
@@ -124,20 +136,24 @@ struct JSProduct {
         itemType = product.itemType
     }
 
+    static func opt(product: BRProduct?) -> JSProduct? {
+        return product != nil ? JSProduct(product: product!) : nil
+    }
+    
     /**
      Converts the `RspProduct` struct into a dictionary suitable for use in plugin response data.
 
      - Returns: A dictionary containing product information in a format suitable for a Capacitor plugin call result.
      */
-    func toPluginCallResultData() -> Capacitor.PluginCallResultData {
+    func toJSObject() -> JSObject {
         var ret = JSObject()
-        ret["productNumber"] = productNumber
-        ret["description"] = description
-        ret["quantity"] = quantity
-        ret["unitPrice"] = unitPrice
-        ret["unitOfMeasure"] = unitOfMeasure
-        ret["totalPrice"] = totalPrice
-        ret["fullPrice"] = fullPrice
+        ret["productNumber"] = productNumber?.toJSObject()
+        ret["description"] = description?.toJSObject()
+        ret["quantity"] = quantity?.toJSObject()
+        ret["unitPrice"] = unitPrice?.toJSObject()
+        ret["unitOfMeasure"] = unitOfMeasure?.toJSObject()
+        ret["totalPrice"] = totalPrice?.toJSObject()
+        ret["fullPrice"] = fullPrice.toJSObject()
         ret["productName"] = productName
         ret["brand"] = brand
         ret["category"] = category
@@ -145,7 +161,7 @@ struct JSProduct {
         ret["imageUrl"] = imageUrl
         ret["shippingStatus"] = shippingStatus
         ret["additionalLines"] = additionalLines
-        ret["priceAfterCoupons"] = priceAfterCoupons
+        ret["priceAfterCoupons"] = priceAfterCoupons?.toJSObject()
         ret["voided"] = voided
         ret["probability"] = probability
         ret["sensitive"] = sensitive
@@ -155,10 +171,10 @@ struct JSProduct {
         ret["blinkReceiptBrand"] = blinkReceiptBrand
         ret["blinkReceiptCategory"] = blinkReceiptCategory
         ret["fuelType"] = fuelType
-        ret["descriptionPrefix"] = descriptionPrefix
-        ret["descriptionPostfix"] = descriptionPostfix
-        ret["skuPrefix"] = skuPrefix
-        ret["skuPostfix"] = skuPostfix
+        ret["descriptionPrefix"] = descriptionPrefix?.toJSObject()
+        ret["descriptionPostfix"] = descriptionPostfix?.toJSObject()
+        ret["skuPrefix"] = skuPrefix?.toJSObject()
+        ret["skuPostfix"] = skuPostfix?.toJSObject()
         ret["sector"] = sector
         ret["department"] = department
         ret["majorCategory"] = majorCategory

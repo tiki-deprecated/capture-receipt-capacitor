@@ -9,10 +9,10 @@
  */
 export interface FloatType {
   /**
-   * The confidence level associated with the floating-point value.
+   * The confidence level associated with the floating-point value, if available.
    * This value indicates the certainty or reliability of the reported value.
    */
-  confidence: number;
+  confidence?: number;
 
   /**
    * The actual floating-point value.

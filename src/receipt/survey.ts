@@ -42,5 +42,5 @@ export interface Survey {
   /**
    * An array of questions associated with the survey.
    */
-  questions?: SurveyQuestion[];
+  questions: SurveyQuestion[];
 }
