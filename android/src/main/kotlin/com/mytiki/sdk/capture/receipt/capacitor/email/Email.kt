@@ -24,7 +24,6 @@ import com.mytiki.sdk.capture.receipt.capacitor.account.AccountCommon
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.tasks.await
 import java.util.Calendar
 import kotlin.math.floor
 
@@ -104,7 +103,6 @@ class Email {
                     )
                     onComplete?.invoke(account)
                 }
-
                 else -> {
                     onError?.invoke(results.toString())
                 }
@@ -168,7 +166,9 @@ class Email {
                            }
                        })
                    }
-                }.addOnFailureListener {}
+                }.addOnFailureListener {
+                    onComplete()
+                }
             }
         }
     }
