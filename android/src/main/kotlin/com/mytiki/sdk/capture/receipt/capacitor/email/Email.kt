@@ -5,10 +5,12 @@
 
 package com.mytiki.sdk.capture.receipt.capacitor.email
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.fragment.app.FragmentManager
 import com.microblink.core.InitializeCallback
 import com.microblink.core.ScanResults
+import com.microblink.core.Timberland
 import com.microblink.digital.BlinkReceiptDigitalSdk
 import com.microblink.digital.ImapClient
 import com.microblink.digital.MessagesCallback
@@ -17,6 +19,7 @@ import com.microblink.digital.Provider
 import com.microblink.digital.ProviderSetupDialogFragment
 import com.microblink.digital.ProviderSetupOptions
 import com.microblink.digital.ProviderSetupResults
+import com.microblink.digital.internal.validate
 import com.mytiki.sdk.capture.receipt.capacitor.OnAccountCallback
 import com.mytiki.sdk.capture.receipt.capacitor.OnCompleteCallback
 import com.mytiki.sdk.capture.receipt.capacitor.account.Account
@@ -135,36 +138,56 @@ class Email {
         MainScope().async {
             var dayCutOff = 15
             val now = Calendar.getInstance().timeInMillis
-            val lastScrape = context.getImapScanTime().await()
-            val diffInMillis = now - lastScrape
-            val diffInDays = floor((diffInMillis / 86400000).toDouble()).toInt()
-            if (diffInDays <= 15) {
-                dayCutOff = diffInDays
-            }
-            this@Email.client(context, onError) { client ->
+//            val lastScrape = context.getImapScanTime().await()
+//            val diffInMillis = now - lastScrape
+//            val diffInDays = floor((diffInMillis / 86400000).toDouble()).toInt()
+//            if (diffInDays <= 15) {
+//                dayCutOff = diffInDays
+//            }
+            client(context, onError) { client ->
                 client.accounts().addOnSuccessListener { credentials ->
                    if (credentials.isNullOrEmpty()) {
                        onComplete()
                    }else{
                        client.dayCutoff(dayCutOff)
+
                        client.messages(object : MessagesCallback {
+
+                           @SuppressLint("SetTextI18n")
                            override fun onComplete(
                                credential: PasswordCredentials,
                                result: List<ScanResults>
                            ) {
-                               result.forEach { receipt ->
-                                   onReceipt(receipt)
-                               }
-                               context.setImapScanTime(now)
-                               onComplete()
-                               client.close()
+                               Timberland.d("credentials $credential results $result")
+
                            }
+
+                           @SuppressLint("SetTextI18n")
                            override fun onException(throwable: Throwable) {
-                               onError(throwable.message ?: throwable.toString())
-                               onComplete()
-                               client.close()
+                               Timberland.e(throwable)
+
                            }
                        })
+
+
+//                       client.messages(object : MessagesCallback {
+//                           override fun onComplete(
+//                               credential: PasswordCredentials,
+//                               result: List<ScanResults>
+//                           ) {
+//                               result.forEach { receipt ->
+//                                   onReceipt(receipt)
+//                               }
+//                               context.setImapScanTime(now)
+//                               onComplete()
+//                               client.close()
+//                           }
+//                           override fun onException(throwable: Throwable) {
+//                               onError(throwable.message ?: throwable.toString())
+//                               onComplete()
+//                               client.close()
+//                           }
+//                       })
                    }
                 }.addOnFailureListener {
                     onComplete()
