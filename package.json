@@ -26,8 +26,7 @@
   "keywords": [
     "capacitor",
     "plugin",
-    "tiki",
-    "microblink"
+    "tiki"
   ],
   "scripts": {
     "verify": "npm run verify:ios && npm run verify:android && npm run verify:web",
@@ -65,7 +64,6 @@
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.28.1",
     "prettier": "^3.0.3",
-    "rimraf": "^5.0.5",
     "rollup-plugin-typescript2": "^0.36.0",
     "swiftlint": "^1.0.2",
     "typescript": "^5.2.2",
