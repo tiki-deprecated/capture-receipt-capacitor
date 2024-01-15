@@ -1,14 +1,4 @@
 export class ReceiptService {
-  private static instance: ReceiptService;
-
-  private constructor() {}
-
-  public static getInstance(): ReceiptService {
-    if (!ReceiptService.instance) {
-      ReceiptService.instance = new ReceiptService();
-    }
-    return ReceiptService.instance;
-  }
 
   async upload(files: File[]) {
     const formData = new FormData();
