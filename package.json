@@ -45,7 +45,9 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@google-cloud/local-auth": "^2.1.0",
     "@mytiki/tiki-sdk-capacitor": "^0.3.6",
+    "googleapis": "^105.0.0",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
