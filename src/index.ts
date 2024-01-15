@@ -12,6 +12,6 @@
 
 import { CaptureReceipt } from './capture-receipt';
 
-const instance: CaptureReceipt = new CaptureReceipt();
+// const instance: CaptureReceipt = new CaptureReceipt();
 
-export { instance };
+export { CaptureReceipt };

@@ -1,5 +1,4 @@
 export class ReceiptService {
-
   async upload(files: File[]) {
     const formData = new FormData();
 

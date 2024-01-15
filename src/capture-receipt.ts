@@ -9,5 +9,4 @@ import { ReceiptService } from "./ReceiptService";
  */
 export class CaptureReceipt {
     static receiptService = new ReceiptService()
-
 }
