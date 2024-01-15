@@ -71,4 +71,8 @@ export class LicenseService {
       "Receipt data"
     );
   }
+
+  async verifyLicense(ptr: string,  usecases: Usecase[], destinations?: string[]){
+    return await TikiSdkLicensing.instance.guard(ptr, usecases, destinations);
+  }
 }
