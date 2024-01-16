@@ -4,7 +4,7 @@
  */
 
 import * as TikiSdkLicensing from '@mytiki/tiki-sdk-capacitor';
-import { TitleRecord, CommonTags, Tag, Usecase, CommonUsecases } from '@mytiki/tiki-sdk-capacitor';
+import { TitleRecord, CommonTags, Tag, Usecase, CommonUsecases, type LicenseRecord } from '@mytiki/tiki-sdk-capacitor';
 
 export class LicenseService {
   private _userId?: string;
@@ -36,7 +36,7 @@ export class LicenseService {
    * @param providerId - The company's unique identifier to initialize the SDK for.
    * @returns A Promise that resolves when the initialization is complete.
    */
-  async initialize(userId?: string, providerId?: string): Promise<void> {
+  private async initialize(userId?: string, providerId?: string): Promise<void> {
     if ((!userId && !this._userId) || (!providerId && this._providerId))
       throw new Error('UserId/ProviderId is necessary to initialize');
 
@@ -50,7 +50,7 @@ export class LicenseService {
    * @param expiry - The expiry date for that license
    * @returns A Promise that resolves when the license creation is complete.
    */
-  async createLicense(userId?: string, terms?: string, expiry?: Date): Promise<void> {
+  async createLicense(userId?: string, terms?: string, expiry?: Date): Promise<LicenseRecord> {
     const isInitialized = await TikiSdkLicensing.instance.isInitialized();
 
     if (!isInitialized) this.initialize();
@@ -61,11 +61,10 @@ export class LicenseService {
         console.log(error);
         throw new Error(error);
       });
-    
-    if(!titleRecord.id) throw new Error('Error to create a title!');
 
+    if (!titleRecord.id) throw new Error('Error to create a title!');
 
-    await TikiSdkLicensing.instance.createLicense(
+    return await TikiSdkLicensing.instance.createLicense(
       titleRecord.id,
       [
         {
@@ -79,7 +78,14 @@ export class LicenseService {
     );
   }
 
-  async verifyLicense(ptr: string, usecases: Usecase[], destinations?: string[]) {
+  async verifyLicense(
+    ptr: string,
+    usecases: Usecase[],
+    destinations?: string[],
+  ): Promise<{
+    success: boolean;
+    reason?: string;
+  }> {
     return await TikiSdkLicensing.instance.guard(ptr, usecases, destinations);
   }
 }
